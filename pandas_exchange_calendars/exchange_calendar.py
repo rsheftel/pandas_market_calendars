@@ -56,6 +56,64 @@ class ExchangeCalendar(metaclass=ABCMeta):
         raise NotImplementedError()
 
     @property
+    def regular_holidays(self):
+        """
+        Returns
+        -------
+        pd.AbstractHolidayCalendar: a calendar containing the regular holidays
+        for this calendar
+        """
+        return None
+
+    @property
+    def adhoc_holidays(self):
+        return []
+
+    @property
+    def special_opens(self):
+        """
+        A list of special open times and corresponding HolidayCalendars.
+
+        Returns
+        -------
+        list: List of (time, AbstractHolidayCalendar) tuples
+        """
+        return []
+
+    @property
+    def special_opens_adhoc(self):
+        """
+        Returns
+        -------
+        list: List of (time, DatetimeIndex) tuples that represent special
+         closes that cannot be codified into rules.
+        """
+        return []
+
+    @property
+    def special_closes(self):
+        """
+        A list of special close times and corresponding HolidayCalendars.
+
+        Returns
+        -------
+        list: List of (time, AbstractHolidayCalendar) tuples
+        """
+        return []
+
+    @property
+    def special_closes_adhoc(self):
+        """
+        Returns
+        -------
+        list: List of (time, DatetimeIndex) tuples that represent special
+         closes that cannot be codified into rules.
+        """
+        return []
+
+    # -----
+
+    @property
     def open_time(self):
         return self._open_time
 
@@ -143,72 +201,6 @@ class ExchangeCalendar(metaclass=ABCMeta):
             datetimes = datetimes.where(~remove_dates)
 
         return datetimes.dropna()
-
-    @property
-    def regular_holidays(self):
-        """
-        Returns
-        -------
-        pd.AbstractHolidayCalendar: a calendar containing the regular holidays
-        for this calendar
-        """
-        return None
-
-    @property
-    def adhoc_holidays(self):
-        return []
-
-    @property
-    def special_opens(self):
-        """
-        A list of special open times and corresponding HolidayCalendars.
-
-        Returns
-        -------
-        list: List of (time, AbstractHolidayCalendar) tuples
-        """
-        return []
-
-    @property
-    def special_opens_adhoc(self):
-        """
-        Returns
-        -------
-        list: List of (time, DatetimeIndex) tuples that represent special
-         closes that cannot be codified into rules.
-        """
-        return []
-
-    @property
-    def special_closes(self):
-        """
-        A list of special close times and corresponding HolidayCalendars.
-
-        Returns
-        -------
-        list: List of (time, AbstractHolidayCalendar) tuples
-        """
-        return []
-
-    @property
-    def special_closes_adhoc(self):
-        """
-        Returns
-        -------
-        list: List of (time, DatetimeIndex) tuples that represent special
-         closes that cannot be codified into rules.
-        """
-        return []
-
-    # -----
-
-    @property
-    def opens(self):
-        return self.schedule.market_open
-
-    @property
-    def closes(self):
-        return self.schedule.market_close
 
     def _special_dates(self, calendars, ad_hoc_dates, start_date, end_date):
         """

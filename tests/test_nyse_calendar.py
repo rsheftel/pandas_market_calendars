@@ -1,8 +1,7 @@
 from unittest import TestCase
-import pandas as pd
 
-from .test_trading_calendar import ExchangeCalendarTestBase
-from zipline.utils.calendars.exchange_calendar_nyse import NYSEExchangeCalendar
+import pandas as pd
+from pandas_exchange_calendars.exchange_calendar_nyse import NYSEExchangeCalendar
 
 
 class NYSECalendarTestCase(ExchangeCalendarTestBase, TestCase):

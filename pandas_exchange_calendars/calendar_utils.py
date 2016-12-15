@@ -5,7 +5,6 @@ from pandas_exchange_calendars.exchange_calendar_cme import CMEExchangeCalendar
 from pandas_exchange_calendars.exchange_calendar_bmf import BMFExchangeCalendar
 from pandas_exchange_calendars.exchange_calendar_lse import LSEExchangeCalendar
 from pandas_exchange_calendars.exchange_calendar_tsx import TSXExchangeCalendar
-from .us_futures_calendar import QuantopianUSFuturesCalendar
 
 _calendars = {
     'NYSE': NYSEExchangeCalendar,
@@ -14,10 +13,11 @@ _calendars = {
     'CFE': CFEExchangeCalendar,
     'BMF': BMFExchangeCalendar,
     'LSE': LSEExchangeCalendar,
-    'TSX': TSXExchangeCalendar,
-    'us_futures': QuantopianUSFuturesCalendar,
+    'TSX': TSXExchangeCalendar
 }
+
 _aliases = {
+    'stock': 'NYSE',
     'NASDAQ': 'NYSE',
     'BATS': 'NYSE',
     'CBOT': 'CME',

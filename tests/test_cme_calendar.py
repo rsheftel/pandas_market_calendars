@@ -1,7 +1,7 @@
 from unittest import TestCase
 import pandas as pd
 
-from .test_trading_calendar import ExchangeCalendarTestBase
+from .test_exchange_calendar import ExchangeCalendarTestBase
 from zipline.utils.calendars.exchange_calendar_cme import CMEExchangeCalendar
 
 
