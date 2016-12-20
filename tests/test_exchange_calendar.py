@@ -17,12 +17,12 @@ from datetime import time
 import pandas as pd
 from pytz import timezone
 from toolz import concat
-from pandas.util.testing import assert_series_equal
+from pandas.util.testing import assert_series_equal, assert_frame_equal, assert_index_equal
 from itertools import chain
 
 from pandas_exchange_calendars import get_calendar
 from pandas_exchange_calendars.calendar_utils import _calendars, _aliases
-from pandas_exchange_calendars.exchange_calendar import days_at_time, ExchangeCalendar, is_sub_daily, clean_dates
+from pandas_exchange_calendars.exchange_calendar import days_at_time, ExchangeCalendar, clean_dates
 
 from pandas.tseries.holiday import AbstractHolidayCalendar
 from pandas_exchange_calendars.us_holidays import (
@@ -110,17 +110,6 @@ def test_days_at_time():
         dat(args[0], args[1], args[2], args[3], args[4])
 
 
-def test_is_sub_daily():
-    assert is_sub_daily('1min') is True
-    assert is_sub_daily('5min') is True
-    assert is_sub_daily('min') is True
-    assert is_sub_daily('1H') is True
-    assert is_sub_daily('H') is True
-
-    assert is_sub_daily('D') is False
-    assert is_sub_daily('1D') is False
-
-
 def test_clean_dates():
     start, end = clean_dates('2016-12-01', '2016-12-31')
     assert start == pd.Timestamp('2016-12-01')
@@ -141,51 +130,146 @@ def test_clean_dates():
     assert end == pd.Timestamp('2016-12-31')
 
 
+def test_holidays():
+    cal = FakeCalendar()
+
+    actual = cal.holidays().holidays
+    assert pd.Timestamp('2016-12-26') in actual
+    assert pd.Timestamp('2012-01-02') in actual
+    assert pd.Timestamp('2012-12-25') in actual
+    assert pd.Timestamp('2012-10-29') in actual
+    assert pd.Timestamp('2012-10-30') in actual
+
+
+def test_valid_dates():
+    cal = FakeCalendar()
+
+    expected = pd.DatetimeIndex([pd.Timestamp(x, tz='UTC') for x in ['2016-12-23', '2016-12-27', '2016-12-28',
+                                                                     '2016-12-29', '2016-12-30', '2017-01-03']])
+    actual = cal.valid_days('2016-12-23', '2017-01-03')
+    assert_index_equal(actual, expected)
+
+
 def test_schedule():
     cal = FakeCalendar()
+    assert cal.open_time == time(11,13)
+    assert cal.close_time == time(11,49)
+
+    expected = pd.DataFrame({'market_open': [pd.Timestamp('2016-12-01 03:13:00', tz='UTC'),
+                                             pd.Timestamp('2016-12-02 03:13:00', tz='UTC')],
+                             'market_close': [pd.Timestamp('2016-12-01 03:49:00', tz='UTC'),
+                                              pd.Timestamp('2016-12-02 03:49:00', tz='UTC')]},
+                            columns=['market_open', 'market_close'],
+                            index=[pd.Timestamp('2016-12-01'), pd.Timestamp('2016-12-02')])
+    actual = cal.schedule('2016-12-01', '2016-12-02')
+    assert_frame_equal(actual, expected)
 
     results = cal.schedule('2016-12-01', '2016-12-31')
     assert len(results) == 21
 
     expected = pd.Series({'market_open': pd.Timestamp('2016-12-01 03:13:00+0000', tz='UTC', freq='B'),
                           'market_close': pd.Timestamp('2016-12-01 03:49:00+0000', tz='UTC', freq='B')},
-                         name=pd.Timestamp('2016-12-01 00:00:00+0000', tz='UTC', freq='C'),
-                         index=['market_open', 'market_close'], dtype=object)
+                         name=pd.Timestamp('2016-12-01'), index=['market_open', 'market_close'], dtype=object)
     assert_series_equal(results.iloc[0], expected)
 
     expected = pd.Series({'market_open': pd.Timestamp('2016-12-30 03:13:00+0000', tz='UTC', freq='B'),
                           'market_close': pd.Timestamp('2016-12-30 03:49:00+0000', tz='UTC', freq='B')},
-                         name=pd.Timestamp('2016-12-30 00:00:00+0000', tz='UTC', freq='C'),
-                         index=['market_open', 'market_close'], dtype=object)
+                         name=pd.Timestamp('2016-12-30'), index=['market_open', 'market_close'], dtype=object)
     assert_series_equal(results.iloc[-1], expected)
 
 
 def test_schedule_w_times():
     cal = FakeCalendar(time(12, 12), time(13, 13))
 
+    assert cal.open_time == time(12,12)
+    assert cal.close_time == time(13,13)
+
     results = cal.schedule('2016-12-01', '2016-12-31')
     assert len(results) == 21
 
     expected = pd.Series({'market_open': pd.Timestamp('2016-12-01 04:12:00+0000', tz='UTC', freq='B'),
                           'market_close': pd.Timestamp('2016-12-01 05:13:00+0000', tz='UTC', freq='B')},
-                         name=pd.Timestamp('2016-12-01 00:00:00+0000', tz='UTC', freq='C'),
-                         index=['market_open', 'market_close'], dtype=object)
+                         name=pd.Timestamp('2016-12-01'), index=['market_open', 'market_close'], dtype=object)
     assert_series_equal(results.iloc[0], expected)
 
     expected = pd.Series({'market_open': pd.Timestamp('2016-12-30 04:12:00+0000', tz='UTC', freq='B'),
                           'market_close': pd.Timestamp('2016-12-30 05:13:00+0000', tz='UTC', freq='B')},
-                         name=pd.Timestamp('2016-12-30 00:00:00+0000', tz='UTC', freq='C'),
-                         index=['market_open', 'market_close'], dtype=object)
+                         name=pd.Timestamp('2016-12-30'), index=['market_open', 'market_close'], dtype=object)
     assert_series_equal(results.iloc[-1], expected)
 
 
-def test_date_range():
+def test_regular_holidays():
     cal = FakeCalendar()
 
-    # no holidays
+    results = cal.schedule('2016-12-01', '2017-01-05')
+    days = results.index
 
-    # closed days
+    # check regular holidays
+    # Christmas
+    assert pd.Timestamp('2016-12-23') in days
+    assert pd.Timestamp('2016-12-26') not in days
+    # New Years
+    assert pd.Timestamp('2017-01-02') not in days
+    assert pd.Timestamp('2017-01-03') in days
 
-    # early close
 
-    # late open
+def test_adhoc_holidays():
+    cal = FakeCalendar()
+
+    results = cal.schedule('2012-10-15', '2012-11-15')
+    days = results.index
+
+    # check adhoc holidays
+    # Hurricane Sandy
+    assert pd.Timestamp('2012-10-26') in days
+    assert pd.Timestamp('2012-10-29') not in days
+    assert pd.Timestamp('2012-10-30') not in days
+    assert pd.Timestamp('2012-10-31') in days
+
+
+def test_special_opens():
+    cal = FakeCalendar()
+
+    results = cal.schedule('2012-07-01', '2012-07-06')
+    opens = results['market_open'].tolist()
+
+    # confirm that the day before July 4th is an 11:15 open not 11:13
+    assert pd.Timestamp('2012-07-02 11:13', tz='Asia/Ulaanbaatar').tz_convert('UTC') in opens
+    assert pd.Timestamp('2012-07-03 11:15', tz='Asia/Ulaanbaatar').tz_convert('UTC') in opens
+    assert pd.Timestamp('2012-07-04 11:13', tz='Asia/Ulaanbaatar').tz_convert('UTC') in opens
+
+
+def test_special_opens_adhoc():
+    cal = FakeCalendar()
+
+    results = cal.schedule('2016-12-10', '2016-12-20')
+    opens = results['market_open'].tolist()
+
+    # confirm that 2016-12-13 is an 11:12 open not 11:13
+    assert pd.Timestamp('2016-12-12 11:13', tz='Asia/Ulaanbaatar').tz_convert('UTC') in opens
+    assert pd.Timestamp('2016-12-13 11:20', tz='Asia/Ulaanbaatar').tz_convert('UTC') in opens
+    assert pd.Timestamp('2016-12-14 11:13', tz='Asia/Ulaanbaatar').tz_convert('UTC') in opens
+
+
+def test_special_closes():
+    cal = FakeCalendar()
+
+    results = cal.schedule('2012-07-01', '2012-07-06')
+    closes = results['market_close'].tolist()
+
+    # confirm that the day before July 4th is an 11:30 close not 11:49
+    assert pd.Timestamp('2012-07-02 11:49', tz='Asia/Ulaanbaatar').tz_convert('UTC') in closes
+    assert pd.Timestamp('2012-07-03 11:30', tz='Asia/Ulaanbaatar').tz_convert('UTC') in closes
+    assert pd.Timestamp('2012-07-04 11:49', tz='Asia/Ulaanbaatar').tz_convert('UTC') in closes
+
+
+def test_special_closes_adhoc():
+    cal = FakeCalendar()
+
+    results = cal.schedule('2016-12-10', '2016-12-20')
+    closes = results['market_close'].tolist()
+
+    # confirm that 2016-12-14 is an 11:40 close not 11:49
+    assert pd.Timestamp('2016-12-13 11:49', tz='Asia/Ulaanbaatar').tz_convert('UTC') in closes
+    assert pd.Timestamp('2016-12-14 11:40', tz='Asia/Ulaanbaatar').tz_convert('UTC') in closes
+    assert pd.Timestamp('2016-12-15 11:49', tz='Asia/Ulaanbaatar').tz_convert('UTC') in closes

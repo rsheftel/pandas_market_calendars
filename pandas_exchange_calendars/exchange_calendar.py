@@ -14,8 +14,6 @@
 # limitations under the License.
 
 from abc import ABCMeta, abstractproperty
-import functools
-import re
 import datetime
 
 import pandas as pd
@@ -138,7 +136,6 @@ class ExchangeCalendar(metaclass=ABCMeta):
     def valid_days(self, start_date, end_date, tz='UTC'):
         return pd.date_range(start_date, end_date, freq=self.holidays(), normalize=True, tz=tz)
 
-    @functools.lru_cache(4)
     def schedule(self, start_date, end_date):
         start_date, end_date = clean_dates(start_date, end_date)
 
@@ -157,50 +154,8 @@ class ExchangeCalendar(metaclass=ABCMeta):
         _overwrite_special_dates(_all_days, opens, _special_opens)
         _overwrite_special_dates(_all_days, closes, _special_closes)
 
-        return DataFrame(index=_all_days, columns=['market_open', 'market_close'],
+        return DataFrame(index=_all_days.tz_localize(None), columns=['market_open', 'market_close'],
                          data={'market_open': opens, 'market_close': closes})
-
-    @functools.lru_cache()
-    def _date_range_daily(self, start_date, end_date):
-        return DatetimeIndex(self.schedule(start_date, end_date)['market_close']).tz_convert(self.tz)
-
-    def date_range(self, start_date, end_date, frequency):
-        start_date, end_date = clean_dates(start_date, end_date)
-
-        # If it is daily frequency return just the closing time for each date
-        if not is_sub_daily(frequency):
-            return self._date_range_daily(start_date, end_date)
-
-        # If a sub daily frequency
-        # This process is not memory efficient, there can certainly be better or faster ways to get to the same result
-
-        # Get the frequency for the entire date range
-        datetimes = self.valid_days(start_date, end_date, self.tz)
-
-        # Turn into the requested frequency
-        df = DataFrame(index=datetimes).asfreq(frequency)
-        datetimes = df.index
-
-        # Cut for standard open and close time
-        datetimes = datetimes[datetimes.indexer_between_time(self.open_time, self.close_time)]
-
-        # Cut for special opens
-        special_opens = self._calculate_special_opens(start_date, end_date)
-        for special_open in special_opens:
-            regular_open = pd.Timestamp(datetime.datetime(special_open.year, special_open.month, special_open.day,
-                                                          self.open_time.hour, self.open_time.minute), tz=self.tz)
-            remove_dates = (datetimes < special_open) & (datetimes >= regular_open)
-            datetimes = datetimes.where(~remove_dates)
-
-        # Cut for special closes
-        special_closes = self._calculate_special_closes(start_date, end_date)
-        for special_close in special_closes:
-            regular_close = pd.Timestamp(datetime.datetime(special_close.year, special_close.month, special_close.day,
-                                                           self.close_time.hour, self.close_time.minute), tz=self.tz)
-            remove_dates = (datetimes > special_close) & (datetimes <= regular_close)
-            datetimes = datetimes.where(~remove_dates)
-
-        return datetimes.dropna()
 
     def _special_dates(self, calendars, ad_hoc_dates, start_date, end_date):
         """
@@ -329,10 +284,6 @@ def _overwrite_special_dates(midnight_utcs,
     # maintaining sorting, this should be ok, but this is a good place to
     # sanity check if things start going haywire with calendar computations.
     opens_or_closes.values[indexer] = special_opens_or_closes.values
-
-
-def is_sub_daily(frequency):
-    return re.split('(\D+)', frequency)[1] in ['H', 'T', 'min', 'S', 'L', 'ms', 'U', 'ms', 'N`']
 
 
 def clean_dates(start_date, end_date):

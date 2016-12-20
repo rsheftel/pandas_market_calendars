@@ -96,7 +96,7 @@ class NYSEExchangeCalendar(ExchangeCalendar):
     we've done alright...and we should check if it's a half day.
     """
 
-    open_time_default = time(9, 31)
+    open_time_default = time(9, 30)
     close_time_default = time(16)
     regular_early_close = time(13)
 
