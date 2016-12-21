@@ -157,6 +157,18 @@ class ExchangeCalendar(metaclass=ABCMeta):
         return DataFrame(index=_all_days.tz_localize(None), columns=['market_open', 'market_close'],
                          data={'market_open': opens, 'market_close': closes})
 
+    @staticmethod
+    def open_at_time(schedule, timestamp):
+        date = timestamp.date()
+        if date in schedule.index:
+            return schedule.loc[date, 'market_open'] <= timestamp <= schedule.loc[date, 'market_close']
+        else:
+            return False
+
+    def early_closes(self, schedule):
+        match_dates = schedule['market_close'].apply(lambda x: x.tz_convert(self.tz).time() != self.close_time)
+        return schedule[match_dates]
+
     def _special_dates(self, calendars, ad_hoc_dates, start_date, end_date):
         """
         Union an iterable of pairs of the form (time, calendar)

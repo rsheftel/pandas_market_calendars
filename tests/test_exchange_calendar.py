@@ -273,3 +273,24 @@ def test_special_closes_adhoc():
     assert pd.Timestamp('2016-12-13 11:49', tz='Asia/Ulaanbaatar').tz_convert('UTC') in closes
     assert pd.Timestamp('2016-12-14 11:40', tz='Asia/Ulaanbaatar').tz_convert('UTC') in closes
     assert pd.Timestamp('2016-12-15 11:49', tz='Asia/Ulaanbaatar').tz_convert('UTC') in closes
+
+
+def test_early_closes():
+    cal = FakeCalendar()
+
+    schedule = cal.schedule('2014-01-01', '2016-12-31')
+    results = cal.early_closes(schedule)
+    assert pd.Timestamp('2014-07-03') in results.index
+    assert pd.Timestamp('2016-12-14') in results.index
+
+
+def test_open_at_time():
+    cal = FakeCalendar()
+
+    schedule = cal.schedule('2014-01-01', '2016-12-31')
+    # regular trading day
+    assert cal.open_at_time(schedule, pd.Timestamp('2014-07-02 03:40', tz='UTC')) is True
+    # early close
+    assert cal.open_at_time(schedule, pd.Timestamp('2014-07-03 03:40', tz='UTC')) is False
+    # holiday
+    assert cal.open_at_time(schedule, pd.Timestamp('2014-12-25 03:30', tz='UTC')) is False
