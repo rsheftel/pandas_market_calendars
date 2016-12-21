@@ -44,7 +44,7 @@ class FakeCalendar(ExchangeCalendar):
 
     @property
     def tz(self):
-        return "Asia/Ulaanbaatar"
+        return timezone("Asia/Ulaanbaatar")
 
     @property
     def regular_holidays(self):
@@ -128,6 +128,12 @@ def test_clean_dates():
                              pd.Timestamp('2016-12-31 16:00', tz='America/New_York'))
     assert start == pd.Timestamp('2016-12-01')
     assert end == pd.Timestamp('2016-12-31')
+
+
+def test_properties():
+    cal = FakeCalendar()
+    assert cal.name == 'DMY'
+    assert cal.tz == timezone('Asia/Ulaanbaatar')
 
 
 def test_holidays():

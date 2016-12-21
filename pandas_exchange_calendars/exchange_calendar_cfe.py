@@ -49,7 +49,7 @@ class CFEExchangeCalendar(ExchangeCalendar):
 
     @property
     def regular_holidays(self):
-        return HolidayCalendar([
+        return AbstractHolidayCalendar(rules=[
             USNewYearsDay,
             USMartinLutherKingJrAfter1998,
             USPresidentsDay,
