@@ -19,6 +19,7 @@ from pytz import timezone
 from toolz import concat
 from pandas.util.testing import assert_series_equal, assert_frame_equal, assert_index_equal
 from itertools import chain
+import pytest
 
 from pandas_exchange_calendars import get_calendar
 from pandas_exchange_calendars.calendar_utils import _calendars, _aliases
@@ -183,6 +184,8 @@ def test_schedule():
                          name=pd.Timestamp('2016-12-30'), index=['market_open', 'market_close'], dtype=object)
     assert_series_equal(results.iloc[-1], expected)
 
+    with pytest.raises(ValueError):
+        cal.schedule('2016-02-02', '2016-01-01')
 
 def test_schedule_w_times():
     cal = FakeCalendar(time(12, 12), time(13, 13))
@@ -251,7 +254,7 @@ def test_special_opens_adhoc():
     results = cal.schedule('2016-12-10', '2016-12-20')
     opens = results['market_open'].tolist()
 
-    # confirm that 2016-12-13 is an 11:12 open not 11:13
+    # confirm that 2016-12-13 is an 11:20 open not 11:13
     assert pd.Timestamp('2016-12-12 11:13', tz='Asia/Ulaanbaatar').tz_convert('UTC') in opens
     assert pd.Timestamp('2016-12-13 11:20', tz='Asia/Ulaanbaatar').tz_convert('UTC') in opens
     assert pd.Timestamp('2016-12-14 11:13', tz='Asia/Ulaanbaatar').tz_convert('UTC') in opens

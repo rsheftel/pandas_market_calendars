@@ -18,7 +18,7 @@ from pandas.tseries.holiday import (
     Holiday,
     DateOffset,
     MO,
-    weekend_to_monday,
+    weekend_to_monday, previous_friday,
     GoodFriday,
     EasterMonday,
 )
@@ -26,10 +26,16 @@ from pytz import timezone
 from pandas.tseries.holiday import AbstractHolidayCalendar
 from .exchange_calendar import (
     ExchangeCalendar,
-    MONDAY,
-    TUESDAY,
+    MONDAY, TUESDAY, WEDNESDAY, THURSDAY, FRIDAY
 )
 
+# New Year's Eve
+LSENewYearsEve = Holiday(
+    "New Year's Eve",
+    month=12,
+    day=31,
+    observance=previous_friday,
+)
 # New Year's Day
 LSENewYearsDay = Holiday(
     "New Year's Day",
@@ -57,6 +63,13 @@ SummerBank = Holiday(
     month=8,
     day=31,
     offset=DateOffset(weekday=MO(-1)),
+)
+# Christmas Eve
+ChristmasEve = Holiday(
+    'Christmas Eve',
+    month=12,
+    day=24,
+    observance=previous_friday,
 )
 # Christmas
 Christmas = Holiday(
@@ -101,7 +114,7 @@ class LSEExchangeCalendar(ExchangeCalendar):
     - Easter Monday
     - Early May Bank Holiday (first Monday in May)
     - Spring Bank Holiday (last Monday in May)
-    - Summer Bank Holiday (last Monday in May)
+    - Summer Bank Holiday (last Monday in August)
     - Christmas Day
     - Dec. 27th (if Christmas is on a weekend)
     - Boxing Day
@@ -118,7 +131,7 @@ class LSEExchangeCalendar(ExchangeCalendar):
 
     @property
     def open_time(self):
-        return time(8, 1)
+        return time(8, 0)
 
     @property
     def close_time(self):
@@ -138,3 +151,13 @@ class LSEExchangeCalendar(ExchangeCalendar):
             BoxingDay,
             WeekendBoxingDay
         ])
+
+    @property
+    def special_closes(self):
+        return [(
+            time(12, 30),
+            AbstractHolidayCalendar(rules=[
+                ChristmasEve,
+                LSENewYearsEve,
+            ])
+        )]

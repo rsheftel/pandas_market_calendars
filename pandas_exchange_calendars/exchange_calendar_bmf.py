@@ -192,7 +192,7 @@ class BMFExchangeCalendar(ExchangeCalendar):
 
     @property
     def regular_holidays(self):
-        return HolidayCalendar([
+        return AbstractHolidayCalendar(rules=[
             ConfUniversal,
             AniversarioSaoPaulo,
             CarnavalSegunda,

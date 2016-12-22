@@ -10,7 +10,7 @@ def test_time_zone():
 
 def test_2016_holidays():
     # good friday: 2016-03-25
-    # christmas (observed)_: 2016-12-26
+    # christmas (observed): 2016-12-26
     # new years (observed): 2016-01-02
     cme = CMEExchangeCalendar()
     good_dates = cme.valid_days('2016-01-01', '2016-12-31')

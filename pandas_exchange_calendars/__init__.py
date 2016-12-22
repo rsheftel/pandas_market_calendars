@@ -14,9 +14,11 @@
 # limitations under the License.
 
 from .exchange_calendar import ExchangeCalendar
-from .calendar_utils import get_calendar
+from .calendar_utils import get_calendar, merge_schedules, date_range
 
 __all__ = [
     'ExchangeCalendar',
     'get_calendar',
+    'merge_schedules',
+    'date_range'
 ]
