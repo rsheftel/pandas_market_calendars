@@ -188,6 +188,9 @@ class ExchangeCalendar(metaclass=ABCMeta):
                 for time_, datetimes in ad_hoc_dates
             ]
         )
+        # make the start_date and end_dates UTC and covert the entire day
+        start_date = start_date.tz_localize('UTC')
+        end_date = end_date.tz_localize('UTC').replace(hour=23, minute=59, second=59)
         return _dates[(_dates >= start_date) & (_dates <= end_date)]
 
     def _calculate_special_opens(self, start, end):

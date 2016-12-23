@@ -106,7 +106,7 @@ def test_date_range_hour():
     # Dec 13, 2016 is adhoc late open, include the open with closed=True
     expected = pd.DatetimeIndex([pd.Timestamp(x, tz=cal.tz).tz_convert('UTC') for x in
                                  ['2016-12-13 11:20', '2016-12-13 12:00',
-                                  '2016-12-14 09:00', '2016-12-14 10:00', '2016-12-14 11:00', '2016-12-14 12:00']])
+                                  '2016-12-14 09:00', '2016-12-14 10:00', '2016-12-14 11:00', '2016-12-14 11:40']])
     schedule = cal.schedule('2016-12-13', '2016-12-14')
     actual = pec.date_range(schedule, '1H', closed=None)
 
@@ -118,50 +118,43 @@ def test_date_range_minute():
     cal = FakeCalendar(open_time=datetime.time(9, 0), close_time=datetime.time(10, 30))
 
     # New Years Eve and weekend skipped
-    expected = pd.DatetimeIndex([pd.Timestamp(x, tz=cal.tz).tz_convert('UTC') for x in
-                                 ['2015-12-31 10:00', '2015-12-31 10:30',
-                                  '2016-01-04 10:00', '2016-01-04 10:30',
-                                  '2016-01-05 10:00', '2016-01-05 10:30',
-                                  '2016-01-06 10:00', '2016-01-06 10:30']])
     schedule = cal.schedule('2015-12-31', '2016-01-06')
     actual = pec.date_range(schedule, '1min', force_close=True)
+    assert len(actual) == 4 * 90
+    assert actual[0] == pd.Timestamp('2015-12-31 09:01', tz=cal.tz)
+    assert actual[len(actual) - 1] == pd.Timestamp('2016-01-06 10:30', tz=cal.tz)
 
-    assert_index_equal(actual, expected)
+    for x in ['2015-12-31 09:02', '2015-12-31 10:30', '2016-01-04 09:01', '2016-01-06 09:01']:
+        assert pd.Timestamp(x, tz=cal.tz) in actual
 
-    # If force_close False for then result is missing close if not on even increment
-    expected = pd.DatetimeIndex([pd.Timestamp(x, tz=cal.tz).tz_convert('UTC') for x in
-                                 ['2015-12-31 10:00', '2016-01-04 10:00', '2016-01-05 10:00', '2016-01-06 10:00']])
-    schedule = cal.schedule('2015-12-31', '2016-01-06')
-    actual = pec.date_range(schedule, '1min', force_close=False)
+    for x in ['2015-12-31 09:00', '2015-12-31 10:31', '2016-01-02 09:01', '2016-01-03 09:01', '2016-01-06 09:00']:
+        assert pd.Timestamp(x, tz=cal.tz) not in actual
 
-    assert_index_equal(actual, expected)
-
-    cal = FakeCalendar(open_time=datetime.time(9, 0), close_time=datetime.time(12, 0))
     # July 3 is late open and early close
-    expected = pd.DatetimeIndex([pd.Timestamp(x, tz=cal.tz).tz_convert('UTC') for x in
-                                 ['2012-07-02 10:00', '2012-07-02 11:00', '2012-07-02 12:00',
-                                  '2012-07-03 11:30',
-                                  '2012-07-04 10:00', '2012-07-04 11:00', '2012-07-04 12:00']])
+    cal = FakeCalendar(open_time=datetime.time(9, 0), close_time=datetime.time(12, 0))
     schedule = cal.schedule('2012-07-02', '2012-07-04')
     actual = pec.date_range(schedule, '1min')
+    assert len(actual) == 375  # 2 days of 3 hours, and one day of 15 mins
+    assert actual[0] == pd.Timestamp('2012-07-02 09:01', tz=cal.tz)
+    assert actual[len(actual) - 1] == pd.Timestamp('2012-07-04 12:00', tz=cal.tz)
 
-    assert_index_equal(actual, expected)
+    for x in ['2012-07-02 09:02', '2012-07-02 12:00', '2012-07-03 11:16', '2012-07-03 11:30', '2012-07-04 09:01']:
+        assert pd.Timestamp(x, tz=cal.tz) in actual
 
-    # Dec 14, 2016 is adhoc early close
-    expected = pd.DatetimeIndex([pd.Timestamp(x, tz=cal.tz).tz_convert('UTC') for x in
-                                 ['2016-12-14 10:00', '2016-12-14 11:00', '2016-12-14 11:40',
-                                  '2016-12-15 10:00', '2016-12-15 11:00', '2016-12-15 12:00']])
-    schedule = cal.schedule('2016-12-14', '2016-12-15')
-    actual = pec.date_range(schedule, '1min')
+    for x in ['2012-07-02 09:00', '2012-07-02 12:01', '2012-07-03 11:15', '2012-07-03 11:31', '2012-07-04 09:00']:
+        assert pd.Timestamp(x, tz=cal.tz) not in actual
 
-    assert_index_equal(actual, expected)
-
-    # Dec 13, 2016 is adhoc late open, include the open with closed=True
-    expected = pd.DatetimeIndex([pd.Timestamp(x, tz=cal.tz).tz_convert('UTC') for x in
-                                 ['2016-12-13 11:20', '2016-12-13 12:00',
-                                  '2016-12-14 09:00', '2016-12-14 10:00', '2016-12-14 11:00', '2016-12-14 12:00']])
+    # Dec 13, 2016 is ad-hoc late open, include the open with closed=True, Dec 14 is ad-hoc early close
+    cal = FakeCalendar(open_time=datetime.time(9, 0), close_time=datetime.time(12, 0))
     schedule = cal.schedule('2016-12-13', '2016-12-14')
     actual = pec.date_range(schedule, '1min', closed=None)
 
-    assert_index_equal(actual, expected)
+    assert len(actual) == 41 + (61 + 60 + 40)
+    assert actual[0] == pd.Timestamp('2016-12-13 11:20', tz=cal.tz)
+    assert actual[len(actual) - 1] == pd.Timestamp('2016-12-14 11:40', tz=cal.tz)
 
+    for x in ['2016-12-13 11:21', '2016-12-13 12:00', '2016-12-14 09:00']:
+        assert pd.Timestamp(x, tz=cal.tz) in actual
+
+    for x in ['2016-12-13 11:19', '2016-12-13 12:01', '2016-12-14 08:59', '2016-12-14 11:41']:
+        assert pd.Timestamp(x, tz=cal.tz) not in actual

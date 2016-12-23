@@ -187,6 +187,7 @@ def test_schedule():
     with pytest.raises(ValueError):
         cal.schedule('2016-02-02', '2016-01-01')
 
+
 def test_schedule_w_times():
     cal = FakeCalendar(time(12, 12), time(13, 13))
 
@@ -271,6 +272,20 @@ def test_special_closes():
     assert pd.Timestamp('2012-07-03 11:30', tz='Asia/Ulaanbaatar').tz_convert('UTC') in closes
     assert pd.Timestamp('2012-07-04 11:49', tz='Asia/Ulaanbaatar').tz_convert('UTC') in closes
 
+    # early close first date
+    results = cal.schedule('2012-07-03', '2012-07-04')
+    actual = results['market_close'].tolist()
+    expected = [pd.Timestamp('2012-07-03 11:30', tz='Asia/Ulaanbaatar').tz_convert('UTC'),
+                pd.Timestamp('2012-07-04 11:49', tz='Asia/Ulaanbaatar').tz_convert('UTC')]
+    assert actual == expected
+
+    # early close last date
+    results = cal.schedule('2012-07-02', '2012-07-03')
+    actual = results['market_close'].tolist()
+    expected = [pd.Timestamp('2012-07-02 11:49', tz='Asia/Ulaanbaatar').tz_convert('UTC'),
+                pd.Timestamp('2012-07-03 11:30', tz='Asia/Ulaanbaatar').tz_convert('UTC')]
+    assert actual == expected
+
 
 def test_special_closes_adhoc():
     cal = FakeCalendar()
@@ -282,6 +297,12 @@ def test_special_closes_adhoc():
     assert pd.Timestamp('2016-12-13 11:49', tz='Asia/Ulaanbaatar').tz_convert('UTC') in closes
     assert pd.Timestamp('2016-12-14 11:40', tz='Asia/Ulaanbaatar').tz_convert('UTC') in closes
     assert pd.Timestamp('2016-12-15 11:49', tz='Asia/Ulaanbaatar').tz_convert('UTC') in closes
+
+    # now with the early close as end date
+    results = cal.schedule('2016-12-13', '2016-12-14')
+    closes = results['market_close'].tolist()
+    assert pd.Timestamp('2016-12-13 11:49', tz='Asia/Ulaanbaatar').tz_convert('UTC') in closes
+    assert pd.Timestamp('2016-12-14 11:40', tz='Asia/Ulaanbaatar').tz_convert('UTC') in closes
 
 
 def test_early_closes():
