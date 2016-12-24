@@ -49,7 +49,24 @@ def get_calendar(name):
 
 
 def merge_schedules(schedules, how='outer'):
-    pass
+    """
+
+    :param schedules: list of schedules
+    :param how: outer or inner
+    :return:
+    """
+    result = schedules.pop(0)
+    for schedule in schedules:
+        result = result.merge(schedule, how=how, right_index=True, left_index=True)
+        if how == 'outer':
+            result['market_open'] = result.apply(lambda x: min(x.market_open_x, x.market_open_y), axis=1)
+            result['market_close'] = result.apply(lambda x: max(x.market_close_x, x.market_close_y), axis=1)
+        elif how == 'inner':
+            result['market_open'] = result.apply(lambda x: max(x.market_open_x, x.market_open_y), axis=1)
+            result['market_close'] = result.apply(lambda x: min(x.market_close_x, x.market_close_y), axis=1)
+        else:
+            raise ValueError('how argument must be "inner" or "outer"')
+    return result[['market_open', 'market_close']]
 
 
 def date_range(schedule, frequency, closed='right', force_close=True, **kwargs):

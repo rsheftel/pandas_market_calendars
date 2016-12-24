@@ -1,10 +1,16 @@
 
 import datetime
 import pandas as pd
-from pandas.util.testing import assert_index_equal
+import pytest
+from pandas.util.testing import assert_index_equal, assert_frame_equal
 
 import pandas_exchange_calendars as pec
-from .test_exchange_calendar import FakeCalendar
+from pandas_exchange_calendars.exchange_calendar_nyse import NYSEExchangeCalendar
+from tests.test_exchange_calendar import FakeCalendar
+
+
+def test_get_calendar():
+    assert isinstance(pec.get_calendar('NYSE'), NYSEExchangeCalendar)
 
 
 def test_date_range_daily():
@@ -158,3 +164,37 @@ def test_date_range_minute():
 
     for x in ['2016-12-13 11:19', '2016-12-13 12:01', '2016-12-14 08:59', '2016-12-14 11:41']:
         assert pd.Timestamp(x, tz=cal.tz) not in actual
+
+
+def test_merge_schedules():
+    cal1 = FakeCalendar()
+    cal2 = NYSEExchangeCalendar()
+
+    # cal1 is open on 2016-07-04 and cal2 is not
+    sch1 = cal1.schedule('2016-07-01', '2016-07-06')
+    sch2 = cal2.schedule('2016-07-01', '2016-07-06')
+
+    # outer join will include July 4th and have
+    expected = pd.DataFrame({'market_open': [pd.Timestamp(x, tz='UTC') for x in
+                                             ['2016-07-01 02:13', '2016-07-04 02:13',
+                                              '2016-07-05 02:13', '2016-07-06 02:13']],
+                             'market_close': [pd.Timestamp(x, tz='UTC') for x in
+                                             ['2016-07-01 20:00', '2016-07-04 02:49',
+                                              '2016-07-05 20:00', '2016-07-06 20:00']]},
+                            columns=['market_open', 'market_close'],
+                            index=pd.DatetimeIndex(['2016-07-01', '2016-07-04', '2016-07-05', '2016-07-06']))
+    actual = pec.merge_schedules([sch1, sch2], how='outer')
+    assert_frame_equal(actual, expected)
+
+    # inner join will exclude July 4th because not open for both
+    expected = pd.DataFrame({'market_open': [pd.Timestamp(x, tz='UTC') for x in
+                                             ['2016-07-01 13:30', '2016-07-05 13:30', '2016-07-06 13:30']],
+                             'market_close': [pd.Timestamp(x, tz='UTC') for x in
+                                             ['2016-07-01 02:49', '2016-07-05 02:49', '2016-07-06 02:49']]},
+                            columns=['market_open', 'market_close'],
+                            index=pd.DatetimeIndex(['2016-07-01', '2016-07-05', '2016-07-06']))
+    actual = pec.merge_schedules([sch1, sch2], how='inner')
+    assert_frame_equal(actual, expected)
+
+    with pytest.raises(ValueError):
+        pec.merge_schedules([sch1, sch2], how=None)
