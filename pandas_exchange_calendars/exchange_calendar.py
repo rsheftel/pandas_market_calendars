@@ -1,3 +1,4 @@
+# Fork of zipline from Quantopian. Licensed under MIT, original licence below
 #
 # Copyright 2016 Quantopian, Inc.
 #
@@ -47,19 +48,27 @@ class ExchangeCalendar(metaclass=ABCMeta):
 
     @abstractproperty
     def name(self):
+        """
+        Name of the exchange
+
+        :return: string name
+        """
         raise NotImplementedError()
 
     @abstractproperty
     def tz(self):
+        """
+        Time zone for the exchange.
+
+        :return: timezone
+        """
         raise NotImplementedError()
 
     @property
     def regular_holidays(self):
         """
-        Returns
-        -------
-        pd.AbstractHolidayCalendar: a calendar containing the regular holidays
-        for this calendar
+
+        :return: pd.AbstractHolidayCalendar: a calendar containing the regular holidays for this calendar
         """
         return None
 
