@@ -33,15 +33,17 @@ _aliases = {
 }
 
 
-def get_calendar(name):
+def get_calendar(name, open_time=None, close_time=None):
     """
     Retrieves an instance of an ExchangeCalendar whose name is given.
 
     :param name: The name of the ExchangeCalendar to be retrieved.
+    :param open_time: Exchange open time override as datetime.time object. If None then default is used.
+    :param close_time: Exchange close time override as datetime.time object. If None then default is used.
     :return: ExchangeCalendar of the desired calendar.
     """
     canonical_name = _aliases.get(name, name)
-    return _calendars[canonical_name]()
+    return _calendars[canonical_name](open_time, close_time)
 
 
 def merge_schedules(schedules, how='outer'):

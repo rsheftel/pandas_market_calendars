@@ -11,6 +11,10 @@ from tests.test_exchange_calendar import FakeCalendar
 
 def test_get_calendar():
     assert isinstance(pec.get_calendar('NYSE'), NYSEExchangeCalendar)
+    cal = pec.get_calendar('NYSE', datetime.time(10, 0), datetime.time(14, 30))
+    assert isinstance(cal, NYSEExchangeCalendar)
+    assert cal.open_time == datetime.time(10, 0)
+    assert cal.close_time == datetime.time(14, 30)
 
 
 def test_date_range_daily():

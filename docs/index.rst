@@ -26,6 +26,9 @@ Contents
 
    modules.rst
 
+Examples
+--------
+   usage.rst
 
 Indices and tables
 ==================

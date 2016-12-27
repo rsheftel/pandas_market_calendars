@@ -1,7 +1,7 @@
 """A setuptools based setup module.
 See:
 https://packaging.python.org/en/latest/distributing.html
-https://github.com/rsheftel/raccoon
+https://github.com/rsheftel/pandas_exchange_calendars
 """
 
 # Always prefer setuptools over distutils
