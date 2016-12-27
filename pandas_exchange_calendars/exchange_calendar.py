@@ -26,23 +26,18 @@ MONDAY, TUESDAY, WEDNESDAY, THURSDAY, FRIDAY, SATURDAY, SUNDAY = range(7)
 
 class ExchangeCalendar(metaclass=ABCMeta):
     """
-    An ExchangeCalendar represents the timing information of a single market
-    exchange.
-
-    The timing information is made up of two parts: sessions, and opens/closes.
-
-    A session represents a contiguous set of minutes, and has a label that is
-    midnight UTC. It is important to note that a session label should not be
-    considered a specific point in time, and that midnight UTC is just being
-    used for convenience.
-
-    For each session, we store the open and close time in UTC time.
+    An ExchangeCalendar represents the timing information of a single market exchange.
+    Unless otherwise noted all times are in UTC and use Pandas data structures.
     """
 
     open_time_default = None
     close_time_default = None
 
     def __init__(self, open_time=None, close_time=None):
+        """
+        :param open_time: Exchange open time override as datetime.time object. If None then default is used.
+        :param close_time: Exchange close time override as datetime.time object. If None then default is used.
+        """
         self._open_time = self.open_time_default if open_time is None else open_time
         self._close_time = self.close_time_default if close_time is None else close_time
 
@@ -74,26 +69,26 @@ class ExchangeCalendar(metaclass=ABCMeta):
 
     @property
     def adhoc_holidays(self):
+        """
+        
+        :return: list of ad-hoc holidays
+        """
         return []
 
     @property
     def special_opens(self):
         """
-        A list of special open times and corresponding HolidayCalendars.
+        A list of special open times and corresponding AbstractHolidayCalendar.
 
-        Returns
-        -------
-        list: List of (time, AbstractHolidayCalendar) tuples
+        :return: List of (time, AbstractHolidayCalendar) tuples
         """
         return []
 
     @property
     def special_opens_adhoc(self):
         """
-        Returns
-        -------
-        list: List of (time, DatetimeIndex) tuples that represent special
-         closes that cannot be codified into rules.
+
+        :return: List of (time, DatetimeIndex) tuples that represent special closes that cannot be codified into rules.
         """
         return []
 
@@ -102,50 +97,84 @@ class ExchangeCalendar(metaclass=ABCMeta):
         """
         A list of special close times and corresponding HolidayCalendars.
 
-        Returns
-        -------
-        list: List of (time, AbstractHolidayCalendar) tuples
+        :return: List of (time, AbstractHolidayCalendar) tuples
         """
         return []
 
     @property
     def special_closes_adhoc(self):
         """
-        Returns
-        -------
-        list: List of (time, DatetimeIndex) tuples that represent special
-         closes that cannot be codified into rules.
+
+        :return: List of (time, DatetimeIndex) tuples that represent special closes that cannot be codified into rules.
         """
         return []
 
-    # -----
-
     @property
     def open_time(self):
+        """
+        
+        :return: open time
+        """
         return self._open_time
 
     @property
     def close_time(self):
+        """
+        
+        :return: close time
+        """
         return self._close_time
 
     @property
     def open_offset(self):
+        """
+        
+        :return: open offset
+        """
         return 0
 
     @property
     def close_offset(self):
+        """
+        
+        :return: close offset
+        """
         return 0
 
     def holidays(self):
+        """
+        Returns the complete CustomBusinessDay object of holidays that can be used in any Pandas function that take 
+        that input.
+        
+        :return: CustomBusinessDay object of holidays
+        """
         return CustomBusinessDay(
             holidays=self.adhoc_holidays,
             calendar=self.regular_holidays,
         )
 
     def valid_days(self, start_date, end_date, tz='UTC'):
+        """
+        Get a DatetimeIndex of valid open business days.
+        
+        :param start_date: start date
+        :param end_date: end date
+        :param tz: time zone in either string or pytz.timezone
+        :return: DatetimeIndex of valid business days
+        """
         return pd.date_range(start_date, end_date, freq=self.holidays(), normalize=True, tz=tz)
 
     def schedule(self, start_date, end_date):
+        """
+        Generates the schedule DataFrame. The resulting DataFrame will have all the valid business days as the index 
+        and columns for the market opening datetime (market_open) and closing datetime (market_close). All time zones
+        are set to UTC. To convert to the local exchange time use pandas tz_convert and the self.tz to get the 
+        exchange time zone.
+        
+        :param start_date: start date
+        :param end_date: end date
+        :return: schedule DataFrame
+        """
         start_date, end_date = clean_dates(start_date, end_date)
         if start_date >= end_date:
             raise ValueError('start_date must be before end_date.')
@@ -170,6 +199,13 @@ class ExchangeCalendar(metaclass=ABCMeta):
 
     @staticmethod
     def open_at_time(schedule, timestamp):
+        """
+        To determine if a given timesamp is during an open time for the exchange.
+        
+        :param schedule: schedule DataFrame
+        :param timestamp: the timestamp to check for
+        :return: True if the timestamp is a valid open date and time, False if not
+        """
         date = timestamp.date()
         if date in schedule.index:
             return schedule.loc[date, 'market_open'] <= timestamp <= schedule.loc[date, 'market_close']
@@ -177,6 +213,12 @@ class ExchangeCalendar(metaclass=ABCMeta):
             return False
 
     def early_closes(self, schedule):
+        """
+        Get a DataFrame of the dates that are an early close.
+        
+        :param schedule: schedule DataFrame
+        :return: schedule DataFrame with rows that are early closes
+        """
         match_dates = schedule['market_close'].apply(lambda x: x.tz_convert(self.tz).time() != self.close_time)
         return schedule[match_dates]
 
@@ -221,20 +263,7 @@ class ExchangeCalendar(metaclass=ABCMeta):
 
 def days_at_time(days, t, tz, day_offset=0):
     """
-    Create an index of days at time ``t``, interpreted in timezone ``tz``.
-
-    The returned index is localized to UTC.
-
-    Parameters
-    ----------
-    days : DatetimeIndex
-        An index of dates (represented as midnight).
-    t : datetime.time
-        The time to apply as an offset to each day in ``days``.
-    tz : pytz.timezone
-        The timezone to use to interpret ``t``.
-    day_offset : int
-        The number of days we want to offset @days by
+    Create an index of days at time ``t``, interpreted in timezone ``tz``. The returned index is localized to UTC.
 
     Example
     -------
@@ -249,6 +278,12 @@ def days_at_time(days, t, tz, day_offset=0):
     ['2016-03-12 13:45:00+00:00',
      '2016-03-13 12:45:00+00:00',
      '2016-03-14 12:45:00+00:00']
+
+    :param days: DatetimeIndex An index of dates (represented as midnight).
+    :param t: datetime.time The time to apply as an offset to each day in ``days``.
+    :param tz: pytz.timezone The timezone to use to interpret ``t``.
+    :param day_offset: int The number of days we want to offset @days by
+    :return: DatetimeIndex of date with the time t            
     """
     if len(days) == 0:
         return days.tz_localize(tz).tz_convert('UTC')
@@ -313,6 +348,13 @@ def _overwrite_special_dates(midnight_utcs,
 
 
 def clean_dates(start_date, end_date):
+    """
+    Strips the inputs of time and time zone information
+    
+    :param start_date: start date
+    :param end_date: end date
+    :return: (start_date, end_date) with just date, no time and no time zone
+    """
     start_date = pd.Timestamp(start_date).tz_localize(None).normalize()
     end_date = pd.Timestamp(end_date).tz_localize(None).normalize()
     return start_date, end_date
