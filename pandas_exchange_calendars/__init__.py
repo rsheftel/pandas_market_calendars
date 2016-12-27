@@ -1,3 +1,4 @@
+# Fork of Zipline by Quantopian released under MIT license. Original Zipline license below.
 #
 # Copyright 2016 Quantopian, Inc.
 #

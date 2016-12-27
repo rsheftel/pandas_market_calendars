@@ -1,3 +1,6 @@
+"""
+Utilities to use with exchange_calendars
+"""
 
 import pandas as pd
 from pandas_exchange_calendars.exchange_calendar_cfe import CFEExchangeCalendar
@@ -34,15 +37,8 @@ def get_calendar(name):
     """
     Retrieves an instance of an ExchangeCalendar whose name is given.
 
-    Parameters
-    ----------
-    name : str
-        The name of the ExchangeCalendar to be retrieved.
-
-    Returns
-    -------
-    ExchangeCalendar
-        The desired calendar.
+    :param name: The name of the ExchangeCalendar to be retrieved.
+    :return: ExchangeCalendar of the desired calendar.
     """
     canonical_name = _aliases.get(name, name)
     return _calendars[canonical_name]()
@@ -50,11 +46,14 @@ def get_calendar(name):
 
 def merge_schedules(schedules, how='outer'):
     """
+    Given a list of schedules will return a merged schedule. The merge method (how) will either return the superset
+    of any datetime when any schedule is open (outer) or only the datetime where all markets are open (inner)
 
     :param schedules: list of schedules
     :param how: outer or inner
-    :return:
+    :return: schedule DataFrame
     """
+    
     result = schedules.pop(0)
     for schedule in schedules:
         result = result.merge(schedule, how=how, right_index=True, left_index=True)
@@ -71,15 +70,19 @@ def merge_schedules(schedules, how='outer'):
 
 def date_range(schedule, frequency, closed='right', force_close=True, **kwargs):
     """
-    The schedule values are assumed to be in UTC
+    Given a schedule will return a DatetimeIndex will all of the valid datetime at the frequency given. 
+    The schedule values are assumed to be in UTC.
 
-    :param schedule:
-    :param frequency:
-    :param closed:
-    :param force_close:
-    :param kwargs:
-    :return:
+    :param schedule: schedule DataFrame
+    :param frequency: frequency in standard string
+    :param closed: same meaning as pandas date_range. 'right' will exclude the first value and should be used when the
+      results should only include the close for each bar.
+    :param force_close: if True then the close of the day will be included even if it does not fall on an even 
+      frequency. If False then the market close for the day may not be included in the results
+    :param kwargs: arguments that will be passed to the pandas date_time
+    :return: DatetimeIndex
     """
+    
     kwargs['closed'] = closed
     ranges = list()
     for row in schedule.itertuples():
