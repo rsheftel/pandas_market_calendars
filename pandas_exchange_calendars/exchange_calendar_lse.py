@@ -26,7 +26,7 @@ from pytz import timezone
 from pandas.tseries.holiday import AbstractHolidayCalendar
 from .exchange_calendar import (
     ExchangeCalendar,
-    MONDAY, TUESDAY, WEDNESDAY, THURSDAY, FRIDAY
+    MONDAY, TUESDAY
 )
 
 # New Year's Eve

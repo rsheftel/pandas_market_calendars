@@ -159,8 +159,8 @@ def test_valid_dates():
 
 def test_schedule():
     cal = FakeCalendar()
-    assert cal.open_time == time(11,13)
-    assert cal.close_time == time(11,49)
+    assert cal.open_time == time(11, 13)
+    assert cal.close_time == time(11, 49)
 
     expected = pd.DataFrame({'market_open': [pd.Timestamp('2016-12-01 03:13:00', tz='UTC'),
                                              pd.Timestamp('2016-12-02 03:13:00', tz='UTC')],
@@ -191,8 +191,8 @@ def test_schedule():
 def test_schedule_w_times():
     cal = FakeCalendar(time(12, 12), time(13, 13))
 
-    assert cal.open_time == time(12,12)
-    assert cal.close_time == time(13,13)
+    assert cal.open_time == time(12, 12)
+    assert cal.close_time == time(13, 13)
 
     results = cal.schedule('2016-12-01', '2016-12-31')
     assert len(results) == 21

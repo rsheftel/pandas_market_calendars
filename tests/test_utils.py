@@ -179,8 +179,8 @@ def test_merge_schedules():
                                              ['2016-07-01 02:13', '2016-07-04 02:13',
                                               '2016-07-05 02:13', '2016-07-06 02:13']],
                              'market_close': [pd.Timestamp(x, tz='UTC') for x in
-                                             ['2016-07-01 20:00', '2016-07-04 02:49',
-                                              '2016-07-05 20:00', '2016-07-06 20:00']]},
+                                              ['2016-07-01 20:00', '2016-07-04 02:49',
+                                               '2016-07-05 20:00', '2016-07-06 20:00']]},
                             columns=['market_open', 'market_close'],
                             index=pd.DatetimeIndex(['2016-07-01', '2016-07-04', '2016-07-05', '2016-07-06']))
     actual = pec.merge_schedules([sch1, sch2], how='outer')
@@ -190,7 +190,7 @@ def test_merge_schedules():
     expected = pd.DataFrame({'market_open': [pd.Timestamp(x, tz='UTC') for x in
                                              ['2016-07-01 13:30', '2016-07-05 13:30', '2016-07-06 13:30']],
                              'market_close': [pd.Timestamp(x, tz='UTC') for x in
-                                             ['2016-07-01 02:49', '2016-07-05 02:49', '2016-07-06 02:49']]},
+                                              ['2016-07-01 02:49', '2016-07-05 02:49', '2016-07-06 02:49']]},
                             columns=['market_open', 'market_close'],
                             index=pd.DatetimeIndex(['2016-07-01', '2016-07-05', '2016-07-06']))
     actual = pec.merge_schedules([sch1, sch2], how='inner')

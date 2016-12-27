@@ -169,7 +169,7 @@ def test_day_after_thanksgiving():
     fifth_friday_open = pd.Timestamp('11/29/2013 11:00AM', tz='EST')
     fifth_friday = pd.Timestamp('11/29/2013 3:00PM', tz='EST')
     assert fifth_friday_open > good_dates.loc['2012-11-23', 'market_open']
-    assert fifth_friday> good_dates.loc['2012-11-23', 'market_close']
+    assert fifth_friday > good_dates.loc['2012-11-23', 'market_close']
 
 
 def test_early_close_independence_day_thursday():
