@@ -3,6 +3,10 @@ import pandas as pd
 from pandas_exchange_calendars.exchange_calendar_ice import ICEExchangeCalendar
 
 
+def test_name():
+    assert ICEExchangeCalendar().name == 'ICE'
+
+
 def test_hurricane_sandy_one_day():
     dates_open = ICEExchangeCalendar().valid_days('2012-10-01', '2012-11-01')
 

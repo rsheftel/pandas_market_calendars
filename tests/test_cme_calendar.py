@@ -6,6 +6,7 @@ from pandas_exchange_calendars.exchange_calendar_cme import CMEExchangeCalendar
 
 def test_time_zone():
     assert CMEExchangeCalendar().tz == pytz.timezone('America/Chicago')
+    assert CMEExchangeCalendar().name == 'CME'
 
 
 def test_2016_holidays():

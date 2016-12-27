@@ -6,6 +6,7 @@ from pandas_exchange_calendars.exchange_calendar_nyse import NYSEExchangeCalenda
 
 def time_zone():
     assert NYSEExchangeCalendar().tz == pytz.timezone('America/New_York')
+    assert NYSEExchangeCalendar().name == 'NYSE'
 
 
 def test_2012():

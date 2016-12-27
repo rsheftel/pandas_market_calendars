@@ -197,4 +197,4 @@ def test_merge_schedules():
     assert_frame_equal(actual, expected)
 
     with pytest.raises(ValueError):
-        pec.merge_schedules([sch1, sch2], how=None)
+        pec.merge_schedules([sch1, sch2], how='left')
