@@ -143,6 +143,13 @@ Updates
 ~~~
 - Initial version
 
+Markets & Exchanges
+-------------------
+.. toctree::
+   :maxdepth: 2
+
+   calendars.rst
+
 Package Contents
 ----------------
 .. toctree::
