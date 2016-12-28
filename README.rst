@@ -31,11 +31,12 @@ Quick Start
 -----------
 .. code:: python
 
+    import pandas_exchange_calendars as pec
     nyse = pec.get_calendar('NYSE')
+
 
 .. code:: python
 
-    # with early closes
     early = nyse.schedule(start_date='2012-07-01', end_date='2012-07-10')
     early
 
