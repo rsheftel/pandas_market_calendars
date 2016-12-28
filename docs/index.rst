@@ -143,8 +143,8 @@ Updates
 ~~~
 - Initial version
 
-Contents
---------
+Package Contents
+----------------
 .. toctree::
    :maxdepth: 2
 
@@ -156,6 +156,13 @@ Examples
    :maxdepth: 2
 
    usage.rst
+
+New Market or Exchange
+----------------------
+.. toctree::
+   :maxdepth: 2
+
+   new_exchange.rst
 
 Indices and tables
 ==================
