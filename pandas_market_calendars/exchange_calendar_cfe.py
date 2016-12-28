@@ -8,7 +8,7 @@ from pandas.tseries.holiday import (
 )
 from pytz import timezone
 
-from .exchange_calendar import ExchangeCalendar
+from .market_calendar import MarketCalendar
 from pandas.tseries.holiday import AbstractHolidayCalendar
 from .us_holidays import (
     USMartinLutherKingJrAfter1998,
@@ -20,7 +20,7 @@ from .us_holidays import (
 )
 
 
-class CFEExchangeCalendar(ExchangeCalendar):
+class CFEExchangeCalendar(MarketCalendar):
     """
     Exchange calendar for the CBOE Futures Exchange (CFE).
 

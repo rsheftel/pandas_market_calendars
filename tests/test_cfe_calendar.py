@@ -1,6 +1,6 @@
 
 import pandas as pd
-from pandas_exchange_calendars.exchange_calendar_cfe import CFEExchangeCalendar
+from pandas_market_calendars.exchange_calendar_cfe import CFEExchangeCalendar
 
 
 def test_2016_holidays():

@@ -17,14 +17,14 @@ with open(path.join(here, 'README.rst'), encoding='utf-8') as f:
     long_description = f.read()
 
 setup(
-    name='pandas_exchange_calendars',
+    name='pandas_market_calendars',
     version='0.1',
 
     description='Market exchange calendars for pandas',
     long_description=long_description,
 
     # The project's main homepage.
-    url='https://github.com/rsheftel/pandas_exchange_calendars',
+    url='https://github.com/rsheftel/pandas_market_calendars',
 
     # Author details
     author='Ryan Sheftel',

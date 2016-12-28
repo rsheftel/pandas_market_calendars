@@ -22,9 +22,9 @@ from pandas.tseries.offsets import CustomBusinessDay
 MONDAY, TUESDAY, WEDNESDAY, THURSDAY, FRIDAY, SATURDAY, SUNDAY = range(7)
 
 
-class ExchangeCalendar(metaclass=ABCMeta):
+class MarketCalendar(metaclass=ABCMeta):
     """
-    An ExchangeCalendar represents the timing information of a single market exchange.
+    An MarketCalendar represents the timing information of a single market exchange.
     Unless otherwise noted all times are in UTC and use Pandas data structures.
     """
 

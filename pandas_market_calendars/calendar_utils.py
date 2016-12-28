@@ -3,13 +3,13 @@ Utilities to use with exchange_calendars
 """
 
 import pandas as pd
-from pandas_exchange_calendars.exchange_calendar_cfe import CFEExchangeCalendar
-from pandas_exchange_calendars.exchange_calendar_ice import ICEExchangeCalendar
-from pandas_exchange_calendars.exchange_calendar_nyse import NYSEExchangeCalendar
-from pandas_exchange_calendars.exchange_calendar_cme import CMEExchangeCalendar
-from pandas_exchange_calendars.exchange_calendar_bmf import BMFExchangeCalendar
-from pandas_exchange_calendars.exchange_calendar_lse import LSEExchangeCalendar
-from pandas_exchange_calendars.exchange_calendar_tsx import TSXExchangeCalendar
+from pandas_market_calendars.exchange_calendar_cfe import CFEExchangeCalendar
+from pandas_market_calendars.exchange_calendar_ice import ICEExchangeCalendar
+from pandas_market_calendars.exchange_calendar_nyse import NYSEExchangeCalendar
+from pandas_market_calendars.exchange_calendar_cme import CMEExchangeCalendar
+from pandas_market_calendars.exchange_calendar_bmf import BMFExchangeCalendar
+from pandas_market_calendars.exchange_calendar_lse import LSEExchangeCalendar
+from pandas_market_calendars.exchange_calendar_tsx import TSXExchangeCalendar
 
 _calendars = {
     'NYSE': NYSEExchangeCalendar,
@@ -35,12 +35,12 @@ _aliases = {
 
 def get_calendar(name, open_time=None, close_time=None):
     """
-    Retrieves an instance of an ExchangeCalendar whose name is given.
+    Retrieves an instance of an MarketCalendar whose name is given.
 
-    :param name: The name of the ExchangeCalendar to be retrieved.
+    :param name: The name of the MarketCalendar to be retrieved.
     :param open_time: Exchange open time override as datetime.time object. If None then default is used.
     :param close_time: Exchange close time override as datetime.time object. If None then default is used.
-    :return: ExchangeCalendar of the desired calendar.
+    :return: MarketCalendar of the desired calendar.
     """
     canonical_name = _aliases.get(name, name)
     return _calendars[canonical_name](open_time, close_time)

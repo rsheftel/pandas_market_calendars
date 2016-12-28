@@ -21,12 +21,12 @@ from pandas.util.testing import assert_series_equal, assert_frame_equal, assert_
 from itertools import chain
 import pytest
 
-from pandas_exchange_calendars import get_calendar
-from pandas_exchange_calendars.calendar_utils import _calendars, _aliases
-from pandas_exchange_calendars.exchange_calendar import days_at_time, ExchangeCalendar, clean_dates
+from pandas_market_calendars import get_calendar
+from pandas_market_calendars.calendar_utils import _calendars, _aliases
+from pandas_market_calendars.market_calendar import days_at_time, MarketCalendar, clean_dates
 
 from pandas.tseries.holiday import AbstractHolidayCalendar
-from pandas_exchange_calendars.us_holidays import (
+from pandas_market_calendars.us_holidays import (
     USNewYearsDay,
     Christmas,
     HurricaneSandyClosings,
@@ -35,7 +35,7 @@ from pandas_exchange_calendars.us_holidays import (
 )
 
 
-class FakeCalendar(ExchangeCalendar):
+class FakeCalendar(MarketCalendar):
     open_time_default = time(11, 13)
     close_time_default = time(11, 49)
 

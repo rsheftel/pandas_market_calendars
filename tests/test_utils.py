@@ -4,8 +4,8 @@ import pandas as pd
 import pytest
 from pandas.util.testing import assert_index_equal, assert_frame_equal
 
-import pandas_exchange_calendars as pec
-from pandas_exchange_calendars.exchange_calendar_nyse import NYSEExchangeCalendar
+import pandas_market_calendars as pec
+from pandas_market_calendars.exchange_calendar_nyse import NYSEExchangeCalendar
 from tests.test_exchange_calendar import FakeCalendar
 
 

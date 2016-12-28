@@ -24,8 +24,8 @@ from pandas.tseries.holiday import (
 )
 from pytz import timezone
 from pandas.tseries.holiday import AbstractHolidayCalendar
-from .exchange_calendar import (
-    ExchangeCalendar,
+from .market_calendar import (
+    MarketCalendar,
     MONDAY, TUESDAY
 )
 
@@ -101,7 +101,7 @@ WeekendBoxingDay = Holiday(
 )
 
 
-class LSEExchangeCalendar(ExchangeCalendar):
+class LSEExchangeCalendar(MarketCalendar):
     """
     Exchange calendar for the London Stock Exchange
 

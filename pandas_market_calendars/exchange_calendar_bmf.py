@@ -23,8 +23,8 @@ from pandas.tseries.holiday import (
 from pytz import timezone
 from pandas.tseries.holiday import AbstractHolidayCalendar
 
-from .exchange_calendar import (
-    ExchangeCalendar,
+from .market_calendar import (
+    MarketCalendar,
     FRIDAY,
 )
 
@@ -147,7 +147,7 @@ AnoNovoSabado = Holiday(
 )
 
 
-class BMFExchangeCalendar(ExchangeCalendar):
+class BMFExchangeCalendar(MarketCalendar):
     """
     Exchange calendar for BM&F BOVESPA
 

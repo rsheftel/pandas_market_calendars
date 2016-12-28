@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 #
-# pandas_exchange_calendars documentation build configuration file, created by
+# pandas_market_calendars documentation build configuration file, created by
 # sphinx-quickstart on Tue Dec 27 08:02:38 2016.
 #
 # This file is execfile()d with the current directory set to its
@@ -52,7 +52,7 @@ source_suffix = '.rst'
 master_doc = 'index'
 
 # General information about the project.
-project = 'pandas_exchange_calendars'
+project = 'pandas_market_calendars'
 copyright = '2016, Ryan Sheftel'
 author = 'Ryan Sheftel'
 
@@ -137,7 +137,7 @@ html_theme = 'nature'
 # The name for this set of Sphinx documents.
 # "<project> v<release> documentation" by default.
 #
-# html_title = 'pandas_exchange_calendars v0.1'
+# html_title = 'pandas_market_calendars v0.1'
 
 # A shorter title for the navigation bar.  Default is the same as html_title.
 #
@@ -263,7 +263,7 @@ latex_elements = {
 # (source start file, target name, title,
 #  author, documentclass [howto, manual, or own class]).
 latex_documents = [
-    (master_doc, 'pandas_exchange_calendars.tex', 'pandas\\_exchange\\_calendars Documentation',
+    (master_doc, 'pandas_market_calendars.tex', 'pandas\\_exchange\\_calendars Documentation',
      'Ryan Sheftel', 'manual'),
 ]
 
@@ -305,7 +305,7 @@ latex_documents = [
 # One entry per manual page. List of tuples
 # (source start file, name, description, authors, manual section).
 man_pages = [
-    (master_doc, 'pandas_exchange_calendars', 'pandas_exchange_calendars Documentation',
+    (master_doc, 'pandas_market_calendars', 'pandas_market_calendars Documentation',
      [author], 1)
 ]
 
@@ -320,8 +320,8 @@ man_pages = [
 # (source start file, target name, title, author,
 #  dir menu entry, description, category)
 texinfo_documents = [
-    (master_doc, 'pandas_exchange_calendars', 'pandas_exchange_calendars Documentation',
-     author, 'pandas_exchange_calendars', 'One line description of project.',
+    (master_doc, 'pandas_market_calendars', 'pandas_market_calendars Documentation',
+     author, 'pandas_market_calendars', 'One line description of project.',
      'Miscellaneous'),
 ]
 

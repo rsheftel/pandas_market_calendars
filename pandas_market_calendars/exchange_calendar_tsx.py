@@ -8,7 +8,7 @@ from pandas.tseries.holiday import (
 )
 from pytz import timezone
 
-from .exchange_calendar import ExchangeCalendar
+from .market_calendar import MarketCalendar
 from pandas.tseries.holiday import AbstractHolidayCalendar
 
 from .us_holidays import Christmas
@@ -70,7 +70,7 @@ Thanksgiving = Holiday(
 )
 
 
-class TSXExchangeCalendar(ExchangeCalendar):
+class TSXExchangeCalendar(MarketCalendar):
     """
     Exchange calendar for the Toronto Stock Exchange
 

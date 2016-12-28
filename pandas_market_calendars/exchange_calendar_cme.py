@@ -26,7 +26,7 @@ from pytz import timezone
 # Useful resources for making changes to this file:
 # http://www.cmegroup.com/tools-information/holiday-calendar.html
 
-from .exchange_calendar import ExchangeCalendar
+from .market_calendar import MarketCalendar
 from pandas.tseries.holiday import AbstractHolidayCalendar
 from .us_holidays import (
     USNewYearsDay,
@@ -40,7 +40,7 @@ from .us_holidays import (
     USIndependenceDay)
 
 
-class CMEExchangeCalendar(ExchangeCalendar):
+class CMEExchangeCalendar(MarketCalendar):
     """
     Exchange calendar for CME
 

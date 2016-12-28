@@ -1,7 +1,7 @@
 
 import pandas as pd
 import pytz
-from pandas_exchange_calendars.exchange_calendar_nyse import NYSEExchangeCalendar
+from pandas_market_calendars.exchange_calendar_nyse import NYSEExchangeCalendar
 
 
 def time_zone():
@@ -68,7 +68,7 @@ def test_special_holidays():
 
 def test_new_years():
     """
-    Check whether the ExchangeCalendar contains certain dates.
+    Check whether the MarketCalendar contains certain dates.
     """
     #     January 2012
     # Su Mo Tu We Th Fr Sa
@@ -108,7 +108,7 @@ def test_new_years():
 
 def test_thanksgiving():
     """
-    Check ExchangeCalendar Thanksgiving dates.
+    Check MarketCalendar Thanksgiving dates.
     """
     #     November 2005
     # Su Mo Tu We Th Fr Sa

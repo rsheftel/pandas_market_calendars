@@ -25,7 +25,7 @@ from pandas.tseries.holiday import (
 from pytz import timezone
 
 from pandas.tseries.holiday import AbstractHolidayCalendar
-from pandas_exchange_calendars.us_holidays import (
+from pandas_market_calendars.us_holidays import (
     USNewYearsDay,
     USMartinLutherKingJrAfter1998,
     USMemorialDay,
@@ -42,13 +42,13 @@ from pandas_exchange_calendars.us_holidays import (
     ChristmasEveInOrAfter1993,
 )
 
-from pandas_exchange_calendars import ExchangeCalendar
+from pandas_market_calendars import MarketCalendar
 # Useful resources for making changes to this file:
 # http://www.nyse.com/pdfs/closings.pdf
 # http://www.stevemorse.org/jcal/whendid.html
 
 
-class NYSEExchangeCalendar(ExchangeCalendar):
+class NYSEExchangeCalendar(MarketCalendar):
     """
     Exchange calendar for NYSE
 

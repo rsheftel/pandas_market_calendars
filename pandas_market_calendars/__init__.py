@@ -14,11 +14,11 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-from .exchange_calendar import ExchangeCalendar
+from .market_calendar import MarketCalendar
 from .calendar_utils import get_calendar, merge_schedules, date_range
 
 __all__ = [
-    'ExchangeCalendar',
+    'MarketCalendar',
     'get_calendar',
     'merge_schedules',
     'date_range'

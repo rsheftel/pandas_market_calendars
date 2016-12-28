@@ -10,7 +10,7 @@ from pandas.tseries.holiday import (
 from pandas.tslib import Timestamp
 from pytz import timezone
 
-from .exchange_calendar import ExchangeCalendar
+from .market_calendar import MarketCalendar
 from pandas.tseries.holiday import AbstractHolidayCalendar
 from .us_holidays import (
     USNewYearsDay,
@@ -21,7 +21,7 @@ from .us_holidays import (
     USNationalDaysofMourning)
 
 
-class ICEExchangeCalendar(ExchangeCalendar):
+class ICEExchangeCalendar(MarketCalendar):
     """
     Exchange calendar for ICE US.
 
