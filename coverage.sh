@@ -2,5 +2,5 @@
 
 # This only works in Cygwin on Windows
 
-py3 -m pytest --color=yes --cov=pandas_exchange_calendars --cov-report html
-cygstart $TEMP/pec_coverage_report/index.html
+py3 -m pytest --color=yes --cov=pandas_market_calendars --cov-report html
+cygstart $TEMP/mcal_coverage_report/index.html

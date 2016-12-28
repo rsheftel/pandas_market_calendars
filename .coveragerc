@@ -23,4 +23,4 @@ exclude_lines =
 ignore_errors = True
 
 [html]
-directory = $TEMP\pec_coverage_report
+directory = $TEMP\mcal_coverage_report

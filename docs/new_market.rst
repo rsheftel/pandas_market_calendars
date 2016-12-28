@@ -2,7 +2,7 @@ New Market or Exchange
 ======================
 To create a new exchange (or OTC market):
 
-#. Create a new class that inherits from ExchangeCalendar
+#. Create a new class that inherits from MarketCalendar
 #. In the new class create the following class attributes (variables) and set their values to datetime.time():
 
    #. open_time_default

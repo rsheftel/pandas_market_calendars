@@ -1,6 +1,6 @@
 The pandas_exchange_calendars package is a fork with extensive modification of the zipline package by Quantopian. The
 core of this package is derived from, and in some places an exact copy of zipline. All credit goes to the creators
-of zipline for an excellent package and open sourcing it under the Apache Lisence v2.0 copied below.
+of zipline for an excellent package and open sourcing it under the Apache Licence v2.0 copied below.
 
 
                                  Apache License

@@ -1,23 +1,23 @@
-pandas_exchange_calendars
-=========================
-Exchange calendars to use with pandas for trading applications.
+pandas_market_calendars
+=======================
+Market calendars to use with pandas for trading applications.
 
-.. image:: https://travis-ci.org/rsheftel/pandas_exchange_calendars.svg?branch=master
-    :target: https://travis-ci.org/rsheftel/pandas_exchange_calendars
+.. image:: https://travis-ci.org/rsheftel/pandas_market_calendars.svg?branch=master
+    :target: https://travis-ci.org/rsheftel/pandas_market_calendars
     
 Documentation
 -------------
-http://pandas_exchange_calendars.readthedocs.io/en/latest/
+http://pandas_market_calendars.readthedocs.io/en/latest/
 
 Overview
 --------
 The Pandas package is widely used in finance and specifically for time series analysis. It includes excellent
 functionality for generating sequences of dates and capabilities for custom holiday calendars, but as an explicit
-design choice it does not include the actual holiday calendars for specific exchanges.
+design choice it does not include the actual holiday calendars for specific exchanges or OTC markets.
 
-The pandas_exchange_calendars package looks to fill that role with the holiday, late open and early close calendars
-for specific exchanges and OTC conventions. pandas_exchange_calendars also adds several functions to manipulate the
-exchange calendars and includes a date_range function to create a pandas DatetimeIndex including only the datetimes
+The pandas_market_calendars package looks to fill that role with the holiday, late open and early close calendars
+for specific exchanges and OTC conventions. pandas_market_calendars also adds several functions to manipulate the
+market calendars and includes a date_range function to create a pandas DatetimeIndex including only the datetimes
 when the markets are open.
 
 This package is a fork of the Zipline package from Quantopian and extracts just the relevant parts. All credit for
@@ -25,14 +25,14 @@ their excellent work to Quantopian.
 
 Installation
 ------------
-``pip install pandas_exchange_calendars``
+``pip install pandas_market_calendars``
 
 Quick Start
 -----------
 .. code:: python
 
-    import pandas_exchange_calendars as pec
-    nyse = pec.get_calendar('NYSE')
+    import pandas_market_calendars as mcal
+    nyse = mcal.get_calendar('NYSE')
 
 
 .. code:: python
@@ -88,7 +88,7 @@ Quick Start
 
 .. code:: python
 
-    pec.date_range(early, frequency='1D')
+    mcal.date_range(early, frequency='1D')
 
 
 
@@ -104,7 +104,7 @@ Quick Start
 
 .. code:: python
 
-    pec.date_range(early, frequency='1H')
+    mcal.date_range(early, frequency='1H')
 
 
 

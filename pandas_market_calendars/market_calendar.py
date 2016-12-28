@@ -24,7 +24,7 @@ MONDAY, TUESDAY, WEDNESDAY, THURSDAY, FRIDAY, SATURDAY, SUNDAY = range(7)
 
 class MarketCalendar(metaclass=ABCMeta):
     """
-    An MarketCalendar represents the timing information of a single market exchange.
+    An MarketCalendar represents the timing information of a single market or exchange.
     Unless otherwise noted all times are in UTC and use Pandas data structures.
     """
 
@@ -33,8 +33,8 @@ class MarketCalendar(metaclass=ABCMeta):
 
     def __init__(self, open_time=None, close_time=None):
         """
-        :param open_time: Exchange open time override as datetime.time object. If None then default is used.
-        :param close_time: Exchange close time override as datetime.time object. If None then default is used.
+        :param open_time: Market open time override as datetime.time object. If None then default is used.
+        :param close_time: Market close time override as datetime.time object. If None then default is used.
         """
         self._open_time = self.open_time_default if open_time is None else open_time
         self._close_time = self.close_time_default if close_time is None else close_time
@@ -42,7 +42,7 @@ class MarketCalendar(metaclass=ABCMeta):
     @abstractproperty
     def name(self):
         """
-        Name of the exchange
+        Name of the market
 
         :return: string name
         """
@@ -51,7 +51,7 @@ class MarketCalendar(metaclass=ABCMeta):
     @abstractproperty
     def tz(self):
         """
-        Time zone for the exchange.
+        Time zone for the market.
 
         :return: timezone
         """
@@ -166,8 +166,8 @@ class MarketCalendar(metaclass=ABCMeta):
         """
         Generates the schedule DataFrame. The resulting DataFrame will have all the valid business days as the index 
         and columns for the market opening datetime (market_open) and closing datetime (market_close). All time zones
-        are set to UTC. To convert to the local exchange time use pandas tz_convert and the self.tz to get the 
-        exchange time zone.
+        are set to UTC. To convert to the local market time use pandas tz_convert and the self.tz to get the
+        market time zone.
         
         :param start_date: start date
         :param end_date: end date
@@ -198,7 +198,7 @@ class MarketCalendar(metaclass=ABCMeta):
     @staticmethod
     def open_at_time(schedule, timestamp):
         """
-        To determine if a given timesamp is during an open time for the exchange.
+        To determine if a given timesamp is during an open time for the market.
         
         :param schedule: schedule DataFrame
         :param timestamp: the timestamp to check for

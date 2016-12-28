@@ -8,14 +8,14 @@ Examples
     sys.path.append("../") 
     from datetime import time
     import pandas as pd
-    import pandas_exchange_calendars as pec
+    import pandas_exchange_calendars as mcal
 
 Setup new exchange calendar
 ---------------------------
 
 .. code:: python
 
-    nyse = pec.get_calendar('NYSE')
+    nyse = mcal.get_calendar('NYSE')
 
 Get the time zone
 
@@ -270,7 +270,7 @@ dates and times.
 
 .. code:: python
 
-    pec.date_range(early, frequency='1D')
+    mcal.date_range(early, frequency='1D')
 
 
 
@@ -286,7 +286,7 @@ dates and times.
 
 .. code:: python
 
-    pec.date_range(early, frequency='1H')
+    mcal.date_range(early, frequency='1H')
 
 
 
@@ -325,7 +325,7 @@ construction
 
 .. code:: python
 
-    cal = pec.get_calendar('NYSE', open_time=time(10, 0), close_time=time(14, 30))
+    cal = mcal.get_calendar('NYSE', open_time=time(10, 0), close_time=time(14, 30))
     print('open, close: %s, %s' % (cal.open_time, cal.close_time))
 
 
@@ -340,7 +340,7 @@ Merge schedules
 .. code:: python
 
     # NYSE Calendar
-    nyse = pec.get_calendar('NYSE')
+    nyse = mcal.get_calendar('NYSE')
     schedule_nyse = nyse.schedule('2015-12-20', '2016-01-06')
     schedule_nyse
 
@@ -423,7 +423,7 @@ Merge schedules
 .. code:: python
 
     # LSE Calendar
-    lse = pec.get_calendar('LSE')
+    lse = mcal.get_calendar('LSE')
     schedule_lse = lse.schedule('2015-12-20', '2016-01-06')
     schedule_lse
 
@@ -508,7 +508,7 @@ for that.
 
 .. code:: python
 
-    pec.merge_schedules(schedules=[schedule_nyse, schedule_lse], how='inner')
+    mcal.merge_schedules(schedules=[schedule_nyse, schedule_lse], how='inner')
 
 
 
@@ -589,7 +589,7 @@ are open
 
 .. code:: python
 
-    pec.merge_schedules(schedules=[schedule_nyse, schedule_lse], how='outer')
+    mcal.merge_schedules(schedules=[schedule_nyse, schedule_lse], how='outer')
 
 
 

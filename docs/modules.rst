@@ -1,7 +1,7 @@
-pandas_exchange_calendars
-=========================
+pandas_market_calendars
+=======================
 
 .. toctree::
    :maxdepth: 4
 
-   pandas_exchange_calendars
+   pandas_market_calendars

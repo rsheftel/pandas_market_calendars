@@ -1,7 +1,7 @@
 """A setuptools based setup module.
 See:
 https://packaging.python.org/en/latest/distributing.html
-https://github.com/rsheftel/pandas_exchange_calendars
+https://github.com/rsheftel/pandas_market_calendars
 """
 
 # Always prefer setuptools over distutils
@@ -20,7 +20,7 @@ setup(
     name='pandas_market_calendars',
     version='0.1',
 
-    description='Market exchange calendars for pandas',
+    description='Market and exchange trading calendars for pandas',
     long_description=long_description,
 
     # The project's main homepage.
@@ -55,7 +55,7 @@ setup(
     ],
 
     # What does your project relate to?
-    keywords='trading exchanges datetime holiday business days',
+    keywords='trading exchanges markets OTC datetime holiday business days',
 
     # You can just specify the packages manually here if your project is
     # simple. Or you can use find_packages().

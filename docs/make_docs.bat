@@ -5,6 +5,6 @@ FOR %%a IN (%~dp0\.) do set SOURCE=%%~dpa
 set OLD_PYTHONPATH=%PYTHONPATH%
 set PYTHONPATH=%PYTHONPATH%;%SOURCE%
 
-sphinx-apidoc -f -o . ../pandas_exchange_calendars
+sphinx-apidoc -f -o . ../pandas_market_calendars
 ./make.bat html
 set PYTHONPATH=%OLD_PYTHONPATH%
