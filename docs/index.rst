@@ -143,6 +143,10 @@ Updates
 ~~~
 - Initial version
 
+0.2
+~~~
+- Fix to allow start_date and end_date to be the same in schedule()
+
 Markets & Exchanges
 -------------------
 .. toctree::
