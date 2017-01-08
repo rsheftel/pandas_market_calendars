@@ -4,7 +4,7 @@ import pytz
 from pandas_market_calendars.exchange_calendar_nyse import NYSEExchangeCalendar
 
 
-def time_zone():
+def test_time_zone():
     assert NYSEExchangeCalendar().tz == pytz.timezone('America/New_York')
     assert NYSEExchangeCalendar().name == 'NYSE'
 

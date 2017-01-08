@@ -3,7 +3,7 @@ import pandas as pd
 from pandas_market_calendars.exchange_calendar_ice import ICEExchangeCalendar
 
 
-def test_name():
+def test_test_name():
     assert ICEExchangeCalendar().name == 'ICE'
 
 

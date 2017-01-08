@@ -184,6 +184,15 @@ def test_schedule():
                          name=pd.Timestamp('2016-12-30'), index=['market_open', 'market_close'], dtype=object)
     assert_series_equal(results.iloc[-1], expected)
 
+    # one day schedule
+    expected = pd.DataFrame({'market_open': pd.Timestamp('2016-12-01 03:13:00+0000', tz='UTC', freq='B'),
+                             'market_close': pd.Timestamp('2016-12-01 03:49:00+0000', tz='UTC', freq='B')},
+                            index=pd.DatetimeIndex([pd.Timestamp('2016-12-01')]),
+                            columns=['market_open', 'market_close'])
+    results = cal.schedule('2016-12-01', '2016-12-01')
+    assert_frame_equal(results, expected)
+
+    # start date after end date
     with pytest.raises(ValueError):
         cal.schedule('2016-02-02', '2016-01-01')
 

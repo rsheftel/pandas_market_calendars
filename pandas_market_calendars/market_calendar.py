@@ -174,8 +174,8 @@ class MarketCalendar(metaclass=ABCMeta):
         :return: schedule DataFrame
         """
         start_date, end_date = clean_dates(start_date, end_date)
-        if start_date >= end_date:
-            raise ValueError('start_date must be before end_date.')
+        if not(start_date <= end_date):
+            raise ValueError('start_date must be before or equal to end_date.')
 
         # Setup all valid trading days
         _all_days = self.valid_days(start_date, end_date)
