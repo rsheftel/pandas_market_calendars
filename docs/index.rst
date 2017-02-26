@@ -147,6 +147,10 @@ Updates
 ~~~
 - Fix to allow start_date and end_date to be the same in schedule()
 
+0.3
+~~~
+- Added Eurex calendar
+
 Markets & Exchanges
 -------------------
 .. toctree::
