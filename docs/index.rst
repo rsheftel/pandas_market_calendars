@@ -151,6 +151,10 @@ Updates
 ~~~
 - Added Eurex calendar
 
+0.4
+~~~
+- Fixed bug #5
+
 Markets & Exchanges
 -------------------
 .. toctree::

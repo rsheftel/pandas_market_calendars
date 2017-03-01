@@ -282,7 +282,7 @@ def days_at_time(days, t, tz, day_offset=0):
     :return: DatetimeIndex of date with the time t            
     """
     if len(days) == 0:
-        return days.tz_localize(tz).tz_convert('UTC')
+        return pd.DatetimeIndex(days).tz_localize(tz).tz_convert('UTC')
 
     # Offset days without tz to avoid timezone issues.
     days = DatetimeIndex(days).tz_localize(None)
