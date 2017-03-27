@@ -155,6 +155,10 @@ Updates
 ~~~
 - Fixed bug #5
 
+0.5 (3/27/17)
+~~~~~~~~~~~~~
+- Added Python2.7 support
+
 Markets & Exchanges
 -------------------
 .. toctree::
