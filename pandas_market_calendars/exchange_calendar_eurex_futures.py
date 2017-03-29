@@ -106,9 +106,7 @@ class EUREXFuturesExchangeCalendar(MarketCalendar):
             EUREXNewYearsDay,
             GoodFriday,
             EasterMonday,
-            MayBank,
             Christmas,
-            WeekendChristmas,
             BoxingDay,
             WeekendBoxingDay
         ])
