@@ -14,6 +14,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+import six
 from abc import ABCMeta, abstractproperty
 import pandas as pd
 from pandas import DataFrame, DatetimeIndex
@@ -22,7 +23,7 @@ from pandas.tseries.offsets import CustomBusinessDay
 MONDAY, TUESDAY, WEDNESDAY, THURSDAY, FRIDAY, SATURDAY, SUNDAY = range(7)
 
 
-class MarketCalendar(metaclass=ABCMeta):
+class MarketCalendar(six.with_metaclass(ABCMeta)):
     """
     An MarketCalendar represents the timing information of a single market or exchange.
     Unless otherwise noted all times are in UTC and use Pandas data structures.
@@ -282,7 +283,7 @@ def days_at_time(days, t, tz, day_offset=0):
     :return: DatetimeIndex of date with the time t            
     """
     if len(days) == 0:
-        return days.tz_localize(tz).tz_convert('UTC')
+        return pd.DatetimeIndex(days).tz_localize(tz).tz_convert('UTC')
 
     # Offset days without tz to avoid timezone issues.
     days = DatetimeIndex(days).tz_localize(None)

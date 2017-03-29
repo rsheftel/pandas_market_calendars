@@ -147,6 +147,18 @@ Updates
 ~~~
 - Fix to allow start_date and end_date to be the same in schedule()
 
+0.3
+~~~
+- Added Eurex calendar
+
+0.4
+~~~
+- Fixed bug #5
+
+0.5 (3/27/17)
+~~~~~~~~~~~~~
+- Added Python2.7 support
+
 Markets & Exchanges
 -------------------
 .. toctree::

@@ -38,3 +38,12 @@ def test_2016_early_closes():
 
         market_close = schedule.loc[dt].market_close
         assert market_close.tz_convert(cme.tz).hour == 12
+
+
+def test_dec_jan():
+
+    cme = CMEExchangeCalendar()
+    schedule = cme.schedule('2016-12-30', '2017-01-10')
+
+    assert schedule['market_open'].iloc[0] == pd.Timestamp('2016-12-29 23:01:00', tz='UTC')
+    assert schedule['market_close'].iloc[6] == pd.Timestamp('2017-01-10 23:00:00', tz='UTC')
