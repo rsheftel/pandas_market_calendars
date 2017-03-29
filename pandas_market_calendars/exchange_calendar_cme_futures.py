@@ -40,7 +40,7 @@ from .us_holidays import (
     USIndependenceDay)
 
 
-class CMEStrictExchangeCalendar(MarketCalendar):
+class CMEFuturesExchangeCalendar(MarketCalendar):
     """
     Exchange calendar for CME (Grains Only)
 

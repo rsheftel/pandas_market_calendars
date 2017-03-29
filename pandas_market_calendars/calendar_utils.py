@@ -10,19 +10,22 @@ from pandas_market_calendars.exchange_calendar_cme import CMEExchangeCalendar
 from pandas_market_calendars.exchange_calendar_bmf import BMFExchangeCalendar
 from pandas_market_calendars.exchange_calendar_lse import LSEExchangeCalendar
 from pandas_market_calendars.exchange_calendar_tsx import TSXExchangeCalendar
-from pandas_market_calendars.exchange_calendar_cme_strict import CMEStrictExchangeCalendar
+from pandas_market_calendars.exchange_calendar_cme_futures import CMEFuturesExchangeCalendar
 from pandas_market_calendars.exchange_calendar_eurex import EUREXExchangeCalendar
+from pandas_market_calendars.exchange_calendar_eurex_futures import EUREXFuturesExchangeCalendar
+
 
 _calendars = {
     'NYSE': NYSEExchangeCalendar,
     'CME': CMEExchangeCalendar,
-    'CME_STRICT': CMEStrictExchangeCalendar,
+    'CME_FUTURES': CMEFuturesExchangeCalendar,
     'ICE': ICEExchangeCalendar,
     'CFE': CFEExchangeCalendar,
     'BMF': BMFExchangeCalendar,
     'LSE': LSEExchangeCalendar,
     'TSX': TSXExchangeCalendar,
-    'EUREX': EUREXExchangeCalendar
+    'EUREX': EUREXExchangeCalendar,
+    'EUREX_FUTURES': EUREXFuturesExchangeCalendar
 }
 
 _aliases = {
