@@ -39,10 +39,16 @@ from .us_holidays import (
     USMemorialDay,
     USIndependenceDay)
 
+VictoriaDay = Holiday(
+    "Victoria Day",
+    month=5,
+    offset=DateOffset(weekday=MO(1)),
+    day=1,
+)
 
-class CMEFuturesExchangeCalendar(MarketCalendar):
+class CMEStrictExchangeCalendar(MarketCalendar):
     """
-    Exchange calendar for CME (Grains Only)
+    Exchange calendar for CME ( Includes additional holidays compare to CME)
 
     Open Time: 5:00 PM, America/Chicago
     Close Time: 5:00 PM, America/Chicago
@@ -54,7 +60,7 @@ class CMEFuturesExchangeCalendar(MarketCalendar):
     """
     @property
     def name(self):
-        return "CME"
+        return "CME_STRICT"
 
     @property
     def tz(self):
@@ -86,12 +92,7 @@ class CMEFuturesExchangeCalendar(MarketCalendar):
             USNewYearsDay,
             GoodFriday,
             Christmas,
-            USMartinLutherKingJrAfter1998,
-            USPresidentsDay,
-            USMemorialDay,
-            USLaborDay,
-            USIndependenceDay,
-            USThanksgivingDay
+            VictoriaDay
         ])
 
     @property

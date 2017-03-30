@@ -64,9 +64,9 @@ WeekendBoxingDay = Holiday(
 )
 
 
-class EUREXFuturesExchangeCalendar(MarketCalendar):
+class EUREXRelaxedExchangeCalendar(MarketCalendar):
     """
-    Exchange calendar for the London Stock Exchange
+    Exchange calendar for the London Stock Exchange. Removes extra holidays.
 
     Open Time: 8:00 AM, GMT
     Close Time: 4:30 PM, GMT
@@ -86,7 +86,7 @@ class EUREXFuturesExchangeCalendar(MarketCalendar):
 
     @property
     def name(self):
-        return "EUREX"
+        return "EUREX_RELAXED"
 
     @property
     def tz(self):
