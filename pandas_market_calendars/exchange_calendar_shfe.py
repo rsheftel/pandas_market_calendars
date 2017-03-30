@@ -16,10 +16,8 @@
 from datetime import time
 
 from pandas.tseries.holiday import (
-    USPresidentsDay,
-    USLaborDay,
-    USThanksgivingDay,
-    GoodFriday
+    Holiday,
+weekend_to_monday
 )
 from pytz import timezone
 
@@ -28,16 +26,6 @@ from pytz import timezone
 
 from .market_calendar import MarketCalendar
 from pandas.tseries.holiday import AbstractHolidayCalendar
-from .us_holidays import (
-    USNewYearsDay,
-    Christmas,
-    ChristmasEveBefore1993,
-    ChristmasEveInOrAfter1993,
-    USBlackFridayInOrAfter1993,
-    USNationalDaysofMourning,
-    USMartinLutherKingJrAfter1998,
-    USMemorialDay,
-    USIndependenceDay)
 
 # New Year's Day
 SHFENewYearsDay = Holiday(

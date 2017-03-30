@@ -4,7 +4,8 @@ from pandas.tseries.holiday import (
     DateOffset,
     MO,
     weekend_to_monday,
-    GoodFriday
+    GoodFriday,
+    previous_friday
 )
 from pytz import timezone
 
