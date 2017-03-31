@@ -14,6 +14,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+import six
 from abc import ABCMeta, abstractproperty
 import pandas as pd
 from pandas import DataFrame, DatetimeIndex
@@ -22,7 +23,7 @@ from pandas.tseries.offsets import CustomBusinessDay
 MONDAY, TUESDAY, WEDNESDAY, THURSDAY, FRIDAY, SATURDAY, SUNDAY = range(7)
 
 
-class MarketCalendar(metaclass=ABCMeta):
+class MarketCalendar(six.with_metaclass(ABCMeta)):
     """
     An MarketCalendar represents the timing information of a single market or exchange.
     Unless otherwise noted all times are in UTC and use Pandas data structures.
