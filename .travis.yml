@@ -13,7 +13,6 @@ install:
   - "pip install pandas"
   - "pip install python-coveralls"
   - "pip install coverage"
-  - "pip install py-test"
   - "python setup.py install"
 
 script:
