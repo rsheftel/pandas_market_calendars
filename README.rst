@@ -12,6 +12,10 @@ Market calendars to use with pandas for trading applications.
    :target: https://landscape.io/github/rsheftel/pandas_market_calendars/master
    :alt: Code Health
 
+.. image:: https://readthedocs.org/projects/pandas-market-calendars/badge/?version=latest
+   :target: http://pandas-market-calendars.readthedocs.io/en/latest/?badge=latest
+   :alt: Documentation Status
+
 Documentation
 -------------
 http://pandas_market_calendars.readthedocs.io/en/latest/
