@@ -42,13 +42,6 @@ from .us_holidays import (
     USMemorialDay,
     USIndependenceDay)
 
-VictoriaDay = Holiday(
-    "Victoria Day",
-    month=5,
-    offset=DateOffset(weekday=MO(1)),
-    day=1,
-)
-
 class CMEStrictExchangeCalendar(MarketCalendar):
     """
     Exchange calendar for CME ( Includes additional holidays compare to CME)
@@ -94,8 +87,7 @@ class CMEStrictExchangeCalendar(MarketCalendar):
         return AbstractHolidayCalendar(rules=[
             USNewYearsDay,
             GoodFriday,
-            Christmas,
-            VictoriaDay
+            Christmas
         ])
 
     @property
