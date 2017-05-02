@@ -6,8 +6,10 @@ from datetime import time
 from pandas.tseries.holiday import (
     Holiday,
     previous_friday,
+    DateOffset,
     GoodFriday,
     EasterMonday,
+    MO
 )
 from pytz import timezone
 from pandas.tseries.holiday import AbstractHolidayCalendar
@@ -61,6 +63,13 @@ WeekendBoxingDay = Holiday(
     days_of_week=(MONDAY, TUESDAY),
 )
 
+# Early May bank holiday
+MayBank = Holiday(
+    "Early May Bank Holiday",
+    month=5,
+    offset=DateOffset(weekday=MO(1)),
+    day=1,
+)
 
 class EUREXRelaxedExchangeCalendar(MarketCalendar):
     """
@@ -104,6 +113,7 @@ class EUREXRelaxedExchangeCalendar(MarketCalendar):
             EUREXNewYearsDay,
             GoodFriday,
             EasterMonday,
+            MayBank,
             Christmas,
             BoxingDay,
             WeekendBoxingDay
