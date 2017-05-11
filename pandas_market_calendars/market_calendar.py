@@ -15,7 +15,7 @@
 # limitations under the License.
 
 import six
-from abc import ABCMeta, abstractproperty
+from abc import ABCMeta, abstractmethod
 import pandas as pd
 from pandas import DataFrame, DatetimeIndex
 from pandas.tseries.offsets import CustomBusinessDay
@@ -40,7 +40,8 @@ class MarketCalendar(six.with_metaclass(ABCMeta)):
         self._open_time = self.open_time_default if open_time is None else open_time
         self._close_time = self.close_time_default if close_time is None else close_time
 
-    @abstractproperty
+    @property
+    @abstractmethod
     def name(self):
         """
         Name of the market
@@ -49,7 +50,8 @@ class MarketCalendar(six.with_metaclass(ABCMeta)):
         """
         raise NotImplementedError()
 
-    @abstractproperty
+    @property
+    @abstractmethod
     def tz(self):
         """
         Time zone for the market.
