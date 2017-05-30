@@ -86,6 +86,12 @@ class CMEStrictExchangeCalendar(MarketCalendar):
         # Grains specific calendar
         return AbstractHolidayCalendar(rules=[
             USNewYearsDay,
+            USMartinLutherKingJrAfter1998,
+            USPresidentsDay,
+            USMemorialDay,
+            USIndependenceDay,
+            USLaborDay,
+            USThanksgivingDay,
             GoodFriday,
             Christmas
         ])
