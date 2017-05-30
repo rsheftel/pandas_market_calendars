@@ -8,7 +8,7 @@ Examples
     sys.path.append("../") 
     from datetime import time
     import pandas as pd
-    import pandas_exchange_calendars as mcal
+    import pandas_market_calendars as mcal
 
 Setup new exchange calendar
 ---------------------------
