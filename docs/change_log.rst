@@ -26,3 +26,7 @@ Updates
 0.6 (3/31/17)
 ~~~~~~~~~~~~~
 - Added coveralls.io test coverage
+
+0.7 (5/30/17)
+~~~~~~~~~~~~~
+- Fix a couple deprecated imports
