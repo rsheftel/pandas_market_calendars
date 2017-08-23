@@ -200,5 +200,9 @@ def test_merge_schedules():
     actual = mcal.merge_schedules([sch1, sch2], how='inner')
     assert_frame_equal(actual, expected)
 
+    # joining more than two calendars works correctly
+    actual = mcal.merge_schedules([sch1, sch1, sch1], how='inner')
+    assert_frame_equal(actual, sch1)
+
     with pytest.raises(ValueError):
         mcal.merge_schedules([sch1, sch2], how='left')

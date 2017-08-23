@@ -57,9 +57,9 @@ def merge_schedules(schedules, how='outer'):
     :param how: outer or inner
     :return: schedule DataFrame
     """
-    
-    result = schedules.pop(0)
-    for schedule in schedules:
+
+    result = schedules[0]
+    for schedule in schedules[1:]:
         result = result.merge(schedule, how=how, right_index=True, left_index=True)
         if how == 'outer':
             result['market_open'] = result.apply(lambda x: min(x.market_open_x, x.market_open_y), axis=1)
@@ -69,24 +69,25 @@ def merge_schedules(schedules, how='outer'):
             result['market_close'] = result.apply(lambda x: min(x.market_close_x, x.market_close_y), axis=1)
         else:
             raise ValueError('how argument must be "inner" or "outer"')
-    return result[['market_open', 'market_close']]
+        result = result[['market_open', 'market_close']]
+    return result
 
 
 def date_range(schedule, frequency, closed='right', force_close=True, **kwargs):
     """
-    Given a schedule will return a DatetimeIndex will all of the valid datetime at the frequency given. 
+    Given a schedule will return a DatetimeIndex will all of the valid datetime at the frequency given.
     The schedule values are assumed to be in UTC.
 
     :param schedule: schedule DataFrame
     :param frequency: frequency in standard string
     :param closed: same meaning as pandas date_range. 'right' will exclude the first value and should be used when the
       results should only include the close for each bar.
-    :param force_close: if True then the close of the day will be included even if it does not fall on an even 
+    :param force_close: if True then the close of the day will be included even if it does not fall on an even
       frequency. If False then the market close for the day may not be included in the results
     :param kwargs: arguments that will be passed to the pandas date_time
     :return: DatetimeIndex
     """
-    
+
     kwargs['closed'] = closed
     ranges = list()
     for row in schedule.itertuples():
