@@ -17,7 +17,7 @@
 from .market_calendar import MarketCalendar
 from .calendar_utils import get_calendar, merge_schedules, date_range
 
-__version__ = "0.7"
+__version__ = "0.8"
 
 __all__ = [
     'MarketCalendar',

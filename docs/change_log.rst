@@ -30,3 +30,7 @@ Updates
 0.7 (5/30/17)
 ~~~~~~~~~~~~~
 - Fix a couple deprecated imports
+
+0.8 (8/24/17)
+~~~~~~~~~~~~~
+- Fix #10 to make merge_schedules work properly for more than 2 markets
