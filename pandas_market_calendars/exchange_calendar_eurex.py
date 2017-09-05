@@ -79,22 +79,8 @@ WeekendBoxingDay = Holiday(
 
 class EUREXExchangeCalendar(MarketCalendar):
     """
-    Exchange calendar for the London Stock Exchange
+    Exchange calendar for EUREX
 
-    Open Time: 8:00 AM, GMT
-    Close Time: 4:30 PM, GMT
-
-    Regularly-Observed Holidays:
-    - New Years Day (observed on first business day on/after)
-    - Good Friday
-    - Easter Monday
-    - Early May Bank Holiday (first Monday in May)
-    - Spring Bank Holiday (last Monday in May)
-    - Summer Bank Holiday (last Monday in August)
-    - Christmas Day
-    - Dec. 27th (if Christmas is on a weekend)
-    - Boxing Day
-    - Dec. 28th (if Boxing Day is on a weekend)
     """
 
     @property
@@ -103,15 +89,15 @@ class EUREXExchangeCalendar(MarketCalendar):
 
     @property
     def tz(self):
-        return timezone('Europe/London')
+        return timezone('Europe/Berlin')
 
     @property
     def open_time(self):
-        return time(8, 0)
+        return time(9, 0)
 
     @property
     def close_time(self):
-        return time(16, 30)
+        return time(17, 30)
 
     @property
     def regular_holidays(self):
