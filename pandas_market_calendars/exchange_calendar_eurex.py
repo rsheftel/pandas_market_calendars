@@ -36,8 +36,8 @@ EUREXNewYearsDay = Holiday(
 MayBank = Holiday(
     "Early May Bank Holiday",
     month=5,
-    offset=DateOffset(weekday=MO(1)),
     day=1,
+    days_of_week=(MONDAY, TUESDAY, WEDNESDAY, THURSDAY, FRIDAY),
 )
 # Christmas Eve
 ChristmasEve = Holiday(
