@@ -333,3 +333,10 @@ def test_open_at_time():
     assert cal.open_at_time(schedule, pd.Timestamp('2014-07-03 03:40', tz='UTC')) is False
     # holiday
     assert cal.open_at_time(schedule, pd.Timestamp('2014-12-25 03:30', tz='UTC')) is False
+
+    # last bar of the day defaults to False
+    assert cal.open_at_time(schedule, pd.Timestamp('2016-09-07 11:49', tz='Asia/Ulaanbaatar')) is False
+
+    # last bar of the day is True if include_close is True
+    assert cal.open_at_time(schedule, pd.Timestamp('2016-09-07 11:49', tz='Asia/Ulaanbaatar'),
+                            include_close=True) is True

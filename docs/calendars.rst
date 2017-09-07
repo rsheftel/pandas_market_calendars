@@ -11,5 +11,5 @@ Exchange  ICE    ICEExchangeCalendar     Yes        Quantopian
 Exchange  CFE    CFEExchangeCalendar     Yes        Quantopian
 Exchange  BMF    BMFExchangeCalendar                Quantopian
 Exchange  TSX    TSXExchangeCalendar                Quantopian
-Exchange  EUREX  EUREXExchangeCalendar              kewlfft
+Exchange  EUREX  EUREXExchangeCalendar   Yes        kewlfft    kewlfft
 ========= ====== ===================== ============ ========== =============

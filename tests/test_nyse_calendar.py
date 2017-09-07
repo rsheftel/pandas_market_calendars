@@ -154,8 +154,8 @@ def test_day_after_thanksgiving():
     nyse = NYSEExchangeCalendar()
     good_dates = nyse.schedule('2001-01-01', '2016-12-31')
 
-    fourth_friday_open = pd.Timestamp('11/23/2012 11:00AM', tz='EST')
-    fourth_friday = pd.Timestamp('11/23/2012 3:00PM', tz='EST')
+    fourth_friday_open = pd.Timestamp('11/23/2012 11:00AM', tz='America/New_York')
+    fourth_friday = pd.Timestamp('11/23/2012 3:00PM', tz='America/New_York')
     assert fourth_friday_open > good_dates.loc['2012-11-23', 'market_open']
     assert fourth_friday > good_dates.loc['2012-11-23', 'market_close']
 
@@ -167,8 +167,8 @@ def test_day_after_thanksgiving():
     # 17 18 19 20 21 22 23
     # 24 25 26 27 28 29 30
 
-    fifth_friday_open = pd.Timestamp('11/29/2013 11:00AM', tz='EST')
-    fifth_friday = pd.Timestamp('11/29/2013 3:00PM', tz='EST')
+    fifth_friday_open = pd.Timestamp('11/29/2013 11:00AM', tz='America/New_York')
+    fifth_friday = pd.Timestamp('11/29/2013 3:00PM', tz='America/New_York')
     assert fifth_friday_open > good_dates.loc['2012-11-23', 'market_open']
     assert fifth_friday > good_dates.loc['2012-11-23', 'market_close']
 

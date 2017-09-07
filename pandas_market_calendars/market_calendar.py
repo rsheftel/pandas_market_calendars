@@ -199,17 +199,23 @@ class MarketCalendar(six.with_metaclass(ABCMeta)):
                          data={'market_open': opens, 'market_close': closes})
 
     @staticmethod
-    def open_at_time(schedule, timestamp):
+    def open_at_time(schedule, timestamp, include_close=False):
         """
         To determine if a given timestamp is during an open time for the market.
         
         :param schedule: schedule DataFrame
         :param timestamp: the timestamp to check for
+        :param include_close: if False then the timestamp that equals the closing timestamp will return False and not be
+            considered a valid open date and time. If True then it will be considered valid and return True. Use True
+            if using bars and would like to include the last bar as a valid open date and time.
         :return: True if the timestamp is a valid open date and time, False if not
         """
         date = timestamp.date()
         if date in schedule.index:
-            return schedule.loc[date, 'market_open'] <= timestamp < schedule.loc[date, 'market_close']
+            if include_close:
+                return schedule.loc[date, 'market_open'] <= timestamp <= schedule.loc[date, 'market_close']
+            else:
+                return schedule.loc[date, 'market_open'] <= timestamp < schedule.loc[date, 'market_close']
         else:
             return False
 
