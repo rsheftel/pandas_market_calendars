@@ -190,9 +190,9 @@ def test_early_close_independence_day_thursday():
     nyse = NYSEExchangeCalendar()
     schedule = nyse.schedule('2001-01-01', '2016-12-31')
 
-    wednesday_before = pd.Timestamp('7/3/2002 3:00PM', tz='EST')
-    friday_after_open = pd.Timestamp('7/5/2002 11:00AM', tz='EST')
-    friday_after = pd.Timestamp('7/5/2002 3:00PM', tz='EST')
+    wednesday_before = pd.Timestamp('7/3/2002 3:00PM', tz='America/New_York')
+    friday_after_open = pd.Timestamp('7/5/2002 11:00AM', tz='America/New_York')
+    friday_after = pd.Timestamp('7/5/2002 3:00PM', tz='America/New_York')
     assert nyse.open_at_time(schedule, wednesday_before) is True
     assert nyse.open_at_time(schedule, friday_after_open) is True
     assert nyse.open_at_time(schedule, friday_after) is False
@@ -204,9 +204,9 @@ def test_early_close_independence_day_thursday():
     # 14 15 16 17 18 19 20
     # 21 22 23 24 25 26 27
     # 28 29 30 31
-    wednesday_before = pd.Timestamp('7/3/2013 3:00PM', tz='EST')
-    friday_after_open = pd.Timestamp('7/5/2013 11:00AM', tz='EST')
-    friday_after = pd.Timestamp('7/5/2013 3:00PM', tz='EST')
+    wednesday_before = pd.Timestamp('7/3/2013 3:00PM', tz='America/New_York')
+    friday_after_open = pd.Timestamp('7/5/2013 11:00AM', tz='America/New_York')
+    friday_after = pd.Timestamp('7/5/2013 3:00PM', tz='America/New_York')
     assert nyse.open_at_time(schedule, wednesday_before) is False
     assert nyse.open_at_time(schedule, friday_after_open) is True
     assert nyse.open_at_time(schedule, friday_after) is True

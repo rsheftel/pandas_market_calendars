@@ -201,7 +201,7 @@ class MarketCalendar(six.with_metaclass(ABCMeta)):
     @staticmethod
     def open_at_time(schedule, timestamp):
         """
-        To determine if a given timesamp is during an open time for the market.
+        To determine if a given timestamp is during an open time for the market.
         
         :param schedule: schedule DataFrame
         :param timestamp: the timestamp to check for
@@ -209,7 +209,7 @@ class MarketCalendar(six.with_metaclass(ABCMeta)):
         """
         date = timestamp.date()
         if date in schedule.index:
-            return schedule.loc[date, 'market_open'] <= timestamp <= schedule.loc[date, 'market_close']
+            return schedule.loc[date, 'market_open'] <= timestamp < schedule.loc[date, 'market_close']
         else:
             return False
 
