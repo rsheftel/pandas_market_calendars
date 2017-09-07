@@ -5,7 +5,7 @@ from pandas_market_calendars.exchange_calendar_eurex import EUREXExchangeCalenda
 
 
 def test_time_zone():
-    assert EUREXExchangeCalendar().tz == pytz.timezone('Europe/London')
+    assert EUREXExchangeCalendar().tz == pytz.timezone('Europe/Berlin')
     assert EUREXExchangeCalendar().name == 'EUREX'
 
 
