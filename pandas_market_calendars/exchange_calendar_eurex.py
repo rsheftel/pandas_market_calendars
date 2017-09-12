@@ -5,9 +5,7 @@
 from datetime import time
 from pandas.tseries.holiday import (
     Holiday,
-    DateOffset,
-    MO,
-    weekend_to_monday, previous_friday,
+    previous_friday,
     GoodFriday,
     EasterMonday,
 )

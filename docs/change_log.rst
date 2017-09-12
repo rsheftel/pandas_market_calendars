@@ -34,3 +34,7 @@ Updates
 0.8 (8/24/17)
 ~~~~~~~~~~~~~
 - Fix #10 to make merge_schedules work properly for more than 2 markets
+
+0.9 (9/12/17)
+~~~~~~~~~~~~~
+- Fix #12 to Eurex calendar

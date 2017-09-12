@@ -16,8 +16,9 @@
 
 from .market_calendar import MarketCalendar
 from .calendar_utils import get_calendar, merge_schedules, date_range
+import pkg_resources
 
-__version__ = "0.8"
+__version__ = pkg_resources.get_distribution('pandas_market_calendars').version
 
 __all__ = [
     'MarketCalendar',
