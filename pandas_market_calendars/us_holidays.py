@@ -31,6 +31,7 @@ from pandas_market_calendars.market_calendar import (
 def july_5th_holiday_observance(datetime_index):
     return datetime_index[datetime_index.year != 2013]
 
+
 ChristmasEveBefore1993 = Holiday(
     'Christmas Eve',
     month=12,

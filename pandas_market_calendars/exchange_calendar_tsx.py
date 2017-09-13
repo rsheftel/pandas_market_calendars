@@ -101,11 +101,11 @@ class TSXExchangeCalendar(MarketCalendar):
         return timezone('Canada/Atlantic')
 
     @property
-    def open_time(self):
+    def open_time_default(self):
         return time(9, 31)
 
     @property
-    def close_time(self):
+    def close_time_default(self):
         return time(16)
 
     @property

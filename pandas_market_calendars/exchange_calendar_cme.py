@@ -61,11 +61,11 @@ class CMEExchangeCalendar(MarketCalendar):
         return timezone('America/Chicago')
 
     @property
-    def open_time(self):
+    def open_time_default(self):
         return time(17, 1)
 
     @property
-    def close_time(self):
+    def close_time_default(self):
         return time(17)
 
     @property

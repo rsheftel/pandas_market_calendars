@@ -183,11 +183,11 @@ class BMFExchangeCalendar(MarketCalendar):
         return timezone("America/Sao_Paulo")
 
     @property
-    def open_time(self):
+    def open_time_default(self):
         return time(10, 1)
 
     @property
-    def close_time(self):
+    def close_time_default(self):
         return time(16)
 
     @property

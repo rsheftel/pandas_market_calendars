@@ -36,8 +36,13 @@ from pandas_market_calendars.us_holidays import (
 
 
 class FakeCalendar(MarketCalendar):
-    open_time_default = time(11, 13)
-    close_time_default = time(11, 49)
+    @property
+    def open_time_default(self):
+        return time(11, 13)
+
+    @property
+    def close_time_default(self):
+        return time(11, 49)
 
     @property
     def name(self):

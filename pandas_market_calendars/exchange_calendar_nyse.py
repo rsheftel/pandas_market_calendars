@@ -96,8 +96,6 @@ class NYSEExchangeCalendar(MarketCalendar):
     we've done alright...and we should check if it's a half day.
     """
 
-    open_time_default = time(9, 30)
-    close_time_default = time(16)
     regular_early_close = time(13)
 
     @property
@@ -107,6 +105,14 @@ class NYSEExchangeCalendar(MarketCalendar):
     @property
     def tz(self):
         return timezone('America/New_York')
+
+    @property
+    def open_time_default(self):
+        return time(9, 30)
+
+    @property
+    def close_time_default(self):
+        return time(16)
 
     @property
     def regular_holidays(self):

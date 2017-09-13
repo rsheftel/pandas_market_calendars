@@ -130,11 +130,11 @@ class LSEExchangeCalendar(MarketCalendar):
         return timezone('Europe/London')
 
     @property
-    def open_time(self):
+    def open_time_default(self):
         return time(8, 0)
 
     @property
-    def close_time(self):
+    def close_time_default(self):
         return time(16, 30)
 
     @property

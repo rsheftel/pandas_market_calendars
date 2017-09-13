@@ -38,3 +38,7 @@ Updates
 0.9 (9/12/17)
 ~~~~~~~~~~~~~
 - Fix #12 to Eurex calendar
+
+0.9 (9/12/17)
+~~~~~~~~~~~~~
+- Added open_time_default and close_time_default as abstract property methods to fix #17

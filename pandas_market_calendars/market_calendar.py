@@ -29,9 +29,6 @@ class MarketCalendar(six.with_metaclass(ABCMeta)):
     Unless otherwise noted all times are in UTC and use Pandas data structures.
     """
 
-    open_time_default = None
-    close_time_default = None
-
     def __init__(self, open_time=None, close_time=None):
         """
         :param open_time: Market open time override as datetime.time object. If None then default is used.
@@ -57,6 +54,26 @@ class MarketCalendar(six.with_metaclass(ABCMeta)):
         Time zone for the market.
 
         :return: timezone
+        """
+        raise NotImplementedError()
+
+    @property
+    @abstractmethod
+    def open_time_default(self):
+        """
+        Default open time for the market
+
+        :return: time
+        """
+        raise NotImplementedError()
+
+    @property
+    @abstractmethod
+    def close_time_default(self):
+        """
+        Default close time for the market
+
+        :return: time
         """
         raise NotImplementedError()
 
@@ -332,7 +349,7 @@ def _overwrite_special_dates(midnight_utcs,
         raise ValueError(
             "Found misaligned dates while building calendar.\n"
             "Expected midnight_utcs to be the same length as open_or_closes,\n"
-            "but len(midnight_utcs)=%d, len(open_or_closes)=%d" % len_m, len_oc
+            "but len(midnight_utcs)=%d, len(open_or_closes)=%d" % (len_m, len_oc)
         )
 
     # Find the array indices corresponding to each special date.

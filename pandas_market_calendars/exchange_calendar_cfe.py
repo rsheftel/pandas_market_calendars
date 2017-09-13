@@ -40,11 +40,11 @@ class CFEExchangeCalendar(MarketCalendar):
         return timezone("America/Chicago")
 
     @property
-    def open_time(self):
+    def open_time_default(self):
         return time(8, 31)
 
     @property
-    def close_time(self):
+    def close_time_default(self):
         return time(15, 15)
 
     @property

@@ -39,11 +39,11 @@ class ICEExchangeCalendar(MarketCalendar):
         return timezone("US/Eastern")
 
     @property
-    def open_time(self):
+    def open_time_default(self):
         return time(20, 1)
 
     @property
-    def close_time(self):
+    def close_time_default(self):
         return time(18)
 
     @property

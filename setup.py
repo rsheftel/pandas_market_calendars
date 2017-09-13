@@ -18,7 +18,7 @@ with open(path.join(here, 'README.rst'), encoding='utf-8') as f:
 
 setup(
     name='pandas_market_calendars',
-    version='0.9',
+    version='0.10',
 
     description='Market and exchange trading calendars for pandas',
     long_description=long_description,
@@ -71,5 +71,5 @@ setup(
     # your project is installed. For an analysis of "install_requires" vs pip's
     # requirements files see:
     # https://packaging.python.org/en/latest/requirements.html
-    install_requires=['pandas>=0.18', 'toolz', 'six']
+    install_requires=['pandas>=0.18', 'toolz', 'six', 'pytz']
 )
