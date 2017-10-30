@@ -175,9 +175,8 @@ def test_day_after_thanksgiving():
 
 def test_early_close_independence_day_thursday():
     """
-    Until 2013, the market closed early the Friday after an
-    Independence Day on Thursday.  Since then, the early close is on
-    Wednesday.
+    Prior to 2013, the market closed early the Friday after an Independence Day on Thursday.
+    Since and including 2013, the early close is on Wednesday.
     """
     #      July 2002
     # Su Mo Tu We Th Fr Sa
@@ -188,7 +187,7 @@ def test_early_close_independence_day_thursday():
     # 28 29 30 31
 
     nyse = NYSEExchangeCalendar()
-    schedule = nyse.schedule('2001-01-01', '2016-12-31')
+    schedule = nyse.schedule('2001-01-01', '2019-12-31')
 
     wednesday_before = pd.Timestamp('7/3/2002 3:00PM', tz='America/New_York')
     friday_after_open = pd.Timestamp('7/5/2002 11:00AM', tz='America/New_York')
@@ -207,6 +206,20 @@ def test_early_close_independence_day_thursday():
     wednesday_before = pd.Timestamp('7/3/2013 3:00PM', tz='America/New_York')
     friday_after_open = pd.Timestamp('7/5/2013 11:00AM', tz='America/New_York')
     friday_after = pd.Timestamp('7/5/2013 3:00PM', tz='America/New_York')
+    assert nyse.open_at_time(schedule, wednesday_before) is False
+    assert nyse.open_at_time(schedule, friday_after_open) is True
+    assert nyse.open_at_time(schedule, friday_after) is True
+
+    #      July 2019
+    # Su Mo Tu We Th Fr Sa
+    #     1  2  3  4  5  6
+    #  7  8  9 10 11 12 13
+    # 14 15 16 17 18 19 20
+    # 21 22 23 24 25 26 27
+    # 28 29 30 31
+    wednesday_before = pd.Timestamp('7/3/2019 3:00PM', tz='America/New_York')
+    friday_after_open = pd.Timestamp('7/5/2019 11:00AM', tz='America/New_York')
+    friday_after = pd.Timestamp('7/5/2019 3:00PM', tz='America/New_York')
     assert nyse.open_at_time(schedule, wednesday_before) is False
     assert nyse.open_at_time(schedule, friday_after_open) is True
     assert nyse.open_at_time(schedule, friday_after) is True

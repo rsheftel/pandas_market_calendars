@@ -32,7 +32,8 @@ from pandas_market_calendars.us_holidays import (
     USIndependenceDay,
     Christmas,
     MonTuesThursBeforeIndependenceDay,
-    FridayAfterIndependenceDayExcept2013,
+    FridayAfterIndependenceDayPre2013,
+    WednesdayBeforeIndependenceDayPost2013,
     USBlackFridayBefore1993,
     USBlackFridayInOrAfter1993,
     September11Closings,
@@ -141,7 +142,8 @@ class NYSEExchangeCalendar(MarketCalendar):
         return [
             (self.regular_early_close, AbstractHolidayCalendar(rules=[
                 MonTuesThursBeforeIndependenceDay,
-                FridayAfterIndependenceDayExcept2013,
+                FridayAfterIndependenceDayPre2013,
+                WednesdayBeforeIndependenceDayPost2013,
                 USBlackFridayInOrAfter1993,
                 ChristmasEveInOrAfter1993
             ])),

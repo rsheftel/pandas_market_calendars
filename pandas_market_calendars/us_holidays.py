@@ -29,7 +29,7 @@ from pandas_market_calendars.market_calendar import (
 
 
 def july_5th_holiday_observance(datetime_index):
-    return datetime_index[datetime_index.year != 2013]
+    return datetime_index[datetime_index.year < 2013]
 
 
 ChristmasEveBefore1993 = Holiday(
@@ -94,15 +94,24 @@ MonTuesThursBeforeIndependenceDay = Holiday(
     days_of_week=(MONDAY, TUESDAY, THURSDAY),
     start_date=Timestamp("1995-01-01"),
 )
-FridayAfterIndependenceDayExcept2013 = Holiday(
-    # When July 4th is a Thursday, the next day is a half day (except in 2013,
-    # when, for no explicable reason, Wednesday was a half day instead).
-    "Fridays after Independence Day that aren't in 2013",
+FridayAfterIndependenceDayPre2013 = Holiday(
+    # When July 4th is a Thursday, the next day is a half day prior to 2013.
+    # Since 2013 the early close is on Wednesday and Friday is a full day
+    "Fridays after Independence Day prior to 2013",
     month=7,
     day=5,
     days_of_week=(FRIDAY,),
     observance=july_5th_holiday_observance,
     start_date=Timestamp("1995-01-01"),
+)
+WednesdayBeforeIndependenceDayPost2013 = Holiday(
+    # When July 4th is a Thursday, the next day is a half day prior to 2013.
+    # Since 2013 the early close is on Wednesday and Friday is a full day
+    "Wednesdays Before Independence Day including and after 2013",
+    month=7,
+    day=3,
+    days_of_week=(WEDNESDAY,),
+    start_date=Timestamp("2013-01-01"),
 )
 USBlackFridayBefore1993 = Holiday(
     'Black Friday',
