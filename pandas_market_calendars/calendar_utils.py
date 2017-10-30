@@ -73,6 +73,17 @@ def merge_schedules(schedules, how='outer'):
     return result
 
 
+def convert_freq(index, frequency):
+    """
+    Converts a DateTimeIndex to a new lower frequency
+
+    :param index: DateTimeIndex
+    :param frequency: frequency string
+    :return: DateTimeIndex
+    """
+    return pd.DataFrame(index=index).asfreq(frequency).index
+
+
 def date_range(schedule, frequency, closed='right', force_close=True, **kwargs):
     """
     Given a schedule will return a DatetimeIndex will all of the valid datetime at the frequency given.
@@ -88,6 +99,8 @@ def date_range(schedule, frequency, closed='right', force_close=True, **kwargs):
     :return: DatetimeIndex
     """
 
+    if pd.Timedelta(frequency) > pd.Timedelta('1D'):
+        raise ValueError('Frequency must be 1D or higher frequency.')
     kwargs['closed'] = closed
     ranges = list()
     for row in schedule.itertuples():

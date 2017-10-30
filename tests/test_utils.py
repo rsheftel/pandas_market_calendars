@@ -70,6 +70,25 @@ def test_date_range_daily():
     assert_index_equal(actual, expected)
 
 
+def test_date_range_lower_freq():
+    cal = mcal.get_calendar("NYSE")
+    schedule = cal.schedule(pd.Timestamp('2017-09-05 20:00', tz='UTC'), pd.Timestamp('2017-10-23 20:00', tz='UTC'))
+
+    # cannot get date range of frequency lower than 1D
+    with pytest.raises(ValueError):
+        mcal.date_range(schedule, frequency='3D')
+
+    # instead get for 1D and convert to lower frequency
+    short = mcal.date_range(schedule, frequency='1D')
+    actual = mcal.convert_freq(short, '3D')
+    expected = pd.date_range('2017-09-05 20:00', '2017-10-23 20:00', freq='3D', tz='UTC')
+    assert_index_equal(actual, expected)
+
+    actual = mcal.convert_freq(short, '1W')
+    expected = pd.date_range('2017-09-05 20:00', '2017-10-23 20:00', freq='1W', tz='UTC')
+    assert_index_equal(actual, expected)
+
+
 def test_date_range_hour():
 
     cal = FakeCalendar(open_time=datetime.time(9, 0), close_time=datetime.time(10, 30))

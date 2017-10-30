@@ -46,3 +46,4 @@ Updates
 0.11 (10/30/17)
 ~~~~~~~~~~~~~
 - Corrected the NYSE calendar for Independence Day on Thursday post 2013 to fix #20
+- Added new convert_freq() function to convert a date_range to a lower frequency to fix #19

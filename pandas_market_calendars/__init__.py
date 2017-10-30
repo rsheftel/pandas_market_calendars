@@ -15,7 +15,7 @@
 # limitations under the License.
 
 from .market_calendar import MarketCalendar
-from .calendar_utils import get_calendar, merge_schedules, date_range
+from .calendar_utils import get_calendar, merge_schedules, date_range, convert_freq
 import pkg_resources
 
 __version__ = pkg_resources.get_distribution('pandas_market_calendars').version
@@ -24,5 +24,6 @@ __all__ = [
     'MarketCalendar',
     'get_calendar',
     'merge_schedules',
-    'date_range'
+    'date_range',
+    'convert_freq'
 ]
