@@ -98,11 +98,11 @@ class TSXExchangeCalendar(MarketCalendar):
 
     @property
     def tz(self):
-        return timezone('Canada/Atlantic')
+        return timezone('Canada/Eastern')
 
     @property
     def open_time_default(self):
-        return time(9, 31)
+        return time(9, 30)
 
     @property
     def close_time_default(self):
