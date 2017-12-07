@@ -153,3 +153,9 @@ class JPXExchangeCalendar(MarketCalendar):
                 observance=weekend_to_monday,
             ),
         ])
+
+    @staticmethod
+    def open_at_time(schedule, timestamp, include_close=False):
+        if JPXExchangeCalendar.lunch_start < timestamp.time() < JPXExchangeCalendar.lunch_end:
+            return False
+        return MarketCalendar.open_at_time(schedule, timestamp, include_close)

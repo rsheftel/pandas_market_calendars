@@ -1,3 +1,5 @@
+import datetime
+
 import pandas as pd
 import pytz
 from pandas_market_calendars.exchange_calendar_jpx import JPXExchangeCalendar
@@ -35,3 +37,21 @@ def test_2017_holidays():
 
     for session_label in holidays_2017:
         assert session_label not in jpx_calendar.valid_days('2017-01-01', '2017-12-31')
+
+
+def test_jpx_closes_at_lunch():
+    jpx_calendar = JPXExchangeCalendar()
+    jpx_schedule = jpx_calendar.schedule(
+        start_date=datetime.datetime(2015, 1, 14, tzinfo=pytz.timezone('Asia/Tokyo')),
+        end_date=datetime.datetime(2015, 1, 16, tzinfo=pytz.timezone('Asia/Tokyo'))
+    )
+
+    assert JPXExchangeCalendar.open_at_time(
+        schedule=jpx_schedule,
+        timestamp=datetime.datetime(2015, 1, 14, 11, 0, tzinfo=pytz.timezone('Asia/Tokyo'))
+    )
+
+    assert not JPXExchangeCalendar.open_at_time(
+            schedule=jpx_schedule,
+            timestamp=datetime.datetime(2015, 1, 14, 12, 0, tzinfo=pytz.timezone('Asia/Tokyo'))
+        )
