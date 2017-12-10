@@ -2,7 +2,7 @@ from datetime import time
 
 from dateutil.relativedelta import MO
 from pandas import DateOffset
-from pandas.tseries.holiday import Holiday, weekend_to_monday
+from pandas.tseries.holiday import Holiday, sunday_to_monday
 from pytz import timezone
 
 from pandas.tseries.holiday import AbstractHolidayCalendar
@@ -48,13 +48,13 @@ class JPXExchangeCalendar(MarketCalendar):
                 name="New Year's Day",
                 month=1,
                 day=2,
-                observance=weekend_to_monday,
+                observance=sunday_to_monday,
             ),
             Holiday(
                 name="New Year's Day",
                 month=1,
                 day=3,
-                observance=weekend_to_monday,
+                observance=sunday_to_monday,
             ),
             Holiday(  # second monday of january
                 name="Coming of Age Day",
@@ -66,37 +66,37 @@ class JPXExchangeCalendar(MarketCalendar):
                 name="National foundation day",
                 month=2,
                 day=11,
-                observance=weekend_to_monday,
+                observance=sunday_to_monday,
             ),
             Holiday(
                 name="Vernal Equinox",
                 month=3,
                 day=20,
-                observance=weekend_to_monday,
+                observance=sunday_to_monday,
             ),
             Holiday(
                 name="Showa day",
                 month=4,
                 day=29,
-                observance=weekend_to_monday,
+                observance=sunday_to_monday,
             ),
             Holiday(
                 name="Constitution memorial day",
                 month=5,
                 day=3,
-                observance=weekend_to_monday,
+                observance=sunday_to_monday,
             ),
             Holiday(
                 name="Greenery day",
                 month=5,
                 day=4,
-                observance=weekend_to_monday,
+                observance=sunday_to_monday,
             ),
             Holiday(
                 name="Children's day",
                 month=5,
                 day=5,
-                observance=weekend_to_monday,
+                observance=sunday_to_monday,
             ),
             Holiday(
                 name="Marine day",
@@ -108,7 +108,7 @@ class JPXExchangeCalendar(MarketCalendar):
                 name="Mountain day",
                 month=8,
                 day=11,
-                observance=weekend_to_monday,
+                observance=sunday_to_monday,
             ),
             Holiday(
                 name="Respect for the aged day",
@@ -120,7 +120,7 @@ class JPXExchangeCalendar(MarketCalendar):
                 name="Autumnal equinox",
                 month=9,
                 day=23,
-                observance=weekend_to_monday,
+                observance=sunday_to_monday,
             ),
             Holiday(
                 name="Health and sports day",
@@ -132,25 +132,25 @@ class JPXExchangeCalendar(MarketCalendar):
                 name="Culture day",
                 month=11,
                 day=3,
-                observance=weekend_to_monday,
+                observance=sunday_to_monday,
             ),
             Holiday(
                 name="Labor Thanksgiving Day",
                 month=11,
                 day=23,
-                observance=weekend_to_monday,
+                observance=sunday_to_monday,
             ),
             Holiday(
                 name="Emperor's Birthday",
                 month=12,
                 day=23,
-                observance=weekend_to_monday,
+                observance=sunday_to_monday,
             ),
             Holiday(
                 name="Before New Year's Day",
                 month=12,
                 day=31,
-                observance=weekend_to_monday,
+                observance=sunday_to_monday,
             ),
         ])
 
