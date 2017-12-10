@@ -47,3 +47,7 @@ Updates
 ~~~~~~~~~~~~~
 - Corrected the NYSE calendar for Independence Day on Thursday post 2013 to fix #20
 - Added new convert_freq() function to convert a date_range to a lower frequency to fix #19
+
+0.12 (12/10/17)
+~~~~~~~~~~~~~~~
+- Added new JPX calendar thanks to gabalese from PR #21

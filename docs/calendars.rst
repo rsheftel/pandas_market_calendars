@@ -12,4 +12,5 @@ Exchange  CFE    CFEExchangeCalendar     Yes        Quantopian
 Exchange  BMF    BMFExchangeCalendar                Quantopian
 Exchange  TSX    TSXExchangeCalendar                Quantopian
 Exchange  EUREX  EUREXExchangeCalendar   Yes        kewlfft    kewlfft
+Exchnage  JPX    JPXExchangeCalendar     Yes        gabalese   gabalese
 ========= ====== ===================== ============ ========== =============
