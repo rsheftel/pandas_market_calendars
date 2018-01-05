@@ -51,3 +51,7 @@ Updates
 0.12 (12/10/17)
 ~~~~~~~~~~~~~~~
 - Added new JPX calendar thanks to gabalese from PR #21
+
+0.13 (1/5/18)
+~~~~~~~~~~~~~
+- Corrected JPX calendar for issue #22
