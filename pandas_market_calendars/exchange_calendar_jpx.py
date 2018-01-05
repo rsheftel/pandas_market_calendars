@@ -9,6 +9,7 @@ from pandas.tseries.holiday import AbstractHolidayCalendar
 from pandas_market_calendars.us_holidays import USNewYearsDay
 
 from pandas_market_calendars import MarketCalendar
+from pandas_market_calendars.jpx_autumnal_equinox import autumnal_equinox
 
 
 class JPXExchangeCalendar(MarketCalendar):
@@ -119,8 +120,8 @@ class JPXExchangeCalendar(MarketCalendar):
             Holiday(
                 name="Autumnal equinox",
                 month=9,
-                day=23,
-                observance=sunday_to_monday,
+                day=22,
+                observance=autumnal_equinox,
             ),
             Holiday(
                 name="Health and sports day",

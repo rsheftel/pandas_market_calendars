@@ -2,6 +2,7 @@ import datetime
 
 import pandas as pd
 import pytz
+
 from pandas_market_calendars.exchange_calendar_jpx import JPXExchangeCalendar
 
 
@@ -36,7 +37,7 @@ def test_2017_holidays():
     ]
 
     for session_label in holidays_2017:
-        assert session_label not in jpx_calendar.valid_days('2017-01-01', '2017-12-31')
+        assert session_label not in jpx_calendar.valid_days(pd.Timestamp('2017-01-01'), pd.Timestamp('2017-12-31'))
 
 
 def test_jpx_closes_at_lunch():
@@ -52,6 +53,25 @@ def test_jpx_closes_at_lunch():
     )
 
     assert not JPXExchangeCalendar.open_at_time(
-            schedule=jpx_schedule,
-            timestamp=datetime.datetime(2015, 1, 14, 12, 0, tzinfo=pytz.timezone('Asia/Tokyo'))
-        )
+        schedule=jpx_schedule,
+        timestamp=datetime.datetime(2015, 1, 14, 12, 0, tzinfo=pytz.timezone('Asia/Tokyo'))
+    )
+
+
+def test_jpx_correctly_counts_jpx_autumn_equinox():
+    jpx_calendar = JPXExchangeCalendar()
+    jpx_schedule = jpx_calendar.schedule(start_date='2016-09-01', end_date='2019-09-30')
+    assert pd.Timestamp('2016-09-22') not in jpx_schedule.index
+    assert pd.Timestamp('2016-09-23') in jpx_schedule.index
+
+    assert pd.Timestamp('2017-09-23') not in jpx_schedule.index  # EQUINOX Saturday
+    assert pd.Timestamp('2017-09-24') not in jpx_schedule.index  # Sunday
+    assert pd.Timestamp('2017-09-25') in jpx_schedule.index  # Monday
+
+    assert pd.Timestamp('2018-09-22') not in jpx_schedule.index  # Saturday
+    assert pd.Timestamp('2018-09-23') not in jpx_schedule.index  # EQUINOX Sunday
+    assert pd.Timestamp('2018-09-24') not in jpx_schedule.index  # Equinox OBS
+
+    assert pd.Timestamp('2019-09-22') not in jpx_schedule.index  # Sunday
+    assert pd.Timestamp('2019-09-23') not in jpx_schedule.index  # EQUINOX
+    assert pd.Timestamp('2019-09-24') in jpx_schedule.index  # Monday
