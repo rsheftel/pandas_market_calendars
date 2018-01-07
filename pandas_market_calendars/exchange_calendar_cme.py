@@ -62,11 +62,11 @@ class CMEExchangeCalendar(MarketCalendar):
 
     @property
     def open_time_default(self):
-        return time(17, 1)
+        return time(17, 1, tzinfo=self.tz)
 
     @property
     def close_time_default(self):
-        return time(17)
+        return time(17, tzinfo=self.tz)
 
     @property
     def open_offset(self):

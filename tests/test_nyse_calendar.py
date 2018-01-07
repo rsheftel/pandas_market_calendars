@@ -9,6 +9,15 @@ def test_time_zone():
     assert NYSEExchangeCalendar().name == 'NYSE'
 
 
+def test_open_time_tz():
+    nyse = NYSEExchangeCalendar()
+    assert nyse.open_time.tzinfo == nyse.tz
+
+def test_close_time_tz():
+    nyse = NYSEExchangeCalendar()
+    assert nyse.close_time.tzinfo == nyse.tz
+
+
 def test_2012():
     nyse = NYSEExchangeCalendar()
     # holidays we expect:

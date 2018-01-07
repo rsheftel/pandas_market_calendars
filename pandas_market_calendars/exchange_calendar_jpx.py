@@ -35,11 +35,11 @@ class JPXExchangeCalendar(MarketCalendar):
 
     @property
     def open_time_default(self):
-        return time(9, 0)
+        return time(9, 0, tzinfo=self.tz)
 
     @property
     def close_time_default(self):
-        return time(15)
+        return time(15, tzinfo=self.tz)
 
     @property
     def regular_holidays(self):

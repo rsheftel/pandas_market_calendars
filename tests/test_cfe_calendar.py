@@ -34,3 +34,12 @@ def test_2016_early_closes():
     market_close = market_close.tz_convert(cfe.tz)
     assert market_close.hour == 12
     assert market_close.minute == 15
+
+
+def test_open_time_tz():
+    cfe = CFEExchangeCalendar()
+    assert cfe.open_time.tzinfo == cfe.tz
+
+def test_close_time_tz():
+    cfe = CFEExchangeCalendar()
+    assert cfe.close_time.tzinfo == cfe.tz

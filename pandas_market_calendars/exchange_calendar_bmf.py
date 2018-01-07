@@ -184,11 +184,11 @@ class BMFExchangeCalendar(MarketCalendar):
 
     @property
     def open_time_default(self):
-        return time(10, 1)
+        return time(10, 1, tzinfo=self.tz)
 
     @property
     def close_time_default(self):
-        return time(16)
+        return time(16, tzinfo=self.tz)
 
     @property
     def regular_holidays(self):

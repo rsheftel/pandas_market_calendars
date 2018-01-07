@@ -109,11 +109,11 @@ class NYSEExchangeCalendar(MarketCalendar):
 
     @property
     def open_time_default(self):
-        return time(9, 30)
+        return time(9, 30, tzinfo=self.tz)
 
     @property
     def close_time_default(self):
-        return time(16)
+        return time(16, tzinfo=self.tz)
 
     @property
     def regular_holidays(self):
