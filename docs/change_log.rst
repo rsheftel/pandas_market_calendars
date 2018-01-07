@@ -55,3 +55,7 @@ Updates
 0.13 (1/5/18)
 ~~~~~~~~~~~~~
 - Corrected JPX calendar for issue #22
+
+0.14 (1/7/18)
+~~~~~~~~~~~~~
+- Made default open and close times time-zone aware
