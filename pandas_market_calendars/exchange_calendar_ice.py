@@ -40,11 +40,11 @@ class ICEExchangeCalendar(MarketCalendar):
 
     @property
     def open_time_default(self):
-        return time(20, 1)
+        return time(20, 1, tzinfo=self.tz)
 
     @property
     def close_time_default(self):
-        return time(18)
+        return time(18, tzinfo=self.tz)
 
     @property
     def open_offset(self):

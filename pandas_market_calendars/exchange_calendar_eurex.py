@@ -91,11 +91,11 @@ class EUREXExchangeCalendar(MarketCalendar):
 
     @property
     def open_time_default(self):
-        return time(9, 0)
+        return time(9, 0, tzinfo=self.tz)
 
     @property
     def close_time_default(self):
-        return time(17, 30)
+        return time(17, 30, tzinfo=self.tz)
 
     @property
     def regular_holidays(self):

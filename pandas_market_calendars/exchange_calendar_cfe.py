@@ -41,11 +41,11 @@ class CFEExchangeCalendar(MarketCalendar):
 
     @property
     def open_time_default(self):
-        return time(8, 31)
+        return time(8, 31, tzinfo=self.tz)
 
     @property
     def close_time_default(self):
-        return time(15, 15)
+        return time(15, 15, tzinfo=self.tz)
 
     @property
     def regular_holidays(self):
