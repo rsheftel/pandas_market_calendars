@@ -71,5 +71,5 @@ setup(
     # your project is installed. For an analysis of "install_requires" vs pip's
     # requirements files see:
     # https://packaging.python.org/en/latest/requirements.html
-    install_requires=['pandas>=0.18', 'toolz', 'six', 'pytz']
+    install_requires=['pandas>=0.18', 'six', 'pytz']
 )

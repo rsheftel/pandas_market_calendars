@@ -16,7 +16,6 @@
 from datetime import time
 import pandas as pd
 from pytz import timezone
-from toolz import concat
 from pandas.util.testing import assert_series_equal, assert_frame_equal, assert_index_equal
 from itertools import chain
 import pytest
@@ -78,7 +77,9 @@ class FakeCalendar(MarketCalendar):
 
 
 def test_default_calendars():
-    for name in concat([_calendars, _aliases]):
+    names = [x for x in _calendars]
+    names.extend([x for x in _aliases])
+    for name in names:
         assert get_calendar(name) is not None
 
 
