@@ -53,11 +53,15 @@ def test_special_holidays():
     # 9/11
     # Sept 11, 12, 13, 14 2001
     nyse = NYSEExchangeCalendar()
-    good_dates = nyse.valid_days('2001-01-01', '2016-12-31')
+    good_dates = nyse.valid_days('1985-01-01', '2016-12-31')
     assert pd.Timestamp("9/11/2001") not in good_dates
     assert pd.Timestamp("9/12/2001") not in good_dates
     assert pd.Timestamp("9/13/2001") not in good_dates
     assert pd.Timestamp("9/14/2001") not in good_dates
+
+    # Hurricane Gloria
+    # Sept 27, 1985
+    assert pd.Timestamp("9/27/1985") not in good_dates
 
     # Hurricane Sandy
     # Oct 29, 30 2012
