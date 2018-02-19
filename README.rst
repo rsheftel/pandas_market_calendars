@@ -38,6 +38,8 @@ Installation
 ------------
 ``pip install pandas_market_calendars``
 
+Arch Linux package available here: https://aur.archlinux.org/packages/python-pandas_market_calendars/
+
 Quick Start
 -----------
 .. code:: python
