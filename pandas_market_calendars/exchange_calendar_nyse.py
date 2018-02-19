@@ -37,6 +37,7 @@ from pandas_market_calendars.us_holidays import (
     USBlackFridayBefore1993,
     USBlackFridayInOrAfter1993,
     September11Closings,
+    HurricaneGloriaClosings,
     HurricaneSandyClosings,
     USNationalDaysofMourning,
     ChristmasEveBefore1993,
@@ -81,11 +82,12 @@ class NYSEExchangeCalendar(MarketCalendar):
     From 1993 onward, it has been 1:00 PM.
 
     Additional Irregularities:
-    - Closed from 9/11/2001 to 9/16/2001 due to terrorist attacks in NYC.
-    - Closed on 10/29/2012 and 10/30/2012 due to Hurricane Sandy.
+    - Closed on 9/27/1985 due to Hurricane Gloria.
     - Closed on 4/27/1994 due to Richard Nixon's death.
+    - Closed from 9/11/2001 to 9/16/2001 due to terrorist attacks in NYC.
     - Closed on 6/11/2004 due to Ronald Reagan's death.
     - Closed on 1/2/2007 due to Gerald Ford's death.
+    - Closed on 10/29/2012 and 10/30/2012 due to Hurricane Sandy.
     - Closed at 1:00 PM on Wednesday, July 3rd, 2013
     - Closed at 1:00 PM on Friday, December 31, 1999
     - Closed at 1:00 PM on Friday, December 26, 1997
@@ -133,6 +135,7 @@ class NYSEExchangeCalendar(MarketCalendar):
     def adhoc_holidays(self):
         return list(chain(
             September11Closings,
+            HurricaneGloriaClosings,
             HurricaneSandyClosings,
             USNationalDaysofMourning,
         ))

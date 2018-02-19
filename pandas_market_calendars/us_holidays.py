@@ -142,6 +142,13 @@ BattleOfGettysburg = Holiday(
 # http://en.wikipedia.org/wiki/Aftermath_of_the_September_11_attacks
 September11Closings = date_range('2001-09-11', '2001-09-16', tz='UTC')
 
+# http://en.wikipedia.org/wiki/Hurricane_Gloria
+HurricaneGloriaClosings = date_range(
+    '1985-09-27',
+    '1985-09-27',
+    tz='UTC'
+)
+
 # http://en.wikipedia.org/wiki/Hurricane_sandy
 HurricaneSandyClosings = date_range(
     '2012-10-29',
