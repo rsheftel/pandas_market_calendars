@@ -60,6 +60,7 @@ Updates
 ~~~~~~~~~~~~~
 - Made default open and close times time-zone aware
 
-0.15 (2/20/18)
+0.15 (2/23/18)
 ~~~~~~~~~~~~~~
 - Removed toolz as a required package and removed from the one test that required it
+- Added daily closes on NYSE back to 1928 from PR #30 thanks to @pldrouin
