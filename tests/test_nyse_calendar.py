@@ -1,6 +1,7 @@
 
 import pandas as pd
 import pytz
+import os
 from pandas_market_calendars.exchange_calendar_nyse import NYSEExchangeCalendar
 
 
@@ -236,3 +237,19 @@ def test_early_close_independence_day_thursday():
     assert nyse.open_at_time(schedule, wednesday_before) is False
     assert nyse.open_at_time(schedule, friday_after_open) is True
     assert nyse.open_at_time(schedule, friday_after) is True
+
+def test_all_full_day_holidays_since_1928(request):
+    """
+    Perform a full comparison of all known full day NYSE holidays since 1928/01/01 and
+    make sure that it matches.
+    """
+    nyse = NYSEExchangeCalendar()
+    dticsv=pd.read_csv(os.path.join(request.fspath.dirname,
+                                    'nyse_all_full_day_holidays_since_1928.csv'),
+                                    index_col=0, parse_dates=True).index
+    dti=pd.DatetimeIndex(nyse.adhoc_holidays).tz_convert(None).sort_values()
+    slice_locs=dti.slice_locs(dticsv[0], dticsv[-1])
+    dti=dti[slice_locs[0]:slice_locs[1]]
+    dti=dti.append(nyse.regular_holidays.holidays(dticsv[0], dticsv[-1]))
+    dti=dti.sort_values().unique()
+    assert dticsv.equals(dti)
