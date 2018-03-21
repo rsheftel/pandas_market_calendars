@@ -11,7 +11,7 @@ def test_time_zone():
     assert JPXExchangeCalendar().name == 'JPX'
 
 
-def test_2017_holidays():
+def test_all_holidays():
     jpx_calendar = JPXExchangeCalendar()
 
     # holidays we expect
@@ -39,6 +39,57 @@ def test_2017_holidays():
     for session_label in holidays_2017:
         assert session_label not in jpx_calendar.valid_days(pd.Timestamp('2017-01-01'), pd.Timestamp('2017-12-31'))
 
+    # holidays we expect
+    holidays_2018 = [
+        pd.Timestamp("2018-01-01", tz='UTC'),
+        pd.Timestamp("2018-01-02", tz='UTC'),
+        pd.Timestamp("2018-01-03", tz='UTC'),
+        pd.Timestamp("2018-01-08", tz='UTC'),
+        pd.Timestamp("2018-02-12", tz='UTC'),
+        pd.Timestamp("2018-03-21", tz='UTC'),
+        pd.Timestamp("2018-04-30", tz='UTC'),
+        pd.Timestamp("2018-05-03", tz='UTC'),
+        pd.Timestamp("2018-05-04", tz='UTC'),
+        pd.Timestamp("2018-05-05", tz='UTC'),
+        pd.Timestamp("2018-07-16", tz='UTC'),
+        pd.Timestamp("2018-08-11", tz='UTC'),
+        pd.Timestamp("2018-09-17", tz='UTC'),
+        pd.Timestamp("2018-09-24", tz='UTC'),
+        pd.Timestamp("2018-10-08", tz='UTC'),
+        pd.Timestamp("2018-11-03", tz='UTC'),
+        pd.Timestamp("2018-11-23", tz='UTC'),
+        pd.Timestamp("2018-12-24", tz='UTC'),
+        pd.Timestamp("2018-12-31", tz='UTC'),
+    ]
+
+    for session_label in holidays_2018:
+        assert session_label not in jpx_calendar.valid_days(pd.Timestamp('2018-01-01'), pd.Timestamp('2018-12-31'))
+
+    # holidays we expect
+    holidays_2019 = [
+        pd.Timestamp("2019-01-01", tz='UTC'),
+        pd.Timestamp("2019-01-02", tz='UTC'),
+        pd.Timestamp("2019-01-03", tz='UTC'),
+        pd.Timestamp("2019-01-14", tz='UTC'),
+        pd.Timestamp("2019-02-11", tz='UTC'),
+        pd.Timestamp("2019-03-21", tz='UTC'),
+        pd.Timestamp("2019-04-29", tz='UTC'),
+        pd.Timestamp("2019-05-03", tz='UTC'),
+        pd.Timestamp("2019-05-04", tz='UTC'),
+        pd.Timestamp("2019-05-06", tz='UTC'),
+        pd.Timestamp("2019-07-15", tz='UTC'),
+        pd.Timestamp("2019-08-12", tz='UTC'),
+        pd.Timestamp("2019-09-16", tz='UTC'),
+        pd.Timestamp("2019-09-23", tz='UTC'),
+        pd.Timestamp("2019-10-14", tz='UTC'),
+        pd.Timestamp("2019-11-04", tz='UTC'),
+        pd.Timestamp("2019-11-23", tz='UTC'),
+        pd.Timestamp("2019-12-23", tz='UTC'),
+        pd.Timestamp("2019-12-31", tz='UTC'),
+    ]
+
+    for session_label in holidays_2019:
+        assert session_label not in jpx_calendar.valid_days(pd.Timestamp('2019-01-01'), pd.Timestamp('2019-12-31'))
 
 def test_jpx_closes_at_lunch():
     jpx_calendar = JPXExchangeCalendar()
@@ -75,3 +126,15 @@ def test_jpx_correctly_counts_jpx_autumn_equinox():
     assert pd.Timestamp('2019-09-22') not in jpx_schedule.index  # Sunday
     assert pd.Timestamp('2019-09-23') not in jpx_schedule.index  # EQUINOX
     assert pd.Timestamp('2019-09-24') in jpx_schedule.index  # Monday
+
+def test_jpx_correctly_counts_jpx_vernal_equinox():
+    jpx_calendar = JPXExchangeCalendar()
+    jpx_schedule = jpx_calendar.schedule(start_date='2017-03-01', end_date='2019-09-30')
+
+    assert pd.Timestamp('2017-03-20') not in jpx_schedule.index
+    assert pd.Timestamp('2017-03-21') in jpx_schedule.index
+
+    assert pd.Timestamp('2018-03-21') not in jpx_schedule.index
+
+    assert pd.Timestamp('2019-03-21') not in jpx_schedule.index
+    assert pd.Timestamp('2019-03-20') in jpx_schedule.index  
