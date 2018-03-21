@@ -64,3 +64,7 @@ Updates
 ~~~~~~~~~~~~~~
 - Removed toolz as a required package and removed from the one test that required it
 - Added daily closes on NYSE back to 1928 from PR #30 thanks to @pldrouin
+
+0.16 (3/20/18)
+~~~~~~~~~~~~~~
+- Fixed the equinox for Japanese calendar, Pull Request #33
