@@ -9,7 +9,7 @@ from pandas.tseries.holiday import AbstractHolidayCalendar
 from pandas_market_calendars.us_holidays import USNewYearsDay
 
 from pandas_market_calendars import MarketCalendar
-from pandas_market_calendars.jpx_autumnal_equinox import autumnal_equinox
+from pandas_market_calendars.jpx_equinox import autumnal_equinox, vernal_equinox
 
 
 class JPXExchangeCalendar(MarketCalendar):
@@ -73,7 +73,7 @@ class JPXExchangeCalendar(MarketCalendar):
                 name="Vernal Equinox",
                 month=3,
                 day=20,
-                observance=sunday_to_monday,
+                observance=vernal_equinox
             ),
             Holiday(
                 name="Showa day",
