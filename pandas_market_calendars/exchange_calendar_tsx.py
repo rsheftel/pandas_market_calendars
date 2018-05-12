@@ -37,7 +37,7 @@ FamilyDay = Holiday(
 VictoriaDay = Holiday(
     'Victoria Day',
     month=5,
-    day=25,
+    day=24,
     offset=DateOffset(weekday=MO(-1)),
 )
 # Canada Day
