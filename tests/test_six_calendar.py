@@ -9,28 +9,15 @@ def test_time_zone():
     assert SIXExchangeCalendar().name == 'SIX'
 
 
-def test_2016_holidays():
-    # good friday: 2016-03-25
-    # May 1st: on a weekend, not rolled forward
-    # christmas: on a weekend, not rolled forward
-    # boxing day: 2016-12-26
-    # new years (observed): 2016-01-01
-    six = SIXExchangeCalendar()
-    good_dates = six.valid_days('2016-01-01', '2016-12-31')
-    for date in ["2016-03-25", "2016-01-01", "2016-12-26"]:
-        assert pd.Timestamp(date, tz='UTC') not in good_dates
-    for date in ['2016-05-02']:
-        assert pd.Timestamp(date, tz='UTC') in good_dates
-
-
-def test_2017_holidays():
+def test_2018_holidays():
     # good friday: 2017-04-14
     # May 1st: 2017-05-01
     # christmas (observed): 2017-12-25
     # new years (observed): on a weekend, not rolled forward
     six = SIXExchangeCalendar()
     good_dates = six.valid_days('2017-01-01', '2017-12-31')
-    for date in ["2016-04-14", "2017-05-01", "2017-12-25"]:
-        assert pd.Timestamp(date, tz='UTC') not in good_dates
-    for date in ["2017-01-02"]:
-        assert pd.Timestamp(date, tz='UTC') in good_dates
+    for date in ["2016-04-14", "2017-12-25"]:
+        assert pd.Timestamp(date, tz='Europe/Zurich') not in good_dates
+    for date in ["2018-01-01", "2018-01-02", "2018-03-30", "2018-04-02", "2018-05-01", "2018-05-10", "2018-05-21",
+                 "2018-08-01", "2018-12-24", "2018-12-25", "2018-12-26", "2018-12-31"]:
+        assert pd.Timestamp(date, tz='Europe/Zurich') in good_dates

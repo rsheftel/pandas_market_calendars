@@ -11,6 +11,7 @@ from pandas_market_calendars.exchange_calendar_bmf import BMFExchangeCalendar
 from pandas_market_calendars.exchange_calendar_lse import LSEExchangeCalendar
 from pandas_market_calendars.exchange_calendar_tsx import TSXExchangeCalendar
 from pandas_market_calendars.exchange_calendar_eurex import EUREXExchangeCalendar
+from pandas_market_calendars.exchange_calendar_six import SIXExchangeCalendar
 from pandas_market_calendars.exchange_calendar_jpx import JPXExchangeCalendar
 
 _calendars = {
@@ -22,7 +23,8 @@ _calendars = {
     'LSE': LSEExchangeCalendar,
     'TSX': TSXExchangeCalendar,
     'EUREX': EUREXExchangeCalendar,
-    'JPX': JPXExchangeCalendar
+    'SIX': SIXExchangeCalendar,
+    'JPX': JPXExchangeCalendar,
 }
 
 _aliases = {

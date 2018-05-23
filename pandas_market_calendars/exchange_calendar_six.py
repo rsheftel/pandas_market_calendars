@@ -11,12 +11,13 @@ from pandas.tseries.holiday import (
     GoodFriday,
     EasterMonday,
     Easter,
+    AbstractHolidayCalendar,
+    Day,
 )
 from pytz import timezone
-from pandas.tseries.holiday import AbstractHolidayCalendar
 from .market_calendar import (
     MarketCalendar,
-    MONDAY, TUESDAY, WEDNESDAY, THURSDAY, FRIDAY
+    MONDAY, TUESDAY, WEDNESDAY, THURSDAY, FRIDAY,
 )
 
 # New Year's Eve
@@ -53,15 +54,15 @@ AscensionDay = Holiday(
     month=1,
     day=1,
     offset=[Easter(), Day(39)],
-    days_of_week=(THURSDAY),
+    days_of_week=(THURSDAY,),
 )
 # Pentecost Day (Pfingstmontag)
 PentecostMonday = Holiday(
     'Pentecost Monday',
     month=1,
     day=1,
-    offset=[AscensionDay(), Day(11)],
-    days_of_week=(MONDAY),
+    offset=[Easter(), Day(50)],
+    days_of_week=(MONDAY,),
 )
 # Swiss National Day
 SwissNationalDay = Holiday(
@@ -134,6 +135,7 @@ class SIXExchangeCalendar(MarketCalendar):
     def regular_holidays(self):
         return AbstractHolidayCalendar(rules=[
             NewYearsDay,
+            BertholdsDay,
             GoodFriday,
             EasterMonday,
             MayBank,
@@ -148,12 +150,12 @@ class SIXExchangeCalendar(MarketCalendar):
             NewYearsEve,
         ])
 
-##    @property
-##    def special_closes(self):
-##        return [(
-##            time(12, 30),
-##            AbstractHolidayCalendar(rules=[
-##                ChristmasEve,
-##                NewYearsEve,
-##            ])
-##        )]
+#    @property
+#    def special_closes(self):
+#        return [(
+#            time(12, 30),
+#            AbstractHolidayCalendar(rules=[
+#                ChristmasEve,
+#                NewYearsEve,
+#            ])
+#        )]
