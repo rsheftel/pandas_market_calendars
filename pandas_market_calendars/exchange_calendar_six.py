@@ -1,9 +1,3 @@
-# import holidays
-
-from pandas.tseries.holiday import AbstractHolidayCalendar, Holiday, nearest_workday
-
-# holidays_ch_zh = holidays.HolidayBase(prov = 'ZH', state='CH')
-
 from datetime import time
 from pandas.tseries.holiday import (
     Holiday,
