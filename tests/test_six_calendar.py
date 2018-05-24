@@ -15,9 +15,10 @@ def test_2018_holidays():
     # christmas (observed): 2017-12-25
     # new years (observed): on a weekend, not rolled forward
     six = SIXExchangeCalendar()
-    good_dates = six.valid_days('2017-01-01', '2017-12-31')
-    for date in ["2016-04-14", "2017-12-25"]:
-        assert pd.Timestamp(date, tz='Europe/Zurich') not in good_dates
+    good_dates = six.valid_days('2018-01-01', '2018-12-31', tz='Europe/Zurich')
+
+    for date in ["2018-05-24", "2018-06-15", "2018-03-23"]:
+        assert pd.Timestamp(date, tz='Europe/Berlin') in good_dates
     for date in ["2018-01-01", "2018-01-02", "2018-03-30", "2018-04-02", "2018-05-01", "2018-05-10", "2018-05-21",
                  "2018-08-01", "2018-12-24", "2018-12-25", "2018-12-26", "2018-12-31"]:
-        assert pd.Timestamp(date, tz='Europe/Zurich') in good_dates
+        assert pd.Timestamp(date, tz='Europe/Zurich') not in good_dates
