@@ -69,3 +69,7 @@ Updates
 ~~~~~~~~~~~~~~
 - Fixed the equinox for Japanese calendar, Pull Request #33
 - Fixed Victoria Day for TSX, issue #34
+
+0.17 (5/24/18)
+~~~~~~~~~~~~~~
+- Added SIX (Swiss Exchange) calendar, Pull Request #36

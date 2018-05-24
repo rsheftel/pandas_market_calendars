@@ -34,6 +34,7 @@ FamilyDay = Holiday(
     start_date='2008-01-01',
 )
 # Victoria Day
+# https://www.timeanddate.com/holidays/canada/victoria-day
 VictoriaDay = Holiday(
     'Victoria Day',
     month=5,
