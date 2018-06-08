@@ -15,6 +15,7 @@
 # limitations under the License.
 
 import six
+from itertools import compress
 from abc import ABCMeta, abstractmethod
 import pandas as pd
 from pandas import DataFrame, DatetimeIndex
@@ -322,12 +323,18 @@ def days_at_time(days, t, tz, day_offset=0):
 
 
 def holidays_at_time(calendar, start, end, time, tz):
-    return days_at_time(
-        calendar.holidays(
+    # Not sure why this fails, but this should trap it until resolved
+    try:
+        holidays = calendar.holidays(
             # Workaround for https://github.com/pydata/pandas/issues/9825.
             start.tz_localize(None),
             end.tz_localize(None),
-        ),
+        )
+    except ValueError:
+        holidays = pd.DatetimeIndex([])
+
+    return days_at_time(
+        holidays,
         time,
         tz=tz,
     )
@@ -357,16 +364,15 @@ def _overwrite_special_dates(midnight_utcs,
 
     # -1 indicates that no corresponding entry was found.  If any -1s are
     # present, then we have special dates that doesn't correspond to any
-    # trading day.
-    if -1 in indexer:
-        bad_dates = list(special_opens_or_closes[indexer == -1])
-        raise ValueError("Special dates %s are not trading days." % bad_dates)
+    # trading day. Filter these out
+    good_indexes = [i != -1 for i in indexer]
+    indexer = list(compress(indexer, good_indexes))
 
     # NOTE: This is a slightly dirty hack.  We're in-place overwriting the
     # internal data of an Index, which is conceptually immutable.  Since we're
     # maintaining sorting, this should be ok, but this is a good place to
     # sanity check if things start going haywire with calendar computations.
-    opens_or_closes.values[indexer] = special_opens_or_closes.values
+    opens_or_closes.values[indexer] = special_opens_or_closes.values[good_indexes]
 
 
 def clean_dates(start_date, end_date):

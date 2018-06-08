@@ -251,12 +251,31 @@ def test_all_full_day_holidays_since_1928(request):
                            index_col=0, parse_dates=True, header=None).index
     del expected.name
 
-    # calculated expected
+    # calculated expected going direct to the underlying regular and ad_hoc calendars
     nyse = NYSEExchangeCalendar()
     actual = pd.DatetimeIndex(nyse.adhoc_holidays).tz_convert(None).sort_values()
     slice_locs = actual.slice_locs(expected[0], expected[-1])
     actual = actual[slice_locs[0]:slice_locs[1]]
     actual = actual.append(nyse.regular_holidays.holidays(expected[0], expected[-1]))
     actual = actual.sort_values().unique()
-
     assert_index_equal(expected, actual)
+
+    # using the holidays method
+    actual = pd.DatetimeIndex(nyse.holidays().holidays).unique()
+    slice_locs = actual.slice_locs(expected[0], expected[-1])
+    actual = actual[slice_locs[0]:slice_locs[1]]
+    assert_index_equal(expected, actual)
+
+
+def test_special_early_close_is_not_trading_day():
+    """
+    Performs a test for generating a schedule when a date that is a special early close is also an adhoc holiday so
+    that the process ignores the early close for the missing date.
+    """
+
+    nyse = NYSEExchangeCalendar()
+    # 1956-12-24 is a full day holiday and also will show as early close
+    actual = nyse.schedule('1956-12-20', '1956-12-30')
+    dates = [pd.Timestamp('1956-12-' + x) for x in ['20', '21', '26', '27', '28']]
+    expected = pd.DatetimeIndex(dates)
+    assert_index_equal(actual.index, expected)

@@ -1,5 +1,6 @@
 # Byte-compiled / optimized / DLL files
 __pycache__/
+.__pycache__/
 *.py[cod]
 *$py.class
 
@@ -23,6 +24,7 @@ var/
 *.egg-info/
 .installed.cfg
 *.egg
+MANIFEST
 
 # PyInstaller
 #  Usually these files are written by a python script from a template
@@ -44,6 +46,7 @@ nosetests.xml
 coverage.xml
 *,cover
 .hypothesis/
+.pytest_cache/
 
 # Translations
 *.mo
@@ -78,9 +81,14 @@ celerybeat-schedule
 # dotenv
 .env
 
-# virtualenv
+# Environments
+.env
+.venv
+env/
 venv/
 ENV/
+env.bak/
+venv.bak/
 
 # Spyder project settings
 .spyderproject
@@ -90,3 +98,9 @@ ENV/
 
 # Pycharm files
 .idea/
+
+# mkdocs documentation
+/site
+
+# mypy
+.mypy_cache/

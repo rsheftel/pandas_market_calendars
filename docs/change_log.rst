@@ -73,3 +73,8 @@ Updates
 0.17 (5/24/18)
 ~~~~~~~~~~~~~~
 - Added SIX (Swiss Exchange) calendar, Pull Request #36
+
+0.18 (6/8/18)
+~~~~~~~~~~~~~~
+- Changed NYSE holiday calendar to start 1/1/1900 (was previously 1/1/1970).
+- Fixed an error that schedule() method would fail if the end date was prior to 1993

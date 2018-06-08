@@ -74,6 +74,9 @@ from pandas_market_calendars import MarketCalendar
 # http://www.nyse.com/pdfs/closings.pdf
 # http://www.stevemorse.org/jcal/whendid.html
 
+# Overwrite the default holiday calendar start_date of 1/1/70 with 1/1/1900
+AbstractHolidayCalendar.start_date = '1900-01-01'
+
 
 class NYSEExchangeCalendar(MarketCalendar):
     """

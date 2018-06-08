@@ -18,7 +18,7 @@ with open(path.join(here, 'README.rst'), encoding='utf-8') as f:
 
 setup(
     name='pandas_market_calendars',
-    version='0.17',
+    version='0.18',
 
     description='Market and exchange trading calendars for pandas',
     long_description=long_description,
