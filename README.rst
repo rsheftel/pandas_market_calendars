@@ -2,6 +2,9 @@ pandas_market_calendars
 =======================
 Market calendars to use with pandas for trading applications.
 
+.. image:: https://badge.fury.io/py/pandas-market-calendars.svg
+    :target: https://badge.fury.io/py/pandas-market-calendars
+
 .. image:: https://travis-ci.org/rsheftel/pandas_market_calendars.svg?branch=master
     :target: https://travis-ci.org/rsheftel/pandas_market_calendars
 
