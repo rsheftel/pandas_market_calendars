@@ -346,3 +346,25 @@ def test_open_at_time():
     # last bar of the day is True if include_close is True
     assert cal.open_at_time(schedule, pd.Timestamp('2016-09-07 11:49', tz='Asia/Ulaanbaatar'),
                             include_close=True) is True
+
+
+def test_bad_dates():
+    cal = FakeCalendar()
+
+    empty = pd.DataFrame(columns=['market_open', 'market_close'], index=pd.DatetimeIndex([], freq='C'))
+
+    # single weekend date
+    schedule = cal.schedule('2018-06-30', '2018-06-30')
+    assert_frame_equal(schedule, empty)
+
+    # two weekend dates
+    schedule = cal.schedule('2018-06-30', '2018-07-01')
+    assert_frame_equal(schedule, empty)
+
+    # single holiday
+    schedule = cal.schedule('2018-01-01', '2018-01-01')
+    assert_frame_equal(schedule, empty)
+
+    # weekend and holiday
+    schedule = cal.schedule('2017-12-30', '2018-01-01')
+    assert_frame_equal(schedule, empty)

@@ -78,3 +78,9 @@ Updates
 ~~~~~~~~~~~~~~
 - Changed NYSE holiday calendar to start 1/1/1900 (was previously 1/1/1970).
 - Fixed an error that schedule() method would fail if the end date was prior to 1993
+
+0.19 (7/2/18)
+~~~~~~~~~~~~~~
+- schedule() method no longer raises exception if there are no valid trading days between start_date and end_date,
+  will now return an empty DataFrame
+

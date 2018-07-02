@@ -107,7 +107,7 @@ class MarketCalendar(six.with_metaclass(ABCMeta)):
     def special_opens_adhoc(self):
         """
 
-        :return: List of (time, DatetimeIndex) tuples that represent special closes that cannot be codified into rules.
+        :return: List of (time, DatetimeIndex) tuples that represent special opens that cannot be codified into rules.
         """
         return []
 
@@ -200,6 +200,10 @@ class MarketCalendar(six.with_metaclass(ABCMeta)):
 
         # Setup all valid trading days
         _all_days = self.valid_days(start_date, end_date)
+
+        # If no valid days return an empty DataFrame
+        if len(_all_days) == 0:
+            return pd.DataFrame(columns=['market_open', 'market_close'], index=pd.DatetimeIndex([], freq='C'))
 
         # `DatetimeIndex`s of standard opens/closes for each day.
         opens = days_at_time(_all_days, self.open_time, self.tz, self.open_offset)
