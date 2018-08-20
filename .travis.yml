@@ -1,13 +1,12 @@
 language: python
 python:
   - "2.7"
-  - "3.3"
   - "3.4"
   - "3.5"
   - "3.6"
-  - "3.6-dev" # 3.6 development branch
-#  - "3.7-dev" # 3.7 development branch
-#  - "nightly" # currently points to 3.7-dev
+  - "3.7"
+  - "3.7-dev" # 3.7 development branch
+  - "nightly" # currently points to 3.7-dev
 
 install:
   - "pip install pandas"
