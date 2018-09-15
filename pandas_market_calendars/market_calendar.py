@@ -16,7 +16,7 @@
 
 import six
 from itertools import compress
-from abc import abstractmethod
+from abc import ABCMeta,abstractmethod
 import pandas as pd
 from pandas import DataFrame, DatetimeIndex
 from pandas.tseries.offsets import CustomBusinessDay
@@ -24,8 +24,9 @@ from .class_registry import RegisteryMeta
 
 MONDAY, TUESDAY, WEDNESDAY, THURSDAY, FRIDAY, SATURDAY, SUNDAY = range(7)
 
+MarketCalendarMeta = type('MarketCalendarMeta', (ABCMeta, RegisteryMeta), {})
 
-class MarketCalendar(six.with_metaclass(RegisteryMeta)):
+class MarketCalendar(six.with_metaclass(MarketCalendarMeta)):
     """
     An MarketCalendar represents the timing information of a single market or exchange.
     Unless otherwise noted all times are in UTC and use Pandas data structures.
