@@ -32,7 +32,6 @@ def test_inheritance():
             super(Class1a, self).__init__(arg0,arg1,**kwargs)
             
     class Class1b(Class1):
-        aliases = ["class 1b"]
         def __init__(self,arg0,arg1,arg1b,kw1b=None,**kwargs):
             self.arg1b = arg1b
             self.kw1b = kw1b
@@ -48,7 +47,7 @@ def test_inheritance():
     assert set(Class1._regmeta_classes()) == set(['Class1', 'class 1a', 'Class1b', 'class 12a'])
     assert set(Class2._regmeta_classes()) == set(['class 2', 'class 12a'])
     
-    o = factory1("class 1","0","1",kw0="k0",kw1="k1")
+    o = factory1("Class1","0","1",kw0="k0",kw1="k1")
     assert (o.arg0,o.arg1,o.kw0,o.kw1) == ("0","1","k0","k1")
     assert Class1 == o.__class__
     
@@ -56,7 +55,7 @@ def test_inheritance():
     assert (o.arg0,o.arg1,o.arg1a,o.kw0,o.kw1,o.kw1a) == ("0","1","a","k0","k1","k1a")
     assert Class1a == o.__class__
     
-    o = factory1("class 1b","0","1","b",kw0="k0",kw1="k1",kw1b="k1b")
+    o = factory1("Class1b","0","1","b",kw0="k0",kw1="k1",kw1b="k1b")
     assert (o.arg0,o.arg1,o.arg1b,o.kw0,o.kw1,o.kw1b) == ("0","1","b","k0","k1","k1b")
     assert Class1b == o.__class__
     
