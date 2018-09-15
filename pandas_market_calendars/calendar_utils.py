@@ -3,14 +3,15 @@ Utilities to use with market_calendars
 """
 import pandas as pd
 
+################## >>> Deprecated (remove in future releases)
 import warnings
 from collections import MutableMapping
-from . import market_calendar
+from . import calendar_registry
 
-class DeprecatedDict(MutableMapping):
+class DeprecatedRegistry(MutableMapping):
 
     def __init__(self):
-        self._dict = market_calendar.MarketCalendar._regmeta_class_registry
+        self._dict = calendar_registry.MarketCalendar._regmeta_class_registry
 
     def _warn(self):
         warnings.warn(
@@ -40,7 +41,7 @@ class DeprecatedDict(MutableMapping):
         self._warn()
         return len(self._dict)
 
-_calendars = _aliases = DeprecatedDict()
+_calendars = _aliases = DeprecatedRegistry()
 
 def get_calendar(*args,**kwargs):
     warnings.warn(
@@ -49,8 +50,9 @@ def get_calendar(*args,**kwargs):
             It will be removed from calendar_utils in future releases.""",
             DeprecationWarning
         )
-    market_calendar.get_calendar(*args,**kwargs)
+    calendar_registry.get_calendar(*args,**kwargs)
 
+################## <<< Deprecated (remove in future releases)
 
 def merge_schedules(schedules, how='outer'):
     """
