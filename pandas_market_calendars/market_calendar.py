@@ -16,15 +16,16 @@
 
 import six
 from itertools import compress
-from abc import ABCMeta, abstractmethod
+from abc import abstractmethod
 import pandas as pd
 from pandas import DataFrame, DatetimeIndex
 from pandas.tseries.offsets import CustomBusinessDay
+from .class_registry import RegisteryMeta
 
 MONDAY, TUESDAY, WEDNESDAY, THURSDAY, FRIDAY, SATURDAY, SUNDAY = range(7)
 
 
-class MarketCalendar(six.with_metaclass(ABCMeta)):
+class MarketCalendar(six.with_metaclass(RegisteryMeta)):
     """
     An MarketCalendar represents the timing information of a single market or exchange.
     Unless otherwise noted all times are in UTC and use Pandas data structures.
@@ -37,6 +38,23 @@ class MarketCalendar(six.with_metaclass(ABCMeta)):
         """
         self._open_time = self.open_time_default if open_time is None else open_time
         self._close_time = self.close_time_default if close_time is None else close_time
+
+    @classmethod
+    def factory(self, name, open_time=None, close_time=None):
+        """
+        :param name: The name of the MarketCalendar to be retrieved.
+        :param open_time: Market open time override as datetime.time object. If None then default is used.
+        :param close_time: Market close time override as datetime.time object. If None then default is used.
+        :return: MarketCalendar of the desired calendar.
+        """
+        return self._regmeta_instance_factory(name, open_time=open_time, close_time=close_time)
+
+    @classmethod
+    def calendar_names(cls):
+        """All Market Calendar names and aliases that can be used in "factory"
+        :return: list(str)
+        """
+        return [cal for cal in cls._regmeta_classes() if cal!='MarketCalendar']
 
     @property
     @abstractmethod
@@ -289,6 +307,22 @@ class MarketCalendar(six.with_metaclass(ABCMeta)):
             end,
         )
 
+def get_calendar(name, open_time=None, close_time=None):
+    """
+    Retrieves an instance of an MarketCalendar whose name is given.
+
+    :param name: The name of the MarketCalendar to be retrieved.
+    :param open_time: Market open time override as datetime.time object. If None then default is used.
+    :param close_time: Market close time override as datetime.time object. If None then default is used.
+    :return: MarketCalendar of the desired calendar.
+    """
+    return MarketCalendar.factory(name, open_time=open_time, close_time=close_time)
+
+def get_calendar_names():
+    """All Market Calendar names and aliases that can be used in "factory"
+    :return: list(str)
+    """
+    return MarketCalendar.calendar_names()
 
 def days_at_time(days, t, tz, day_offset=0):
     """

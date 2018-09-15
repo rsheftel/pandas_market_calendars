@@ -30,5 +30,3 @@ To create a new exchange (or OTC market):
 
       #. special_opens - returns a list of tuples. The tuple is (datetime.time of open, AbstractHolidayCalendar)
       #. special_opens_adhoc - returns a list of tuples. The tuple is (datetime.time of open, list of date strings)
-
-#. In the calendar_utils.py module add the new market to _calendars and any alias to _alias

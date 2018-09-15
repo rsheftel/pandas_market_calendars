@@ -31,6 +31,8 @@ class CFEExchangeCalendar(MarketCalendar):
 
     (We are ignoring extended trading hours for now)
     """
+    aliases = ['CFE']
+
     @property
     def name(self):
         return "CFE"
