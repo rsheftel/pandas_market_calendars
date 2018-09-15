@@ -25,10 +25,14 @@ def _regmeta_register_class(cls, regcls, name):
     :param regcls(class): class to be registered
     :param name(str): name of the class to be registered
     """
-    cls._regmeta_class_registry[name] = regcls
     if hasattr(regcls, 'aliases'):
-        for alias in regcls.aliases:
-            cls._regmeta_class_registry[alias] = regcls
+        if regcls.aliases:
+            for alias in regcls.aliases:
+                cls._regmeta_class_registry[alias] = regcls
+        else:
+            cls._regmeta_class_registry[name] = regcls
+    else:
+        cls._regmeta_class_registry[name] = regcls
 
 def _regmeta_classes(cls):
     return list(cls._regmeta_class_registry.keys())
