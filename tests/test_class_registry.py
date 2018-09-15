@@ -1,3 +1,4 @@
+import six
 from abc import ABCMeta, abstractmethod
 from pandas_market_calendars.class_registry import RegisteryMeta
 
@@ -8,14 +9,14 @@ def test_inheritance():
             self.kw0 = kw0
             super(Base,self).__init__()
 
-    class Class1(Base,metaclass=RegisteryMeta):
+    class Class1(six.with_metaclass(RegisteryMeta,Base)):
         def __init__(self,arg0,arg1,kw1=None,**kwargs):
             self.arg1 = arg1
             self.kw1 = kw1
             super(Class1, self).__init__(arg0,**kwargs)
     factory1 = Class1._regmeta_instance_factory
     
-    class Class2(Base,metaclass=RegisteryMeta):
+    class Class2(six.with_metaclass(RegisteryMeta,Base)):
         def __init__(self,arg0,arg2,kw2=None,**kwargs):
             self.arg2 = arg2
             self.kw2 = kw2
@@ -43,8 +44,8 @@ def test_inheritance():
             self.kw12a = kw12a
             super(Class12a, self).__init__(arg0=arg0,arg1=arg1,arg2=arg2,**kwargs)
     
-    assert set(Class1._regmeta_class_registry.keys()) == set(['Class1', 'Class1a', 'Class1b', 'Class12a', 'class 1a', 'class 1b', 'class 12a'])
-    assert set(Class2._regmeta_class_registry.keys()) == set(['Class2', 'Class12a', 'class 12a'])
+    assert set(Class1._regmeta_classes()) == set(['Class1', 'Class1a', 'Class1b', 'Class12a', 'class 1a', 'class 1b', 'class 12a'])
+    assert set(Class2._regmeta_classes()) == set(['Class2', 'Class12a', 'class 12a'])
     
     o = factory1("Class1","0","1",kw0="k0",kw1="k1")
     assert (o.arg0,o.arg1,o.kw0,o.kw1) == ("0","1","k0","k1")
@@ -89,7 +90,7 @@ def test_inheritance():
 def test_metamixing():
     BaseMeta = type('BaseMeta', (ABCMeta, RegisteryMeta), {})
 
-    class Base(metaclass=BaseMeta):
+    class Base(six.with_metaclass(BaseMeta)):
         @abstractmethod
         def test(self):
             pass
