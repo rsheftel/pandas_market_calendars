@@ -123,4 +123,4 @@ Quick Start
 Future
 ------
 This package is open sourced under the MIT license. Everyone is welcome to add more exchanges or OTC markets, confirm
-or correct the existing calendars, and generally do whatever they desire with this code.
+or correct the existing calendars, and generally do whatever they desire with this code..
