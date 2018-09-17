@@ -84,3 +84,6 @@ Updates
 - schedule() method no longer raises exception if there are no valid trading days between start_date and end_date,
   will now return an empty DataFrame
 
+0.20 (7/2/18)
+~~~~~~~~~~~~~~
+- Improvements in the internals for how calendars are registered and aliased thanks for PR #45
