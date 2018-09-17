@@ -80,6 +80,7 @@ class EUREXExchangeCalendar(MarketCalendar):
     Exchange calendar for EUREX
 
     """
+    aliases = ['EUREX']
 
     @property
     def name(self):

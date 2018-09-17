@@ -3,11 +3,12 @@ New Market or Exchange
 To create a new exchange (or OTC market):
 
 #. Create a new class that inherits from MarketCalendar
-#. In the new class create the following class attributes (variables) and set their values to datetime.time():
+#. In the new class create the following class attributes (variables):
 
-   #. open_time_default
-   #. close_time_default
-   #. regular_early_close
+   #. aliases = [...]
+   #. open_time_default = datetime.time(...)
+   #. close_time_default = datetime.time(...)
+   #. regular_early_close = datetime.time(...)
 
 #. Define the following property methods:
 
@@ -30,5 +31,3 @@ To create a new exchange (or OTC market):
 
       #. special_opens - returns a list of tuples. The tuple is (datetime.time of open, AbstractHolidayCalendar)
       #. special_opens_adhoc - returns a list of tuples. The tuple is (datetime.time of open, list of date strings)
-
-#. In the calendar_utils.py module add the new market to _calendars and any alias to _alias

@@ -20,8 +20,7 @@ from pandas.util.testing import assert_series_equal, assert_frame_equal, assert_
 from itertools import chain
 import pytest
 
-from pandas_market_calendars import get_calendar
-from pandas_market_calendars.calendar_utils import _calendars, _aliases
+from pandas_market_calendars import get_calendar, get_calendar_names
 from pandas_market_calendars.market_calendar import days_at_time, MarketCalendar, clean_dates
 
 from pandas.tseries.holiday import AbstractHolidayCalendar
@@ -77,9 +76,7 @@ class FakeCalendar(MarketCalendar):
 
 
 def test_default_calendars():
-    names = [x for x in _calendars]
-    names.extend([x for x in _aliases])
-    for name in names:
+    for name in get_calendar_names():
         assert get_calendar(name) is not None
 
 

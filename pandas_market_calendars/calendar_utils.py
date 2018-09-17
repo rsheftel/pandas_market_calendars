@@ -1,56 +1,58 @@
 """
 Utilities to use with market_calendars
 """
-
 import pandas as pd
-from pandas_market_calendars.exchange_calendar_cfe import CFEExchangeCalendar
-from pandas_market_calendars.exchange_calendar_ice import ICEExchangeCalendar
-from pandas_market_calendars.exchange_calendar_nyse import NYSEExchangeCalendar
-from pandas_market_calendars.exchange_calendar_cme import CMEExchangeCalendar
-from pandas_market_calendars.exchange_calendar_bmf import BMFExchangeCalendar
-from pandas_market_calendars.exchange_calendar_lse import LSEExchangeCalendar
-from pandas_market_calendars.exchange_calendar_tsx import TSXExchangeCalendar
-from pandas_market_calendars.exchange_calendar_eurex import EUREXExchangeCalendar
-from pandas_market_calendars.exchange_calendar_six import SIXExchangeCalendar
-from pandas_market_calendars.exchange_calendar_jpx import JPXExchangeCalendar
 
-_calendars = {
-    'NYSE': NYSEExchangeCalendar,
-    'CME': CMEExchangeCalendar,
-    'ICE': ICEExchangeCalendar,
-    'CFE': CFEExchangeCalendar,
-    'BMF': BMFExchangeCalendar,
-    'LSE': LSEExchangeCalendar,
-    'TSX': TSXExchangeCalendar,
-    'EUREX': EUREXExchangeCalendar,
-    'SIX': SIXExchangeCalendar,
-    'JPX': JPXExchangeCalendar,
-}
+################## >>> Deprecated (remove in future releases)
+import warnings
+from collections import MutableMapping
+from . import calendar_registry
 
-_aliases = {
-    'stock': 'NYSE',
-    'NASDAQ': 'NYSE',
-    'BATS': 'NYSE',
-    'CBOT': 'CME',
-    'COMEX': 'CME',
-    'NYMEX': 'CME',
-    'ICEUS': 'ICE',
-    'NYFE': 'ICE',
-}
+class DeprecatedRegistry(MutableMapping):
 
+    def __init__(self):
+        self._dict = calendar_registry.MarketCalendar._regmeta_class_registry
 
-def get_calendar(name, open_time=None, close_time=None):
-    """
-    Retrieves an instance of an MarketCalendar whose name is given.
+    def _warn(self):
+        warnings.warn(
+            """
+            This dictionary will be removed from calendar_utils in future releases. 
+            Market Calendar's are registered automatically and there is no longer any 
+            need to access the registry directly."""
+        )
 
-    :param name: The name of the MarketCalendar to be retrieved.
-    :param open_time: Market open time override as datetime.time object. If None then default is used.
-    :param close_time: Market close time override as datetime.time object. If None then default is used.
-    :return: MarketCalendar of the desired calendar.
-    """
-    canonical_name = _aliases.get(name, name)
-    return _calendars[canonical_name](open_time, close_time)
+    def __getitem__(self, key):
+        self._warn()
+        return self._dict[key]
 
+    def __setitem__(self, key, value):
+        self._warn()
+        self._dict[key] = value
+
+    def __delitem__(self, key):
+        self._warn()
+        del self._dict[key]
+
+    def __iter__(self):
+        self._warn()
+        return iter(self._dict)
+
+    def __len__(self):
+        self._warn()
+        return len(self._dict)
+
+_calendars = _aliases = DeprecatedRegistry()
+
+def get_calendar(*args,**kwargs):
+    warnings.warn(
+            """
+            get_calendar has moved from calendar_utils to market_calendar. 
+            It will be removed from calendar_utils in future releases.""",
+            DeprecationWarning
+        )
+    calendar_registry.get_calendar(*args,**kwargs)
+
+################## <<< Deprecated (remove in future releases)
 
 def merge_schedules(schedules, how='outer'):
     """

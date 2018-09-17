@@ -20,6 +20,7 @@ class JPXExchangeCalendar(MarketCalendar):
     LUNCH BREAK :facepalm: : 11:30 AM - 12:30 PM Asia/Tokyo
     Close Time: 4:00 PM, Asia/Tokyo
     """
+    aliases = ['JPX']
 
     regular_early_close = time(13)
     lunch_start = time(11, 30)

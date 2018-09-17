@@ -48,8 +48,12 @@ Quick Start
 .. code:: python
 
     import pandas_market_calendars as mcal
+    
+    # Create a calendar
     nyse = mcal.get_calendar('NYSE')
 
+    # Show available calendars
+    print(mcal.get_calendar_names())
 
 .. code:: python
 
