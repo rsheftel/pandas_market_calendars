@@ -76,18 +76,18 @@ pandas\_market\_calendars\.exchange\_calendar\_nyse module
     :undoc-members:
     :show-inheritance:
 
-pandas\_market\_calendars\.exchange\_calendar\_tsx module
----------------------------------------------------------
+pandas\_market\_calendars\.exchange\_calendar\_ose module
+----------------------------------------------------------
 
-.. automodule:: pandas_market_calendars.exchange_calendar_tsx
+.. automodule:: pandas_market_calendars.exchange_calendar_ose
     :members:
     :undoc-members:
     :show-inheritance:
 
-pandas\_market\_calendars\.jpx\_autumnal\_equinox module
---------------------------------------------------------
+pandas\_market\_calendars\.exchange\_calendar\_tsx module
+---------------------------------------------------------
 
-.. automodule:: pandas_market_calendars.jpx_autumnal_equinox
+.. automodule:: pandas_market_calendars.exchange_calendar_tsx
     :members:
     :undoc-members:
     :show-inheritance:
