@@ -14,4 +14,5 @@ Exchange  TSX    TSXExchangeCalendar     Yes        Quantopian innominate227
 Exchange  EUREX  EUREXExchangeCalendar   Yes        kewlfft    kewlfft
 Exchange  JPX    JPXExchangeCalendar     Yes        gabalese   mgellman-radix
 Exchange  SIX    SIXExchangeCalendar     Yes        oliverfu89
+Exchange  OSE    OSEExchangeCalendar     Yes        busteren
 ========= ====== ===================== ============ ========== ==============
