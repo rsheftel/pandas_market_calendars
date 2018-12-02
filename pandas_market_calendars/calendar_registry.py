@@ -1,16 +1,5 @@
 
 from .market_calendar import MarketCalendar
-from .exchange_calendar_cfe import CFEExchangeCalendar	
-from .exchange_calendar_ice import ICEExchangeCalendar	
-from .exchange_calendar_nyse import NYSEExchangeCalendar	
-from .exchange_calendar_cme import CMEExchangeCalendar	
-from .exchange_calendar_bmf import BMFExchangeCalendar	
-from .exchange_calendar_lse import LSEExchangeCalendar	
-from .exchange_calendar_tsx import TSXExchangeCalendar	
-from .exchange_calendar_eurex import EUREXExchangeCalendar	
-from .exchange_calendar_six import SIXExchangeCalendar	
-from .exchange_calendar_jpx import JPXExchangeCalendar
-from .exchange_calendar_ose import OSEExchangeCalendar
 
 def get_calendar(name, open_time=None, close_time=None):
     """
