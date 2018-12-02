@@ -1,6 +1,7 @@
 
 from .market_calendar import MarketCalendar
 
+
 def get_calendar(name, open_time=None, close_time=None):
     """
     Retrieves an instance of an MarketCalendar whose name is given.
