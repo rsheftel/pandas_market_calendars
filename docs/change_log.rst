@@ -87,3 +87,8 @@ Updates
 0.20 (7/2/18)
 ~~~~~~~~~~~~~~
 - Improvements in the internals for how calendars are registered and aliased thanks for PR #45
+
+0.21 (12/2/18)
+~~~~~~~~~~~~~~
+- Added Oslo Stock Exchange (OSE) calendar
+- Added GW Bush Holiday to NYSE calendar from PR #53 and #54
