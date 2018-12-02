@@ -150,6 +150,7 @@ class NYSEExchangeCalendar(MarketCalendar):
     - Closed on 6/11/2004 due to Ronald Reagan's death.
     - Closed on 1/2/2007 due to Gerald Ford's death.
     - Closed on 10/29/2012 and 10/30/2012 due to Hurricane Sandy.
+    - Closed on 12/5/2018 due to George H.W. Bush's death.
     - Closed at 1:00 PM on Wednesday, July 3rd, 2013
     - Closed at 1:00 PM on Friday, December 31, 1999
     - Closed at 1:00 PM on Friday, December 26, 1997
