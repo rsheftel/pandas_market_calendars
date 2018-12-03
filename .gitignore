@@ -25,6 +25,7 @@ var/
 .installed.cfg
 *.egg
 MANIFEST
+.pypirc
 
 # PyInstaller
 #  Usually these files are written by a python script from a template
