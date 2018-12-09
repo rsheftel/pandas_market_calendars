@@ -204,12 +204,48 @@ class SSEExchangeCalendar(MarketCalendar):
                 observance=partial(lunisolar, mapping=maf_mapping, func=third_day_in_lieu, delta=2),
                 start_date=Timestamp(2020, 9, 7),
             ),                        
-            *series_holidays(
+            Holiday(
                 name="National Day",
                 month=10,
-                days=(1, 2, 3, 4, 5, 6, 7),
+                day=1,
                 start_date=Timestamp(2020, 10, 1),
-            ),                                                                                                 
+            ), 
+            Holiday(
+                name="National Day",
+                month=10,
+                day=2,
+                start_date=Timestamp(2020, 10, 2),
+            ), 
+            Holiday(
+                name="National Day",
+                month=10,
+                day=3,
+                start_date=Timestamp(2020, 10, 3),
+            ), 
+            Holiday(
+                name="National Day",
+                month=10,
+                day=4,
+                start_date=Timestamp(2020, 10, 4),
+            ), 
+            Holiday(
+                name="National Day",
+                month=10,
+                day=5,
+                start_date=Timestamp(2020, 10, 5),
+            ), 
+            Holiday(
+                name="National Day",
+                month=10,
+                day=6,
+                start_date=Timestamp(2020, 10, 6),
+            ), 
+            Holiday(
+                name="National Day",
+                month=10,
+                day=7,
+                start_date=Timestamp(2020, 10, 7),
+            ),                                                                                                                                                                         
         ])
 
     @property
@@ -221,20 +257,6 @@ class SSEExchangeCalendar(MarketCalendar):
         if SSEExchangeCalendar.lunch_start < timestamp.time() < SSEExchangeCalendar.lunch_end:
             return False
         return MarketCalendar.open_at_time(schedule, timestamp, include_close)
-
-
-def series_holidays(name, month=None, days=(), **kwargs):
-    holidays = []
-    for day in days:
-        holidays.append(
-            Holiday(
-                name,
-                month=month,
-                day=day,
-                **kwargs,
-            )
-        )
-    return holidays
 
 def second_day_in_lieu(dt):
     dow = dt.weekday()
