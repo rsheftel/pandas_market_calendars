@@ -12,6 +12,7 @@ from .exchange_calendar_ose import OSEExchangeCalendar
 from .exchange_calendar_six import SIXExchangeCalendar
 from .exchange_calendar_tsx import TSXExchangeCalendar
 from .exchange_calendar_sse import SSEExchangeCalendar
+from .exchange_calendar_hkex import HKEXExchangeCalendar
 
 
 def get_calendar(name, open_time=None, close_time=None):
