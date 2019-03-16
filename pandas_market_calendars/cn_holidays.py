@@ -11,6 +11,12 @@ from pandas import Timestamp
 # Records start from 1992. SSE was founded at the end of 1990.
 
 all_holidays = [
+    Timestamp('1991-01-01'),
+    Timestamp('1991-02-15'),
+    Timestamp('1991-02-18'),
+    Timestamp('1991-05-01'),
+    Timestamp('1991-10-01'),
+    Timestamp('1991-10-02'),
     Timestamp('1992-01-01'),
     Timestamp('1992-02-04'),
     Timestamp('1992-02-05'),
@@ -405,7 +411,6 @@ all_holidays = [
     Timestamp('2015-04-06'),
     Timestamp('2015-05-01'),
     Timestamp('2015-06-22'),
-    Timestamp('2015-06-24'),
     Timestamp('2015-09-03'),
     Timestamp('2015-09-04'),
     Timestamp('2015-10-01'),
