@@ -95,5 +95,6 @@ Updates
 
 0.22 (3/25/19)
 ~~~~~~~~~~~~~~
-- Added HKEX calendar
+- Added Shanghai Stock Exchange (SSE) calendar from PR #58
+- Added HKEX calendar from PR #61
 - Fixed tests for pandas v0.24 and higher
