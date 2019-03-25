@@ -19,7 +19,11 @@ from .calendar_registry import get_calendar, get_calendar_names
 from .calendar_utils import merge_schedules, date_range, convert_freq
 import pkg_resources
 
-__version__ = pkg_resources.get_distribution('pandas_market_calendars').version
+# if running in development there may not be a package
+try:
+    __version__ = pkg_resources.get_distribution('pandas_market_calendars').version
+except pkg_resources.DistributionNotFound:
+    __version__ = 'development'
 
 __all__ = [
     'MarketCalendar',

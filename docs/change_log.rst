@@ -92,3 +92,8 @@ Updates
 ~~~~~~~~~~~~~~
 - Added Oslo Stock Exchange (OSE) calendar
 - Added GW Bush Holiday to NYSE calendar from PR #53 and #54
+
+0.22 (3/25/19)
+~~~~~~~~~~~~~~
+- Added HKEX calendar
+- Fixed tests for pandas v0.24 and higher
