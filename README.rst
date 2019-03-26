@@ -37,6 +37,8 @@ when the markets are open.
 This package is a fork of the Zipline package from Quantopian and extracts just the relevant parts. All credit for
 their excellent work to Quantopian.
 
+As of v1.0 this package only works with Python3. This is consistent Pandas dropping support for Python2.
+
 Installation
 ------------
 ``pip install pandas_market_calendars``

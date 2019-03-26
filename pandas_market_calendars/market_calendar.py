@@ -14,7 +14,6 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-import six
 from itertools import compress
 from abc import ABCMeta,abstractmethod
 import pandas as pd
@@ -27,7 +26,7 @@ MONDAY, TUESDAY, WEDNESDAY, THURSDAY, FRIDAY, SATURDAY, SUNDAY = range(7)
 MarketCalendarMeta = type('MarketCalendarMeta', (ABCMeta, RegisteryMeta), {})
 
 
-class MarketCalendar(six.with_metaclass(MarketCalendarMeta)):
+class MarketCalendar(metaclass=MarketCalendarMeta):
     """
     An MarketCalendar represents the timing information of a single market or exchange.
     Unless otherwise noted all times are in UTC and use Pandas data structures.
