@@ -11,12 +11,8 @@ from pytz import timezone
 from .market_calendar import MarketCalendar
 from pandas.tseries.holiday import AbstractHolidayCalendar
 
-from .us_holidays import Christmas
-from .exchange_calendar_lse import (
-    WeekendChristmas,
-    BoxingDay,
-    WeekendBoxingDay
-)
+from .holidays_us import Christmas
+from holidays_uk import WeekendChristmas, BoxingDay, WeekendBoxingDay
 
 # New Year's Day
 TSXNewYearsDay = Holiday(

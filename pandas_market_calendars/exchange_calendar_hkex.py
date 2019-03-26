@@ -7,10 +7,10 @@ from pandas.tseries.holiday import Holiday, GoodFriday, EasterMonday, sunday_to_
 from pytz import timezone
 
 from pandas.tseries.holiday import AbstractHolidayCalendar
-from pandas_market_calendars.us_holidays import USNewYearsDay
+from pandas_market_calendars.holidays_us import USNewYearsDay
 
 from pandas_market_calendars import MarketCalendar
-from .cn_holidays import sf_mapping, tsd_mapping, bsd_mapping,\
+from .holidays_cn import sf_mapping, tsd_mapping, bsd_mapping,\
     dbf_mapping, maf_mapping, dnf_mapping
 
 

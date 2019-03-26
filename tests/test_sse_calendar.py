@@ -5,7 +5,7 @@ from pandas import Timestamp
 import pytz
 
 from pandas_market_calendars.exchange_calendar_sse import SSEExchangeCalendar
-from pandas_market_calendars.cn_holidays import all_holidays
+from pandas_market_calendars.holidays_cn import all_holidays
 
 
 def test_time_zone():

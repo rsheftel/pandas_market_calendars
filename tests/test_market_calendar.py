@@ -24,7 +24,7 @@ from pandas_market_calendars import get_calendar, get_calendar_names
 from pandas_market_calendars.market_calendar import days_at_time, MarketCalendar, clean_dates
 
 from pandas.tseries.holiday import AbstractHolidayCalendar
-from pandas_market_calendars.us_holidays import (
+from pandas_market_calendars.holidays_us import (
     USNewYearsDay,
     Christmas,
     HurricaneSandyClosings,

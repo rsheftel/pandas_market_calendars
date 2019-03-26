@@ -7,10 +7,10 @@ from pandas.tseries.holiday import Holiday, next_monday, sunday_to_monday
 from pytz import timezone
 
 from pandas.tseries.holiday import AbstractHolidayCalendar
-from pandas_market_calendars.us_holidays import USNewYearsDay
+from pandas_market_calendars.holidays_us import USNewYearsDay
 
 from pandas_market_calendars import MarketCalendar
-from .cn_holidays import *
+from .holidays_cn import *
 
 
 class SSEExchangeCalendar(MarketCalendar):

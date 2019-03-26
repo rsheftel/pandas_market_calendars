@@ -8,6 +8,15 @@ def test_time_zone():
     assert LSEExchangeCalendar().tz == pytz.timezone('Europe/London')
 
 
+def test_2012_holidays():
+    # 2012/06/04 - Bank Holiday
+    # 2012/06/05 - Queen's Diamond Jubilee
+    lse = LSEExchangeCalendar()
+    good_dates = lse.valid_days('2012-01-01', '2012-12-31')
+    for date in ["2012-06-04", "2012-06-05"]:
+        assert pd.Timestamp(date, tz='UTC') not in good_dates
+
+
 def test_2016_holidays():
     # 2016/01/01 - New Years Day (observed on first business day on/after)
     # 2016/03/25 - Good Friday
