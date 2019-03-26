@@ -12,7 +12,7 @@ from .market_calendar import MarketCalendar
 from pandas.tseries.holiday import AbstractHolidayCalendar
 
 from .holidays_us import Christmas
-from holidays_uk import WeekendChristmas, BoxingDay, WeekendBoxingDay
+from .holidays_uk import WeekendChristmas, BoxingDay, WeekendBoxingDay
 
 # New Year's Day
 TSXNewYearsDay = Holiday(

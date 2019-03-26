@@ -25,7 +25,7 @@ from pandas.tseries.holiday import (
     GoodFriday,
     EasterMonday,
 )
-from pandas_market_calendars.holidays_uk import (
+from .holidays_uk import (
     LSENewYearsEve,
     LSENewYearsDay,
     MayBank,
