@@ -5,7 +5,7 @@ import pandas as pd
 
 ################## >>> Deprecated (remove in future releases)
 import warnings
-from collections import MutableMapping
+from collections.abc import MutableMapping
 from . import calendar_registry
 
 class DeprecatedRegistry(MutableMapping):
