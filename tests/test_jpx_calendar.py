@@ -76,6 +76,9 @@ def test_all_holidays():
         pd.Timestamp("2019-02-11", tz='UTC'),
         pd.Timestamp("2019-03-21", tz='UTC'),
         pd.Timestamp("2019-04-29", tz='UTC'),
+        pd.Timestamp("2019-04-30", tz='UTC'),
+        pd.Timestamp("2019-05-01", tz='UTC'),
+        pd.Timestamp("2019-05-02", tz='UTC'),
         pd.Timestamp("2019-05-03", tz='UTC'),
         pd.Timestamp("2019-05-04", tz='UTC'),
         pd.Timestamp("2019-05-06", tz='UTC'),
@@ -142,4 +145,4 @@ def test_jpx_correctly_counts_jpx_vernal_equinox():
     assert pd.Timestamp('2018-03-21') not in jpx_schedule.index
 
     assert pd.Timestamp('2019-03-21') not in jpx_schedule.index
-    assert pd.Timestamp('2019-03-20') in jpx_schedule.index  
+    assert pd.Timestamp('2019-03-20') in jpx_schedule.index
