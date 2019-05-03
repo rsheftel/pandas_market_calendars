@@ -7,6 +7,7 @@ from pytz import timezone
 
 from pandas.tseries.holiday import AbstractHolidayCalendar
 from pandas_market_calendars.holidays_us import USNewYearsDay
+from pandas_market_calendars.holidays_jp import AscensionDays
 
 from pandas_market_calendars import MarketCalendar
 from pandas_market_calendars.jpx_equinox import autumnal_equinox, vernal_equinox
@@ -42,6 +43,9 @@ class JPXExchangeCalendar(MarketCalendar):
     def close_time_default(self):
         return time(15, tzinfo=self.tz)
 
+    @property
+    def adhoc_holidays(self):
+        return list(AscensionDays)
     @property
     def regular_holidays(self):
         return AbstractHolidayCalendar(rules=[
