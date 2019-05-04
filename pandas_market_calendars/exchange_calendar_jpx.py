@@ -47,9 +47,6 @@ class JPXExchangeCalendar(MarketCalendar):
         return time(15, tzinfo=self.tz)
 
     @property
-    def adhoc_holidays(self):
-        return list(AscensionDays)
-    @property
     def regular_holidays(self):
         return AbstractHolidayCalendar(rules=[
             USNewYearsDay,
