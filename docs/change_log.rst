@@ -103,3 +103,7 @@ Updates
 ~~~~~~~~~~~~~
 - Official move to Python3 only support
 - Version moved to 1.0 as the package has been around and stable long enough to warrant a 1.0
+
+1.1 (5/3/19)
+~~~~~~~~~~~~
+- add JPX Ascension Day holidays for 2019 from PR #64
