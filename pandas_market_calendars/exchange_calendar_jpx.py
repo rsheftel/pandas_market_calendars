@@ -1,4 +1,5 @@
 from datetime import time
+from itertools import chain
 
 from dateutil.relativedelta import MO
 from pandas import DateOffset
@@ -7,11 +8,13 @@ from pytz import timezone
 
 from pandas.tseries.holiday import AbstractHolidayCalendar
 from pandas_market_calendars.holidays_us import USNewYearsDay
-from pandas_market_calendars.holidays_jp import AscensionDays
 
 from pandas_market_calendars import MarketCalendar
 from pandas_market_calendars.jpx_equinox import autumnal_equinox, vernal_equinox
 
+from .holidays_jp import (
+    AscensionOfNewEmperor2019
+)
 
 class JPXExchangeCalendar(MarketCalendar):
     """
@@ -160,6 +163,12 @@ class JPXExchangeCalendar(MarketCalendar):
             ),
         ])
 
+    @property
+    def adhoc_holidays(self):
+        return list(chain(
+            AscensionOfNewEmperor2019,
+        ))    
+    
     @staticmethod
     def open_at_time(schedule, timestamp, include_close=False):
         if JPXExchangeCalendar.lunch_start < timestamp.time() < JPXExchangeCalendar.lunch_end:
