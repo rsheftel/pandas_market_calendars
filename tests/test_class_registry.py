@@ -1,6 +1,6 @@
-import six
 from abc import ABCMeta, abstractmethod
 from pandas_market_calendars.class_registry import RegisteryMeta
+
 
 def test_inheritance():
     class Base(object):
@@ -9,14 +9,14 @@ def test_inheritance():
             self.kw0 = kw0
             super(Base,self).__init__()
 
-    class Class1(six.with_metaclass(RegisteryMeta,Base)):
+    class Class1(Base, metaclass=RegisteryMeta):
         def __init__(self,arg0,arg1,kw1=None,**kwargs):
             self.arg1 = arg1
             self.kw1 = kw1
             super(Class1, self).__init__(arg0,**kwargs)
     factory1 = Class1._regmeta_instance_factory
     
-    class Class2(six.with_metaclass(RegisteryMeta,Base)):
+    class Class2(Base, metaclass=RegisteryMeta):
         aliases = ["class 2"]
         def __init__(self,arg0,arg2,kw2=None,**kwargs):
             self.arg2 = arg2
@@ -67,10 +67,11 @@ def test_inheritance():
     assert (o.arg0,o.arg2,o.kw0,o.kw2) == ("0","2","k0","k2")
     assert Class2 == o.__class__
 
+
 def test_metamixing():
     BaseMeta = type('BaseMeta', (ABCMeta, RegisteryMeta), {})
 
-    class Base(six.with_metaclass(BaseMeta)):
+    class Base(metaclass=BaseMeta):
         @abstractmethod
         def test(self):
             pass

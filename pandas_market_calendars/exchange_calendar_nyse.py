@@ -23,7 +23,7 @@ from pandas.tseries.holiday import (
 from pytz import timezone
 
 from pandas.tseries.holiday import AbstractHolidayCalendar
-from pandas_market_calendars.us_holidays import (
+from pandas_market_calendars.holidays_us import (
     USNewYearsDay,
     USMartinLutherKingJrAfter1998,
     USLincolnsBirthDayBefore1954,

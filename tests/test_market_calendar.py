@@ -24,7 +24,7 @@ from pandas_market_calendars import get_calendar, get_calendar_names
 from pandas_market_calendars.market_calendar import days_at_time, MarketCalendar, clean_dates
 
 from pandas.tseries.holiday import AbstractHolidayCalendar
-from pandas_market_calendars.us_holidays import (
+from pandas_market_calendars.holidays_us import (
     USNewYearsDay,
     Christmas,
     HurricaneSandyClosings,
@@ -179,12 +179,20 @@ def test_schedule():
 
     expected = pd.Series({'market_open': pd.Timestamp('2016-12-01 03:13:00+0000', tz='UTC', freq='B'),
                           'market_close': pd.Timestamp('2016-12-01 03:49:00+0000', tz='UTC', freq='B')},
-                         name=pd.Timestamp('2016-12-01'), index=['market_open', 'market_close'], dtype=object)
+                         name=pd.Timestamp('2016-12-01'), index=['market_open', 'market_close'])
+    # because of change in pandas in v0.24, pre-0.24 versions need object dtype
+    if pd.__version__ < '0.24':
+        expected = expected.astype(object)
+
     assert_series_equal(results.iloc[0], expected)
 
     expected = pd.Series({'market_open': pd.Timestamp('2016-12-30 03:13:00+0000', tz='UTC', freq='B'),
                           'market_close': pd.Timestamp('2016-12-30 03:49:00+0000', tz='UTC', freq='B')},
-                         name=pd.Timestamp('2016-12-30'), index=['market_open', 'market_close'], dtype=object)
+                         name=pd.Timestamp('2016-12-30'), index=['market_open', 'market_close'])
+    # because of change in pandas in v0.24, pre-0.24 versions need object dtype
+    if pd.__version__ < '0.24':
+        expected = expected.astype(object)
+
     assert_series_equal(results.iloc[-1], expected)
 
     # one day schedule
@@ -211,12 +219,20 @@ def test_schedule_w_times():
 
     expected = pd.Series({'market_open': pd.Timestamp('2016-12-01 04:12:00+0000', tz='UTC', freq='B'),
                           'market_close': pd.Timestamp('2016-12-01 05:13:00+0000', tz='UTC', freq='B')},
-                         name=pd.Timestamp('2016-12-01'), index=['market_open', 'market_close'], dtype=object)
+                         name=pd.Timestamp('2016-12-01'), index=['market_open', 'market_close'])
+    # because of change in pandas in v0.24, pre-0.24 versions need object dtype
+    if pd.__version__ < '0.24':
+        expected = expected.astype(object)
+
     assert_series_equal(results.iloc[0], expected)
 
     expected = pd.Series({'market_open': pd.Timestamp('2016-12-30 04:12:00+0000', tz='UTC', freq='B'),
                           'market_close': pd.Timestamp('2016-12-30 05:13:00+0000', tz='UTC', freq='B')},
-                         name=pd.Timestamp('2016-12-30'), index=['market_open', 'market_close'], dtype=object)
+                         name=pd.Timestamp('2016-12-30'), index=['market_open', 'market_close'])
+    # because of change in pandas in v0.24, pre-0.24 versions need object dtype
+    if pd.__version__ < '0.24':
+        expected = expected.astype(object)
+
     assert_series_equal(results.iloc[-1], expected)
 
 

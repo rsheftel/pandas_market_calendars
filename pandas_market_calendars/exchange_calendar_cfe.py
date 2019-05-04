@@ -10,7 +10,7 @@ from pytz import timezone
 
 from .market_calendar import MarketCalendar
 from pandas.tseries.holiday import AbstractHolidayCalendar
-from .us_holidays import (
+from .holidays_us import (
     USMartinLutherKingJrAfter1998,
     USMemorialDay,
     USBlackFridayInOrAfter1993,

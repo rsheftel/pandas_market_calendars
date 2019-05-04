@@ -87,3 +87,23 @@ Updates
 0.20 (7/2/18)
 ~~~~~~~~~~~~~~
 - Improvements in the internals for how calendars are registered and aliased thanks for PR #45
+
+0.21 (12/2/18)
+~~~~~~~~~~~~~~
+- Added Oslo Stock Exchange (OSE) calendar
+- Added GW Bush Holiday to NYSE calendar from PR #53 and #54
+
+0.22 (3/25/19)
+~~~~~~~~~~~~~~
+- Added Shanghai Stock Exchange (SSE) calendar from PR #58
+- Added HKEX calendar from PR #61
+- Fixed tests for pandas v0.24 and higher
+
+1.0 (3/26/19)
+~~~~~~~~~~~~~
+- Official move to Python3 only support
+- Version moved to 1.0 as the package has been around and stable long enough to warrant a 1.0
+
+1.1 (5/3/19)
+~~~~~~~~~~~~
+- add JPX Ascension Day holidays for 2019 from PR #64
