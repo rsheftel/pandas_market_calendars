@@ -241,13 +241,13 @@ def test_early_close_independence_day_thursday():
     assert nyse.open_at_time(schedule, friday_after) is True
 
 
-def test_all_full_day_holidays_since_1928(request):
+def test_all_full_day_holidays_since_1928():
     """
     Perform a full comparison of all known full day NYSE holidays since 1928/01/01 and
     make sure that it matches.
     """
     # get the expected dates from the csv file
-    expected = pd.read_csv(os.path.join(request.fspath.dirname, 'data', 'nyse_all_full_day_holidays_since_1928.csv'),
+    expected = pd.read_csv(os.path.join(os.path.dirname(__file__), 'data', 'nyse_all_full_day_holidays_since_1928.csv'),
                            index_col=0, parse_dates=True, header=None).index
     del expected.name
 
