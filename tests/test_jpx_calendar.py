@@ -220,9 +220,9 @@ def test_jpx_correctly_counts_jpx_vernal_equinox():
     assert pd.Timestamp('2019-03-20') in jpx_schedule.index
 
 
-def test_all_full_day_holidays_since_1928(request):
+def test_jpx_trading_days_since_1949(request):
     """
-    Perform a full comparison of all known full day NYSE holidays since 1928/01/01 and
+    Perform a full comparison of all known weekday trading days from 1949-05-16 to 2019-05-31 and
     make sure that it matches.
     """
     # get the expected dates from the csv file
