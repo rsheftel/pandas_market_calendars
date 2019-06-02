@@ -5,17 +5,10 @@ from pandas.tseries.holiday import Holiday, sunday_to_monday
 from pandas_market_calendars.jpx_equinox import autumnal_equinox, autumnal_citizen_dates, vernal_equinox
 
 
-# Apr 30 (Tue.)    Abdication Day
-# May 1 (Wed.)    Accession Day
-# May 2 (Thu.)    National Holiday
-# May 3 (Fri.)    Constitution Memorial Day
-# May 4 (Sat.)    Greenery Day
-# May 5 (Sun.)    Children's Day
-# May 6 (Mon.)    Children's Day observed
 AscensionDays = [
-    Timestamp('2019-04-30', tz='UTC'),
-    Timestamp('2019-05-01', tz='UTC'),
-    Timestamp('2019-05-02', tz='UTC'),
+    Timestamp('2019-04-30', tz='UTC'),      # National Holiday
+    Timestamp('2019-05-01', tz='UTC'),      # Ascension Day
+    Timestamp('2019-05-02', tz='UTC'),      # National Holiday
 ]
 
 MarriageDays = [
