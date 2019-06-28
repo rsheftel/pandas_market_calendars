@@ -114,6 +114,10 @@ class MarketCalendar(metaclass=MarketCalendarMeta):
         return []
 
     @property
+    def weekmask(self):
+        return "Mon Tue Wed Thu Fri"
+
+    @property
     def special_opens(self):
         """
         A list of special open times and corresponding AbstractHolidayCalendar.
@@ -189,6 +193,7 @@ class MarketCalendar(metaclass=MarketCalendarMeta):
         return CustomBusinessDay(
             holidays=self.adhoc_holidays,
             calendar=self.regular_holidays,
+            weekmask=self.weekmask,
         )
 
     def valid_days(self, start_date, end_date, tz='UTC'):
