@@ -15,7 +15,7 @@
 # limitations under the License.
 
 from itertools import compress
-from abc import ABCMeta,abstractmethod
+from abc import ABCMeta, abstractmethod
 import pandas as pd
 from pandas import DataFrame, DatetimeIndex
 from pandas.tseries.offsets import CustomBusinessDay
@@ -23,7 +23,9 @@ from .class_registry import RegisteryMeta
 
 MONDAY, TUESDAY, WEDNESDAY, THURSDAY, FRIDAY, SATURDAY, SUNDAY = range(7)
 
-MarketCalendarMeta = type('MarketCalendarMeta', (ABCMeta, RegisteryMeta), {})
+
+class MarketCalendarMeta(ABCMeta, RegisteryMeta):
+    pass
 
 
 class MarketCalendar(metaclass=MarketCalendarMeta):
@@ -41,21 +43,21 @@ class MarketCalendar(metaclass=MarketCalendarMeta):
         self._close_time = self.close_time_default if close_time is None else close_time
 
     @classmethod
-    def factory(self, name, open_time=None, close_time=None):
+    def factory(cls, name, open_time=None, close_time=None):
         """
         :param name: The name of the MarketCalendar to be retrieved.
         :param open_time: Market open time override as datetime.time object. If None then default is used.
         :param close_time: Market close time override as datetime.time object. If None then default is used.
         :return: MarketCalendar of the desired calendar.
         """
-        return self._regmeta_instance_factory(name, open_time=open_time, close_time=close_time)
+        return cls._regmeta_instance_factory(name, open_time=open_time, close_time=close_time)
 
     @classmethod
     def calendar_names(cls):
         """All Market Calendar names and aliases that can be used in "factory"
         :return: list(str)
         """
-        return [cal for cal in cls._regmeta_classes() if cal!='MarketCalendar']
+        return [cal for cal in cls._regmeta_classes() if cal != 'MarketCalendar']
 
     @property
     @abstractmethod
@@ -219,7 +221,7 @@ class MarketCalendar(metaclass=MarketCalendarMeta):
         :return: schedule DataFrame
         """
         start_date, end_date = clean_dates(start_date, end_date)
-        if not(start_date <= end_date):
+        if not (start_date <= end_date):
             raise ValueError('start_date must be before or equal to end_date.')
 
         # Setup all valid trading days
@@ -312,6 +314,7 @@ class MarketCalendar(metaclass=MarketCalendarMeta):
             start,
             end,
         )
+
 
 def days_at_time(days, t, tz, day_offset=0):
     """
