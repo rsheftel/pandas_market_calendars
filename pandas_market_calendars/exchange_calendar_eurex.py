@@ -112,6 +112,7 @@ class EUREXExchangeCalendar(MarketCalendar):
             GoodFriday,
             EasterMonday,
             MayBank,
+            GermanNationalDay,
             Christmas,
             WeekendChristmas,
             BoxingDay,
