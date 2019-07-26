@@ -38,7 +38,7 @@ MayBank = Holiday(
     days_of_week=(MONDAY, TUESDAY, WEDNESDAY, THURSDAY, FRIDAY),
 )
 # German National Holiday (Tag der Deutschen Einheit)
-GermanNationalDay = Holdiay(
+GermanNationalDay = Holiday(
     'Tag der Deutschen Einheit',
     month=10,
     day=3,
