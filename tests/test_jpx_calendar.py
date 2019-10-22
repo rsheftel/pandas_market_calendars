@@ -1,6 +1,8 @@
+import os
 import datetime
 
 import pandas as pd
+from pandas.util.testing import assert_index_equal
 import pytz
 
 from pandas_market_calendars.exchange_calendar_jpx import JPXExchangeCalendar
@@ -11,7 +13,7 @@ def test_time_zone():
     assert JPXExchangeCalendar().name == 'JPX'
 
 
-def test_all_holidays():
+def test_2017_jpx_holidays():
     jpx_calendar = JPXExchangeCalendar()
 
     # holidays we expect
@@ -40,6 +42,10 @@ def test_all_holidays():
     for session_label in holidays_2017:
         assert session_label not in valid_days
 
+
+def test_2018_jpx_holidays():
+    jpx_calendar = JPXExchangeCalendar()
+
     # holidays we expect
     holidays_2018 = [
         pd.Timestamp("2018-01-01", tz='UTC'),
@@ -67,7 +73,11 @@ def test_all_holidays():
     for session_label in holidays_2018:
         assert session_label not in valid_days
 
-    # holidays we expect
+
+def test_jpx_2019_holidays():
+    jpx_calendar = JPXExchangeCalendar()
+
+    # holidays we expect in 2019 (calendar changes for new Emperor)
     holidays_2019 = [
         pd.Timestamp("2019-01-01", tz='UTC'),
         pd.Timestamp("2019-01-02", tz='UTC'),
@@ -87,14 +97,76 @@ def test_all_holidays():
         pd.Timestamp("2019-09-16", tz='UTC'),
         pd.Timestamp("2019-09-23", tz='UTC'),
         pd.Timestamp("2019-10-14", tz='UTC'),
+        pd.Timestamp("2019-10-22", tz='UTC'),
         pd.Timestamp("2019-11-04", tz='UTC'),
         pd.Timestamp("2019-11-23", tz='UTC'),
-        pd.Timestamp("2019-12-23", tz='UTC'),
         pd.Timestamp("2019-12-31", tz='UTC'),
     ]
 
     valid_days = jpx_calendar.valid_days(pd.Timestamp('2019-01-01'), pd.Timestamp('2019-12-31'))
     for session_label in holidays_2019:
+        assert session_label not in valid_days
+
+
+def test_jpx_2020_holidays():
+    jpx_calendar = JPXExchangeCalendar()
+
+    # holidays we expect in 2020 (calendar changes for Olympics)
+    holidays_2020 = [
+        pd.Timestamp("2020-01-01", tz='UTC'),
+        pd.Timestamp("2020-01-02", tz='UTC'),
+        pd.Timestamp("2020-01-03", tz='UTC'),
+        pd.Timestamp("2020-01-13", tz='UTC'),
+        pd.Timestamp("2020-02-11", tz='UTC'),
+        pd.Timestamp("2020-02-24", tz='UTC'),   # from 2/23
+        pd.Timestamp("2020-03-20", tz='UTC'),
+        pd.Timestamp("2020-04-29", tz='UTC'),
+        pd.Timestamp("2020-05-03", tz='UTC'),
+        pd.Timestamp("2020-05-04", tz='UTC'),
+        pd.Timestamp("2020-05-05", tz='UTC'),
+        pd.Timestamp("2020-07-23", tz='UTC'),   # sea day
+        pd.Timestamp("2020-07-24", tz='UTC'),   # sports day
+        pd.Timestamp("2020-08-10", tz='UTC'),   # mountain day
+        pd.Timestamp("2020-09-21", tz='UTC'),
+        pd.Timestamp("2020-09-22", tz='UTC'),
+        pd.Timestamp("2020-11-03", tz='UTC'),
+        pd.Timestamp("2020-11-23", tz='UTC'),
+        pd.Timestamp("2020-12-31", tz='UTC'),
+    ]
+
+    valid_days = jpx_calendar.valid_days(pd.Timestamp('2020-01-01'), pd.Timestamp('2020-12-31'))
+    for session_label in holidays_2020:
+        assert session_label not in valid_days
+
+
+def test_jpx_2021_holidays():
+    jpx_calendar = JPXExchangeCalendar()
+
+    # holidays we expect in 2021 (regular calendar generation resumed)
+    holidays_2021 = [
+        pd.Timestamp("2021-01-01", tz='UTC'),
+        pd.Timestamp("2021-01-02", tz='UTC'),
+        pd.Timestamp("2021-01-03", tz='UTC'),
+        pd.Timestamp("2021-01-11", tz='UTC'),
+        pd.Timestamp("2021-02-11", tz='UTC'),
+        pd.Timestamp("2021-02-23", tz='UTC'),
+        pd.Timestamp("2021-03-20", tz='UTC'),
+        pd.Timestamp("2021-04-29", tz='UTC'),
+        pd.Timestamp("2021-05-03", tz='UTC'),
+        pd.Timestamp("2021-05-04", tz='UTC'),
+        pd.Timestamp("2021-05-05", tz='UTC'),
+        pd.Timestamp("2021-07-19", tz='UTC'),
+        pd.Timestamp("2021-08-11", tz='UTC'),
+        pd.Timestamp("2021-09-20", tz='UTC'),
+        pd.Timestamp("2021-09-23", tz='UTC'),
+        pd.Timestamp("2021-10-11", tz='UTC'),
+        pd.Timestamp("2021-11-03", tz='UTC'),
+        pd.Timestamp("2021-11-23", tz='UTC'),
+        pd.Timestamp("2021-12-31", tz='UTC'),
+    ]
+
+    valid_days = jpx_calendar.valid_days(pd.Timestamp('2021-01-01'), pd.Timestamp('2021-12-31'))
+    for session_label in holidays_2021:
         assert session_label not in valid_days
 
 
@@ -146,3 +218,32 @@ def test_jpx_correctly_counts_jpx_vernal_equinox():
 
     assert pd.Timestamp('2019-03-21') not in jpx_schedule.index
     assert pd.Timestamp('2019-03-20') in jpx_schedule.index
+
+
+def test_jpx_trading_days_since_1949(request):
+    """
+    Perform a full comparison of all known weekday trading days from 1949-05-16 to 2019-05-31 and
+    make sure that it matches.
+    """
+    # get the expected dates from the csv file
+    expected = pd.read_csv(os.path.join(
+        request.fspath.dirname, 'data', 'jpx_open_weekdays_since_1949.csv'),
+                           index_col=0, parse_dates=True).index
+    del expected.name
+
+    # calculated expected going direct to the underlying regular and ad_hoc calendars
+    jpx_calendar = JPXExchangeCalendar()
+    start_date = expected[0]
+    end_date = expected[-1]
+    reg_holidays = jpx_calendar.regular_holidays.holidays(start_date, end_date)
+    adhoc_dates = map(lambda dt: dt.tz_localize(None), jpx_calendar.adhoc_holidays)
+    adhoc_index = pd.DatetimeIndex(adhoc_dates).sort_values()
+    slice_locs = adhoc_index.slice_locs(start_date, end_date)
+    adhoc_holidays = adhoc_index[slice_locs[0]:slice_locs[1]]
+    holidays = reg_holidays
+    holidays = holidays.append(adhoc_holidays)
+    holidays = holidays.sort_values().unique()
+    day_generator = pd.offsets.CustomBusinessDay(holidays=holidays)
+    actual = pd.date_range(start_date, end_date, freq=day_generator)
+
+    assert_index_equal(expected, actual)

@@ -1,17 +1,18 @@
 from datetime import time
+from itertools import chain
 
-from dateutil.relativedelta import MO
-from pandas import DateOffset
-from pandas.tseries.holiday import Holiday, sunday_to_monday
+from pandas import Timestamp
 from pytz import timezone
 
 from pandas.tseries.holiday import AbstractHolidayCalendar
 from pandas_market_calendars.holidays_us import USNewYearsDay
-from pandas_market_calendars.holidays_jp import AscensionDays
-
+from pandas_market_calendars.holidays_jp import *
 from pandas_market_calendars import MarketCalendar
-from pandas_market_calendars.jpx_equinox import autumnal_equinox, vernal_equinox
 
+# TODO:
+# From 1949 to 1972 the TSE was open on all non-holiday Saturdays for a half day
+# From 1973 to 1984 the TSE was open on all non-holiday Saturdays except the third Saturday of the month
+# need to add support for weekmask to make this work properly
 
 class JPXExchangeCalendar(MarketCalendar):
     """
@@ -45,119 +46,59 @@ class JPXExchangeCalendar(MarketCalendar):
 
     @property
     def adhoc_holidays(self):
-        return list(AscensionDays)
+        return list(chain(
+            AscensionDays,
+            MarriageDays,
+            FuneralShowa,
+            EnthronementDays,
+            AutumnalCitizenDates,
+            NoN225IndexPrices
+        ))
     @property
     def regular_holidays(self):
         return AbstractHolidayCalendar(rules=[
             USNewYearsDay,
-            Holiday(
-                name="New Year's Day",
-                month=1,
-                day=2,
-                observance=sunday_to_monday,
-            ),
-            Holiday(
-                name="New Year's Day",
-                month=1,
-                day=3,
-                observance=sunday_to_monday,
-            ),
-            Holiday(  # second monday of january
-                name="Coming of Age Day",
-                month=1,
-                day=1,
-                offset=DateOffset(weekday=MO(2)),
-            ),
-            Holiday(
-                name="National foundation day",
-                month=2,
-                day=11,
-                observance=sunday_to_monday,
-            ),
-            Holiday(
-                name="Vernal Equinox",
-                month=3,
-                day=20,
-                observance=vernal_equinox
-            ),
-            Holiday(
-                name="Showa day",
-                month=4,
-                day=29,
-                observance=sunday_to_monday,
-            ),
-            Holiday(
-                name="Constitution memorial day",
-                month=5,
-                day=3,
-                observance=sunday_to_monday,
-            ),
-            Holiday(
-                name="Greenery day",
-                month=5,
-                day=4,
-                observance=sunday_to_monday,
-            ),
-            Holiday(
-                name="Children's day",
-                month=5,
-                day=5,
-                observance=sunday_to_monday,
-            ),
-            Holiday(
-                name="Marine day",
-                month=7,
-                day=1,
-                offset=DateOffset(weekday=MO(3)),
-            ),
-            Holiday(
-                name="Mountain day",
-                month=8,
-                day=11,
-                observance=sunday_to_monday,
-            ),
-            Holiday(
-                name="Respect for the aged day",
-                month=9,
-                day=1,
-                offset=DateOffset(weekday=MO(3)),
-            ),
-            Holiday(
-                name="Autumnal equinox",
-                month=9,
-                day=22,
-                observance=autumnal_equinox,
-            ),
-            Holiday(
-                name="Health and sports day",
-                month=10,
-                day=1,
-                offset=DateOffset(weekday=MO(2)),
-            ),
-            Holiday(
-                name="Culture day",
-                month=11,
-                day=3,
-                observance=sunday_to_monday,
-            ),
-            Holiday(
-                name="Labor Thanksgiving Day",
-                month=11,
-                day=23,
-                observance=sunday_to_monday,
-            ),
-            Holiday(
-                name="Emperor's Birthday",
-                month=12,
-                day=23,
-                observance=sunday_to_monday,
-            ),
-            Holiday(
-                name="Before New Year's Day",
-                month=12,
-                day=31,
-                observance=sunday_to_monday,
-            ),
+            JapanNewYearsDay2,
+            JapanNewYearsDay3,
+            JapanComingOfAgeDay1951To1973,
+            JapanComingOfAgeDay1974To1999,
+            JapanComingOfAgeDay,
+            JapanNationalFoundationDay1969To1973,
+            JapanNationalFoundationDay,
+            JapanEmperorsBirthday,
+            JapanVernalEquinox,
+            JapanShowaDayUntil1972,
+            JapanShowaDay,
+            JapanConstitutionMemorialDayUntil1972,
+            JapanConstitutionMemorialDay,
+            JapanGreeneryDay,
+            JapanChildrensDayUntil1972,
+            JapanChildrensDay,
+            JapanGoldenWeekBonusDay,
+            JapanMarineDay1996To2002,
+            JapanMarineDay2003To2019,
+            JapanMarineDay2020,
+            JapanMarineDay,
+            JapanMountainDay2016to2019,
+            JapanMountainDay2020,
+            JapanMountainDay,
+            JapanRespectForTheAgedDay1966To1972,
+            JapanRespectForTheAgedDay1973To2002,
+            JapanRespectForTheAgedDay,
+            JapanAutumnalEquinox,
+            JapanHealthAndSportsDay1966To1972,
+            JapanHealthAndSportsDay1973To1999,
+            JapanHealthAndSportsDay2000To2019,
+            JapanSportsDay2020,
+            JapanSportsDay,
+            JapanCultureDayUntil1972,
+            JapanCultureDay,
+            JapanLaborThanksgivingDayUntil1972,
+            JapanLaborThanksgivingDay,
+            JapanEmperorAkahitosBirthday,
+            JapanDecember29Until1988,
+            JapanDecember30Until1988,
+            JapanBeforeNewYearsDay,
         ])
 
     @staticmethod
