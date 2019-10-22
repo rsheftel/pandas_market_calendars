@@ -4,7 +4,6 @@ https://packaging.python.org/en/latest/distributing.html
 https://github.com/rsheftel/pandas_market_calendars
 """
 
-# Always prefer setuptools over distutils
 from setuptools import setup, find_packages
 # To use a consistent encoding
 from codecs import open
@@ -63,13 +62,5 @@ setup(
     # simple. Or you can use find_packages().
     packages=find_packages(exclude=['docs', 'examples', 'tests']),
 
-    # Alternatively, if you want to distribute just a my_module.py, uncomment
-    # this:
-    #   py_modules=["my_module"],
-
-    # List run-time dependencies here.  These will be installed by pip when
-    # your project is installed. For an analysis of "install_requires" vs pip's
-    # requirements files see:
-    # https://packaging.python.org/en/latest/requirements.html
     install_requires=['pandas>=0.18', 'pytz']
 )
