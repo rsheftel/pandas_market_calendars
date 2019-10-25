@@ -108,7 +108,7 @@ Updates
 ~~~~~~~~~~~~
 - add JPX Ascension Day holidays for 2019 from PR #64
 
-1.2 (XX/XX/XX)
+1.2 (10/22/19)
 ~~~~~~~~~~~~~~
 - Support calendars with valid business days on the weekend (PR #75)
 - Fixed SSE 2019 labour's day holidays (PR #74)

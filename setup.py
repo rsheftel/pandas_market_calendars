@@ -1,36 +1,51 @@
-"""A setuptools based setup module.
+"""
+A setuptools based setup module.
 See:
 https://packaging.python.org/en/latest/distributing.html
-https://github.com/rsheftel/pandas_market_calendars
 """
 
+import sys
 from setuptools import setup, find_packages
-# To use a consistent encoding
-from codecs import open
 from os import path
 
-here = path.abspath(path.dirname(__file__))
+# version
+VERSION = '1.2'
+
+# requirements
+REQUIRED_PYTHON = '>=3.3.0'
+REQUIRED_PACKAGES = ['pandas>=0.18', 'pytz']
+
+# Package meta-data
+NAME = 'pandas_market_calendars'
+DESCRIPTION = 'Market and exchange trading calendars for pandas'
+SOURCE_URL = 'https://github.com/rsheftel/pandas_market_calendars'
+DOCS_URL = 'https://pandas-market-calendars.readthedocs.io/en/latest/'
+AUTHOR = 'Ryan Sheftel'
+EMAIL = 'rsheftel@alumni.upenn.edu'
+LICENSE = 'MIT'
+
+# ----- items below do not generally change ------- #
 
 # Get the long description from the README file
+here = path.abspath(path.dirname(__file__))
 with open(path.join(here, 'README.rst'), encoding='utf-8') as f:
     long_description = f.read()
 
 setup(
-    name='pandas_market_calendars',
-    version='1.2',
-
-    description='Market and exchange trading calendars for pandas',
+    # meta data
+    name=NAME,
+    version=VERSION,
+    description=DESCRIPTION,
     long_description=long_description,
-
-    # The project's main homepage.
-    url='https://github.com/rsheftel/pandas_market_calendars',
-
-    # Author details
-    author='Ryan Sheftel',
-    author_email='rsheftel@alumni.upenn.edu',
-
-    # Choose your license
-    license='MIT',
+    long_description_content_type='text/x-rst',
+    url=SOURCE_URL,
+    author=AUTHOR,
+    author_email=EMAIL,
+    license=LICENSE,
+    project_urls={
+        'Documentation': DOCS_URL,
+        'Source': SOURCE_URL,
+    },
 
     # See https://pypi.python.org/pypi?%3Aaction=list_classifiers
     classifiers=[
@@ -46,8 +61,7 @@ setup(
         # Pick your license as you wish (should match "license" above)
         'License :: OSI Approved :: MIT License',
 
-        # Specify the Python versions you support here. In particular, ensure
-        # that you indicate whether you support Python 2, Python 3 or both.
+        # Specify the Python versions you support here.
         'Programming Language :: Python :: 3.3',
         'Programming Language :: Python :: 3.4',
         'Programming Language :: Python :: 3.5',
@@ -58,9 +72,9 @@ setup(
     # What does your project relate to?
     keywords='trading exchanges markets OTC datetime holiday business days',
 
-    # You can just specify the packages manually here if your project is
-    # simple. Or you can use find_packages().
+    # requirements
     packages=find_packages(exclude=['docs', 'examples', 'tests']),
-
-    install_requires=['pandas>=0.18', 'pytz']
+    python_requires=REQUIRED_PYTHON,
+    install_requires=REQUIRED_PACKAGES,
+    tests_require=['pytest'],
 )

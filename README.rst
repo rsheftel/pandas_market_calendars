@@ -118,6 +118,15 @@ Quick Start
                    '2012-07-10 20:00:00+00:00'],
                   dtype='datetime64[ns, UTC]', freq=None)
 
+Contributing
+------------
+All improvements and additional (and corrections) in the form of pull requests are welcome. This package will grow in
+value and correctness the more eyes are on it.
+
+To add new functionality please include tests which are in standard pytest format. 
+
+Use pytest to run the test suite.
+
 Future
 ------
 This package is open sourced under the MIT license. Everyone is welcome to add more exchanges or OTC markets, confirm
