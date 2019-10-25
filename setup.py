@@ -11,7 +11,7 @@ from os import path
 VERSION = '1.2'
 
 # requirements
-REQUIRED_PYTHON = '>=3.3.0'
+REQUIRED_PYTHON = '>=3.4.0'
 REQUIRED_PACKAGES = ['pandas>=0.18', 'pytz']
 
 # Package meta-data
@@ -61,7 +61,6 @@ setup(
         'License :: OSI Approved :: MIT License',
 
         # Specify the Python versions you support here.
-        'Programming Language :: Python :: 3.3',
         'Programming Language :: Python :: 3.4',
         'Programming Language :: Python :: 3.5',
         'Programming Language :: Python :: 3.6',
