@@ -35,8 +35,12 @@ their excellent work to Quantopian.
 
 As of v1.0 this package only works with Python3. This is consistent with Pandas dropping support for Python2.
 
+Source location
+~~~~~~~~~~~~~~~
+Hosted on GitHub: https://github.com/rsheftel/pandas_market_calendars
+
 Installation
-------------
+~~~~~~~~~~~~
 ``pip install pandas_market_calendars``
 
 Arch Linux package available here: https://aur.archlinux.org/packages/python-pandas_market_calendars/
