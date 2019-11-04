@@ -1,4 +1,5 @@
 from abc import ABCMeta, abstractmethod
+
 from pandas_market_calendars.class_registry import RegisteryMeta
 
 

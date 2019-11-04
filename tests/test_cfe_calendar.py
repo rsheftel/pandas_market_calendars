@@ -1,5 +1,6 @@
 
 import pandas as pd
+
 from pandas_market_calendars.exchange_calendar_cfe import CFEExchangeCalendar
 
 

@@ -14,23 +14,18 @@
 # limitations under the License.
 
 from datetime import time
-import pandas as pd
-from pytz import timezone
-from pandas.util.testing import assert_series_equal, assert_frame_equal, assert_index_equal
 from itertools import chain
+
+import pandas as pd
 import pytest
+from pandas.tseries.holiday import AbstractHolidayCalendar
+from pandas.util.testing import assert_frame_equal, assert_index_equal, assert_series_equal
+from pytz import timezone
 
 from pandas_market_calendars import get_calendar, get_calendar_names
-from pandas_market_calendars.market_calendar import days_at_time, MarketCalendar, clean_dates
-
-from pandas.tseries.holiday import AbstractHolidayCalendar
-from pandas_market_calendars.holidays_us import (
-    USNewYearsDay,
-    Christmas,
-    HurricaneSandyClosings,
-    USNationalDaysofMourning,
-    MonTuesThursBeforeIndependenceDay
-)
+from pandas_market_calendars.holidays_us import (Christmas, HurricaneSandyClosings, MonTuesThursBeforeIndependenceDay,
+                                                 USNationalDaysofMourning, USNewYearsDay)
+from pandas_market_calendars.market_calendar import MarketCalendar, clean_dates, days_at_time
 
 
 class FakeCalendar(MarketCalendar):

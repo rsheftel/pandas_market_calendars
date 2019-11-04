@@ -14,19 +14,11 @@
 # limitations under the License.
 
 from datetime import time
-from pandas.tseries.holiday import (
-    Holiday,
-    Easter,
-    Day,
-    GoodFriday,
-)
-from pytz import timezone
-from pandas.tseries.holiday import AbstractHolidayCalendar
 
-from .market_calendar import (
-    MarketCalendar,
-    FRIDAY,
-)
+from pandas.tseries.holiday import AbstractHolidayCalendar, Day, Easter, GoodFriday, Holiday
+from pytz import timezone
+
+from .market_calendar import (FRIDAY, MarketCalendar)
 
 # Universal Confraternization (new years day)
 ConfUniversal = Holiday(

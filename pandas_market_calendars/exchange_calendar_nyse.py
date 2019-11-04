@@ -16,60 +16,29 @@
 from datetime import time
 from itertools import chain
 
-from pandas.tseries.holiday import (
-    GoodFriday,
-    USLaborDay,
-)
+from pandas.tseries.holiday import AbstractHolidayCalendar, GoodFriday, USLaborDay
 from pytz import timezone
 
-from pandas.tseries.holiday import AbstractHolidayCalendar
-from pandas_market_calendars.holidays_us import (
-    USNewYearsDay,
-    USMartinLutherKingJrAfter1998,
-    USLincolnsBirthDayBefore1954,
-    USWashingtonsBirthDayBefore1964,
-    USWashingtonsBirthDay1964to1970,
-    USPresidentsDay,
-    USThanksgivingDayBefore1939,
-    USThanksgivingDay1939to1941,
-    USThanksgivingDay,
-    USMemorialDayBefore1964,
-    USMemorialDay1964to1969,
-    USMemorialDay,
-    USIndependenceDayBefore1954,
-    USIndependenceDay,
-    USElectionDay1848to1967,
-    USElectionDay1968to1980,
-    USVeteransDay1934to1953,
-    USColumbusDayBefore1954,
-    ChristmasBefore1954,
-    Christmas,
-    MonTuesThursBeforeIndependenceDay,
-    FridayAfterIndependenceDayPre2013,
-    WednesdayBeforeIndependenceDayPost2013,
-    USBlackFridayBefore1993,
-    USBlackFridayInOrAfter1993,
-    November29BacklogRelief,
-    March33BankHoliday,
-    August45VictoryOverJapan,
-    ChristmasEvesAdhoc,
-    DayAfterChristmasAdhoc,
-    DayBeforeDecorationAdhoc,
-    LincolnsBirthDayAdhoc,
-    PaperworkCrisis68,
-    DayAfterIndependenceDayAdhoc,
-    WeatherSnowClosing,
-    FirstLunarLandingClosing,
-    NewYorkCityBlackout77,
-    September11Closings,
-    HurricaneGloriaClosings,
-    HurricaneSandyClosings,
-    USNationalDaysofMourning,
-    ChristmasEveBefore1993,
-    ChristmasEveInOrAfter1993,
-)
-
 from pandas_market_calendars import MarketCalendar
+from pandas_market_calendars.holidays_us import (August45VictoryOverJapan, Christmas, ChristmasBefore1954,
+                                                 ChristmasEveBefore1993, ChristmasEveInOrAfter1993, ChristmasEvesAdhoc,
+                                                 DayAfterChristmasAdhoc, DayAfterIndependenceDayAdhoc,
+                                                 DayBeforeDecorationAdhoc, FirstLunarLandingClosing,
+                                                 FridayAfterIndependenceDayPre2013, HurricaneGloriaClosings,
+                                                 HurricaneSandyClosings, LincolnsBirthDayAdhoc, March33BankHoliday,
+                                                 MonTuesThursBeforeIndependenceDay, NewYorkCityBlackout77,
+                                                 November29BacklogRelief, PaperworkCrisis68, September11Closings,
+                                                 USBlackFridayBefore1993, USBlackFridayInOrAfter1993,
+                                                 USColumbusDayBefore1954, USElectionDay1848to1967,
+                                                 USElectionDay1968to1980, USIndependenceDay,
+                                                 USIndependenceDayBefore1954, USLincolnsBirthDayBefore1954,
+                                                 USMartinLutherKingJrAfter1998, USMemorialDay, USMemorialDay1964to1969,
+                                                 USMemorialDayBefore1964, USNationalDaysofMourning, USNewYearsDay,
+                                                 USPresidentsDay, USThanksgivingDay, USThanksgivingDay1939to1941,
+                                                 USThanksgivingDayBefore1939, USVeteransDay1934to1953,
+                                                 USWashingtonsBirthDay1964to1970, USWashingtonsBirthDayBefore1964,
+                                                 WeatherSnowClosing, WednesdayBeforeIndependenceDayPost2013)
+
 # Useful resources for making changes to this file:
 # http://www.nyse.com/pdfs/closings.pdf
 # http://www.stevemorse.org/jcal/whendid.html

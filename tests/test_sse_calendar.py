@@ -1,7 +1,6 @@
 import datetime
 
 import pandas as pd
-from pandas import Timestamp
 import pytz
 
 from pandas_market_calendars.exchange_calendar_sse import SSEExchangeCalendar

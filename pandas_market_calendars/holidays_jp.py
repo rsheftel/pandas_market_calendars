@@ -1,9 +1,8 @@
 from dateutil.relativedelta import MO
-
 from pandas import DateOffset, Timestamp
 from pandas.tseries.holiday import Holiday, sunday_to_monday
-from pandas_market_calendars.jpx_equinox import autumnal_equinox, autumnal_citizen_dates, vernal_equinox
 
+from pandas_market_calendars.jpx_equinox import autumnal_citizen_dates, autumnal_equinox, vernal_equinox
 
 AscensionDays = [
     Timestamp('2019-04-30', tz='UTC'),      # National Holiday

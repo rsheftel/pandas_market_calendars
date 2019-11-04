@@ -1,12 +1,14 @@
 """
 Utilities to use with market_calendars
 """
-import pandas as pd
-
 ################## >>> Deprecated (remove in future releases)
 import warnings
 from collections.abc import MutableMapping
+
+import pandas as pd
+
 from . import calendar_registry
+
 
 class DeprecatedRegistry(MutableMapping):
 

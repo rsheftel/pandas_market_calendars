@@ -14,10 +14,11 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-from .market_calendar import MarketCalendar
-from .calendar_registry import get_calendar, get_calendar_names
-from .calendar_utils import merge_schedules, date_range, convert_freq
 import pkg_resources
+
+from .calendar_registry import get_calendar, get_calendar_names
+from .calendar_utils import convert_freq, date_range, merge_schedules
+from .market_calendar import MarketCalendar
 
 # if running in development there may not be a package
 try:
@@ -28,6 +29,7 @@ except pkg_resources.DistributionNotFound:
 __all__ = [
     'MarketCalendar',
     'get_calendar',
+    'get_calendar_names',
     'merge_schedules',
     'date_range',
     'convert_freq'

@@ -3,18 +3,11 @@
 #
 
 from datetime import time
-from pandas.tseries.holiday import (
-    Holiday,
-    previous_friday,
-    GoodFriday,
-    EasterMonday,
-)
+
+from pandas.tseries.holiday import AbstractHolidayCalendar, EasterMonday, GoodFriday, Holiday, previous_friday
 from pytz import timezone
-from pandas.tseries.holiday import AbstractHolidayCalendar
-from .market_calendar import (
-    MarketCalendar,
-    MONDAY, TUESDAY, WEDNESDAY, THURSDAY, FRIDAY
-)
+
+from .market_calendar import (FRIDAY, MONDAY, MarketCalendar, THURSDAY, TUESDAY, WEDNESDAY)
 
 # New Year's Eve
 EUREXNewYearsEve = Holiday(

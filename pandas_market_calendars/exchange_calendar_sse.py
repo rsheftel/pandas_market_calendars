@@ -1,13 +1,8 @@
 from datetime import time, timedelta
 from functools import partial
 
-from dateutil.relativedelta import MO
-from pandas import DateOffset, Timestamp
-from pandas.tseries.holiday import Holiday, next_monday, sunday_to_monday
+from pandas.tseries.holiday import AbstractHolidayCalendar, Holiday, next_monday
 from pytz import timezone
-
-from pandas.tseries.holiday import AbstractHolidayCalendar
-from pandas_market_calendars.holidays_us import USNewYearsDay
 
 from pandas_market_calendars import MarketCalendar
 from .holidays_cn import *

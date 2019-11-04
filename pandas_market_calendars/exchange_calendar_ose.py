@@ -1,12 +1,7 @@
 from datetime import time
 
-from pandas.tseries.holiday import AbstractHolidayCalendar
-from pandas.tseries.holiday import (
-    Holiday,
-    GoodFriday,
-    EasterMonday
-)
-from pandas.tseries.offsets import Easter, Day
+from pandas.tseries.holiday import AbstractHolidayCalendar, EasterMonday, GoodFriday, Holiday
+from pandas.tseries.offsets import Day, Easter
 from pytz import timezone
 
 from .market_calendar import MarketCalendar

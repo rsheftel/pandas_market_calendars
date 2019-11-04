@@ -1,9 +1,9 @@
-import os
 import datetime
+import os
 
 import pandas as pd
-from pandas.util.testing import assert_index_equal
 import pytz
+from pandas.util.testing import assert_index_equal
 
 from pandas_market_calendars.exchange_calendar_jpx import JPXExchangeCalendar
 

@@ -14,30 +14,15 @@
 # limitations under the License.
 
 from datetime import time
-from pytz import timezone
 from itertools import chain
-from pandas.tseries.holiday import AbstractHolidayCalendar
+
+from pandas.tseries.holiday import AbstractHolidayCalendar, EasterMonday, GoodFriday
+from pytz import timezone
+
+from .holidays_uk import (BankHoliday, BoxingDay, Christmas, ChristmasEve, LSENewYearsDay, LSENewYearsEve, MayBank,
+                          QueensJubilee, SpringBank, SummerBank, WeekendBoxingDay, WeekendChristmas)
 from .market_calendar import (
     MarketCalendar
-)
-
-from pandas.tseries.holiday import (
-    GoodFriday,
-    EasterMonday,
-)
-from .holidays_uk import (
-    LSENewYearsEve,
-    LSENewYearsDay,
-    MayBank,
-    SpringBank,
-    SummerBank,
-    ChristmasEve,
-    Christmas,
-    WeekendChristmas,
-    BoxingDay,
-    WeekendBoxingDay,
-    BankHoliday,
-    QueensJubilee
 )
 
 

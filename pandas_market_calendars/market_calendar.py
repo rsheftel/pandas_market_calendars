@@ -14,11 +14,13 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-from itertools import compress
 from abc import ABCMeta, abstractmethod
+from itertools import compress
+
 import pandas as pd
 from pandas import DataFrame, DatetimeIndex
 from pandas.tseries.offsets import CustomBusinessDay
+
 from .class_registry import RegisteryMeta
 
 MONDAY, TUESDAY, WEDNESDAY, THURSDAY, FRIDAY, SATURDAY, SUNDAY = range(7)

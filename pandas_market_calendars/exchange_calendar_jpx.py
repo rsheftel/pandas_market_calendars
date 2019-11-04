@@ -1,13 +1,13 @@
 from datetime import time
 from itertools import chain
 
-from pandas import Timestamp
+from pandas.tseries.holiday import AbstractHolidayCalendar
 from pytz import timezone
 
-from pandas.tseries.holiday import AbstractHolidayCalendar
-from pandas_market_calendars.holidays_us import USNewYearsDay
-from pandas_market_calendars.holidays_jp import *
 from pandas_market_calendars import MarketCalendar
+from pandas_market_calendars.holidays_jp import *
+from pandas_market_calendars.holidays_us import USNewYearsDay
+
 
 # TODO:
 # From 1949 to 1972 the TSE was open on all non-holiday Saturdays for a half day

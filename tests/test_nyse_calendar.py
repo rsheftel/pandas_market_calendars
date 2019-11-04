@@ -1,8 +1,10 @@
 
+import os
+
 import pandas as pd
 import pytz
-import os
 from pandas.testing import assert_index_equal
+
 from pandas_market_calendars.exchange_calendar_nyse import NYSEExchangeCalendar
 
 

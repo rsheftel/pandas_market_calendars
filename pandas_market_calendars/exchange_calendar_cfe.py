@@ -1,23 +1,11 @@
 from datetime import time
 
-from pandas.tseries.holiday import (
-    USPresidentsDay,
-    USLaborDay,
-    USThanksgivingDay,
-    GoodFriday
-)
+from pandas.tseries.holiday import AbstractHolidayCalendar, GoodFriday, USLaborDay, USPresidentsDay, USThanksgivingDay
 from pytz import timezone
 
+from .holidays_us import (Christmas, USBlackFridayInOrAfter1993, USIndependenceDay, USMartinLutherKingJrAfter1998,
+                          USMemorialDay, USNewYearsDay)
 from .market_calendar import MarketCalendar
-from pandas.tseries.holiday import AbstractHolidayCalendar
-from .holidays_us import (
-    USMartinLutherKingJrAfter1998,
-    USMemorialDay,
-    USBlackFridayInOrAfter1993,
-    USNewYearsDay,
-    USIndependenceDay,
-    Christmas
-)
 
 
 class CFEExchangeCalendar(MarketCalendar):

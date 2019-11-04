@@ -2,16 +2,13 @@ from datetime import time, timedelta
 from functools import partial
 
 from pandas import DateOffset, Timestamp
+from pandas.tseries.holiday import AbstractHolidayCalendar, EasterMonday, GoodFriday, Holiday, sunday_to_monday
 from pandas.tseries.offsets import LastWeekOfMonth, WeekOfMonth
-from pandas.tseries.holiday import Holiday, GoodFriday, EasterMonday, sunday_to_monday
 from pytz import timezone
 
-from pandas.tseries.holiday import AbstractHolidayCalendar
-from pandas_market_calendars.holidays_us import USNewYearsDay
-
 from pandas_market_calendars import MarketCalendar
-from .holidays_cn import sf_mapping, tsd_mapping, bsd_mapping,\
-    dbf_mapping, maf_mapping, dnf_mapping
+from pandas_market_calendars.holidays_us import USNewYearsDay
+from .holidays_cn import bsd_mapping, dbf_mapping, dnf_mapping, maf_mapping, sf_mapping, tsd_mapping
 
 
 def process_date(dt, mapping=None, func=None, delta=None, offset=None):
