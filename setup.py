@@ -4,15 +4,16 @@ See:
 https://packaging.python.org/en/latest/distributing.html
 """
 
-from setuptools import setup, find_packages
 from os import path
+
+from setuptools import find_packages, setup
 
 # version
 VERSION = '1.2'
 
 # requirements
 REQUIRED_PYTHON = '>=3.4.0'
-REQUIRED_PACKAGES = ['pandas>=0.18', 'pytz']
+REQUIRED_PACKAGES = ['pandas>=0.18', 'pytz', 'python-dateutil']
 
 # Package meta-data
 NAME = 'pandas_market_calendars'

@@ -469,7 +469,7 @@ all_holidays = [
     Timestamp('2018-10-05'),
     Timestamp('2018-12-30'),
     Timestamp('2018-12-31'),
-    Timestamp('2019-01-01'),    
+    Timestamp('2019-01-01'),
     Timestamp('2019-02-04'),
     Timestamp('2019-02-05'),
     Timestamp('2019-02-06'),
@@ -490,7 +490,7 @@ all_holidays = [
     Timestamp('2019-10-05'),
     Timestamp('2019-10-06'),
     Timestamp('2019-10-07'),
- ]
+]
 
 # The following holidays are based on Solar terms or Chinese lunisolar calendar,
 # so pre-calculated mappings to Gregorian calendar are kept here from 2019-2099

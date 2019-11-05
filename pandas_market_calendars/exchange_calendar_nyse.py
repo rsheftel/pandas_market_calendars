@@ -130,8 +130,7 @@ class NYSEExchangeCalendar(MarketCalendar):
     will be in 2025.  If someone is still maintaining this code in 2025, then
     we've done alright...and we should check if it's a half day.
     """
-    aliases = ['NYSE','stock','NASDAQ','BATS']
-    
+    aliases = ['NYSE', 'stock', 'NASDAQ', 'BATS']
     regular_early_close = time(13)
 
     @property

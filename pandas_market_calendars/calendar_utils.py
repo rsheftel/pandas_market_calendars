@@ -1,60 +1,66 @@
 """
 Utilities to use with market_calendars
 """
-################## >>> Deprecated (remove in future releases)
-import warnings
-from collections.abc import MutableMapping
-
 import pandas as pd
 
-from . import calendar_registry
 
+# TODO: remove the deprecated code
+# >>> Deprecated (remove in future releases)
+# import warnings
+# from collections.abc import MutableMapping
+#
+#
+# from . import calendar_registry
+#
+#
+# class DeprecatedRegistry(MutableMapping):
+#
+#     def __init__(self):
+#         self._dict = calendar_registry.MarketCalendar._regmeta_class_registry
+#
+#     def _warn(self):
+#         warnings.warn(
+#             """
+#             This dictionary will be removed from calendar_utils in future releases.
+#             Market Calendar's are registered automatically and there is no longer any
+#             need to access the registry directly."""
+#         )
+#
+#     def __getitem__(self, key):
+#         self._warn()
+#         return self._dict[key]
+#
+#     def __setitem__(self, key, value):
+#         self._warn()
+#         self._dict[key] = value
+#
+#     def __delitem__(self, key):
+#         self._warn()
+#         del self._dict[key]
+#
+#     def __iter__(self):
+#         self._warn()
+#         return iter(self._dict)
+#
+#     def __len__(self):
+#         self._warn()
+#         return len(self._dict)
+#
+#
+# _calendars = _aliases = DeprecatedRegistry()
+#
+#
+# def get_calendar(*args, **kwargs):
+#     warnings.warn(
+#         """
+#         get_calendar has moved from calendar_utils to market_calendar.
+#         It will be removed from calendar_utils in future releases.""",
+#         DeprecationWarning
+#     )
+#     calendar_registry.get_calendar(*args, **kwargs)
+#
+# <<< Deprecated (remove in future releases)
 
-class DeprecatedRegistry(MutableMapping):
-
-    def __init__(self):
-        self._dict = calendar_registry.MarketCalendar._regmeta_class_registry
-
-    def _warn(self):
-        warnings.warn(
-            """
-            This dictionary will be removed from calendar_utils in future releases. 
-            Market Calendar's are registered automatically and there is no longer any 
-            need to access the registry directly."""
-        )
-
-    def __getitem__(self, key):
-        self._warn()
-        return self._dict[key]
-
-    def __setitem__(self, key, value):
-        self._warn()
-        self._dict[key] = value
-
-    def __delitem__(self, key):
-        self._warn()
-        del self._dict[key]
-
-    def __iter__(self):
-        self._warn()
-        return iter(self._dict)
-
-    def __len__(self):
-        self._warn()
-        return len(self._dict)
-
-_calendars = _aliases = DeprecatedRegistry()
-
-def get_calendar(*args,**kwargs):
-    warnings.warn(
-            """
-            get_calendar has moved from calendar_utils to market_calendar. 
-            It will be removed from calendar_utils in future releases.""",
-            DeprecationWarning
-        )
-    calendar_registry.get_calendar(*args,**kwargs)
-
-################## <<< Deprecated (remove in future releases)
 
 def merge_schedules(schedules, how='outer'):
     """

@@ -36,4 +36,3 @@ def test_sse_closes_at_lunch():
         schedule=sse_schedule,
         timestamp=datetime.datetime(2015, 1, 14, 12, 0, tzinfo=pytz.timezone('Asia/Shanghai'))
     )
-

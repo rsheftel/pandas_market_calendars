@@ -14,10 +14,10 @@ def test_time_zone():
 def test_2018_holidays():
     hkex = HKEXExchangeCalendar()
     trading_days = hkex.valid_days('2018-01-01', '2018-12-31')
-    holidays = ['2018-01-01','2018-02-16','2018-02-17','2018-02-18',
-                '2018-02-19','2018-03-30','2018-04-02','2018-04-05',
-                '2018-05-01','2018-05-22','2018-06-18','2018-07-02',
-                '2018-09-25','2018-10-01','2018-10-17','2018-12-25',
+    holidays = ['2018-01-01', '2018-02-16', '2018-02-17', '2018-02-18',
+                '2018-02-19', '2018-03-30', '2018-04-02', '2018-04-05',
+                '2018-05-01', '2018-05-22', '2018-06-18', '2018-07-02',
+                '2018-09-25', '2018-10-01', '2018-10-17', '2018-12-25',
                 '2018-12-26']
     for date in holidays:
         assert pd.Timestamp(date, tz='UTC') not in trading_days
@@ -41,4 +41,3 @@ def test_hkex_closes_at_lunch():
         schedule=schedule,
         timestamp=datetime.datetime(2015, 1, 14, 12, 10, tzinfo=pytz.timezone('Asia/Shanghai'))
     )
-

@@ -54,6 +54,7 @@ class JPXExchangeCalendar(MarketCalendar):
             AutumnalCitizenDates,
             NoN225IndexPrices
         ))
+
     @property
     def regular_holidays(self):
         return AbstractHolidayCalendar(rules=[

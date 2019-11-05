@@ -118,15 +118,15 @@ def test_jpx_2020_holidays():
         pd.Timestamp("2020-01-03", tz='UTC'),
         pd.Timestamp("2020-01-13", tz='UTC'),
         pd.Timestamp("2020-02-11", tz='UTC'),
-        pd.Timestamp("2020-02-24", tz='UTC'),   # from 2/23
+        pd.Timestamp("2020-02-24", tz='UTC'),  # from 2/23
         pd.Timestamp("2020-03-20", tz='UTC'),
         pd.Timestamp("2020-04-29", tz='UTC'),
         pd.Timestamp("2020-05-03", tz='UTC'),
         pd.Timestamp("2020-05-04", tz='UTC'),
         pd.Timestamp("2020-05-05", tz='UTC'),
-        pd.Timestamp("2020-07-23", tz='UTC'),   # sea day
-        pd.Timestamp("2020-07-24", tz='UTC'),   # sports day
-        pd.Timestamp("2020-08-10", tz='UTC'),   # mountain day
+        pd.Timestamp("2020-07-23", tz='UTC'),  # sea day
+        pd.Timestamp("2020-07-24", tz='UTC'),  # sports day
+        pd.Timestamp("2020-08-10", tz='UTC'),  # mountain day
         pd.Timestamp("2020-09-21", tz='UTC'),
         pd.Timestamp("2020-09-22", tz='UTC'),
         pd.Timestamp("2020-11-03", tz='UTC'),
@@ -228,7 +228,7 @@ def test_jpx_trading_days_since_1949(request):
     # get the expected dates from the csv file
     expected = pd.read_csv(os.path.join(
         request.fspath.dirname, 'data', 'jpx_open_weekdays_since_1949.csv'),
-                           index_col=0, parse_dates=True).index
+        index_col=0, parse_dates=True).index
     del expected.name
 
     # calculated expected going direct to the underlying regular and ad_hoc calendars

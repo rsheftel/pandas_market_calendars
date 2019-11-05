@@ -79,42 +79,42 @@ class SSEExchangeCalendar(MarketCalendar):
                 day=21,
                 observance=partial(lunisolar, mapping=sf_mapping, delta=0),
                 start_date=Timestamp(2020, 1, 21),
-            ),      
+            ),
             Holiday(
                 name="Spring Festival",
                 month=1,
                 day=21,
                 observance=partial(lunisolar, mapping=sf_mapping, delta=1),
                 start_date=Timestamp(2020, 1, 22),
-            ),     
+            ),
             Holiday(
                 name="Spring Festival",
                 month=1,
                 day=21,
                 observance=partial(lunisolar, mapping=sf_mapping, delta=2),
                 start_date=Timestamp(2020, 1, 23),
-            ),     
+            ),
             Holiday(
                 name="Spring Festival",
                 month=1,
                 day=21,
                 observance=partial(lunisolar, mapping=sf_mapping, delta=3),
                 start_date=Timestamp(2020, 1, 24),
-            ),     
+            ),
             Holiday(
                 name="Spring Festival",
                 month=1,
                 day=21,
                 observance=partial(lunisolar, mapping=sf_mapping, delta=4),
                 start_date=Timestamp(2020, 1, 25),
-            ),     
+            ),
             Holiday(
                 name="Spring Festival",
                 month=1,
                 day=21,
                 observance=partial(lunisolar, mapping=sf_mapping, delta=5),
                 start_date=Timestamp(2020, 1, 26),
-            ),                                                                                                                      
+            ),
             Holiday(
                 name="Labour Day",
                 month=5,
@@ -128,14 +128,14 @@ class SSEExchangeCalendar(MarketCalendar):
                 day=2,
                 observance=second_day_in_lieu,
                 start_date=Timestamp(2020, 5, 2),
-            ), 
+            ),
             Holiday(
                 name="Labour Day",
                 month=5,
                 day=3,
                 observance=third_day_in_lieu,
                 start_date=Timestamp(2020, 5, 3),
-            ),                  
+            ),
             Holiday(
                 name="Tomb-sweeping Day",
                 month=4,
@@ -156,7 +156,7 @@ class SSEExchangeCalendar(MarketCalendar):
                 day=6,
                 observance=partial(lunisolar, mapping=tsd_mapping, func=third_day_in_lieu, delta=2),
                 start_date=Timestamp(2020, 4, 4),
-            ),                        
+            ),
             Holiday(
                 name="Dragon Boat Festival",
                 month=5,
@@ -177,7 +177,7 @@ class SSEExchangeCalendar(MarketCalendar):
                 day=29,
                 observance=partial(lunisolar, mapping=dbf_mapping, func=third_day_in_lieu, delta=2),
                 start_date=Timestamp(2020, 5, 27),
-            ),                             
+            ),
             Holiday(
                 name="Mid-autumn Festival",
                 month=9,
@@ -198,54 +198,54 @@ class SSEExchangeCalendar(MarketCalendar):
                 day=9,
                 observance=partial(lunisolar, mapping=maf_mapping, func=third_day_in_lieu, delta=2),
                 start_date=Timestamp(2020, 9, 7),
-            ),                        
+            ),
             Holiday(
                 name="National Day",
                 month=10,
                 day=1,
                 start_date=Timestamp(2020, 10, 1),
-            ), 
+            ),
             Holiday(
                 name="National Day",
                 month=10,
                 day=2,
                 start_date=Timestamp(2020, 10, 2),
-            ), 
+            ),
             Holiday(
                 name="National Day",
                 month=10,
                 day=3,
                 start_date=Timestamp(2020, 10, 3),
-            ), 
+            ),
             Holiday(
                 name="National Day",
                 month=10,
                 day=4,
                 start_date=Timestamp(2020, 10, 4),
-            ), 
+            ),
             Holiday(
                 name="National Day",
                 month=10,
                 day=5,
                 start_date=Timestamp(2020, 10, 5),
-            ), 
+            ),
             Holiday(
                 name="National Day",
                 month=10,
                 day=6,
                 start_date=Timestamp(2020, 10, 6),
-            ), 
+            ),
             Holiday(
                 name="National Day",
                 month=10,
                 day=7,
                 start_date=Timestamp(2020, 10, 7),
-            ),                                                                                                                                                                         
+            ),
         ])
 
     @property
     def adhoc_holidays(self):
-        return all_holidays 
+        return all_holidays
 
     @staticmethod
     def open_at_time(schedule, timestamp, include_close=False):
@@ -253,33 +253,36 @@ class SSEExchangeCalendar(MarketCalendar):
             return False
         return MarketCalendar.open_at_time(schedule, timestamp, include_close)
 
+
 def second_day_in_lieu(dt):
     dow = dt.weekday()
-    if dow == 0: # Holiday is Sunday, use Saturday
+    if dow == 0:  # Holiday is Sunday, use Saturday
         return dt - timedelta(2)
-    elif dow == 1: # Holiday is Monday, use Saturday
+    elif dow == 1:  # Holiday is Monday, use Saturday
         return dt - timedelta(3)
-    elif dow == 2: # Holiday is Tuesday, use Sunday
+    elif dow == 2:  # Holiday is Tuesday, use Sunday
         return dt - timedelta(3)
-    elif dow == 3: # Holiday is Wednesday, use Saturday
+    elif dow == 3:  # Holiday is Wednesday, use Saturday
         return dt - timedelta(5)
 
     return dt
+
 
 def third_day_in_lieu(dt):
     dow = dt.weekday()
-    if dow == 0: # Holiday is Saturday, use Sunday
+    if dow == 0:  # Holiday is Saturday, use Sunday
         return dt - timedelta(1)
-    elif dow == 1: # Holiday is Sunday, use Sunday
+    elif dow == 1:  # Holiday is Sunday, use Sunday
         return dt - timedelta(2)
-    elif dow == 2: # Holiday is Monday, use Sunday
+    elif dow == 2:  # Holiday is Monday, use Sunday
         return dt - timedelta(3)
-    elif dow == 3: # Holiday is Tuesday, use Monday
+    elif dow == 3:  # Holiday is Tuesday, use Monday
         return dt - timedelta(3)
-    elif dow == 4: # Holiday is Wednesday, use Sunday
+    elif dow == 4:  # Holiday is Wednesday, use Sunday
         return dt - timedelta(5)
-    
+
     return dt
+
 
 def lunisolar(dt, mapping, func=None, delta=None):
     new_dt = mapping[dt.year]

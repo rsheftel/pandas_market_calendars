@@ -5,14 +5,14 @@ from pandas.tseries.holiday import Holiday, sunday_to_monday
 from pandas_market_calendars.jpx_equinox import autumnal_citizen_dates, autumnal_equinox, vernal_equinox
 
 AscensionDays = [
-    Timestamp('2019-04-30', tz='UTC'),      # National Holiday
-    Timestamp('2019-05-01', tz='UTC'),      # Ascension Day
-    Timestamp('2019-05-02', tz='UTC'),      # National Holiday
+    Timestamp('2019-04-30', tz='UTC'),  # National Holiday
+    Timestamp('2019-05-01', tz='UTC'),  # Ascension Day
+    Timestamp('2019-05-02', tz='UTC'),  # National Holiday
 ]
 
 MarriageDays = [
-    Timestamp('1959-04-10', tz='UTC'),      # Akihito
-    Timestamp('1993-06-09', tz='UTC'),      # Naruhito
+    Timestamp('1959-04-10', tz='UTC'),  # Akihito
+    Timestamp('1993-06-09', tz='UTC'),  # Naruhito
 ]
 
 FuneralShowa = [
@@ -20,8 +20,8 @@ FuneralShowa = [
 ]
 
 EnthronementDays = [
-    Timestamp('1990-11-12', tz='UTC'),      # Akihito
-    Timestamp('2019-10-22', tz='UTC')       # Naruhito
+    Timestamp('1990-11-12', tz='UTC'),  # Akihito
+    Timestamp('2019-10-22', tz='UTC')  # Naruhito
 ]
 
 AutumnalCitizenDates = autumnal_citizen_dates()
@@ -108,7 +108,7 @@ JapanShowaDayUntil1972 = Holiday(
     name="Showa Day",
     month=4,
     day=29,
-    end_date=Timestamp(1972, 12, 31)    # 1965
+    end_date=Timestamp(1972, 12, 31)  # 1965
 )
 
 JapanShowaDay = Holiday(
@@ -301,7 +301,7 @@ JapanSportsDay = Holiday(
 )
 
 JapanCultureDayUntil1972 = Holiday(
-    name="Culture Day",             # prior to 1948 Emperor Meiji's Birthday
+    name="Culture Day",  # prior to 1948 Emperor Meiji's Birthday
     month=11,
     day=3,
     start_date=Timestamp(1948, 1, 1),

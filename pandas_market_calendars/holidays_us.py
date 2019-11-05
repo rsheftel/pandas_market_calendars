@@ -137,21 +137,21 @@ USIndependenceDay = Holiday(
 )
 # http://www.tradingtheodds.com/nyse-full-day-closings/
 USElectionDay1848to1967 = Holiday(
-        'Election Day',
-        month=11,
-        day=2,
-        start_date=Timestamp('1848-1-1'),
-        end_date=Timestamp('1967-12-31'),
-        offset=DateOffset(weekday=TU(1)),
+    'Election Day',
+    month=11,
+    day=2,
+    start_date=Timestamp('1848-1-1'),
+    end_date=Timestamp('1967-12-31'),
+    offset=DateOffset(weekday=TU(1)),
 )
 # http://www.tradingtheodds.com/nyse-full-day-closings/
 USElectionDay1968to1980 = Holiday(
-        'Election Day',
-        month=11,
-        day=2,
-        start_date=Timestamp('1968-01-01'),
-        end_date=Timestamp('1980-12-31'),
-        observance=following_tuesday_every_four_years_observance
+    'Election Day',
+    month=11,
+    day=2,
+    start_date=Timestamp('1968-01-01'),
+    end_date=Timestamp('1980-12-31'),
+    observance=following_tuesday_every_four_years_observance
 )
 # http://www.tradingtheodds.com/nyse-full-day-closings/
 USVeteransDay1934to1953 = Holiday(
@@ -237,7 +237,6 @@ BattleOfGettysburg = Holiday(
     start_date=Timestamp("1863-07-01"),
     end_date=Timestamp("1863-07-03")
 )
-
 
 # http://www.tradingtheodds.com/nyse-full-day-closings/
 November29BacklogRelief = [Timestamp('1929-11-01', tz='UTC'),

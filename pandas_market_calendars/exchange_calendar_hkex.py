@@ -25,17 +25,17 @@ def process_date(dt, mapping=None, func=None, delta=None, offset=None):
 
 def process_queen_birthday(dt):
     # before 1983
-    if dt.year in [1974,1981]:
+    if dt.year in [1974, 1981]:
         return dt + DateOffset(weekday=6)
     elif dt.year < 1983:
         return sunday_to_monday(dt)
     # after 1983
     wom = WeekOfMonth(week=2, weekday=0)
-    if dt.year in [1983,1988,1993,1994]:
+    if dt.year in [1983, 1988, 1993, 1994]:
         wom = WeekOfMonth(week=1, weekday=0)
     if dt.year in [1985]:
         wom = WeekOfMonth(week=3, weekday=0)
-    return dt+wom
+    return dt + wom
 
 
 HKNewYearsDay = USNewYearsDay
@@ -298,10 +298,10 @@ HKClosedDay = [
     Timestamp('1987-10-22', tz='UTC'),
     Timestamp('1987-10-23', tz='UTC'),
     Timestamp('1988-04-05', tz='UTC'),  # 清明节翌日
-    #Timestamp('1988-06-13', tz='UTC'),  # 英国女王生日
+    # Timestamp('1988-06-13', tz='UTC'),  # 英国女王生日
     Timestamp('1991-06-18', tz='UTC'),  # 英国女王生日翌日
     Timestamp('1992-07-22', tz='UTC'),  # 台风Cary9207
-    #Timestamp('1993-06-14', tz='UTC'),  # 英国女王生日
+    # Timestamp('1993-06-14', tz='UTC'),  # 英国女王生日
     Timestamp('1993-09-17', tz='UTC'),  # 台风Becky9316
     Timestamp('1994-06-14', tz='UTC'),  # 英国女王生日翌日,端午节翌日
     Timestamp('1997-06-30', tz='UTC'),  # 英国女王生日
@@ -315,25 +315,25 @@ HKClosedDay = [
     Timestamp('1999-12-31', tz='UTC'),  # 千年虫
     Timestamp('2001-07-06', tz='UTC'),  # 台风尤特0104
     Timestamp('2001-07-25', tz='UTC'),  # 台风玉兔0107
-    #Timestamp(2008-06-25', tz='UTC'),  # 台风风神0806,上午休市
+    # Timestamp(2008-06-25', tz='UTC'),  # 台风风神0806,上午休市
     Timestamp('2008-08-06', tz='UTC'),  # 台风北冕0809
     Timestamp('2008-08-22', tz='UTC'),  # 台风鹦鹉0810
-    #Timestamp(2009-09-15', tz='UTC'),  # 台风巨爵0915,上午休市
+    # Timestamp(2009-09-15', tz='UTC'),  # 台风巨爵0915,上午休市
     Timestamp('2010-04-06', tz='UTC'),  # 清明节翌日
     Timestamp('2011-09-29', tz='UTC'),  # 台风纳沙1117
-    #Timestamp(2012-07-24', tz='UTC'),  # 台风韦森特1208,上午休市
+    # Timestamp(2012-07-24', tz='UTC'),  # 台风韦森特1208,上午休市
     Timestamp('2012-10-02', tz='UTC'),  # 中秋节补假
-    #Timestamp(2013-05-22', tz='UTC'),  # 暴雨,上午休市
+    # Timestamp(2013-05-22', tz='UTC'),  # 暴雨,上午休市
     Timestamp('2013-08-14', tz='UTC'),  # 台风尤特1311
-    #Timestamp(2013-09-23', tz='UTC'),  # 台风天兔1319,上午休市
-    #Timestamp(2014-09-16', tz='UTC'),  # 台风海鸥1415,上午休市
+    # Timestamp(2013-09-23', tz='UTC'),  # 台风天兔1319,上午休市
+    # Timestamp(2014-09-16', tz='UTC'),  # 台风海鸥1415,上午休市
     Timestamp('2015-04-07', tz='UTC'),  # 复活节+清明节补假
-    #Timestamp(2015-07-09', tz='UTC'),  # 台风莲花1520,期货夜盘休市
+    # Timestamp(2015-07-09', tz='UTC'),  # 台风莲花1520,期货夜盘休市
     Timestamp('2015-09-03', tz='UTC'),  # 抗战70周年纪念
-    #Timestamp(2016-08-01', tz='UTC'),  # 台风妮妲1604,期货夜盘20:55收市
+    # Timestamp(2016-08-01', tz='UTC'),  # 台风妮妲1604,期货夜盘20:55收市
     Timestamp('2016-08-02', tz='UTC'),  # 台风妮妲1604
     Timestamp('2016-10-21', tz='UTC'),  # 台风海马1622
-    #Timestamp(2017-06-12', tz='UTC'),  # 台风苗柏1702,期货夜盘17:35休市
+    # Timestamp(2017-06-12', tz='UTC'),  # 台风苗柏1702,期货夜盘17:35休市
     Timestamp('2017-08-23', tz='UTC'),  # 台风天鸽1713
 ]
 

@@ -1,4 +1,3 @@
-
 import datetime
 
 import pandas as pd
@@ -18,11 +17,10 @@ def test_get_calendar():
     assert cal.close_time == datetime.time(14, 30)
 
     # confirm that import works properly
-    cal = mcal.get_calendar('CME')
+    _ = mcal.get_calendar('CME')
 
 
 def test_date_range_daily():
-
     cal = FakeCalendar(open_time=datetime.time(9, 0), close_time=datetime.time(12, 0))
 
     # If closed='right' and force_close False for daily then the result is empty
@@ -94,7 +92,6 @@ def test_date_range_lower_freq():
 
 
 def test_date_range_hour():
-
     cal = FakeCalendar(open_time=datetime.time(9, 0), close_time=datetime.time(10, 30))
 
     # New Years Eve and weekend skipped
@@ -147,7 +144,6 @@ def test_date_range_hour():
 
 
 def test_date_range_minute():
-
     cal = FakeCalendar(open_time=datetime.time(9, 0), close_time=datetime.time(10, 30))
 
     # New Years Eve and weekend skipped
