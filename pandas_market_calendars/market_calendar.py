@@ -112,7 +112,7 @@ class MarketCalendar(metaclass=MarketCalendarMeta):
     @property
     def adhoc_holidays(self):
         """
-        
+
         :return: list of ad-hoc holidays
         """
         return []
@@ -158,7 +158,7 @@ class MarketCalendar(metaclass=MarketCalendarMeta):
     @property
     def open_time(self):
         """
-        
+
         :return: open time
         """
         return self._open_time
@@ -166,7 +166,7 @@ class MarketCalendar(metaclass=MarketCalendarMeta):
     @property
     def close_time(self):
         """
-        
+
         :return: close time
         """
         return self._close_time
@@ -174,7 +174,7 @@ class MarketCalendar(metaclass=MarketCalendarMeta):
     @property
     def open_offset(self):
         """
-        
+
         :return: open offset
         """
         return 0
@@ -182,16 +182,16 @@ class MarketCalendar(metaclass=MarketCalendarMeta):
     @property
     def close_offset(self):
         """
-        
+
         :return: close offset
         """
         return 0
 
     def holidays(self):
         """
-        Returns the complete CustomBusinessDay object of holidays that can be used in any Pandas function that take 
+        Returns the complete CustomBusinessDay object of holidays that can be used in any Pandas function that take
         that input.
-        
+
         :return: CustomBusinessDay object of holidays
         """
         return CustomBusinessDay(
@@ -203,7 +203,7 @@ class MarketCalendar(metaclass=MarketCalendarMeta):
     def valid_days(self, start_date, end_date, tz='UTC'):
         """
         Get a DatetimeIndex of valid open business days.
-        
+
         :param start_date: start date
         :param end_date: end date
         :param tz: time zone in either string or pytz.timezone
@@ -213,11 +213,11 @@ class MarketCalendar(metaclass=MarketCalendarMeta):
 
     def schedule(self, start_date, end_date):
         """
-        Generates the schedule DataFrame. The resulting DataFrame will have all the valid business days as the index 
+        Generates the schedule DataFrame. The resulting DataFrame will have all the valid business days as the index
         and columns for the market opening datetime (market_open) and closing datetime (market_close). All time zones
         are set to UTC. To convert to the local market time use pandas tz_convert and the self.tz to get the
         market time zone.
-        
+
         :param start_date: start date
         :param end_date: end date
         :return: schedule DataFrame
@@ -252,7 +252,7 @@ class MarketCalendar(metaclass=MarketCalendarMeta):
     def open_at_time(schedule, timestamp, include_close=False):
         """
         To determine if a given timestamp is during an open time for the market.
-        
+
         :param schedule: schedule DataFrame
         :param timestamp: the timestamp to check for
         :param include_close: if False then the timestamp that equals the closing timestamp will return False and not be
@@ -272,7 +272,7 @@ class MarketCalendar(metaclass=MarketCalendarMeta):
     def early_closes(self, schedule):
         """
         Get a DataFrame of the dates that are an early close.
-        
+
         :param schedule: schedule DataFrame
         :return: schedule DataFrame with rows that are early closes
         """
@@ -338,7 +338,7 @@ def days_at_time(days, t, tz, day_offset=0):
     :param t: datetime.time The time to apply as an offset to each day in ``days``.
     :param tz: pytz.timezone The timezone to use to interpret ``t``.
     :param day_offset: int The number of days we want to offset @days by
-    :return: DatetimeIndex of date with the time t            
+    :return: DatetimeIndex of date with the time t
     """
     if len(days) == 0:
         return pd.DatetimeIndex(days).tz_localize(tz).tz_convert('UTC')
@@ -410,7 +410,7 @@ def _overwrite_special_dates(midnight_utcs,
 def clean_dates(start_date, end_date):
     """
     Strips the inputs of time and time zone information
-    
+
     :param start_date: start date
     :param end_date: end date
     :return: (start_date, end_date) with just date, no time and no time zone

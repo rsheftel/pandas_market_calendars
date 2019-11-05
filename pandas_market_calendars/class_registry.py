@@ -44,7 +44,7 @@ def _regmeta_classes(cls):
 
 class RegisteryMeta(type):
     """
-    Metaclass used to register all classes inheriting from RegisteryMeta 
+    Metaclass used to register all classes inheriting from RegisteryMeta
     """
 
     def __new__(mcs, name, bases, attr):
