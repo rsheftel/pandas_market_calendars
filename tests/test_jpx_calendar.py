@@ -229,7 +229,7 @@ def test_jpx_trading_days_since_1949(request):
     expected = pd.read_csv(os.path.join(
         request.fspath.dirname, 'data', 'jpx_open_weekdays_since_1949.csv'),
         index_col=0, parse_dates=True).index
-    del expected.name
+    expected.name = None
 
     # calculated expected going direct to the underlying regular and ad_hoc calendars
     jpx_calendar = JPXExchangeCalendar()
