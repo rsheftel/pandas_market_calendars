@@ -285,7 +285,10 @@ def third_day_in_lieu(dt):
 
 
 def lunisolar(dt, mapping, func=None, delta=None):
-    new_dt = mapping[dt.year]
+    if mapping and (dt.year in mapping):
+        new_dt = mapping[dt.year]
+    else:
+        new_dt = dt
     if delta:
         new_dt = new_dt + timedelta(delta)
     if func:

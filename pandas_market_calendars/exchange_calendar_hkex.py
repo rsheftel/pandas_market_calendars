@@ -12,7 +12,10 @@ from .holidays_cn import bsd_mapping, dbf_mapping, dnf_mapping, maf_mapping, sf_
 
 
 def process_date(dt, mapping=None, func=None, delta=None, offset=None):
-    new_dt = mapping and mapping[dt.year] or dt
+    if mapping and (dt.year in mapping):
+        new_dt = mapping[dt.year]
+    else:
+        new_dt = dt
     if delta:
         new_dt = new_dt + timedelta(delta)
     dow = new_dt.weekday()
