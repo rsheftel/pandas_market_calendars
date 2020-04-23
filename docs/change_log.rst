@@ -115,3 +115,8 @@ Updates
 - Better JPX calendar support for the time period 1949-2099 (PR #72)
 - Reformat Japan's Ascension days, removed duplicate days (PR #68)
 - Added German national holidays (PR #77)
+
+1.3 (4/23/20)
+~~~~~~~~~~~~~
+- Fixes to support Pandas v1.0
+- Remove support for Python 3.4 based on underlying packages removing support for v3.4
