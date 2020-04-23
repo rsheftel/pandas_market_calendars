@@ -2,7 +2,7 @@ import datetime
 
 import pandas as pd
 import pytest
-from pandas.util.testing import assert_frame_equal, assert_index_equal
+from pandas.testing import assert_frame_equal, assert_index_equal
 
 import pandas_market_calendars as mcal
 from pandas_market_calendars.exchange_calendar_nyse import NYSEExchangeCalendar
