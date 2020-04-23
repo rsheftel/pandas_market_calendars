@@ -120,3 +120,4 @@ Updates
 ~~~~~~~~~~~~~
 - Fixes to support Pandas v1.0
 - Remove support for Python 3.4 based on underlying packages removing support for v3.4
+- Added ASXExchangeCalendar from PR #85
