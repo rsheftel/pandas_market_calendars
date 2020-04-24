@@ -21,7 +21,7 @@ def test_get_calendar():
 
 
 def test_get_calendar_names():
-    assert 'stock' in mcal.get_calendar_names()
+    assert 'ASX' in mcal.get_calendar_names()
 
 
 def test_date_range_daily():
