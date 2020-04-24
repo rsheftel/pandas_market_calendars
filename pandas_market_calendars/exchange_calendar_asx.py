@@ -1,14 +1,13 @@
 from datetime import time
-from itertools imort chain
 
 from pandas.tseries.holiday import AbstractHolidayCalendar, GoodFriday, EasterMonday
 from pytz import timezone
 
-from pandas_market_calendars impor MarketCalendar
-from pandas_market_calendars.holidays_OZ import *
-
+from .holidays_oz import *
+from .market_calendar import MarketCalendar
 
 AbstractHolidayCalendar.start_date = '2011-01-01'
+
 
 class ASXExchangeCalendar(MarketCalendar):
 	"""
@@ -32,6 +31,7 @@ class ASXExchangeCalendar(MarketCalendar):
 	- Last Business Day of the Year
 
 	"""
+	aliases = ['ASX']
 
 	@property
 	def name(self):
@@ -43,16 +43,15 @@ class ASXExchangeCalendar(MarketCalendar):
 
 	@property
 	def open_time_default(self):
-		return time(10, 0, tzinfo = self.tz)
+		return time(10, 0, tzinfo=self.tz)
 
 	@property
 	def close_time_default(self):
-		return time(16, 10, tzinfo = self.tz)
-
+		return time(16, 10, tzinfo=self.tz)
 
 	@property
 	def regular_holidays(self):
-		return AbstractHolidayCalendar(rules = [
+		return AbstractHolidayCalendar(rules=[
 			OZNewYearsDay,
 			AustraliaDay,
 			AnzacDay,
@@ -62,4 +61,4 @@ class ASXExchangeCalendar(MarketCalendar):
 			WeekendBoxingDay,
 			GoodFriday,
 			EasterMonday,
-			])
+		])

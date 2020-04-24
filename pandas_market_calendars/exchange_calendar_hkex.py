@@ -6,9 +6,9 @@ from pandas.tseries.holiday import AbstractHolidayCalendar, EasterMonday, GoodFr
 from pandas.tseries.offsets import LastWeekOfMonth, WeekOfMonth
 from pytz import timezone
 
-from pandas_market_calendars import MarketCalendar
 from pandas_market_calendars.holidays_us import USNewYearsDay
 from .holidays_cn import bsd_mapping, dbf_mapping, dnf_mapping, maf_mapping, sf_mapping, tsd_mapping
+from .market_calendar import MarketCalendar
 
 
 def process_date(dt, mapping=None, func=None, delta=None, offset=None):

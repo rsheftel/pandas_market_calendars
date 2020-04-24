@@ -4,8 +4,8 @@ from functools import partial
 from pandas.tseries.holiday import AbstractHolidayCalendar, Holiday, next_monday
 from pytz import timezone
 
-from pandas_market_calendars import MarketCalendar
 from .holidays_cn import *
+from .market_calendar import MarketCalendar
 
 
 class SSEExchangeCalendar(MarketCalendar):

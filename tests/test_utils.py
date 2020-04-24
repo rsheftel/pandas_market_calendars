@@ -17,7 +17,11 @@ def test_get_calendar():
     assert cal.close_time == datetime.time(14, 30)
 
     # confirm that import works properly
-    _ = mcal.get_calendar('CME')
+    cal = mcal.get_calendar('CME')
+
+
+def test_get_calendar_names():
+    assert 'stock' in mcal.get_calendar_names()
 
 
 def test_date_range_daily():
