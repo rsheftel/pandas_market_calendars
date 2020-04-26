@@ -19,11 +19,11 @@ from itertools import chain
 from pandas.tseries.holiday import AbstractHolidayCalendar, EasterMonday, GoodFriday
 from pytz import timezone
 
-from .holidays_uk import (BankHoliday, BoxingDay, Christmas, ChristmasEve, LSENewYearsDay, LSENewYearsEve, MayBank,
-                          QueensJubilee, SpringBank, SummerBank, WeekendBoxingDay, WeekendChristmas)
-from .market_calendar import (
-    MarketCalendar
-)
+from .market_calendar import MarketCalendar
+from .holidays_uk import (
+    BoxingDay, Christmas, ChristmasEve, LSENewYearsDay, LSENewYearsEve, MayBank, SpringBank, SummerBank, 
+    WeekendBoxingDay, WeekendChristmas, UniqueCloses, UniqueOpens
+    )
 
 
 class LSEExchangeCalendar(MarketCalendar):
@@ -80,10 +80,7 @@ class LSEExchangeCalendar(MarketCalendar):
 
     @property
     def adhoc_holidays(self):
-        return list(chain(
-            BankHoliday,
-            QueensJubilee,
-        ))
+        return UniqueCloses
 
     @property
     def special_closes(self):

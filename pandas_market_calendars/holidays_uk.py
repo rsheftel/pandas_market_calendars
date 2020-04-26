@@ -1,5 +1,6 @@
 # UK Holidays
 
+import pandas as pd
 from pandas import DateOffset, Timestamp
 from pandas.tseries.holiday import Holiday, MO, previous_friday, weekend_to_monday
 
@@ -85,6 +86,40 @@ WeekendBoxingDay = Holiday(
     days_of_week=(MONDAY, TUESDAY),
 )
 
-BankHoliday = [Timestamp('2012-06-04', tz='UTC')]
+UniqueCloses = []
+UniqueOpens = []
 
-QueensJubilee = [Timestamp('2012-06-05', tz='UTC')]
+#=====================================================
+# One-off holiday additions and removals in England
+#=====================================================
+
+## VE-Day Anniversary
+# 50th Anniversary
+UniqueCloses.append(pd.Timestamp("1995-05-08", tz='UTC'))
+UniqueOpens.append(pd.Timestamp("1995-05-01", tz='UTC'))      # Early May bank holiday removed
+
+# 75th Anniversary
+UniqueCloses.append(pd.Timestamp("2020-05-08", tz='UTC'))
+UniqueOpens.append(pd.Timestamp("2020-05-04", tz='UTC'))      # Early May bank holiday removed
+
+## Queen Elizabeth II Jubilees
+# Silver Jubilee
+UniqueCloses.append(pd.Timestamp("1977-06-07", tz='UTC'))
+
+# Golden Jubilee
+UniqueCloses.append(pd.Timestamp("2002-06-03", tz='UTC'))
+UniqueCloses.append(pd.Timestamp("2002-06-04", tz='UTC'))
+UniqueOpens.append(pd.Timestamp("2002-05-27", tz='UTC'))      # Spring bank holiday removed
+
+# Diamond Jubilee
+UniqueCloses.append(pd.Timestamp("2012-06-04", tz='UTC'))
+UniqueCloses.append(pd.Timestamp("2012-06-05", tz='UTC'))
+UniqueOpens.append(pd.Timestamp("2012-05-28", tz='UTC'))      # Spring bank holiday removed
+
+## Royal Weddings
+UniqueCloses.append(pd.Timestamp("1973-11-14", tz='UTC'))     # Wedding Day of Princess Anne and Mark Phillips
+UniqueCloses.append(pd.Timestamp("1981-07-29", tz='UTC'))     # Wedding Day of Prince Charles and Diana Spencer
+UniqueCloses.append(pd.Timestamp("2011-04-29", tz='UTC'))     # Wedding Day of Prince William and Catherine Middleton
+
+## Miscellaneous
+UniqueCloses.append(pd.Timestamp("1999-12-31", tz='UTC'))     # Eve of 3rd Millenium A.D.
