@@ -22,20 +22,66 @@ LSENewYearsDay = Holiday(
     observance=weekend_to_monday,
 )
 
-# Early May bank holiday
-MayBank = Holiday(
+# Early May bank holiday has two exceptions based on the 50th and 75th anniversary of VE-Day
+# 1995-05-01 Early May bank holiday removed for VE-day 50th anniversary
+# 2020-05-04 Early May bank holiday removed for VE-day 75th anniversary
+
+# Early May bank holiday pre-1995
+MayBank_pre_1995 = Holiday(
     "Early May Bank Holiday",
     month=5,
     offset=DateOffset(weekday=MO(1)),
     day=1,
+    end_date=Timestamp('1994-12-31'),
 )
 
+# Early May bank holiday post-1995 and pre-2020
+MayBank_post_1995_pre_2020 = Holiday(
+    "Early May Bank Holiday",
+    month=5,
+    offset=DateOffset(weekday=MO(1)),
+    day=1,
+    start_date=Timestamp('1996-01-01'),
+    end_date=Timestamp('2019-12-31'),
+)
+
+# Early May bank holiday post 2020
+MayBank_post_2020 = Holiday(
+    "Early May Bank Holiday",
+    month=5,
+    offset=DateOffset(weekday=MO(1)),
+    day=1,
+    start_date=Timestamp('2021-01-01')
+)
+
+# Spring bank holiday has two exceptions based on the Golden & Diamond Jubilee
+# 2002-05-27 Spring bank holiday removed for Golden Jubilee
+# 2012-05-28 Spring bank holiday removed for Diamond Jubilee
+
 # Spring bank holiday
-SpringBank = Holiday(
+SpringBank_pre_2002 = Holiday(
     "Spring Bank Holiday",
     month=5,
     day=31,
     offset=DateOffset(weekday=MO(-1)),
+    end_date=Timestamp('2001-12-31'),
+)
+
+SpringBank_post_2002_pre_2012 = Holiday(
+    "Spring Bank Holiday",
+    month=5,
+    day=31,
+    offset=DateOffset(weekday=MO(-1)),
+    start_date=Timestamp('2003-01-01'),
+    end_date=Timestamp('2011-12-31'),
+)
+
+SpringBank_post_2012 = Holiday(
+    "Spring Bank Holiday",
+    month=5,
+    day=31,
+    offset=DateOffset(weekday=MO(-1)),
+    start_date=Timestamp('2013-01-01'),
 )
 
 # Summer bank holiday
@@ -86,40 +132,29 @@ WeekendBoxingDay = Holiday(
     days_of_week=(MONDAY, TUESDAY),
 )
 
-UniqueCloses = []
-UniqueOpens = []
-
-#=====================================================
 # One-off holiday additions and removals in England
-#=====================================================
 
-## VE-Day Anniversary
-# 50th Anniversary
-UniqueCloses.append(pd.Timestamp("1995-05-08", tz='UTC'))
-UniqueOpens.append(pd.Timestamp("1995-05-01", tz='UTC'))      # Early May bank holiday removed
+UniqueCloses = []
+# VE-Day Anniversary
+UniqueCloses.append(pd.Timestamp("1995-05-08", tz='UTC'))  # 50th Anniversary
+UniqueCloses.append(pd.Timestamp("2020-05-08", tz='UTC'))  # 75th Anniversary
 
-# 75th Anniversary
-UniqueCloses.append(pd.Timestamp("2020-05-08", tz='UTC'))
-UniqueOpens.append(pd.Timestamp("2020-05-04", tz='UTC'))      # Early May bank holiday removed
-
-## Queen Elizabeth II Jubilees
+# Queen Elizabeth II Jubilees
 # Silver Jubilee
 UniqueCloses.append(pd.Timestamp("1977-06-07", tz='UTC'))
 
 # Golden Jubilee
 UniqueCloses.append(pd.Timestamp("2002-06-03", tz='UTC'))
 UniqueCloses.append(pd.Timestamp("2002-06-04", tz='UTC'))
-UniqueOpens.append(pd.Timestamp("2002-05-27", tz='UTC'))      # Spring bank holiday removed
 
 # Diamond Jubilee
 UniqueCloses.append(pd.Timestamp("2012-06-04", tz='UTC'))
 UniqueCloses.append(pd.Timestamp("2012-06-05", tz='UTC'))
-UniqueOpens.append(pd.Timestamp("2012-05-28", tz='UTC'))      # Spring bank holiday removed
 
-## Royal Weddings
+# Royal Weddings
 UniqueCloses.append(pd.Timestamp("1973-11-14", tz='UTC'))     # Wedding Day of Princess Anne and Mark Phillips
 UniqueCloses.append(pd.Timestamp("1981-07-29", tz='UTC'))     # Wedding Day of Prince Charles and Diana Spencer
 UniqueCloses.append(pd.Timestamp("2011-04-29", tz='UTC'))     # Wedding Day of Prince William and Catherine Middleton
 
-## Miscellaneous
+# Miscellaneous
 UniqueCloses.append(pd.Timestamp("1999-12-31", tz='UTC'))     # Eve of 3rd Millenium A.D.

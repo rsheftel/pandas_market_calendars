@@ -14,16 +14,17 @@
 # limitations under the License.
 
 from datetime import time
-from itertools import chain
 
 from pandas.tseries.holiday import AbstractHolidayCalendar, EasterMonday, GoodFriday
 from pytz import timezone
 
-from .market_calendar import MarketCalendar
 from .holidays_uk import (
-    BoxingDay, Christmas, ChristmasEve, LSENewYearsDay, LSENewYearsEve, MayBank, SpringBank, SummerBank, 
-    WeekendBoxingDay, WeekendChristmas, UniqueCloses, UniqueOpens
-    )
+    BoxingDay, Christmas, ChristmasEve, LSENewYearsDay, LSENewYearsEve,
+    MayBank_pre_1995, MayBank_post_1995_pre_2020, MayBank_post_2020,
+    SpringBank_pre_2002, SpringBank_post_2002_pre_2012, SpringBank_post_2012,
+    SummerBank, WeekendBoxingDay, WeekendChristmas, UniqueCloses,
+)
+from .market_calendar import MarketCalendar
 
 
 class LSEExchangeCalendar(MarketCalendar):
@@ -69,8 +70,8 @@ class LSEExchangeCalendar(MarketCalendar):
             LSENewYearsDay,
             GoodFriday,
             EasterMonday,
-            MayBank,
-            SpringBank,
+            MayBank_pre_1995, MayBank_post_1995_pre_2020, MayBank_post_2020,
+            SpringBank_pre_2002, SpringBank_post_2002_pre_2012, SpringBank_post_2012,
             SummerBank,
             Christmas,
             WeekendChristmas,

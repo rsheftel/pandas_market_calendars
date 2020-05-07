@@ -1,6 +1,7 @@
+from itertools import chain
+
 import pandas as pd
 import pytz
-from itertools import chain
 
 from pandas_market_calendars.exchange_calendar_lse import LSEExchangeCalendar
 
@@ -91,7 +92,7 @@ def test_unique_holidays():
     # Miscellaneous
     # Eve of 3rd Millennium A.D.
     england_unique_hols["3rd_Millennium_Eve"]["closed"] = [pd.Timestamp("1999-12-31")]
-    
+
     # Test of closed dates
     lse = LSEExchangeCalendar()
     # get all the closed dates
@@ -101,4 +102,8 @@ def test_unique_holidays():
         assert pd.Timestamp(date, tz='UTC') not in good_dates
 
     # Test of open dates
-    # TODO: add tests for special opens
+    open_days = [england_unique_hols[k].get('open') for k in england_unique_hols]
+    open_days = [i for i in open_days if i]
+    good_dates = lse.valid_days('1990-01-01', '2020-12-31')
+    for date in chain.from_iterable(open_days):
+        assert pd.Timestamp(date, tz='UTC') in good_dates

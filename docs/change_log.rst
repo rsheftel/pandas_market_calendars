@@ -121,4 +121,4 @@ Updates
 - Fixes to support Pandas v1.0
 - Remove support for Python 3.4 based on underlying packages removing support for v3.4
 - Added ASXExchangeCalendar from PR #85
-- Fixes to UK holidays in #84. Note this fix is for additional holidays only, removed holidays not fixed yet
+- Fixes to UK holidays in #84
