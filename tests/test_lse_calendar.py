@@ -1,3 +1,5 @@
+from itertools import chain
+
 import pandas as pd
 import pytz
 
@@ -48,3 +50,60 @@ def test_2016_early_closes():
         market_close = schedule.loc[dt].market_close
         assert market_close.tz_convert(lse.tz).hour == 12
         assert market_close.tz_convert(lse.tz).minute == 30
+
+
+def test_unique_holidays():
+    england_unique_hols_names = [
+                                "VE_50", "VE_75", 
+                                "QEII_Jubilee_25", "QEII_Jubilee_50", "QEII_Jubilee_60",
+                                "Royal_Wedding_Anne_1973", "Royal_Wedding_Charles_1981", "Royal_Wedding_William_2011",
+                                "3rd_Millennium_Eve",
+                            ]
+    england_unique_hols = {i: {"closed": None, "open": None} for i in england_unique_hols_names}
+
+    # One-off holiday additions and removals in England
+
+    # VE-Day Anniversary
+    # 50th Anniversary
+    england_unique_hols["VE_50"]["closed"] = [pd.Timestamp("1995-05-08")]
+    england_unique_hols["VE_50"]["open"] = [pd.Timestamp("1995-05-01")]     # Early May bank holiday removed
+    # 75th Anniversary
+    england_unique_hols["VE_75"]["closed"] = [pd.Timestamp("2020-05-08")]
+    england_unique_hols["VE_75"]["open"] = [pd.Timestamp("2020-05-04")]     # Early May bank holiday removed
+    
+    # Queen Elizabeth II Jubilees
+    # Silver Jubilee
+    england_unique_hols["QEII_Jubilee_25"]["closed"] = [pd.Timestamp("1977-06-07")]
+    # Golden Jubilee
+    england_unique_hols["QEII_Jubilee_50"]["closed"] = [pd.Timestamp("2002-06-03"), pd.Timestamp("2002-06-04")]
+    england_unique_hols["QEII_Jubilee_50"]["open"] = [pd.Timestamp("2002-05-27")]   # Spring bank holiday removed
+    # Diamond Jubilee
+    england_unique_hols["QEII_Jubilee_60"]["closed"] = [pd.Timestamp("2012-06-04"), pd.Timestamp("2012-06-05")]
+    england_unique_hols["QEII_Jubilee_60"]["open"] = [pd.Timestamp("2012-05-28")]  # Spring bank holiday removed
+    
+    # Royal Weddings
+    # Wedding Day of Princess Anne and Mark Phillips
+    england_unique_hols["Royal_Wedding_Anne_1973"]["closed"] = [pd.Timestamp("1973-11-14")]
+    # Wedding Day of Prince Charles and Diana Spencer
+    england_unique_hols["Royal_Wedding_Charles_1981"]["closed"] = [pd.Timestamp("1981-07-29")]
+    # Wedding Day of Prince William and Catherine Middleton
+    england_unique_hols["Royal_Wedding_William_2011"]["closed"] = [pd.Timestamp("2011-04-29")]
+    
+    # Miscellaneous
+    # Eve of 3rd Millennium A.D.
+    england_unique_hols["3rd_Millennium_Eve"]["closed"] = [pd.Timestamp("1999-12-31")]
+
+    # Test of closed dates
+    lse = LSEExchangeCalendar()
+    # get all the closed dates
+    closed_days = [england_unique_hols[k].get('closed') for k in england_unique_hols]
+    good_dates = lse.valid_days('1990-01-01', '2020-12-31')
+    for date in chain.from_iterable(closed_days):
+        assert pd.Timestamp(date, tz='UTC') not in good_dates
+
+    # Test of open dates
+    open_days = [england_unique_hols[k].get('open') for k in england_unique_hols]
+    open_days = [i for i in open_days if i]
+    good_dates = lse.valid_days('1990-01-01', '2020-12-31')
+    for date in chain.from_iterable(open_days):
+        assert pd.Timestamp(date, tz='UTC') in good_dates

@@ -2,7 +2,7 @@ import datetime
 
 import pandas as pd
 import pytest
-from pandas.util.testing import assert_frame_equal, assert_index_equal
+from pandas.testing import assert_frame_equal, assert_index_equal
 
 import pandas_market_calendars as mcal
 from pandas_market_calendars.exchange_calendar_nyse import NYSEExchangeCalendar
@@ -17,7 +17,11 @@ def test_get_calendar():
     assert cal.close_time == datetime.time(14, 30)
 
     # confirm that import works properly
-    _ = mcal.get_calendar('CME')
+    cal = mcal.get_calendar('CME')
+
+
+def test_get_calendar_names():
+    assert 'ASX' in mcal.get_calendar_names()
 
 
 def test_date_range_daily():

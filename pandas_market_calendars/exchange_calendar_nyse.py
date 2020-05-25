@@ -19,7 +19,6 @@ from itertools import chain
 from pandas.tseries.holiday import AbstractHolidayCalendar, GoodFriday, USLaborDay
 from pytz import timezone
 
-from pandas_market_calendars import MarketCalendar
 from pandas_market_calendars.holidays_us import (August45VictoryOverJapan, Christmas, ChristmasBefore1954,
                                                  ChristmasEveBefore1993, ChristmasEveInOrAfter1993, ChristmasEvesAdhoc,
                                                  DayAfterChristmasAdhoc, DayAfterIndependenceDayAdhoc,
@@ -38,6 +37,7 @@ from pandas_market_calendars.holidays_us import (August45VictoryOverJapan, Chris
                                                  USThanksgivingDayBefore1939, USVeteransDay1934to1953,
                                                  USWashingtonsBirthDay1964to1970, USWashingtonsBirthDayBefore1964,
                                                  WeatherSnowClosing, WednesdayBeforeIndependenceDayPost2013)
+from .market_calendar import MarketCalendar
 
 # Useful resources for making changes to this file:
 # http://www.nyse.com/pdfs/closings.pdf

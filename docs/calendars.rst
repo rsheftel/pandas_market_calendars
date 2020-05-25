@@ -17,4 +17,5 @@ Exchange  SIX    SIXExchangeCalendar     Yes        oliverfu89
 Exchange  OSE    OSEExchangeCalendar     Yes        busteren
 Exchange  SSE    SSEExchangeCalendar     Yes        keli
 Exchange  HKEX   HKEXExchangeCalendar    Yes        1dot75cm
+Exchange  ASX    ASXExchangeCalendar                pulledlamb
 ========= ====== ===================== ============ ========== ==============

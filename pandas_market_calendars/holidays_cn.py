@@ -490,6 +490,7 @@ all_holidays = [
     Timestamp('2019-10-05'),
     Timestamp('2019-10-06'),
     Timestamp('2019-10-07'),
+    Timestamp('2020-01-31'),
 ]
 
 # The following holidays are based on Solar terms or Chinese lunisolar calendar,

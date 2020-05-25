@@ -18,8 +18,8 @@ from itertools import chain
 
 import pandas as pd
 import pytest
+from pandas.testing import assert_frame_equal, assert_index_equal, assert_series_equal
 from pandas.tseries.holiday import AbstractHolidayCalendar
-from pandas.util.testing import assert_frame_equal, assert_index_equal, assert_series_equal
 from pytz import timezone
 
 from pandas_market_calendars import get_calendar, get_calendar_names
