@@ -665,5 +665,13 @@ are open
     </table>
     </div>
 
+Use holidays in numpy
+~~~~~~~~~~~~~~~~~~~~~
 
+This will use your exchange calendar in numpy to add business days
 
+.. code:: python
+
+  import numpy as np
+  cme = mcal.get_calendar("CME")
+  np.busday_offset(dates="2020-05-22", holidays=cme.holidays().holidays, offsets=1)
