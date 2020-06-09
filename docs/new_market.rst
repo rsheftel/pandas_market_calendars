@@ -31,3 +31,9 @@ To create a new exchange (or OTC market):
 
       #. special_opens - returns a list of tuples. The tuple is (datetime.time of open, AbstractHolidayCalendar)
       #. special_opens_adhoc - returns a list of tuples. The tuple is (datetime.time of open, list of date strings)
+
+#. Import your new calendar class in `calendar_registry.py`:
+
+.. code:: python
+
+   from .exchange_calendar_xxx import XXXExchangeCalendar
