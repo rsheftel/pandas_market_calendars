@@ -410,6 +410,7 @@ all_holidays = [
     Timestamp('2015-02-24'),
     Timestamp('2015-04-06'),
     Timestamp('2015-05-01'),
+    Timestamp('2015-06-22'),
     Timestamp('2015-09-03'),
     Timestamp('2015-09-04'),
     Timestamp('2015-10-01'),
@@ -491,6 +492,8 @@ all_holidays = [
     Timestamp('2019-10-06'),
     Timestamp('2019-10-07'),
     Timestamp('2020-01-31'),
+    Timestamp('2020-05-04'),
+    Timestamp('2020-05-05'),
 ]
 
 # The following holidays are based on Solar terms or Chinese lunisolar calendar,
