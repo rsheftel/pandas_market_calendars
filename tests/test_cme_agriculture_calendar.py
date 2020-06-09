@@ -1,7 +1,7 @@
 import pandas as pd
 import pytz
 
-from pandas_market_calendars.exchange_calendar_cme_agriculture import CMEAgricultureExchangeCalendar
+from pandas_market_calendars.exchange_calendar_cme import CMEAgricultureExchangeCalendar
 
 
 def test_time_zone():
@@ -38,6 +38,7 @@ def test_2020_holidays():
         "2021-01-01",
     ]:
         assert pd.Timestamp(date, tz='UTC') not in good_dates
+
 
 def test_dec_jan():
     cme = CMEAgricultureExchangeCalendar()
