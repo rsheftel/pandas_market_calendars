@@ -122,3 +122,9 @@ Updates
 - Remove support for Python 3.4 based on underlying packages removing support for v3.4
 - Added ASXExchangeCalendar from PR #85
 - Fixes to UK holidays in #84
+
+1.4 (6/9/20)
+~~~~~~~~~~~~
+- Added product specific contract calendars for CME futures exchange
+- First calendar is the CME Agricultural calendar
+- Add the Bombay exchange (XBOM) from #96

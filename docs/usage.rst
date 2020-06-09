@@ -666,7 +666,7 @@ are open
     </div>
 
 Use holidays in numpy
-~~~~~~~~~~~~~~~~~~~~~
+---------------------
 
 This will use your exchange calendar in numpy to add business days
 
