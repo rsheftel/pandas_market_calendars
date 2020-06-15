@@ -18,7 +18,7 @@ def test_2018_holidays():
     six = SIXExchangeCalendar()
     good_dates = six.valid_days('2018-01-01', '2018-12-31', tz='Europe/Zurich')
 
-    for date in ["2018-05-24", "2018-06-15", "2018-03-23"]:
+    for date in ["2018-05-24", "2018-06-15", "2018-03-23", "2018-12-21", "2018-12-27"]:
         assert pd.Timestamp(date, tz='Europe/Berlin') in good_dates
     for date in ["2018-01-01", "2018-01-02", "2018-03-30", "2018-04-02", "2018-05-01", "2018-05-10", "2018-05-21",
                  "2018-08-01", "2018-12-24", "2018-12-25", "2018-12-26", "2018-12-31"]:
@@ -33,7 +33,7 @@ def test_eve_day_weekend():
     six = SIXExchangeCalendar()
     good_dates = six.valid_days('2017-12-01', '2017-12-31', tz='Europe/Zurich')
 
-    for date in ["2017-12-22", "2017-12-23", "2017-12-27"]:
+    for date in ["2017-12-22", "2017-12-27"]:
         assert pd.Timestamp(date, tz='Europe/Berlin') in good_dates
     for date in ["2017-12-24", "2017-12-25", "2017-12-26"]:
         assert pd.Timestamp(date, tz='Europe/Zurich') not in good_dates

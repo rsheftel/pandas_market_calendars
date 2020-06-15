@@ -62,7 +62,6 @@ ChristmasEve = Holiday(
     'Christmas Eve',
     month=12,
     day=24,
-    observance=previous_friday,
 )
 # Christmas
 Christmas = Holiday(
@@ -71,30 +70,12 @@ Christmas = Holiday(
     day=25,
     days_of_week=(MONDAY, TUESDAY, WEDNESDAY, THURSDAY, FRIDAY),
 )
-# THIS DOES NOT APPEAR TO BE CORRECT. See Issue #100
-# If christmas day is Saturday Monday 27th is a holiday
-# If christmas day is sunday the Tuesday 27th is a holiday
-# WeekendChristmas = Holiday(
-#     "Weekend Christmas",
-#     month=12,
-#     day=27,
-#     days_of_week=(MONDAY, TUESDAY),
-# )
 # Boxing day
 BoxingDay = Holiday(
     "Boxing Day",
     month=12,
     day=26,
 )
-# THIS DOES NOT APPEAR TO BE CORRECT. See Issue #100
-# If boxing day is saturday then Monday 28th is a holiday
-# If boxing day is sunday then Tuesday 28th is a holiday
-# WeekendBoxingDay = Holiday(
-#     "Weekend Boxing Day",
-#     month=12,
-#     day=28,
-#     days_of_week=(MONDAY, TUESDAY),
-# )
 
 
 class SIXExchangeCalendar(MarketCalendar):
@@ -133,18 +114,6 @@ class SIXExchangeCalendar(MarketCalendar):
             SwissNationalDay,
             ChristmasEve,
             Christmas,
-            # WeekendChristmas,
             BoxingDay,
-            # WeekendBoxingDay,
             NewYearsEve,
         ])
-
-#    @property
-#    def special_closes(self):
-#        return [(
-#            time(12, 30),
-#            AbstractHolidayCalendar(rules=[
-#                ChristmasEve,
-#                NewYearsEve,
-#            ])
-#        )]
