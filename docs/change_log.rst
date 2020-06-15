@@ -128,3 +128,4 @@ Updates
 - Added product specific contract calendars for CME futures exchange
 - First calendar is the CME Agricultural calendar
 - Add the Bombay exchange (XBOM) from #96
+- Fixed Christmas holidays in SIX #100
