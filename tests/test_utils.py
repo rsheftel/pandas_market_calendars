@@ -193,6 +193,10 @@ def test_date_range_minute():
         assert pd.Timestamp(x, tz=cal.tz) not in actual
 
 
+def test_date_range_w_breaks():
+    assert False
+
+
 def test_merge_schedules():
     cal1 = FakeCalendar()
     cal2 = NYSEExchangeCalendar()
@@ -229,3 +233,7 @@ def test_merge_schedules():
 
     with pytest.raises(ValueError):
         mcal.merge_schedules([sch1, sch2], how='left')
+
+
+def test_merge_schedules_w_break():
+    assert False

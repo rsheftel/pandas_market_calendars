@@ -70,6 +70,44 @@ class FakeCalendar(MarketCalendar):
         return [(time(11, 40), ['2016-12-14'])]
 
 
+class FakeBreakCalendar(MarketCalendar):
+    @property
+    def open_time_default(self):
+        return time(9, 30)
+
+    @property
+    def close_time_default(self):
+        return time(12, 00)
+
+    @property
+    def break_start(self):
+        return time(10, 00)
+        
+    @property
+    def break_end(self):
+        return time(11, 00)
+
+    @property
+    def name(self):
+        return "BRK"
+
+    @property
+    def tz(self):
+        return timezone("America/New_York")
+
+    @property
+    def regular_holidays(self):
+        return AbstractHolidayCalendar(rules=[USNewYearsDay, Christmas])
+
+    @property
+    def special_opens_adhoc(self):
+        return [(time(10, 20), ['2016-12-29'])]
+
+    @property
+    def special_closes_adhoc(self):
+        return [(time(10, 40), ['2016-12-30'])]
+
+
 def test_default_calendars():
     for name in get_calendar_names():
         assert get_calendar(name) is not None
@@ -201,6 +239,61 @@ def test_schedule():
     # start date after end date
     with pytest.raises(ValueError):
         cal.schedule('2016-02-02', '2016-01-01')
+
+
+def test_schedule_w_breaks():
+    cal = FakeBreakCalendar()
+    assert cal.open_time == time(9, 30)
+    assert cal.close_time == time(12, 00)
+    assert cal.break_start == time(10, 00)
+    assert cal.break_end == time(11, 00)
+
+    expected = pd.DataFrame({'market_open': [pd.Timestamp('2016-12-01 14:30:00', tz='UTC'),
+                                             pd.Timestamp('2016-12-02 14:30:00', tz='UTC')],
+                             'market_close': [pd.Timestamp('2016-12-01 17:00:00', tz='UTC'),
+                                              pd.Timestamp('2016-12-02 17:00:00', tz='UTC')],
+                             'break_start': [pd.Timestamp('2016-12-01 15:00:00', tz='UTC'),
+                                              pd.Timestamp('2016-12-02 15:00:00', tz='UTC')],
+                             'break_end': [pd.Timestamp('2016-12-01 16:00:00', tz='UTC'),
+                                              pd.Timestamp('2016-12-02 16:00:00', tz='UTC')]
+    },
+                            columns=['market_open', 'market_close', 'break_start', 'break_end'],
+                            index=[pd.Timestamp('2016-12-01'), pd.Timestamp('2016-12-02')])
+    actual = cal.schedule('2016-12-01', '2016-12-02')
+    assert_frame_equal(actual, expected)
+
+    results = cal.schedule('2016-12-01', '2016-12-31')
+    assert len(results) == 21
+
+    expected = pd.Series({'market_open': pd.Timestamp('2016-12-01 14:30:00+0000', tz='UTC', freq='B'),
+                          'market_close': pd.Timestamp('2016-12-01 17:00:00+0000', tz='UTC', freq='B'),
+                          'break_start': pd.Timestamp('2016-12-01 15:00:00+0000', tz='UTC', freq='B'),
+                          'break_end': pd.Timestamp('2016-12-01 16:00:00+0000', tz='UTC', freq='B')
+    },
+                         name=pd.Timestamp('2016-12-01'), index=['market_open', 'market_close', 'break_start', 
+                         'break_end'])
+
+    assert_series_equal(results.iloc[0], expected)
+
+    # special open is after break start
+    expected = pd.Series({'market_open': pd.Timestamp('2016-12-29 15:20:00+0000', tz='UTC', freq='B'),
+                          'market_close': pd.Timestamp('2016-12-29 17:00:00+0000', tz='UTC', freq='B'),
+                          'break_start': pd.Timestamp('2016-12-29 15:20:00+0000', tz='UTC', freq='B'),
+                          'break_end': pd.Timestamp('2016-12-29 16:00:00+0000', tz='UTC', freq='B')},
+                         name=pd.Timestamp('2016-12-29'), index=['market_open', 'market_close', 'break_start',
+                         'break_end'])
+
+    assert_series_equal(results.iloc[-2], expected)
+
+    # special close is before break end
+    expected = pd.Series({'market_open': pd.Timestamp('2016-12-30 14:30:00+0000', tz='UTC', freq='B'),
+                          'market_close': pd.Timestamp('2016-12-30 15:40:00+0000', tz='UTC', freq='B'),
+                          'break_start': pd.Timestamp('2016-12-30 15:00:00+0000', tz='UTC', freq='B'),
+                          'break_end': pd.Timestamp('2016-12-30 15:40:00+0000', tz='UTC', freq='B')},
+                         name=pd.Timestamp('2016-12-30'), index=['market_open', 'market_close', 'break_start',
+                         'break_end'])
+
+    assert_series_equal(results.iloc[-1], expected)
 
 
 def test_schedule_w_times():
