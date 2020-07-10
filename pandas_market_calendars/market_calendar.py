@@ -216,7 +216,7 @@ class MarketCalendar(metaclass=MarketCalendarMeta):
         Generates the schedule DataFrame. The resulting DataFrame will have all the valid business days as the index
         and columns for the market opening datetime (market_open) and closing datetime (market_close). All time zones
         are set to UTC by default. Setting the tz parameter will convert the market_open and market_close
-        columns to the desired timezone, such as 'America/New_York'.
+        columns to the desired timezone, such as 'US/Eastern'.
 
         :param start_date: start date
         :param end_date: end date
