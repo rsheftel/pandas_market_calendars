@@ -201,6 +201,15 @@ def test_schedule():
     # start date after end date
     with pytest.raises(ValueError):
         cal.schedule('2016-02-02', '2016-01-01')
+    
+    # using a different time zone
+    expected = pd.DataFrame({'market_open': pd.Timestamp('2016-11-30 22:13:00-05:00', tz='US/Eastern', freq='B'),
+                             'market_close': pd.Timestamp('2016-11-30 22:49:00-05:00', tz='US/Eastern', freq='B')},
+                            index=pd.DatetimeIndex([pd.Timestamp('2016-12-01')]),
+                            columns=['market_open', 'market_close'])
+
+    actual = cal.schedule('2016-12-01', '2016-12-01', tz='US/Eastern')
+    assert_frame_equal(actual, expected)
 
 
 def test_schedule_w_times():
