@@ -66,12 +66,12 @@ def date_range(schedule, frequency, closed='right', force_close=True, **kwargs):
             if row.market_close not in dates:
                 dates = dates.insert(len(dates), row.market_close)
         if breaks:
-            if closed = 'right':
+            if closed == 'right':
                 dates = dates[(dates <= row.break_start) | (row.break_end < dates)]
-            elif closed = 'left':
-                dates = dates[(dates < row.break_start) | ((row.break_end <= dates)]
+            elif closed == 'left':
+                dates = dates[(dates < row.break_start) | (row.break_end <= dates)]
             else:
-                dates = dates[(dates <= row.break_start) | ((row.break_end <= dates)]
+                dates = dates[(dates <= row.break_start) | (row.break_end <= dates)]
 
         ranges.append(dates)
 
