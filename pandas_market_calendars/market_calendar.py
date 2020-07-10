@@ -211,15 +211,16 @@ class MarketCalendar(metaclass=MarketCalendarMeta):
         """
         return pd.date_range(start_date, end_date, freq=self.holidays(), normalize=True, tz=tz)
 
-    def schedule(self, start_date, end_date):
+    def schedule(self, start_date, end_date, tz='UTC'):
         """
         Generates the schedule DataFrame. The resulting DataFrame will have all the valid business days as the index
         and columns for the market opening datetime (market_open) and closing datetime (market_close). All time zones
-        are set to UTC. To convert to the local market time use pandas tz_convert and the self.tz to get the
-        market time zone.
+        are set to UTC by default. Setting the tz parameter will convert the market_open and market_close
+        columns to the desired timezone, such as 'America/New_York'.
 
         :param start_date: start date
         :param end_date: end date
+        :param tz: timezone
         :return: schedule DataFrame
         """
         start_date, end_date = clean_dates(start_date, end_date)
@@ -234,8 +235,8 @@ class MarketCalendar(metaclass=MarketCalendarMeta):
             return pd.DataFrame(columns=['market_open', 'market_close'], index=pd.DatetimeIndex([], freq='C'))
 
         # `DatetimeIndex`s of standard opens/closes for each day.
-        opens = days_at_time(_all_days, self.open_time, self.tz, self.open_offset)
-        closes = days_at_time(_all_days, self.close_time, self.tz, self.close_offset)
+        opens = days_at_time(_all_days, self.open_time, self.tz, self.open_offset).tz_convert(tz)
+        closes = days_at_time(_all_days, self.close_time, self.tz, self.close_offset).tz_convert(tz)
 
         # `DatetimeIndex`s of nonstandard opens/closes
         _special_opens = self._calculate_special_opens(start_date, end_date)
