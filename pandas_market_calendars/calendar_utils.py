@@ -1,6 +1,9 @@
 """
 Utilities to use with market_calendars
 """
+import itertools
+import warnings
+
 import pandas as pd
 
 
@@ -8,11 +11,17 @@ def merge_schedules(schedules, how='outer'):
     """
     Given a list of schedules will return a merged schedule. The merge method (how) will either return the superset
     of any datetime when any schedule is open (outer) or only the datetime where all markets are open (inner)
+     *NOTE* This does not work for schedules with breaks, the break information will be lost.
 
     :param schedules: list of schedules
     :param how: outer or inner
     :return: schedule DataFrame
     """
+
+    all_cols = [x.columns for x in schedules]
+    all_cols = list(itertools.chain(*all_cols))
+    if ('break_start' in all_cols) or ('break_end' in all_cols):
+        warnings.warn('Merge schedules will drop the break_start and break_end from result.')
 
     result = schedules[0]
     for schedule in schedules[1:]:

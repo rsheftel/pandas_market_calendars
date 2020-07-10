@@ -304,4 +304,16 @@ def test_merge_schedules():
 
 
 def test_merge_schedules_w_break():
-    assert False
+    # this currently does not work as all breaks are lost
+    cal = FakeCalendar()
+    cal_breaks = FakeBreakCalendar()
+
+    schedule = cal.schedule('2016-12-20', '2016-12-30')
+    schedule_breaks = cal_breaks.schedule('2016-12-20', '2016-12-30')
+
+    with pytest.warns(Warning) as w:
+        result = mcal.merge_schedules([schedule, schedule_breaks])
+    assert w[0].message.args[0] == 'Merge schedules will drop the break_start and break_end from result.'
+
+    assert 'break_start' not in result.columns
+    assert 'break_end' not in result.columns
