@@ -449,6 +449,25 @@ def test_open_at_time():
                             include_close=True) is True
 
 
+def test_open_at_time_breaks():
+    cal = FakeBreakCalendar()
+
+    schedule = cal.schedule('2016-12-20', '2016-12-30')
+
+    # between open and break
+    assert cal.open_at_time(schedule, pd.Timestamp('2016-12-28 09:50', tz='America/New_York')) is True
+    # at break start
+    assert cal.open_at_time(schedule, pd.Timestamp('2016-12-28 10:00', tz='America/New_York')) is False
+    assert cal.open_at_time(schedule, pd.Timestamp('2016-12-28 10:00', tz='America/New_York'), include_close=True) is True
+    # during break
+    assert cal.open_at_time(schedule, pd.Timestamp('2016-12-28 10:30', tz='America/New_York')) is False
+    assert cal.open_at_time(schedule, pd.Timestamp('2016-12-28 10:59', tz='America/New_York')) is False
+    # at break end
+    assert cal.open_at_time(schedule, pd.Timestamp('2016-12-28 11:00', tz='America/New_York')) is True
+    # between break and close
+    assert cal.open_at_time(schedule, pd.Timestamp('2016-12-28 11:30', tz='America/New_York')) is True
+
+
 def test_bad_dates():
     cal = FakeCalendar()
 

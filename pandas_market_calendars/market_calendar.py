@@ -290,10 +290,18 @@ class MarketCalendar(metaclass=MarketCalendarMeta):
         """
         date = timestamp.date()
         if date in schedule.index:
-            if include_close:
-                return schedule.loc[date, 'market_open'] <= timestamp <= schedule.loc[date, 'market_close']
+            if 'break_start' in schedule.columns:
+                if include_close:
+                    return (schedule.loc[date, 'market_open'] <= timestamp <= schedule.loc[date, 'break_start']) or \
+                           (schedule.loc[date, 'break_end'] <= timestamp <= schedule.loc[date, 'market_close'])
+                else:
+                    return (schedule.loc[date, 'market_open'] <= timestamp < schedule.loc[date, 'break_start']) or \
+                           (schedule.loc[date, 'break_end'] <= timestamp < schedule.loc[date, 'market_close'])
             else:
-                return schedule.loc[date, 'market_open'] <= timestamp < schedule.loc[date, 'market_close']
+                if include_close:
+                    return schedule.loc[date, 'market_open'] <= timestamp <= schedule.loc[date, 'market_close']
+                else:
+                    return schedule.loc[date, 'market_open'] <= timestamp < schedule.loc[date, 'market_close']
         else:
             return False
 
