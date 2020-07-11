@@ -102,6 +102,24 @@ class MarketCalendar(metaclass=MarketCalendarMeta):
         raise NotImplementedError()
 
     @property
+    def break_start(self):
+        """
+        Break time start. If None then there is no break
+
+        :return: time or None
+        """
+        return None
+
+    @property
+    def break_end(self):
+        """
+        Break time end. If None then there is no break
+
+        :return: time or None
+        """
+        return None
+
+    @property
     def regular_holidays(self):
         """
 
@@ -244,9 +262,19 @@ class MarketCalendar(metaclass=MarketCalendarMeta):
         # Overwrite the special opens and closes on top of the standard ones.
         _overwrite_special_dates(_all_days, opens, _special_opens)
         _overwrite_special_dates(_all_days, closes, _special_closes)
-
-        return DataFrame(index=_all_days.tz_localize(None), columns=['market_open', 'market_close'],
+        
+        result = DataFrame(index=_all_days.tz_localize(None), columns=['market_open', 'market_close'],
                          data={'market_open': opens, 'market_close': closes})
+        
+        if self.break_start:
+            result['break_start'] = days_at_time(_all_days, self.break_start, self.tz)
+            temp = result[['market_open', 'break_start']].max(axis=1)
+            result['break_start'] = temp
+            result['break_end'] = days_at_time(_all_days, self.break_end, self.tz)
+            temp = result[['market_close', 'break_end']].min(axis=1)
+            result['break_end'] = temp
+            
+        return result
 
     @staticmethod
     def open_at_time(schedule, timestamp, include_close=False):
@@ -262,10 +290,18 @@ class MarketCalendar(metaclass=MarketCalendarMeta):
         """
         date = timestamp.date()
         if date in schedule.index:
-            if include_close:
-                return schedule.loc[date, 'market_open'] <= timestamp <= schedule.loc[date, 'market_close']
+            if 'break_start' in schedule.columns:
+                if include_close:
+                    return (schedule.loc[date, 'market_open'] <= timestamp <= schedule.loc[date, 'break_start']) or \
+                           (schedule.loc[date, 'break_end'] <= timestamp <= schedule.loc[date, 'market_close'])
+                else:
+                    return (schedule.loc[date, 'market_open'] <= timestamp < schedule.loc[date, 'break_start']) or \
+                           (schedule.loc[date, 'break_end'] <= timestamp < schedule.loc[date, 'market_close'])
             else:
-                return schedule.loc[date, 'market_open'] <= timestamp < schedule.loc[date, 'market_close']
+                if include_close:
+                    return schedule.loc[date, 'market_open'] <= timestamp <= schedule.loc[date, 'market_close']
+                else:
+                    return schedule.loc[date, 'market_open'] <= timestamp < schedule.loc[date, 'market_close']
         else:
             return False
 

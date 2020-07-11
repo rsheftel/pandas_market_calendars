@@ -35,6 +35,9 @@ their excellent work to Quantopian.
 
 As of v1.0 this package only works with Python3. This is consistent with Pandas dropping support for Python2.
 
+As of v1.4 this package now has the concept of a break during the trading day. For example this can accommodate Asian
+markets that have a lunch break, or futures markets that are open 24 hours with a break in the day for trade processing.
+
 Source location
 ~~~~~~~~~~~~~~~
 Hosted on GitHub: https://github.com/rsheftel/pandas_market_calendars

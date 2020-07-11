@@ -1,76 +1,27 @@
 """
 Utilities to use with market_calendars
 """
+import itertools
+import warnings
+
 import pandas as pd
-
-
-# TODO: remove the deprecated code
-# >>> Deprecated (remove in future releases)
-# import warnings
-# from collections.abc import MutableMapping
-#
-#
-# from . import calendar_registry
-#
-#
-# class DeprecatedRegistry(MutableMapping):
-#
-#     def __init__(self):
-#         self._dict = calendar_registry.MarketCalendar._regmeta_class_registry
-#
-#     def _warn(self):
-#         warnings.warn(
-#             """
-#             This dictionary will be removed from calendar_utils in future releases.
-#             Market Calendar's are registered automatically and there is no longer any
-#             need to access the registry directly."""
-#         )
-#
-#     def __getitem__(self, key):
-#         self._warn()
-#         return self._dict[key]
-#
-#     def __setitem__(self, key, value):
-#         self._warn()
-#         self._dict[key] = value
-#
-#     def __delitem__(self, key):
-#         self._warn()
-#         del self._dict[key]
-#
-#     def __iter__(self):
-#         self._warn()
-#         return iter(self._dict)
-#
-#     def __len__(self):
-#         self._warn()
-#         return len(self._dict)
-#
-#
-# _calendars = _aliases = DeprecatedRegistry()
-#
-#
-# def get_calendar(*args, **kwargs):
-#     warnings.warn(
-#         """
-#         get_calendar has moved from calendar_utils to market_calendar.
-#         It will be removed from calendar_utils in future releases.""",
-#         DeprecationWarning
-#     )
-#     calendar_registry.get_calendar(*args, **kwargs)
-#
-# <<< Deprecated (remove in future releases)
 
 
 def merge_schedules(schedules, how='outer'):
     """
     Given a list of schedules will return a merged schedule. The merge method (how) will either return the superset
     of any datetime when any schedule is open (outer) or only the datetime where all markets are open (inner)
+     *NOTE* This does not work for schedules with breaks, the break information will be lost.
 
     :param schedules: list of schedules
     :param how: outer or inner
     :return: schedule DataFrame
     """
+
+    all_cols = [x.columns for x in schedules]
+    all_cols = list(itertools.chain(*all_cols))
+    if ('break_start' in all_cols) or ('break_end' in all_cols):
+        warnings.warn('Merge schedules will drop the break_start and break_end from result.')
 
     result = schedules[0]
     for schedule in schedules[1:]:
@@ -117,11 +68,20 @@ def date_range(schedule, frequency, closed='right', force_close=True, **kwargs):
         raise ValueError('Frequency must be 1D or higher frequency.')
     kwargs['closed'] = closed
     ranges = list()
+    breaks = 'break_start' in schedule.columns
     for row in schedule.itertuples():
         dates = pd.date_range(row.market_open, row.market_close, freq=frequency, tz='UTC', **kwargs)
         if force_close:
             if row.market_close not in dates:
                 dates = dates.insert(len(dates), row.market_close)
+        if breaks:
+            if closed == 'right':
+                dates = dates[(dates <= row.break_start) | (row.break_end < dates)]
+            elif closed == 'left':
+                dates = dates[(dates < row.break_start) | (row.break_end <= dates)]
+            else:
+                dates = dates[(dates <= row.break_start) | (row.break_end <= dates)]
+
         ranges.append(dates)
 
     index = pd.DatetimeIndex([], tz='UTC')

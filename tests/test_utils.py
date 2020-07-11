@@ -6,7 +6,7 @@ from pandas.testing import assert_frame_equal, assert_index_equal
 
 import pandas_market_calendars as mcal
 from pandas_market_calendars.exchange_calendar_nyse import NYSEExchangeCalendar
-from tests.test_market_calendar import FakeCalendar
+from tests.test_market_calendar import FakeCalendar, FakeBreakCalendar
 
 
 def test_get_calendar():
@@ -193,6 +193,78 @@ def test_date_range_minute():
         assert pd.Timestamp(x, tz=cal.tz) not in actual
 
 
+def test_date_range_w_breaks():
+    cal = FakeBreakCalendar()
+    schedule = cal.schedule('2016-12-28', '2016-12-28')
+
+    expected = ['2016-12-28 14:30:00+00:00', '2016-12-28 15:00:00+00:00',
+                '2016-12-28 16:00:00+00:00', '2016-12-28 16:30:00+00:00', '2016-12-28 17:00:00+00:00']
+    actual = mcal.date_range(schedule, '30min', closed=None)
+    assert len(actual) == len(expected)
+    for x in expected:
+        assert pd.Timestamp(x) in actual
+
+    expected = ['2016-12-28 15:00:00+00:00', '2016-12-28 16:30:00+00:00', '2016-12-28 17:00:00+00:00']
+    actual = mcal.date_range(schedule, '30min', closed='right')
+    assert len(actual) == len(expected)
+    for x in expected:
+        assert pd.Timestamp(x) in actual
+
+    expected = ['2016-12-28 14:30:00+00:00', '2016-12-28 16:00:00+00:00', '2016-12-28 16:30:00+00:00']
+    actual = mcal.date_range(schedule, '30min', closed='left', force_close=False)
+    assert len(actual) == len(expected)
+    for x in expected:
+        assert pd.Timestamp(x) in actual
+
+    expected = ['2016-12-28 14:30:00+00:00', '2016-12-28 16:00:00+00:00', '2016-12-28 16:30:00+00:00',
+                '2016-12-28 17:00:00+00:00']
+    actual = mcal.date_range(schedule, '30min', closed='left', force_close=True)
+    assert len(actual) == len(expected)
+    for x in expected:
+        assert pd.Timestamp(x) in actual
+
+    # when the open is the break start
+    schedule = cal.schedule('2016-12-29', '2016-12-29')
+
+    expected = ['2016-12-29 15:20:00+00:00', '2016-12-29 16:05:00+00:00', '2016-12-29 16:20:00+00:00',
+                '2016-12-29 16:35:00+00:00', '2016-12-29 16:50:00+00:00', '2016-12-29 17:00:00+00:00']
+    actual = mcal.date_range(schedule, '15min', closed=None)
+    assert len(actual) == len(expected)
+    for x in expected:
+        assert pd.Timestamp(x) in actual
+
+    expected = ['2016-12-29 16:05:00+00:00', '2016-12-29 16:20:00+00:00',
+                '2016-12-29 16:35:00+00:00', '2016-12-29 16:50:00+00:00', '2016-12-29 17:00:00+00:00']
+    actual = mcal.date_range(schedule, '15min', closed='right')
+    assert len(actual) == len(expected)
+    for x in expected:
+        assert pd.Timestamp(x) in actual
+
+    # when the close is the break end
+    schedule = cal.schedule('2016-12-30', '2016-12-30')
+
+    # force close True
+    expected = ['2016-12-30 14:30:00+00:00', '2016-12-30 14:45:00+00:00', '2016-12-30 15:00:00+00:00',
+                '2016-12-30 15:40:00+00:00']
+    actual = mcal.date_range(schedule, '15min', closed=None, force_close=True)
+    assert len(actual) == len(expected)
+    for x in expected:
+        assert pd.Timestamp(x) in actual
+
+    # force close False
+    expected = ['2016-12-30 14:30:00+00:00', '2016-12-30 14:45:00+00:00', '2016-12-30 15:00:00+00:00']
+    actual = mcal.date_range(schedule, '15min', closed=None, force_close=False)
+    assert len(actual) == len(expected)
+    for x in expected:
+        assert pd.Timestamp(x) in actual
+
+    expected = ['2016-12-30 14:45:00+00:00', '2016-12-30 15:00:00+00:00']
+    actual = mcal.date_range(schedule, '15min', closed='right', force_close=False)
+    assert len(actual) == len(expected)
+    for x in expected:
+        assert pd.Timestamp(x) in actual
+
+
 def test_merge_schedules():
     cal1 = FakeCalendar()
     cal2 = NYSEExchangeCalendar()
@@ -229,3 +301,19 @@ def test_merge_schedules():
 
     with pytest.raises(ValueError):
         mcal.merge_schedules([sch1, sch2], how='left')
+
+
+def test_merge_schedules_w_break():
+    # this currently does not work as all breaks are lost
+    cal = FakeCalendar()
+    cal_breaks = FakeBreakCalendar()
+
+    schedule = cal.schedule('2016-12-20', '2016-12-30')
+    schedule_breaks = cal_breaks.schedule('2016-12-20', '2016-12-30')
+
+    with pytest.warns(Warning) as w:
+        result = mcal.merge_schedules([schedule, schedule_breaks])
+    assert w[0].message.args[0] == 'Merge schedules will drop the break_start and break_end from result.'
+
+    assert 'break_start' not in result.columns
+    assert 'break_end' not in result.columns

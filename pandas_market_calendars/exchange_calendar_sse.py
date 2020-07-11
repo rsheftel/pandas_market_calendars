@@ -18,9 +18,6 @@ class SSEExchangeCalendar(MarketCalendar):
     """
     aliases = ['SSE']
 
-    lunch_start = time(11, 30)
-    lunch_end = time(13, 0)
-
     @property
     def name(self):
         return "SSE"
@@ -36,6 +33,14 @@ class SSEExchangeCalendar(MarketCalendar):
     @property
     def close_time_default(self):
         return time(15, tzinfo=self.tz)
+
+    @property
+    def break_start(self):
+        return time(11, 30)
+
+    @property
+    def break_end(self):
+        return time(13, 0)
 
     @property
     def regular_holidays(self):
@@ -246,12 +251,6 @@ class SSEExchangeCalendar(MarketCalendar):
     @property
     def adhoc_holidays(self):
         return all_holidays
-
-    @staticmethod
-    def open_at_time(schedule, timestamp, include_close=False):
-        if SSEExchangeCalendar.lunch_start < timestamp.time() < SSEExchangeCalendar.lunch_end:
-            return False
-        return MarketCalendar.open_at_time(schedule, timestamp, include_close)
 
 
 def second_day_in_lieu(dt):
