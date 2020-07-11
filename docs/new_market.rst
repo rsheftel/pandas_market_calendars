@@ -17,6 +17,11 @@ To create a new exchange (or OTC market):
 
 #. Now optionally define any of the following property methods:
 
+   #. Break start and end:
+
+      #. break_start - returns a time that the market start its break
+      #. break_end - returns a time that the market ends the break
+
    #. Days where the market is fully closed:
 
       #. regular_holidays - returns an pandas AbstractHolidayCalendar object
