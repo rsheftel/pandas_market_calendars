@@ -351,9 +351,6 @@ class HKEXExchangeCalendar(MarketCalendar):
     """
     aliases = ['HKEX']
 
-    lunch_start = time(12, 0)
-    lunch_end = time(13, 0)
-
     @property
     def name(self):
         return "HKEX"
@@ -369,6 +366,14 @@ class HKEXExchangeCalendar(MarketCalendar):
     @property
     def close_time_default(self):
         return time(16, tzinfo=self.tz)
+
+    @property
+    def break_start(self):
+        return time(12, 0)
+
+    @property
+    def break_end(self):
+        return time(13, 0)
 
     @property
     def regular_holidays(self):
@@ -410,9 +415,3 @@ class HKEXExchangeCalendar(MarketCalendar):
     @property
     def adhoc_holidays(self):
         return HKClosedDay
-
-    @classmethod
-    def open_at_time(cls, schedule, timestamp, include_close=False):
-        if cls.lunch_start < timestamp.time() < cls.lunch_end:
-            return False
-        return MarketCalendar.open_at_time(schedule, timestamp, include_close)

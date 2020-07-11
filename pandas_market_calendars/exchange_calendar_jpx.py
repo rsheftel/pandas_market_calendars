@@ -25,8 +25,6 @@ class JPXExchangeCalendar(MarketCalendar):
     aliases = ['JPX']
 
     regular_early_close = time(13)
-    lunch_start = time(11, 30)
-    lunch_end = time(12, 30)
 
     @property
     def name(self):
@@ -43,6 +41,15 @@ class JPXExchangeCalendar(MarketCalendar):
     @property
     def close_time_default(self):
         return time(15, tzinfo=self.tz)
+
+    @property
+    def break_start(self):
+        return time(11, 30)
+
+    @property
+    def break_end(self):
+        return time(12, 30)
+
 
     @property
     def adhoc_holidays(self):
@@ -101,9 +108,3 @@ class JPXExchangeCalendar(MarketCalendar):
             JapanDecember30Until1988,
             JapanBeforeNewYearsDay,
         ])
-
-    @staticmethod
-    def open_at_time(schedule, timestamp, include_close=False):
-        if JPXExchangeCalendar.lunch_start < timestamp.time() < JPXExchangeCalendar.lunch_end:
-            return False
-        return MarketCalendar.open_at_time(schedule, timestamp, include_close)
