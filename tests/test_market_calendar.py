@@ -239,6 +239,15 @@ def test_schedule():
     # start date after end date
     with pytest.raises(ValueError):
         cal.schedule('2016-02-02', '2016-01-01')
+    
+    # using a different time zone
+    expected = pd.DataFrame({'market_open': pd.Timestamp('2016-11-30 22:13:00-05:00', tz='US/Eastern', freq='B'),
+                             'market_close': pd.Timestamp('2016-11-30 22:49:00-05:00', tz='US/Eastern', freq='B')},
+                            index=pd.DatetimeIndex([pd.Timestamp('2016-12-01')]),
+                            columns=['market_open', 'market_close'])
+
+    actual = cal.schedule('2016-12-01', '2016-12-01', tz='US/Eastern')
+    assert_frame_equal(actual, expected)
 
 
 def test_schedule_w_breaks():
@@ -294,6 +303,17 @@ def test_schedule_w_breaks():
                          'break_end'])
 
     assert_series_equal(results.iloc[-1], expected)
+
+    # using a different time zone
+    expected = pd.DataFrame({'market_open': pd.Timestamp('2016-12-28 09:30:00-05:00', tz='America/New_York', freq='B'),
+                             'market_close': pd.Timestamp('2016-12-28 12:00:00-05:00', tz='America/New_York', freq='B'),
+                             'break_start': pd.Timestamp('2016-12-28 10:00:00-05:00', tz='America/New_York', freq='B'),
+                             'break_end': pd.Timestamp('2016-12-28 11:00:00-05:00', tz='America/New_York', freq='B')},
+                            index=pd.DatetimeIndex([pd.Timestamp('2016-12-28')]),
+                            columns=['market_open', 'market_close', 'break_start', 'break_end'])
+
+    actual = cal.schedule('2016-12-28', '2016-12-28', tz='America/New_York')
+    assert_frame_equal(actual, expected)
 
 
 def test_schedule_w_times():
