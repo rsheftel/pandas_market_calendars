@@ -26,5 +26,6 @@ Futures Calendars
 ========== ================ ===================== ============ ==========
  Exchange        Name             Class           Unit Tests    Creator
 ========== ================ ===================== ============ ==========
+CME        CME_Equity         CMEExchangeCalendar    Yes       rsheftel
 CME        CME_Agricultural   CMEExchangeCalendar    Yes       lionelyoung
 ========== ================ ===================== ============ ==========

@@ -28,7 +28,8 @@ design choice it does not include the actual holiday calendars for specific exch
 The pandas_market_calendars package looks to fill that role with the holiday, late open and early close calendars
 for specific exchanges and OTC conventions. pandas_market_calendars also adds several functions to manipulate the
 market calendars and includes a date_range function to create a pandas DatetimeIndex including only the datetimes
-when the markets are open.
+when the markets are open. Additionally the package contains product specific calendars for future exchanges which
+have different market open, closes, breaks and holidays based on product type.
 
 This package is a fork of the Zipline package from Quantopian and extracts just the relevant parts. All credit for
 their excellent work to Quantopian.
@@ -37,6 +38,7 @@ As of v1.0 this package only works with Python3. This is consistent with Pandas 
 
 As of v1.4 this package now has the concept of a break during the trading day. For example this can accommodate Asian
 markets that have a lunch break, or futures markets that are open 24 hours with a break in the day for trade processing.
+
 
 Source location
 ~~~~~~~~~~~~~~~

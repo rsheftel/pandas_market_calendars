@@ -22,6 +22,7 @@ from .holidays_us import (Christmas, ChristmasEveBefore1993, ChristmasEveInOrAft
                           USIndependenceDay, USMartinLutherKingJrAfter1998, USMemorialDay, USNationalDaysofMourning,
                           USNewYearsDay)
 from .market_calendar import MarketCalendar
+from .exchange_calendar_nyse import NYSEExchangeCalendar
 
 
 # Useful resources for making changes to this file:
@@ -100,6 +101,47 @@ class CMEExchangeCalendar(MarketCalendar):
                 ChristmasEveInOrAfter1993,
             ])
         )]
+
+
+class CMEEquityExchangeCalendar(NYSEExchangeCalendar):
+    """
+    Exchange calendar for CME for Equity products
+
+    Open Time: 6:00 PM, America/New_York
+    Close Time: 5:00 PM, America/New_York
+    Break: 4:15 - 4:30pm America/New_York
+
+    Regularly-Observed Holidays same as NYSE equity markets
+    """
+    aliases = ['CME_Equity', 'CBOT_Equity']
+
+    @property
+    def name(self):
+        return "CME_Equity"
+
+    @property
+    def tz(self):
+        return timezone('America/New_York')
+
+    @property
+    def open_time_default(self):
+        return time(18, 0, tzinfo=self.tz)
+
+    @property
+    def close_time_default(self):
+        return time(17, 0, tzinfo=self.tz)
+
+    @property
+    def open_offset(self):
+        return -1
+
+    @property
+    def break_start(self):
+        return time(16, 15)
+
+    @property
+    def break_end(self):
+        return time(16, 30)
 
 
 class CMEAgricultureExchangeCalendar(MarketCalendar):
