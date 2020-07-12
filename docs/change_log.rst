@@ -6,7 +6,7 @@ Updates
 1.4 (7/11/20)
 ~~~~~~~~~~~~
 - Add the concept of a break during the trading day. For example this can accommodate Asian markets that have a lunch
-break, or futures markets that are open 24 hours with a break in the day for trade processing.
+  break, or futures markets that are open 24 hours with a break in the day for trade processing.
 - Added product specific contract calendars for CME futures exchange
 -- First calendars are the CME Agricultural and CME Equity calendars
 - Add ability to set time zone on schedule() function #42
