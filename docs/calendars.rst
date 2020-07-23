@@ -23,9 +23,10 @@ Exchange  XBOM   XBOMExchangeCalendar               rakesh1988
 
 Futures Calendars
 #################
-========== ================ ===================== ============ ==========
- Exchange        Name             Class           Unit Tests    Creator
-========== ================ ===================== ============ ==========
-CME        CME_Equity         CMEExchangeCalendar    Yes       rsheftel
-CME        CME_Agricultural   CMEExchangeCalendar    Yes       lionelyoung
-========== ================ ===================== ============ ==========
+========== ================ =================================== ============ ============
+ Exchange        Name             Class                          Unit Tests    Creator
+========== ================ =================================== ============ ============
+CME        CME_Equity         CMEEquityExchangeCalendar           Yes         rsheftel
+CME        CME_Bond           CMEBondExchangeCalendar             Yes         rsheftel
+CME        CME_Agricultural   CMEAgriculturalExchangeCalendar     Yes        lionelyoung
+========== ================ =================================== ============ ============

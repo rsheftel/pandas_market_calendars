@@ -1,4 +1,3 @@
-
 Examples
 ========
 
@@ -44,11 +43,11 @@ Get the AbstractHolidayCalendar object
 
 .. parsed-literal::
 
-    (numpy.datetime64('2030-05-27'),
-     numpy.datetime64('2030-07-04'),
-     numpy.datetime64('2030-09-02'),
-     numpy.datetime64('2030-11-28'),
-     numpy.datetime64('2030-12-25'))
+    (numpy.datetime64('2200-05-26'),
+     numpy.datetime64('2200-07-04'),
+     numpy.datetime64('2200-09-01'),
+     numpy.datetime64('2200-11-27'),
+     numpy.datetime64('2200-12-25'))
 
 
 
@@ -68,10 +67,13 @@ missing
 
 .. parsed-literal::
 
-    DatetimeIndex(['2016-12-20', '2016-12-21', '2016-12-22', '2016-12-23',
-                   '2016-12-27', '2016-12-28', '2016-12-29', '2016-12-30',
-                   '2017-01-03', '2017-01-04', '2017-01-05', '2017-01-06',
-                   '2017-01-09', '2017-01-10'],
+    DatetimeIndex(['2016-12-20 00:00:00+00:00', '2016-12-21 00:00:00+00:00',
+                   '2016-12-22 00:00:00+00:00', '2016-12-23 00:00:00+00:00',
+                   '2016-12-27 00:00:00+00:00', '2016-12-28 00:00:00+00:00',
+                   '2016-12-29 00:00:00+00:00', '2016-12-30 00:00:00+00:00',
+                   '2017-01-03 00:00:00+00:00', '2017-01-04 00:00:00+00:00',
+                   '2017-01-05 00:00:00+00:00', '2017-01-06 00:00:00+00:00',
+                   '2017-01-09 00:00:00+00:00', '2017-01-10 00:00:00+00:00'],
                   dtype='datetime64[ns, UTC]', freq='C')
 
 
@@ -90,6 +92,19 @@ Schedule
 .. raw:: html
 
     <div>
+    <style scoped>
+        .dataframe tbody tr th:only-of-type {
+            vertical-align: middle;
+        }
+    
+        .dataframe tbody tr th {
+            vertical-align: top;
+        }
+    
+        .dataframe thead th {
+            text-align: right;
+        }
+    </style>
     <table border="1" class="dataframe">
       <thead>
         <tr style="text-align: right;">
@@ -152,6 +167,19 @@ Schedule
 .. raw:: html
 
     <div>
+    <style scoped>
+        .dataframe tbody tr th:only-of-type {
+            vertical-align: middle;
+        }
+    
+        .dataframe tbody tr th {
+            vertical-align: top;
+        }
+    
+        .dataframe thead th {
+            text-align: right;
+        }
+    </style>
     <table border="1" class="dataframe">
       <thead>
         <tr style="text-align: right;">
@@ -210,6 +238,19 @@ Get early closes
 .. raw:: html
 
     <div>
+    <style scoped>
+        .dataframe tbody tr th:only-of-type {
+            vertical-align: middle;
+        }
+    
+        .dataframe tbody tr th {
+            vertical-align: top;
+        }
+    
+        .dataframe thead th {
+            text-align: right;
+        }
+    </style>
     <table border="1" class="dataframe">
       <thead>
         <tr style="text-align: right;">
@@ -350,6 +391,19 @@ Merge schedules
 .. raw:: html
 
     <div>
+    <style scoped>
+        .dataframe tbody tr th:only-of-type {
+            vertical-align: middle;
+        }
+    
+        .dataframe tbody tr th {
+            vertical-align: top;
+        }
+    
+        .dataframe thead th {
+            text-align: right;
+        }
+    </style>
     <table border="1" class="dataframe">
       <thead>
         <tr style="text-align: right;">
@@ -433,6 +487,19 @@ Merge schedules
 .. raw:: html
 
     <div>
+    <style scoped>
+        .dataframe tbody tr th:only-of-type {
+            vertical-align: middle;
+        }
+    
+        .dataframe tbody tr th {
+            vertical-align: top;
+        }
+    
+        .dataframe thead th {
+            text-align: right;
+        }
+    </style>
     <table border="1" class="dataframe">
       <thead>
         <tr style="text-align: right;">
@@ -516,6 +583,19 @@ for that.
 .. raw:: html
 
     <div>
+    <style scoped>
+        .dataframe tbody tr th:only-of-type {
+            vertical-align: middle;
+        }
+    
+        .dataframe tbody tr th {
+            vertical-align: top;
+        }
+    
+        .dataframe thead th {
+            text-align: right;
+        }
+    </style>
     <table border="1" class="dataframe">
       <thead>
         <tr style="text-align: right;">
@@ -597,6 +677,19 @@ are open
 .. raw:: html
 
     <div>
+    <style scoped>
+        .dataframe tbody tr th:only-of-type {
+            vertical-align: middle;
+        }
+    
+        .dataframe tbody tr th {
+            vertical-align: top;
+        }
+    
+        .dataframe thead th {
+            text-align: right;
+        }
+    </style>
     <table border="1" class="dataframe">
       <thead>
         <tr style="text-align: right;">
@@ -665,6 +758,8 @@ are open
     </table>
     </div>
 
+
+
 Use holidays in numpy
 ---------------------
 
@@ -672,6 +767,105 @@ This will use your exchange calendar in numpy to add business days
 
 .. code:: python
 
-  import numpy as np
-  cme = mcal.get_calendar("CME")
-  np.busday_offset(dates="2020-05-22", holidays=cme.holidays().holidays, offsets=1)
+    import numpy as np
+    cme = mcal.get_calendar("CME")
+    np.busday_offset(dates="2020-05-22", holidays=cme.holidays().holidays, offsets=1)
+
+
+
+
+.. parsed-literal::
+
+    numpy.datetime64('2020-05-25')
+
+
+
+Trading Breaks
+--------------
+
+Some markets have breaks in the day, like the CME Equity Futures markets
+which are closed from 4:15 - 4:35 (NY) daily. These calendars will have
+additional columns in the schedule() DataFrame
+
+.. code:: python
+
+    cme = mcal.get_calendar('CME_Equity')
+    schedule = cme.schedule('2020-01-01', '2020-01-04')
+    schedule
+
+
+
+
+.. raw:: html
+
+    <div>
+    <style scoped>
+        .dataframe tbody tr th:only-of-type {
+            vertical-align: middle;
+        }
+    
+        .dataframe tbody tr th {
+            vertical-align: top;
+        }
+    
+        .dataframe thead th {
+            text-align: right;
+        }
+    </style>
+    <table border="1" class="dataframe">
+      <thead>
+        <tr style="text-align: right;">
+          <th></th>
+          <th>market_open</th>
+          <th>market_close</th>
+          <th>break_start</th>
+          <th>break_end</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <th>2020-01-02</th>
+          <td>2020-01-01 23:00:00+00:00</td>
+          <td>2020-01-02 22:00:00+00:00</td>
+          <td>2020-01-02 21:15:00+00:00</td>
+          <td>2020-01-02 21:30:00+00:00</td>
+        </tr>
+        <tr>
+          <th>2020-01-03</th>
+          <td>2020-01-02 23:00:00+00:00</td>
+          <td>2020-01-03 22:00:00+00:00</td>
+          <td>2020-01-03 21:15:00+00:00</td>
+          <td>2020-01-03 21:30:00+00:00</td>
+        </tr>
+      </tbody>
+    </table>
+    </div>
+
+
+
+The date_range() properly accounts for the breaks
+
+.. code:: python
+
+    mcal.date_range(schedule, '5min')
+
+
+
+
+.. parsed-literal::
+
+    DatetimeIndex(['2020-01-01 23:05:00+00:00', '2020-01-01 23:10:00+00:00',
+                   '2020-01-01 23:15:00+00:00', '2020-01-01 23:20:00+00:00',
+                   '2020-01-01 23:25:00+00:00', '2020-01-01 23:30:00+00:00',
+                   '2020-01-01 23:35:00+00:00', '2020-01-01 23:40:00+00:00',
+                   '2020-01-01 23:45:00+00:00', '2020-01-01 23:50:00+00:00',
+                   ...
+                   '2020-01-03 21:00:00+00:00', '2020-01-03 21:05:00+00:00',
+                   '2020-01-03 21:10:00+00:00', '2020-01-03 21:15:00+00:00',
+                   '2020-01-03 21:35:00+00:00', '2020-01-03 21:40:00+00:00',
+                   '2020-01-03 21:45:00+00:00', '2020-01-03 21:50:00+00:00',
+                   '2020-01-03 21:55:00+00:00', '2020-01-03 22:00:00+00:00'],
+                  dtype='datetime64[ns, UTC]', length=546, freq=None)
+
+
+
