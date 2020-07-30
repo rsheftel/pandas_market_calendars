@@ -301,13 +301,13 @@ class MarketCalendar(metaclass=MarketCalendarMeta):
                 else:
                     is_before_break = (timestamp < schedule.loc[date:date, 'break_start':'break_start']).break_start.values[0]
                     is_not_closed = (timestamp < schedule.loc[date:date, 'market_close':'market_close']).market_close.values[0]
-                return (is_open and is_before_break) or (is_after_break and is_not_closed)
+                return bool((is_open and is_before_break) or (is_after_break and is_not_closed))
             else:
                 if include_close:
                     is_not_closed = (timestamp <= schedule.loc[date:date, 'market_close':'market_close']).market_close.values[0]
                 else:
                     is_not_closed = (timestamp < schedule.loc[date:date, 'market_close':'market_close']).market_close.values[0]
-                return is_open and is_not_closed
+                return bool(is_open and is_not_closed)
         else:
             return False
 
