@@ -290,19 +290,24 @@ class MarketCalendar(metaclass=MarketCalendarMeta):
         :return: True if the timestamp is a valid open date and time, False if not
         """
         date = timestamp.date()
-        if date in schedule.index:
+        if str(date) in schedule.index:
+            is_open = (schedule.loc[date:date, 'market_open':'market_open'] <= timestamp).market_open.values[0]
             if 'break_start' in schedule.columns:
+                is_after_break = (schedule.loc[date:date, 'break_end':'break_end'] <= timestamp).break_end.values[0]
                 if include_close:
-                    return (schedule.loc[date, 'market_open'] <= timestamp <= schedule.loc[date, 'break_start']) or \
-                           (schedule.loc[date, 'break_end'] <= timestamp <= schedule.loc[date, 'market_close'])
+                    is_before_break = (timestamp <= schedule.loc[date:date, 'break_start':'break_start']).break_start.values[0]
+                    is_not_closed = (timestamp <= schedule.loc[date:date, 'market_close':'market_close']).market_close.values[0]
+
                 else:
-                    return (schedule.loc[date, 'market_open'] <= timestamp < schedule.loc[date, 'break_start']) or \
-                           (schedule.loc[date, 'break_end'] <= timestamp < schedule.loc[date, 'market_close'])
+                    is_before_break = (timestamp < schedule.loc[date:date, 'break_start':'break_start']).break_start.values[0]
+                    is_not_closed = (timestamp < schedule.loc[date:date, 'market_close':'market_close']).market_close.values[0]
+                return (is_open and is_before_break) or (is_after_break and is_not_closed)
             else:
                 if include_close:
-                    return schedule.loc[date, 'market_open'] <= timestamp <= schedule.loc[date, 'market_close']
+                    is_not_closed = (timestamp <= schedule.loc[date:date, 'market_close':'market_close']).market_close.values[0]
                 else:
-                    return schedule.loc[date, 'market_open'] <= timestamp < schedule.loc[date, 'market_close']
+                    is_not_closed = (timestamp < schedule.loc[date:date, 'market_close':'market_close']).market_close.values[0]
+                return is_open and is_not_closed
         else:
             return False
 
