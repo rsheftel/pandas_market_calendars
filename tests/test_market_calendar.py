@@ -231,10 +231,13 @@ def test_schedule():
     # one day schedule
     expected = pd.DataFrame({'market_open': pd.Timestamp('2016-12-01 03:13:00+0000', tz='UTC', freq='B'),
                              'market_close': pd.Timestamp('2016-12-01 03:49:00+0000', tz='UTC', freq='B')},
-                            index=pd.DatetimeIndex([pd.Timestamp('2016-12-01')]),
+                            index=pd.DatetimeIndex([pd.Timestamp('2016-12-01')], freq='C'),
                             columns=['market_open', 'market_close'])
-    results = cal.schedule('2016-12-01', '2016-12-01')
-    assert_frame_equal(results, expected)
+    actual = cal.schedule('2016-12-01', '2016-12-01')
+    if pd.__version__ < '1.1.0':
+        assert_frame_equal(actual, expected)
+    else:
+        assert_frame_equal(actual, expected, check_freq=False)
 
     # start date after end date
     with pytest.raises(ValueError):
@@ -247,7 +250,10 @@ def test_schedule():
                             columns=['market_open', 'market_close'])
 
     actual = cal.schedule('2016-12-01', '2016-12-01', tz='US/Eastern')
-    assert_frame_equal(actual, expected)
+    if pd.__version__ < '1.1.0':
+        assert_frame_equal(actual, expected)
+    else:
+        assert_frame_equal(actual, expected, check_freq=False)
 
 
 def test_schedule_w_breaks():
@@ -309,12 +315,14 @@ def test_schedule_w_breaks():
                              'market_close': pd.Timestamp('2016-12-28 12:00:00-05:00', tz='America/New_York', freq='B'),
                              'break_start': pd.Timestamp('2016-12-28 10:00:00-05:00', tz='America/New_York', freq='B'),
                              'break_end': pd.Timestamp('2016-12-28 11:00:00-05:00', tz='America/New_York', freq='B')},
-                            index=pd.DatetimeIndex([pd.Timestamp('2016-12-28')]),
+                            index=pd.DatetimeIndex([pd.Timestamp('2016-12-28')], freq='C'),
                             columns=['market_open', 'market_close', 'break_start', 'break_end'])
 
     actual = cal.schedule('2016-12-28', '2016-12-28', tz='America/New_York')
-    assert_frame_equal(actual, expected)
-
+    if pd.__version__ < '1.1.0':
+        assert_frame_equal(actual, expected)
+    else:
+        assert_frame_equal(actual, expected, check_freq=False)
 
 def test_schedule_w_times():
     cal = FakeCalendar(time(12, 12), time(13, 13))

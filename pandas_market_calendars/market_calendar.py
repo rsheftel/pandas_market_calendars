@@ -289,20 +289,20 @@ class MarketCalendar(metaclass=MarketCalendarMeta):
             if using bars and would like to include the last bar as a valid open date and time.
         :return: True if the timestamp is a valid open date and time, False if not
         """
-        date = timestamp.date()
+        date = pd.Timestamp(timestamp.date())
         if date in schedule.index:
             if 'break_start' in schedule.columns:
                 if include_close:
-                    return (schedule.loc[date, 'market_open'] <= timestamp <= schedule.loc[date, 'break_start']) or \
-                           (schedule.loc[date, 'break_end'] <= timestamp <= schedule.loc[date, 'market_close'])
+                    return (schedule.at[date, 'market_open'] <= timestamp <= schedule.at[date, 'break_start']) or \
+                           (schedule.at[date, 'break_end'] <= timestamp <= schedule.at[date, 'market_close'])
                 else:
-                    return (schedule.loc[date, 'market_open'] <= timestamp < schedule.loc[date, 'break_start']) or \
-                           (schedule.loc[date, 'break_end'] <= timestamp < schedule.loc[date, 'market_close'])
+                    return (schedule.at[date, 'market_open'] <= timestamp < schedule.at[date, 'break_start']) or \
+                           (schedule.at[date, 'break_end'] <= timestamp < schedule.at[date, 'market_close'])
             else:
                 if include_close:
-                    return schedule.loc[date, 'market_open'] <= timestamp <= schedule.loc[date, 'market_close']
+                    return schedule.at[date, 'market_open'] <= timestamp <= schedule.at[date, 'market_close']
                 else:
-                    return schedule.loc[date, 'market_open'] <= timestamp < schedule.loc[date, 'market_close']
+                    return schedule.at[date, 'market_open'] <= timestamp < schedule.at[date, 'market_close']
         else:
             return False
 

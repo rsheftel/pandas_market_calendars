@@ -3,6 +3,10 @@ Change Log
 
 Updates
 -------
+1.4.1 (8/11/20)
+~~~~~~~~~~~~~~~
+- Fixed for changes to pandas 1.1.0
+
 1.4 (7/11/20)
 ~~~~~~~~~~~~
 - Add the concept of a break during the trading day. For example this can accommodate Asian markets that have a lunch
