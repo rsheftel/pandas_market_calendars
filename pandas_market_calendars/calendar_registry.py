@@ -2,7 +2,11 @@ from .market_calendar import MarketCalendar
 from .exchange_calendar_asx import ASXExchangeCalendar
 from .exchange_calendar_bmf import BMFExchangeCalendar
 from .exchange_calendar_cfe import CFEExchangeCalendar
-from .exchange_calendar_cme import CMEExchangeCalendar, CMEAgricultureExchangeCalendar, CMEEquityExchangeCalendar
+from .exchange_calendar_cme import \
+    CMEExchangeCalendar, \
+    CMEAgricultureExchangeCalendar, \
+    CMEEquityExchangeCalendar, \
+    CMEBondExchangeCalendar
 from .exchange_calendar_eurex import EUREXExchangeCalendar
 from .exchange_calendar_hkex import HKEXExchangeCalendar
 from .exchange_calendar_ice import ICEExchangeCalendar

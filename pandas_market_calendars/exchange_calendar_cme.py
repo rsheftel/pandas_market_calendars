@@ -18,11 +18,11 @@ from datetime import time
 from pandas.tseries.holiday import AbstractHolidayCalendar, GoodFriday, USLaborDay, USPresidentsDay, USThanksgivingDay
 from pytz import timezone
 
+from .exchange_calendar_nyse import NYSEExchangeCalendar
 from .holidays_us import (Christmas, ChristmasEveBefore1993, ChristmasEveInOrAfter1993, USBlackFridayInOrAfter1993,
                           USIndependenceDay, USMartinLutherKingJrAfter1998, USMemorialDay, USNationalDaysofMourning,
                           USNewYearsDay)
 from .market_calendar import MarketCalendar
-from .exchange_calendar_nyse import NYSEExchangeCalendar
 
 
 # Useful resources for making changes to this file:
@@ -214,3 +214,65 @@ class CMEAgricultureExchangeCalendar(MarketCalendar):
                 ChristmasEveInOrAfter1993,
             ])
         )]
+
+
+class CMEBondExchangeCalendar(MarketCalendar):
+    """
+    Exchange calendar for CME for Interest Rate and Bond products
+
+    The Holiday calendar is different between the open outcry trading floor hours and GLOBEX electronic trading hours.
+    This calendar attempts to be accurate for the GLOBEX holidays and hours from approx 2010 onward.
+    """
+    aliases = ['CME_Rate', 'CBOT_Rate', 'CME_InterestRate', 'CBOT_InterestRate', 'CME_Bond', 'CBOT_Bond']
+
+    @property
+    def name(self):
+        return "CME_Bond"
+
+    @property
+    def tz(self):
+        return timezone('America/Chicago')
+
+    @property
+    def open_time_default(self):
+        return time(17, tzinfo=self.tz)
+
+    @property
+    def close_time_default(self):
+        return time(16, tzinfo=self.tz)
+
+    @property
+    def open_offset(self):
+        return -1
+
+    @property
+    def regular_holidays(self):
+        return AbstractHolidayCalendar(rules=[
+            USNewYearsDay,
+            GoodFriday,
+            Christmas,
+        ])
+
+    @property
+    def adhoc_holidays(self):
+        return USNationalDaysofMourning
+
+    @property
+    def special_closes(self):
+        return [
+            (time(12),
+             AbstractHolidayCalendar(rules=[
+                 USMartinLutherKingJrAfter1998,
+                 USPresidentsDay,
+                 USMemorialDay,
+                 USIndependenceDay,
+                 USLaborDay,
+                 USThanksgivingDay,
+             ])),
+            (time(12, 15),
+             AbstractHolidayCalendar(rules=[
+                 USBlackFridayInOrAfter1993,
+                 ChristmasEveBefore1993,
+                 ChristmasEveInOrAfter1993,
+             ]))
+        ]
