@@ -476,6 +476,9 @@ def test_open_at_time():
     assert cal.open_at_time(schedule, pd.Timestamp('2016-09-07 11:49', tz='Asia/Ulaanbaatar'),
                             include_close=True) is True
 
+    # equivalent to 2014-07-02 03:40 UTC
+    assert cal.open_at_time(schedule, pd.Timestamp('2014-07-01 23:40:00-0400', tz='America/New_York')) is True
+
 
 def test_open_at_time_breaks():
     cal = FakeBreakCalendar()
