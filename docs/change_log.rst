@@ -3,6 +3,10 @@ Change Log
 
 Updates
 -------
+1.5 (8/30/20)
+~~~~~~~~~~~~~
+- Add the is_open_now() function
+
 1.4.2 (8/11/20)
 ~~~~~~~~~~~~~~~
 - Fixed for changes to pandas 1.1.0
