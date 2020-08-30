@@ -6,6 +6,7 @@ Updates
 1.5 (8/30/20)
 ~~~~~~~~~~~~~
 - Add the is_open_now() function
+- Add TASE calendar from #114
 
 1.4.2 (8/11/20)
 ~~~~~~~~~~~~~~~

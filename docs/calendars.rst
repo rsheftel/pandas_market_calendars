@@ -16,6 +16,7 @@ Exchange  JPX    JPXExchangeCalendar     Yes        gabalese
 Exchange  SIX    SIXExchangeCalendar     Yes        oliverfu89
 Exchange  OSE    OSEExchangeCalendar     Yes        busteren
 Exchange  SSE    SSEExchangeCalendar     Yes        keli
+Exchange  TASE   TASEExchangeCalendar               gabglus
 Exchange  HKEX   HKEXExchangeCalendar    Yes        1dot75cm
 Exchange  ASX    ASXExchangeCalendar                pulledlamb
 Exchange  XBOM   XBOMExchangeCalendar               rakesh1988
