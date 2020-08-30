@@ -68,7 +68,7 @@ class TASEExchangeCalendar(MarketCalendar):
 
     Opening times for the regular trading of equities (not including closing auction call)
     Open Time: 10:00 AM Asia/Jerusalem
-    Close Time: 4:59 PM Asia/Jerusalem
+    Close Time: 3:59 PM Asia/Jerusalem
 
     Daylight Saving Time in Israel comes into effect on the Friday before the last Sunday in March, and lasts until the last Sunday in October.
     During the Daylight Saving time period the clock will be UTC+3, and for the rest of the year UTC+2.
