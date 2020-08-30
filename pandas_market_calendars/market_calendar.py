@@ -306,6 +306,26 @@ class MarketCalendar(metaclass=MarketCalendarMeta):
         else:
             return False
 
+    # need this to make is_open_now testable
+    @staticmethod
+    def _get_current_time():
+        return pd.Timestamp.now(tz='UTC')
+
+    @staticmethod
+    def is_open_now(schedule, include_close=False):
+        """
+        To determine if the current local system time (converted to UTC) is an open time for the market
+
+        :param schedule: schedule DataFrame
+        :param include_close: if False then the function will return False if the current local system time is equal to
+            the closing timestamp. If True then it will return True if the current local system time is equal to the
+            closing timestamp. Use True if using bars and would like to include the last bar as a valid open date
+            and time.
+        :return: True if the current local system time is a valid open date and time, False if not
+        """
+        current_time = MarketCalendar._get_current_time()
+        return MarketCalendar.open_at_time(schedule, current_time)
+
     def early_closes(self, schedule):
         """
         Get a DataFrame of the dates that are an early close.

@@ -108,6 +108,13 @@ class FakeBreakCalendar(MarketCalendar):
         return [(time(10, 40), ['2016-12-30'])]
 
 
+@pytest.fixture
+def patch_get_current_time(monkeypatch):
+    def get_fake_time():
+        return pd.Timestamp('2014-07-02 03:40', tz='UTC')
+    monkeypatch.setattr(MarketCalendar, '_get_current_time', get_fake_time)
+
+
 def test_default_calendars():
     for name in get_calendar_names():
         assert get_calendar(name) is not None
@@ -497,6 +504,14 @@ def test_open_at_time_breaks():
     assert cal.open_at_time(schedule, pd.Timestamp('2016-12-28 11:00', tz='America/New_York')) is True
     # between break and close
     assert cal.open_at_time(schedule, pd.Timestamp('2016-12-28 11:30', tz='America/New_York')) is True
+
+
+def test_is_open_now(patch_get_current_time):
+    cal = FakeCalendar()
+
+    schedule = cal.schedule('2014-01-01', '2016-12-31')
+
+    assert cal.is_open_now(schedule) is True
 
 
 def test_bad_dates():
