@@ -7,6 +7,7 @@ Updates
 ~~~~~~~~~~~~~
 - Add the is_open_now() function
 - Add TASE calendar from #114
+- Holiday calendar is now cached to improve performance #117
 
 1.4.2 (8/11/20)
 ~~~~~~~~~~~~~~~
