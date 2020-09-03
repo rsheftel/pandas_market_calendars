@@ -43,6 +43,7 @@ class MarketCalendar(metaclass=MarketCalendarMeta):
         """
         self._open_time = self.open_time_default if open_time is None else open_time
         self._close_time = self.close_time_default if close_time is None else close_time
+        self._holidays = None
 
     @classmethod
     def factory(cls, name, open_time=None, close_time=None):
@@ -212,11 +213,13 @@ class MarketCalendar(metaclass=MarketCalendarMeta):
 
         :return: CustomBusinessDay object of holidays
         """
-        return CustomBusinessDay(
+        if self._holidays is None:
+            self._holidays = CustomBusinessDay(
             holidays=self.adhoc_holidays,
             calendar=self.regular_holidays,
             weekmask=self.weekmask,
         )
+        return self._holidays
 
     def valid_days(self, start_date, end_date, tz='UTC'):
         """
@@ -233,7 +236,7 @@ class MarketCalendar(metaclass=MarketCalendarMeta):
         """
         Generates the schedule DataFrame. The resulting DataFrame will have all the valid business days as the index
         and columns for the market opening datetime (market_open) and closing datetime (market_close). All time zones
-        are set to UTC by default. Setting the tz parameter will convert the columns to the desired timezone, 
+        are set to UTC by default. Setting the tz parameter will convert the columns to the desired timezone,
         such as 'America/New_York'
 
         :param start_date: start date
@@ -263,10 +266,10 @@ class MarketCalendar(metaclass=MarketCalendarMeta):
         # Overwrite the special opens and closes on top of the standard ones.
         _overwrite_special_dates(_all_days, opens, _special_opens)
         _overwrite_special_dates(_all_days, closes, _special_closes)
-        
+
         result = DataFrame(index=_all_days.tz_localize(None), columns=['market_open', 'market_close'],
                          data={'market_open': opens, 'market_close': closes})
-        
+
         if self.break_start:
             result['break_start'] = days_at_time(_all_days, self.break_start, self.tz).tz_convert(tz)
             temp = result[['market_open', 'break_start']].max(axis=1)
@@ -274,7 +277,7 @@ class MarketCalendar(metaclass=MarketCalendarMeta):
             result['break_end'] = days_at_time(_all_days, self.break_end, self.tz).tz_convert(tz)
             temp = result[['market_close', 'break_end']].min(axis=1)
             result['break_end'] = temp
-            
+
         return result
 
     @staticmethod
