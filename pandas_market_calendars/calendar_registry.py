@@ -18,7 +18,6 @@ from .exchange_calendar_six import SIXExchangeCalendar
 from .exchange_calendar_sse import SSEExchangeCalendar
 from .exchange_calendar_tsx import TSXExchangeCalendar
 from .exchange_calendar_xbom import XBOMExchangeCalendar
-# TODO is the below required?
 from .trading_calendars import *
 
 
