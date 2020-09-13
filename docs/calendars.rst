@@ -1,7 +1,7 @@
 Calendar Status
 ===============
 
-pandas_market_calendars now imports and provides access to all the calendars in `trading_calendars <https://github.com/quantopian/trading_calendars>`
+pandas_market_calendars now imports and provides access to all the calendars in `trading_calendars <https://github.com/quantopian/trading_calendars>`_
 
 Use the ISO code on the trading_calendars page for those calendars. Many of the calendars are duplicated between
 the pandas_market_calendars and trading_calendars projects, there is a program in place to merge these. For now use
