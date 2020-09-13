@@ -13,7 +13,7 @@ import trading_calendars
 
 class TradingCalendar(MarketCalendar):
     def __init__(self, open_time=None, close_time=None):
-        self._tc = self._tc_class()  # _tc.class is defined in the class generator below
+        self._tc = self._tc_class()  # noqa: _tc.class is defined in the class generator below
         super().__init__(open_time, close_time)
 
     @property
@@ -27,11 +27,11 @@ class TradingCalendar(MarketCalendar):
     @property
     def open_time_default(self):
         tc_time = self._tc.open_times[0][1]
-        return time(tc_time.hour, max(tc_time.minute - 1, 0))  # aligns the open time standard with mcal
+        return time(tc_time.hour, max(tc_time.minute - 1, 0), tzinfo=self.tz)  # aligns the open time standard with mcal
 
     @property
     def close_time_default(self):
-        return self._tc.close_times[0][1]
+        return self._tc.close_times[0][1].replace(tzinfo=self.tz)
 
     @property
     def regular_holidays(self):
