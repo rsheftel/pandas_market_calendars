@@ -143,8 +143,8 @@ or correct the existing calendars, and generally do whatever they desire with th
 
 Merger with Quantopian Trading-Calendars
 ========================================
-Work has begun to merge this project with the Quantopian `trading-calendars <https://github.com/quantopian/trading_calendars>` project that it was originally forked from.
+Work has begun to merge this project with the Quantopian `trading-calendars <https://github.com/quantopian/trading_calendars>`_ project that it was originally forked from.
 The end-state is to have one unified project that brings together the superset of all funcationality in this project
 and trading-calendars, and to have one source for all market calendars.
 
-The process of this merger will be updated in `#120 <https://github.com/rsheftel/pandas_market_calendars/issues/120>`, everyone is welcome to comment or provide their input
+The process of this merger will be updated in `#120 <https://github.com/rsheftel/pandas_market_calendars/issues/120>`_, everyone is welcome to comment or provide their input
