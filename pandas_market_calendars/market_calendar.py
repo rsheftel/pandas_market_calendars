@@ -60,7 +60,7 @@ class MarketCalendar(metaclass=MarketCalendarMeta):
         """All Market Calendar names and aliases that can be used in "factory"
         :return: list(str)
         """
-        return [cal for cal in cls._regmeta_classes() if cal != 'MarketCalendar']
+        return [cal for cal in cls._regmeta_classes() if cal not in ['MarketCalendar', 'TradingCalendar']]
 
     @property
     @abstractmethod

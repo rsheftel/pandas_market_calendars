@@ -331,6 +331,7 @@ def test_schedule_w_breaks():
     else:
         assert_frame_equal(actual, expected, check_freq=False)
 
+
 def test_schedule_w_times():
     cal = FakeCalendar(time(12, 12), time(13, 13))
 

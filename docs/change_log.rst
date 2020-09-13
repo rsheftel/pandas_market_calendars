@@ -3,6 +3,13 @@ Change Log
 
 Updates
 -------
+1.6 (9/14/20)
+~~~~~~~~~~~~~
+This is the first version of the merge of this project with the quantopian trading-calendars.
+- Added the trading_calendars.py module that brings in all current and future calendars from the quantopian project.
+- All calendars from trading-calendars are now available in pandas_market_calendars
+
+
 1.5 (8/30/20)
 ~~~~~~~~~~~~~
 - Add the is_open_now() function
