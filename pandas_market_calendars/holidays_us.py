@@ -243,7 +243,15 @@ November29BacklogRelief = [Timestamp('1929-11-01', tz='UTC'),
                            Timestamp('1929-11-29', tz='UTC')]
 
 # https://en.wikipedia.org/wiki/March_1933#March_6,_1933_(Monday)
-March33BankHoliday = date_range('1933-03-06', '1933-03-14', tz='UTC')
+March33BankHoliday = [
+    Timestamp("1933-03-06", tz="UTC"),
+    Timestamp("1933-03-07", tz="UTC"),
+    Timestamp("1933-03-08", tz="UTC"),
+    Timestamp("1933-03-09", tz="UTC"),
+    Timestamp("1933-03-10", tz="UTC"),
+    Timestamp("1933-03-13", tz="UTC"),
+    Timestamp("1933-03-14", tz="UTC"),
+]
 
 # http://www.tradingtheodds.com/nyse-full-day-closings/
 August45VictoryOverJapan = date_range('1945-08-15', '1945-08-16', tz='UTC')
@@ -301,7 +309,12 @@ FirstLunarLandingClosing = [Timestamp('1969-07-21', tz='UTC')]
 NewYorkCityBlackout77 = [Timestamp('1977-07-14', tz='UTC')]
 
 # http://en.wikipedia.org/wiki/Aftermath_of_the_September_11_attacks
-September11Closings = date_range('2001-09-11', '2001-09-16', tz='UTC')
+September11Closings = [
+    Timestamp("2001-09-11", tz='UTC'),
+    Timestamp("2001-09-12", tz='UTC'),
+    Timestamp("2001-09-13", tz='UTC'),
+    Timestamp("2001-09-14", tz='UTC'),
+]
 
 # http://en.wikipedia.org/wiki/Hurricane_Gloria
 HurricaneGloriaClosings = date_range(

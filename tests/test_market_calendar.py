@@ -117,6 +117,7 @@ def patch_get_current_time(monkeypatch):
 
 def test_default_calendars():
     for name in get_calendar_names():
+        print(name)
         assert get_calendar(name) is not None
 
 

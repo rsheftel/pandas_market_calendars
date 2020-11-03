@@ -51,7 +51,7 @@ class NYSEExchangeCalendar(MarketCalendar):
     """
     Exchange calendar for NYSE
 
-    Open Time: 9:31 AM, US/Eastern
+    Open Time: 9:30 AM, US/Eastern
     Close Time: 4:00 PM, US/Eastern
 
     Regularly-Observed Holidays:

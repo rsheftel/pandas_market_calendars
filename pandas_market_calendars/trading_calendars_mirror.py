@@ -27,11 +27,24 @@ class TradingCalendar(MarketCalendar):
     @property
     def open_time_default(self):
         tc_time = self._tc.open_times[0][1]
-        return time(tc_time.hour, max(tc_time.minute - 1, 0), tzinfo=self.tz)  # aligns the open time standard with mcal
+        return time(tc_time.hour, max(tc_time.minute - 1, 0), tzinfo=self.tz)  # aligns tc standard with mcal
 
     @property
     def close_time_default(self):
         return self._tc.close_times[0][1].replace(tzinfo=self.tz)
+
+    @property
+    def break_start(self):
+        tc_time = self._tc.break_start_times
+        if not tc_time:
+            return None
+        tc_time = tc_time[0][1]
+        return time(tc_time.hour, tc_time.minute - 1, tzinfo=self.tz)  # aligns tc standard with mcal
+
+    @property
+    def break_end(self):
+        tc_time = self._tc.break_end_times
+        return tc_time[0][1] if tc_time else None
 
     @property
     def regular_holidays(self):
@@ -60,7 +73,6 @@ class TradingCalendar(MarketCalendar):
 
 calendars = trading_calendars.calendar_utils._default_calendar_factories  # noqa
 
-# TODO: add the aliases from their alias dict (watch out for collision, actually, best to not do this right now
 for exchange in calendars:
     locals()[exchange + 'ExchangeCalendar'] = type(exchange, (TradingCalendar, ),
                                                    {'_tc_class': calendars[exchange], 'alias': [exchange]})
