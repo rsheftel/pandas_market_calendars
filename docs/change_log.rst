@@ -3,6 +3,11 @@ Change Log
 
 Updates
 -------
+1.6.1 (11/3/20)
+~~~~~~~~~~~~~~~
+- Add trading breaks to the trading_calendars import mirror
+- Fix the CFE calendar for Good Friday #116
+
 1.6 (9/14/20)
 ~~~~~~~~~~~~~
 This is the first version of the merge of this project with the quantopian trading-calendars.

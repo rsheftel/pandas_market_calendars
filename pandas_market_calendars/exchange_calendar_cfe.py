@@ -1,11 +1,43 @@
 from datetime import time
 
-from pandas.tseries.holiday import AbstractHolidayCalendar, GoodFriday, USLaborDay, USPresidentsDay, USThanksgivingDay
+from pandas.tseries.holiday import AbstractHolidayCalendar, \
+    GoodFriday, USLaborDay, USPresidentsDay, USThanksgivingDay, Holiday
 from pytz import timezone
+from itertools import chain
+import pandas as pd
 
 from .holidays_us import (Christmas, USBlackFridayInOrAfter1993, USIndependenceDay, USMartinLutherKingJrAfter1998,
-                          USMemorialDay, USNewYearsDay)
+                          USMemorialDay, USNewYearsDay, HurricaneSandyClosings, USNationalDaysofMourning)
 from .market_calendar import MarketCalendar
+
+
+def good_friday_unless_christmas_nye_friday(dt):
+    """
+    Good Friday is a valid trading day if Christmas Day or New Years Day fall
+    on a Friday.
+    """
+    year_str = str(dt.year)
+    christmas_weekday = Christmas.observance(
+        pd.Timestamp(year_str+"-12-25")
+    ).weekday()
+    nyd_weekday = USNewYearsDay.observance(
+        pd.Timestamp(year_str+"-01-01")
+    ).weekday()
+    if christmas_weekday != 4 and nyd_weekday != 4:
+        return GoodFriday._apply_rule(
+            pd.Timestamp(str(dt.year)+"-"+str(dt.month)+"-"+str(dt.day))
+        )
+    else:
+        # compatibility for pandas 0.18.1
+        return pd.NaT
+
+
+GoodFridayUnlessChristmasNYEFriday = Holiday(
+    name="Good Friday CFE",
+    month=1,
+    day=1,
+    observance=good_friday_unless_christmas_nye_friday,
+)
 
 
 class CFEExchangeCalendar(MarketCalendar):
@@ -43,7 +75,7 @@ class CFEExchangeCalendar(MarketCalendar):
             USNewYearsDay,
             USMartinLutherKingJrAfter1998,
             USPresidentsDay,
-            GoodFriday,
+            GoodFridayUnlessChristmasNYEFriday,
             USIndependenceDay,
             USMemorialDay,
             USLaborDay,
@@ -59,3 +91,10 @@ class CFEExchangeCalendar(MarketCalendar):
                 USBlackFridayInOrAfter1993,
             ])
         )]
+
+    @property
+    def adhoc_holidays(self):
+        return list(chain(
+            HurricaneSandyClosings,
+            USNationalDaysofMourning,
+        ))
