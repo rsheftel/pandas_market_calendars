@@ -70,7 +70,8 @@ class TASEExchangeCalendar(MarketCalendar):
     Open Time: 10:00 AM Asia/Jerusalem
     Close Time: 3:59 PM Asia/Jerusalem
 
-    Daylight Saving Time in Israel comes into effect on the Friday before the last Sunday in March, and lasts until the last Sunday in October.
+    Daylight Saving Time in Israel comes into effect on the Friday before the last Sunday in March, and lasts until the
+    last Sunday in October.
     During the Daylight Saving time period the clock will be UTC+3, and for the rest of the year UTC+2.
 
     Regularly-Observed Holidays (not necessarily in order):

@@ -19,7 +19,7 @@ Exchange  SSE    SSEExchangeCalendar     Yes        keli
 Exchange  TASE   TASEExchangeCalendar               gabglus
 Exchange  HKEX   HKEXExchangeCalendar    Yes        1dot75cm
 Exchange  ASX    ASXExchangeCalendar                pulledlamb
-Exchange  XBOM   XBOMExchangeCalendar               rakesh1988
+Exchange  BSE    BSEExchangeCalendar                rakesh1988
 ========= ====== ===================== ============ ==========
 
 Futures Calendars

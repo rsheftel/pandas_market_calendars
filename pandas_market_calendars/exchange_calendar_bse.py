@@ -1,10 +1,14 @@
+"""
+Bombay Stock Exchnage
+"""
+
 from pandas import Timestamp
 from pytz import timezone
 from datetime import time
 from .market_calendar import MarketCalendar
 
 
-XBOMClosedDay = [
+BSEClosedDay = [
     Timestamp('1997-01-23', tz='UTC'),
     Timestamp('1997-03-07', tz='UTC'),
     Timestamp('1997-03-24', tz='UTC'),
@@ -327,7 +331,7 @@ XBOMClosedDay = [
 ]
 
 
-class XBOMExchangeCalendar(MarketCalendar):
+class BSEExchangeCalendar(MarketCalendar):
     """
     Exchange calendar for the Bombay Stock Exchange (BSE, XBOM).
     Open Time: 9:15 AM, Asia/Calcutta
@@ -337,11 +341,11 @@ class XBOMExchangeCalendar(MarketCalendar):
     of holidays back to 1997, and forward through 2020.  There are no known
     early closes or late opens.
     """
-    aliases = ['XBOM']
+    aliases = ['BSE']
 
     @property
     def name(self):
-        return "XBOM"
+        return "BSE"
 
     @property
     def tz(self):
@@ -357,4 +361,4 @@ class XBOMExchangeCalendar(MarketCalendar):
 
     @property
     def adhoc_holidays(self):
-        return XBOMClosedDay
+        return BSEClosedDay

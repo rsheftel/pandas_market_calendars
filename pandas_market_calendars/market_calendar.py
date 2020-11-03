@@ -215,10 +215,10 @@ class MarketCalendar(metaclass=MarketCalendarMeta):
         """
         if self._holidays is None:
             self._holidays = CustomBusinessDay(
-            holidays=self.adhoc_holidays,
-            calendar=self.regular_holidays,
-            weekmask=self.weekmask,
-        )
+                holidays=self.adhoc_holidays,
+                calendar=self.regular_holidays,
+                weekmask=self.weekmask,
+            )
         return self._holidays
 
     def valid_days(self, start_date, end_date, tz='UTC'):
@@ -268,7 +268,7 @@ class MarketCalendar(metaclass=MarketCalendarMeta):
         _overwrite_special_dates(_all_days, closes, _special_closes)
 
         result = DataFrame(index=_all_days.tz_localize(None), columns=['market_open', 'market_close'],
-                         data={'market_open': opens, 'market_close': closes})
+                           data={'market_open': opens, 'market_close': closes})
 
         if self.break_start:
             result['break_start'] = days_at_time(_all_days, self.break_start, self.tz).tz_convert(tz)

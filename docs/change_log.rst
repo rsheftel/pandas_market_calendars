@@ -7,6 +7,7 @@ Updates
 ~~~~~~~~~~~~~~~
 - Add trading breaks to the trading_calendars import mirror
 - Fix the CFE calendar for Good Friday #116
+- Renamed XBOM to BSE to avoid conflict with trading_calendars
 
 1.6 (9/14/20)
 ~~~~~~~~~~~~~

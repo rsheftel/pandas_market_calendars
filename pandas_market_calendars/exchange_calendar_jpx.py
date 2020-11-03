@@ -50,7 +50,6 @@ class JPXExchangeCalendar(MarketCalendar):
     def break_end(self):
         return time(12, 30)
 
-
     @property
     def adhoc_holidays(self):
         return list(chain(

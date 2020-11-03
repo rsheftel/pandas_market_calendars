@@ -276,9 +276,9 @@ def test_schedule_w_breaks():
                              'market_close': [pd.Timestamp('2016-12-01 17:00:00', tz='UTC'),
                                               pd.Timestamp('2016-12-02 17:00:00', tz='UTC')],
                              'break_start': [pd.Timestamp('2016-12-01 15:00:00', tz='UTC'),
-                                              pd.Timestamp('2016-12-02 15:00:00', tz='UTC')],
+                                             pd.Timestamp('2016-12-02 15:00:00', tz='UTC')],
                              'break_end': [pd.Timestamp('2016-12-01 16:00:00', tz='UTC'),
-                                              pd.Timestamp('2016-12-02 16:00:00', tz='UTC')]
+                                           pd.Timestamp('2016-12-02 16:00:00', tz='UTC')]
     },
                             columns=['market_open', 'market_close', 'break_start', 'break_end'],
                             index=[pd.Timestamp('2016-12-01'), pd.Timestamp('2016-12-02')])
