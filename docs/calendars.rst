@@ -34,7 +34,7 @@ CME        CME_Agricultural   CMEAgriculturalExchangeCalendar     Yes        lio
 
 Trading Calendars Package
 #########################
-pandas_market_calendars now imports and provides access to all the calendars in `trading_calendars <https://github.com/quantopian/trading_calendars>`_
+pandas_market_calendars now imports and provides access to all the calendars in `trading_calendars <https://github.com/quantopian/trading_calendars#calendar-support>`_
 
 Use the ISO code on the trading_calendars page for those calendars. Many of the calendars are duplicated between
 the pandas_market_calendars and trading_calendars projects. Use whichever one you prefer.

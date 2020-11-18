@@ -50,6 +50,10 @@ Installation
 
 Arch Linux package available here: https://aur.archlinux.org/packages/python-pandas_market_calendars/
 
+Calendars
+---------
+The list of `available calendars <https://pandas-market-calendars.readthedocs.io/en/latest/calendars.html>`_
+
 Quick Start
 -----------
 .. code:: python
