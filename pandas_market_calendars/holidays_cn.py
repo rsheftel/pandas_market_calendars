@@ -8,7 +8,7 @@ from pandas import Timestamp
 # So instead of writing rules for them, it's much cleaner to just use
 # all past holidays as ad hoc holidays.
 #
-# Records start from 1992. SSE was founded at the end of 1990.
+# Records start from 1991. SSE was founded at the end of 1990.
 
 all_holidays = [
     Timestamp('1991-01-01'),
@@ -491,9 +491,42 @@ all_holidays = [
     Timestamp('2019-10-05'),
     Timestamp('2019-10-06'),
     Timestamp('2019-10-07'),
+    Timestamp('2020-01-01'),
+    Timestamp('2020-01-24'),
+    Timestamp('2020-01-27'),
+    Timestamp('2020-01-28'),
+    Timestamp('2020-01-29'),
+    Timestamp('2020-01-30'),
     Timestamp('2020-01-31'),
+    Timestamp('2020-04-06'),
+    Timestamp('2020-05-01'),
     Timestamp('2020-05-04'),
     Timestamp('2020-05-05'),
+    Timestamp('2020-06-25'),
+    Timestamp('2020-06-26'),
+    Timestamp('2020-10-01'),
+    Timestamp('2020-10-02'),
+    Timestamp('2020-10-05'),
+    Timestamp('2020-10-06'),
+    Timestamp('2020-10-07'),
+    Timestamp('2020-10-08'),
+    Timestamp('2021-01-01'),
+    Timestamp('2021-02-11'),
+    Timestamp('2021-02-12'),
+    Timestamp('2021-02-16'),
+    Timestamp('2021-02-17'),
+    Timestamp('2021-04-05'),
+    Timestamp('2021-05-03'),
+    Timestamp('2021-05-04'),
+    Timestamp('2021-05-05'),
+    Timestamp('2021-06-14'),
+    Timestamp('2021-09-20'),
+    Timestamp('2021-09-21'),
+    Timestamp('2021-10-01'),
+    Timestamp('2021-10-04'),
+    Timestamp('2021-10-05'),
+    Timestamp('2021-10-06'),
+    Timestamp('2021-10-07'),
 ]
 
 # The following holidays are based on Solar terms or Chinese lunisolar calendar,
