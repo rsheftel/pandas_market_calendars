@@ -57,6 +57,7 @@ MayBank_post_2020 = Holiday(
 # Spring bank holiday has two exceptions based on the Golden & Diamond Jubilee
 # 2002-05-27 Spring bank holiday removed for Golden Jubilee
 # 2012-05-28 Spring bank holiday removed for Diamond Jubilee
+# 2022-05-31 Spring bank holiday removed for Platinum Jubilee
 
 # Spring bank holiday
 SpringBank_pre_2002 = Holiday(
@@ -76,12 +77,21 @@ SpringBank_post_2002_pre_2012 = Holiday(
     end_date=Timestamp('2011-12-31'),
 )
 
-SpringBank_post_2012 = Holiday(
+SpringBank_post_2012_pre_2022 = Holiday(
     "Spring Bank Holiday",
     month=5,
     day=31,
     offset=DateOffset(weekday=MO(-1)),
     start_date=Timestamp('2013-01-01'),
+    end_date=Timestamp('2021-12-31'),
+)
+
+SpringBank_post_2022 = Holiday(
+    "Spring Bank Holiday",
+    month=5,
+    day=31,
+    offset=DateOffset(weekday=MO(-1)),
+    start_date=Timestamp('2022-01-01'),
 )
 
 # Summer bank holiday
@@ -150,6 +160,10 @@ UniqueCloses.append(pd.Timestamp("2002-06-04", tz='UTC'))
 # Diamond Jubilee
 UniqueCloses.append(pd.Timestamp("2012-06-04", tz='UTC'))
 UniqueCloses.append(pd.Timestamp("2012-06-05", tz='UTC'))
+
+# Platinum Jubilee
+UniqueCloses.append(pd.Timestamp("2022-06-02", tz='UTC'))
+UniqueCloses.append(pd.Timestamp("2022-06-03", tz='UTC'))
 
 # Royal Weddings
 UniqueCloses.append(pd.Timestamp("1973-11-14", tz='UTC'))     # Wedding Day of Princess Anne and Mark Phillips

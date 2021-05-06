@@ -80,7 +80,10 @@ def test_unique_holidays():
     # Diamond Jubilee
     england_unique_hols["QEII_Jubilee_60"]["closed"] = [pd.Timestamp("2012-06-04"), pd.Timestamp("2012-06-05")]
     england_unique_hols["QEII_Jubilee_60"]["open"] = [pd.Timestamp("2012-05-28")]  # Spring bank holiday removed
-    
+    # Platinum Jubilee
+    england_unique_hols["QEII_Jubilee_60"]["closed"] = [pd.Timestamp("2022-06-02"), pd.Timestamp("2022-06-03")]
+    england_unique_hols["QEII_Jubilee_60"]["open"] = [pd.Timestamp("2022-05-31")]  # Spring bank holiday removed
+
     # Royal Weddings
     # Wedding Day of Princess Anne and Mark Phillips
     england_unique_hols["Royal_Wedding_Anne_1973"]["closed"] = [pd.Timestamp("1973-11-14")]
@@ -97,13 +100,13 @@ def test_unique_holidays():
     lse = LSEExchangeCalendar()
     # get all the closed dates
     closed_days = [england_unique_hols[k].get('closed') for k in england_unique_hols]
-    good_dates = lse.valid_days('1990-01-01', '2020-12-31')
+    good_dates = lse.valid_days('1990-01-01', '2022-12-31')
     for date in chain.from_iterable(closed_days):
         assert pd.Timestamp(date, tz='UTC') not in good_dates
 
     # Test of open dates
     open_days = [england_unique_hols[k].get('open') for k in england_unique_hols]
     open_days = [i for i in open_days if i]
-    good_dates = lse.valid_days('1990-01-01', '2020-12-31')
+    good_dates = lse.valid_days('1990-01-01', '2022-12-31')
     for date in chain.from_iterable(open_days):
         assert pd.Timestamp(date, tz='UTC') in good_dates

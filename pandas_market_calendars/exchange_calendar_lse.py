@@ -21,7 +21,7 @@ from pytz import timezone
 from .holidays_uk import (
     BoxingDay, Christmas, ChristmasEve, LSENewYearsDay, LSENewYearsEve,
     MayBank_pre_1995, MayBank_post_1995_pre_2020, MayBank_post_2020,
-    SpringBank_pre_2002, SpringBank_post_2002_pre_2012, SpringBank_post_2012,
+    SpringBank_pre_2002, SpringBank_post_2002_pre_2012, SpringBank_post_2012_pre_2022, SpringBank_post_2022,
     SummerBank, WeekendBoxingDay, WeekendChristmas, UniqueCloses,
 )
 from .market_calendar import MarketCalendar
@@ -71,7 +71,7 @@ class LSEExchangeCalendar(MarketCalendar):
             GoodFriday,
             EasterMonday,
             MayBank_pre_1995, MayBank_post_1995_pre_2020, MayBank_post_2020,
-            SpringBank_pre_2002, SpringBank_post_2002_pre_2012, SpringBank_post_2012,
+            SpringBank_pre_2002, SpringBank_post_2002_pre_2012, SpringBank_post_2012_pre_2022, SpringBank_post_2022,
             SummerBank,
             Christmas,
             WeekendChristmas,

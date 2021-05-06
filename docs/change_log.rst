@@ -3,6 +3,10 @@ Change Log
 
 Updates
 -------
+1.6.2 (11/3/20)
+~~~~~~~~~~~~~~~
+- Fix UK Holidays for #130
+
 1.6.1 (11/3/20)
 ~~~~~~~~~~~~~~~
 - Add trading breaks to the trading_calendars import mirror
