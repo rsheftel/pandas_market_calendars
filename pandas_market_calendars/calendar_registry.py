@@ -3,7 +3,6 @@ from .exchange_calendar_asx import ASXExchangeCalendar
 from .exchange_calendar_bmf import BMFExchangeCalendar
 from .exchange_calendar_cfe import CFEExchangeCalendar
 from .exchange_calendar_cme import \
-    CMEExchangeCalendar, \
     CMEAgricultureExchangeCalendar, \
     CMEEquityExchangeCalendar, \
     CMEBondExchangeCalendar

@@ -27,27 +27,26 @@ from .holidays_us import (Christmas, ChristmasEveBefore1993, ChristmasEveInOrAft
 from .market_calendar import MarketCalendar
 
 
-# Useful resources for making changes to this file:
-# http://www.cmegroup.com/tools-information/holiday-calendar.html
+# Useful resources for making changes to this file: http://www.cmegroup.com/tools-information/holiday-calendar.html
+# The CME has different holiday rules depending on the type of instrument.
+# For example, http://www.cmegroup.com/tools-information/holiday-calendar/files/2016-4th-of-july-holiday-schedule.pdf # noqa
+# shows that Equity, Interest Rate, FX, Energy, Metals & DME Products close at 1200 CT on July 4, 2016, while Grain,
+# Oilseed & MGEX Products and Livestock, Dairy & Lumber products are completely closed.
 
 
-class CMEExchangeCalendar(MarketCalendar):
+class CMEEquityExchangeCalendar(MarketCalendar):
     """
-    Exchange calendar for CME
+    Exchange calendar for CME for Equity products
 
-    Open Time: 5:00 PM, America/Chicago
-    Close Time: 5:00 PM, America/Chicago
-
-    Regularly-Observed Holidays:
-    - New Years Day
-    - Good Friday
-    - Christmas
+    Open Time: 6:00 PM, America/New_York / 5:00 PM Chicago
+    Close Time: 5:00 PM, America/New_York / 4:00 PM Chicago
+    Break: 4:15 - 4:30pm America/New_York / 3:15 - 3:30 PM Chicago
     """
-    aliases = ['CME', 'CBOT', 'COMEX', 'NYMEX']
+    aliases = ['CME_Equity', 'CBOT_Equity']
 
     @property
     def name(self):
-        return "CME"
+        return "CME_Equity"
 
     @property
     def tz(self):
@@ -55,28 +54,27 @@ class CMEExchangeCalendar(MarketCalendar):
 
     @property
     def open_time_default(self):
-        return time(17, 1, tzinfo=self.tz)
+        return time(17, 0, tzinfo=self.tz)
 
     @property
     def close_time_default(self):
-        return time(17, tzinfo=self.tz)
+        return time(16, 0, tzinfo=self.tz)
 
     @property
     def open_offset(self):
         return -1
 
     @property
-    def regular_holidays(self):
-        # The CME has different holiday rules depending on the type of
-        # instrument. For example, http://www.cmegroup.com/tools-information/holiday-calendar/files/2016-4th-of-july-holiday-schedule.pdf # noqa
-        # shows that Equity, Interest Rate, FX, Energy, Metals & DME Products
-        # close at 1200 CT on July 4, 2016, while Grain, Oilseed & MGEX
-        # Products and Livestock, Dairy & Lumber products are completely
-        # closed.
+    def break_start(self):
+        return time(15, 15)
 
-        # For now, we will treat the CME as having a single calendar, and just
-        # go with the most conservative hours - and treat July 4 as an early
-        # close at noon.
+    @property
+    def break_end(self):
+        return time(15, 30)
+
+    @property
+    def regular_holidays(self):
+        # Many days that are holidays for the NYSE are an early close day for CME
         return AbstractHolidayCalendar(rules=[
             USNewYearsDay,
             GoodFriday,
@@ -104,46 +102,6 @@ class CMEExchangeCalendar(MarketCalendar):
             ])
         )]
 
-
-class CMEEquityExchangeCalendar(NYSEExchangeCalendar):
-    """
-    Exchange calendar for CME for Equity products
-
-    Open Time: 6:00 PM, America/New_York
-    Close Time: 5:00 PM, America/New_York
-    Break: 4:15 - 4:30pm America/New_York
-
-    Regularly-Observed Holidays same as NYSE equity markets
-    """
-    aliases = ['CME_Equity', 'CBOT_Equity']
-
-    @property
-    def name(self):
-        return "CME_Equity"
-
-    @property
-    def tz(self):
-        return timezone('America/New_York')
-
-    @property
-    def open_time_default(self):
-        return time(18, 0, tzinfo=self.tz)
-
-    @property
-    def close_time_default(self):
-        return time(17, 0, tzinfo=self.tz)
-
-    @property
-    def open_offset(self):
-        return -1
-
-    @property
-    def break_start(self):
-        return time(16, 15)
-
-    @property
-    def break_end(self):
-        return time(16, 30)
 
 
 class CMEAgricultureExchangeCalendar(MarketCalendar):

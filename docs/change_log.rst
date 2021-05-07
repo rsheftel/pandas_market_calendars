@@ -3,8 +3,18 @@ Change Log
 
 Updates
 -------
-1.6.2 (11/3/20)
-~~~~~~~~~~~~~~~
+1.7 (5/6/20)
+~~~~~~~~~~~~
+This version eliminated the generic CMEExchangeCalendar. This calendar did not represent a specific market and thus
+was not appropriate for any use. With the addition of the specific calendars for product types this is no longer
+needed and is removed. To see the product specific calendars here: https://pandas-market-calendars.readthedocs.io/en/latest/calendars.html#futures-calendars
+
+For the CMEEquityExchangeCalendar, this no longer is a mirror of the NYSE calendar as some of the holidays for the NYSE
+are an open day with early close for CME. This calendar now has its own set of holiday assumptions. This may cause
+some holidays missing until this calendar is fully tested and vetted.
+
+1.6.2 (5/6/20)
+~~~~~~~~~~~~~~
 - Fix UK Holidays for #130
 - Fix CME Bond calendar for Good Friday #132
 
