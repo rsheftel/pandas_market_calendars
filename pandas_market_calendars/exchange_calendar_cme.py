@@ -14,7 +14,9 @@
 # limitations under the License.
 
 from datetime import time
+from itertools import chain
 
+from pandas import Timestamp
 from pandas.tseries.holiday import AbstractHolidayCalendar, GoodFriday, USLaborDay, USPresidentsDay, USThanksgivingDay
 from pytz import timezone
 
@@ -216,6 +218,34 @@ class CMEAgricultureExchangeCalendar(MarketCalendar):
         )]
 
 
+# For the bond market Good Friday that coincides with the release of NFP on the first friday of the month is an open day
+goodFridayClosed = ['1970-03-27', '1971-04-09', '1972-03-31', '1973-04-20', '1974-04-12', '1975-03-28', '1976-04-16',
+                    '1977-04-08', '1978-03-24', '1979-04-13', '1981-04-17', '1982-04-09', '1984-04-20', '1986-03-28',
+                    '1987-04-17', '1989-03-24', '1990-04-13', '1991-03-29', '1992-04-17', '1993-04-09', '1995-04-14',
+                    '1997-03-28', '1998-04-10', '2000-04-21', '2001-04-13', '2002-03-29', '2003-04-18', '2004-04-09',
+                    '2005-03-25', '2006-04-14', '2008-03-21', '2009-04-10', '2011-04-22', '2013-03-29', '2014-04-18',
+                    '2016-03-25', '2017-04-14', '2018-03-30', '2019-04-19', '2020-04-10', '2022-04-15', '2024-03-29',
+                    '2025-04-18', '2027-03-26', '2028-04-14', '2029-03-30', '2030-04-19', '2031-04-11', '2032-03-26',
+                    '2033-04-15', '2035-03-23', '2036-04-11', '2038-04-23', '2039-04-08', '2040-03-30', '2041-04-19',
+                    '2043-03-27', '2044-04-15', '2046-03-23', '2047-04-12', '2049-04-16', '2050-04-08', '2051-03-31',
+                    '2052-04-19', '2054-03-27', '2055-04-16', '2056-03-31', '2057-04-20', '2058-04-12', '2059-03-28',
+                    '2060-04-16', '2061-04-08', '2062-03-24', '2063-04-13', '2065-03-27', '2066-04-09', '2068-04-20',
+                    '2069-04-12', '2070-03-28', '2071-04-17', '2072-04-08', '2073-03-24', '2074-04-13', '2076-04-17',
+                    '2077-04-09', '2079-04-21', '2081-03-28', '2082-04-17', '2084-03-24', '2085-04-13', '2086-03-29',
+                    '2087-04-18', '2088-04-09', '2090-04-14', '2092-03-28', '2093-04-10', '2095-04-22', '2096-04-13',
+                    '2097-03-29', '2098-04-18', '2099-04-10']
+
+BondsGoodFridayClosed = [Timestamp(x, tz='UTC') for x in goodFridayClosed]
+
+goodFridayOpen = ['1980-04-04', '1983-04-01', '1985-04-05', '1988-04-01', '1994-04-01', '1996-04-05', '1999-04-02',
+                  '2007-04-06', '2010-04-02', '2012-04-06', '2015-04-03', '2021-04-02', '2023-04-07', '2026-04-03',
+                  '2034-04-07', '2037-04-03', '2042-04-04', '2045-04-07', '2048-04-03', '2053-04-04', '2064-04-04',
+                  '2067-04-01', '2075-04-05', '2078-04-01', '2080-04-05', '2083-04-02', '2089-04-01', '2091-04-06',
+                  '2094-04-02']
+
+BondsGoodFridayOpen = [Timestamp(x, tz='UTC') for x in goodFridayOpen]
+
+
 class CMEBondExchangeCalendar(MarketCalendar):
     """
     Exchange calendar for CME for Interest Rate and Bond products
@@ -249,13 +279,12 @@ class CMEBondExchangeCalendar(MarketCalendar):
     def regular_holidays(self):
         return AbstractHolidayCalendar(rules=[
             USNewYearsDay,
-            GoodFriday,
             Christmas,
         ])
 
     @property
     def adhoc_holidays(self):
-        return USNationalDaysofMourning
+        return list(chain(USNationalDaysofMourning, BondsGoodFridayClosed))
 
     @property
     def special_closes(self):
@@ -275,4 +304,10 @@ class CMEBondExchangeCalendar(MarketCalendar):
                  ChristmasEveBefore1993,
                  ChristmasEveInOrAfter1993,
              ]))
+        ]
+
+    @property
+    def special_closes_adhoc(self):
+        return [
+            (time(10, tzinfo=self.tz), BondsGoodFridayOpen)
         ]

@@ -6,6 +6,7 @@ Updates
 1.6.2 (11/3/20)
 ~~~~~~~~~~~~~~~
 - Fix UK Holidays for #130
+- Fix CME Bond calendar for Good Friday #132
 
 1.6.1 (11/3/20)
 ~~~~~~~~~~~~~~~
