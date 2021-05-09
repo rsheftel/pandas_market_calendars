@@ -18,7 +18,7 @@ from .exchange_calendar_sse import SSEExchangeCalendar
 from .exchange_calendar_tsx import TSXExchangeCalendar
 from .exchange_calendar_bse import BSEExchangeCalendar
 from .exchange_calendar_tase import TASEExchangeCalendar
-from .trading_calendars_mirror import *
+from .exchange_calendars_mirror import *
 
 
 def get_calendar(name, open_time=None, close_time=None):

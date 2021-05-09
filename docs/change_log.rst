@@ -1,8 +1,14 @@
-Change Log
+ Change Log
 ==========
 
 Updates
 -------
+2.0 (5/8/20)
+~~~~~~~~~~~~
+This version replaces the trading_calendars integration with exchange_calendars, closing out #120. `exchange_calendars <https://github.com/gerrymanoim/exchange_calendars>`_
+if the fork of trading_calendars that is currently actively maintained. trading_calendars is now abandoned because
+it's corporate sponsor is out of business and gone.
+
 1.7 (5/6/20)
 ~~~~~~~~~~~~
 This version eliminated the generic CMEExchangeCalendar. This calendar did not represent a specific market and thus

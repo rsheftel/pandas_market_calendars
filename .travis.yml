@@ -4,10 +4,11 @@ python:
   - "3.6"
   - "3.7"
   - "3.8"
+  - "3.9"
 
 install:
   - "pip install pandas"
-  - "pip install python-coveralls"
+  - "pip install coveralls"
   - "pip install coverage"
   - "python setup.py install"
 

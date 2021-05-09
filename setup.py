@@ -9,11 +9,11 @@ from os import path
 from setuptools import find_packages, setup
 
 # version
-VERSION = '1.7'
+VERSION = '2.0'
 
 # requirements
 REQUIRED_PYTHON = '>=3.5.0'
-REQUIRED_PACKAGES = ['pandas>=0.18', 'pytz', 'python-dateutil', 'trading_calendars']
+REQUIRED_PACKAGES = ['pandas>=0.18', 'pytz', 'python-dateutil', 'exchange_calendars']
 
 # Package meta-data
 NAME = 'pandas_market_calendars'

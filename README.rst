@@ -31,6 +31,8 @@ market calendars and includes a date_range function to create a pandas DatetimeI
 when the markets are open. Additionally the package contains product specific calendars for future exchanges which
 have different market open, closes, breaks and holidays based on product type.
 
+This package provides access to over 50+ unique exchange calendars for global equity and futures markets.
+
 This package is a fork of the Zipline package from Quantopian and extracts just the relevant parts. All credit for
 their excellent work to Quantopian.
 
@@ -39,6 +41,8 @@ As of v1.0 this package only works with Python3. This is consistent with Pandas 
 As of v1.4 this package now has the concept of a break during the trading day. For example this can accommodate Asian
 markets that have a lunch break, or futures markets that are open 24 hours with a break in the day for trade processing.
 
+As of v2.0 this package provides a mirror of all the calendars from the `exchange_calendars <https://github.com/gerrymanoim/exchange_calendars>`_
+package, which itself is the now maintained fork of the original trading_calendars package. This adds over 50 calendars.
 
 Source location
 ~~~~~~~~~~~~~~~
@@ -144,11 +148,3 @@ Future
 ------
 This package is open sourced under the MIT license. Everyone is welcome to add more exchanges or OTC markets, confirm
 or correct the existing calendars, and generally do whatever they desire with this code.
-
-Merger with Quantopian Trading-Calendars
-========================================
-Work has begun to merge this project with the Quantopian `trading-calendars <https://github.com/quantopian/trading_calendars>`_ project that it was originally forked from.
-The end-state is to have one unified project that brings together the superset of all funcationality in this project
-and trading-calendars, and to have one source for all market calendars.
-
-The process of this merger will be updated in `#120 <https://github.com/rsheftel/pandas_market_calendars/issues/120>`_, everyone is welcome to comment or provide their input

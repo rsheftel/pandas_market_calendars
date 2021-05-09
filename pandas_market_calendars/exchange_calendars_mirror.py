@@ -1,14 +1,12 @@
 """
-Imported calendars from the trading_calendars project
+Imported calendars from the exchange_calendars project
 
-GitHub: www.tradcing.com
-
-Subtracts 1 minute from the start time as listed in the trading_calendars project
+GitHub: https://github.com/gerrymanoim/exchange_calendars
 """
 
 from datetime import time
 from .market_calendar import MarketCalendar
-import trading_calendars
+import exchange_calendars
 
 
 class TradingCalendar(MarketCalendar):
@@ -26,8 +24,7 @@ class TradingCalendar(MarketCalendar):
 
     @property
     def open_time_default(self):
-        tc_time = self._tc.open_times[0][1]
-        return time(tc_time.hour, max(tc_time.minute - 1, 0), tzinfo=self.tz)  # aligns tc standard with mcal
+        return self._tc.open_times[0][1].replace(tzinfo=self.tz)
 
     @property
     def close_time_default(self):
@@ -36,10 +33,7 @@ class TradingCalendar(MarketCalendar):
     @property
     def break_start(self):
         tc_time = self._tc.break_start_times
-        if not tc_time:
-            return None
-        tc_time = tc_time[0][1]
-        return time(tc_time.hour, tc_time.minute - 1, tzinfo=self.tz)  # aligns tc standard with mcal
+        return tc_time[0][1] if tc_time else None
 
     @property
     def break_end(self):
@@ -71,7 +65,7 @@ class TradingCalendar(MarketCalendar):
         return self._tc.special_closes_adhoc
 
 
-calendars = trading_calendars.calendar_utils._default_calendar_factories  # noqa
+calendars = exchange_calendars.calendar_utils._default_calendar_factories  # noqa
 
 for exchange in calendars:
     locals()[exchange + 'ExchangeCalendar'] = type(exchange, (TradingCalendar, ),
