@@ -1,11 +1,11 @@
 from datetime import time
 
+import pandas as pd
 from pandas.tseries.holiday import AbstractHolidayCalendar, DateOffset, GoodFriday, Holiday, MO, weekend_to_monday
 from pytz import timezone
 
 from .holidays_uk import BoxingDay, WeekendBoxingDay, WeekendChristmas
-from .holidays_us import Christmas
-from .market_calendar import MarketCalendar
+from .market_calendar import MarketCalendar, MONDAY, TUESDAY, WEDNESDAY, THURSDAY, FRIDAY
 
 # New Year's Day
 TSXNewYearsDay = Holiday(
@@ -59,6 +59,20 @@ Thanksgiving = Holiday(
     offset=DateOffset(weekday=MO(2)),
 )
 
+Christmas = Holiday(
+    'Christmas',
+    month=12,
+    day=25,
+)
+
+ChristmasEveEarlyClose2010Onwards = Holiday(
+    "Christmas Eve Early Close",
+    month=12,
+    day=24,
+    days_of_week=(MONDAY, TUESDAY, WEDNESDAY, THURSDAY, FRIDAY),
+    start_date=pd.Timestamp("2010-01-01"),
+)
+
 
 class TSXExchangeCalendar(MarketCalendar):
     """
@@ -69,7 +83,7 @@ class TSXExchangeCalendar(MarketCalendar):
 
     Regularly-Observed Holidays:
     - New Years Day (observed on first business day on/after)
-    - Family Day (Third Monday in February after 2008)
+    - Family Day (Third Monday in February, starting in 2008)
     - Good Friday
     - Victoria Day (Monday before May 25th)
     - Canada Day (July 1st, observed first business day after)
@@ -77,9 +91,16 @@ class TSXExchangeCalendar(MarketCalendar):
     - Labor Day (First Monday in September)
     - Thanksgiving (Second Monday in October)
     - Christmas Day
-    - Dec. 27th (if Christmas is on a weekend)
+        - Dec. 26th if Christmas is on a Sunday
+        - Dec. 27th if Christmas is on a weekend
     - Boxing Day
-    - Dec. 28th (if Boxing Day is on a weekend)
+        - Dec. 27th if Christmas is on a Sunday
+        - Dec. 28th if Boxing Day is on a weekend
+
+    Early closes:
+    - Starting in 2010, if Christmas Eve falls on a weekday, the market
+      closes at 1:00 pm that day. If it falls on a weekend, there is no
+      early close.
     """
     aliases = ['TSX', 'TSXV']
 
@@ -99,6 +120,8 @@ class TSXExchangeCalendar(MarketCalendar):
     def close_time_default(self):
         return time(16, tzinfo=self.tz)
 
+    regular_early_close = time(13)
+
     @property
     def regular_holidays(self):
         return AbstractHolidayCalendar(rules=[
@@ -115,3 +138,12 @@ class TSXExchangeCalendar(MarketCalendar):
             BoxingDay,
             WeekendBoxingDay
         ])
+
+    @property
+    def special_closes(self):
+        return [
+            (
+                self.regular_early_close,
+                AbstractHolidayCalendar([ChristmasEveEarlyClose2010Onwards]),
+            )
+        ]

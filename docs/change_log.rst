@@ -3,6 +3,10 @@
 
 Updates
 -------
+2.0.1 (5/20/20)
+~~~~~~~~~~~~~~~
+- Fixed the TSE calendar for Christmas falling on a Saturday
+
 2.0 (5/8/20)
 ~~~~~~~~~~~~
 This version replaces the trading_calendars integration with exchange_calendars, closing out #120. `exchange_calendars <https://github.com/gerrymanoim/exchange_calendars>`_
