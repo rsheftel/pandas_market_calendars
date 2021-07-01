@@ -36,7 +36,8 @@ from pandas_market_calendars.holidays_us import (August45VictoryOverJapan, Chris
                                                  USPresidentsDay, USThanksgivingDay, USThanksgivingDay1939to1941,
                                                  USThanksgivingDayBefore1939, USVeteransDay1934to1953,
                                                  USWashingtonsBirthDay1964to1970, USWashingtonsBirthDayBefore1964,
-                                                 WeatherSnowClosing, WednesdayBeforeIndependenceDayPost2013)
+                                                 WeatherSnowClosing, WednesdayBeforeIndependenceDayPost2013,
+                                                 Post1952May24Saturdays)
 from .market_calendar import MarketCalendar
 
 # Useful resources for making changes to this file:
@@ -44,7 +45,7 @@ from .market_calendar import MarketCalendar
 # http://www.stevemorse.org/jcal/whendid.html
 
 # Overwrite the default holiday calendar start_date of 1/1/70 with 1/1/1900
-AbstractHolidayCalendar.start_date = '1900-01-01'
+AbstractHolidayCalendar.start_date = '1885-01-01'
 
 
 class NYSEExchangeCalendar(MarketCalendar):
@@ -53,11 +54,13 @@ class NYSEExchangeCalendar(MarketCalendar):
 
     Open Time: 9:30 AM, US/Eastern
     Close Time: 4:00 PM, US/Eastern
+    
+    Prior to 5/24/1952 the Market was open most Saturdays        
 
     Regularly-Observed Holidays:
     - New Years Day (observed on monday when Jan 1 is a Sunday)
     - Martin Luther King Jr. Day (3rd Monday in January, only after 1998)
-    - Lincoln's Birthday (February 12th, only before 1954)
+    - Lincoln's Birthday (February 12th, only before 1954 starting in 1896)
     - Washington's Birthday (February 22nd, before 1971 with rule change in
       1964)
     - Washington's Birthday (aka President's Day, 3rd Monday in February,
@@ -136,6 +139,10 @@ class NYSEExchangeCalendar(MarketCalendar):
     @property
     def name(self):
         return "NYSE"
+    
+    @property
+    def weekmask(self):
+        return "Mon Tue Wed Thu Fri Sat"    #Market open on Saturdays thru 5/24/1952
 
     @property
     def tz(self):
@@ -195,6 +202,7 @@ class NYSEExchangeCalendar(MarketCalendar):
             HurricaneGloriaClosings,
             HurricaneSandyClosings,
             USNationalDaysofMourning,
+            Post1952May24Saturdays,
         ))
 
     @property

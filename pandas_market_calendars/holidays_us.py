@@ -50,11 +50,12 @@ USMartinLutherKingJrAfter1998 = Holiday(
     start_date=Timestamp('1998-01-01'),
     offset=DateOffset(weekday=MO(3)),
 )
+# http://www.ltadvisors.net/Info/research/closings.pdf
 USLincolnsBirthDayBefore1954 = Holiday(
     'Lincoln''s Birthday',
     month=2,
     day=12,
-    start_date=Timestamp('1874-01-01'),
+    start_date=Timestamp('1896-01-01'), 
     end_date=Timestamp('1953-12-31'),
     observance=sunday_to_monday,
 )
@@ -167,6 +168,7 @@ USColumbusDayBefore1954 = Holiday(
     'Columbus Day',
     month=10,
     day=12,
+    start_date=Timestamp('1909-01-01'),
     end_date=Timestamp('1953-12-31'),
     observance=sunday_to_monday,
 )
@@ -330,7 +332,17 @@ HurricaneSandyClosings = date_range(
     tz='UTC'
 )
 
+# NYSE was open on Saturdays thru 5/24/1952
+#   anyone maintaining this code after 2050 will need to update the end date
+Post1952May24Saturdays = date_range('1952-05-25', 
+                                    '2050-12-31', 
+                                    freq='W-SAT',
+                                    tz='UTC'
+)
+
+
 # National Days of Mourning
+# - President Ulysses S Grant Funeral - August 8, 1885
 # - President John F. Kennedy - November 25, 1963
 # - Martin Luther King - April 9, 1968
 # - President Dwight D. Eisenhower - March 31, 1969
@@ -341,6 +353,7 @@ HurricaneSandyClosings = date_range(
 # - President Gerald R. Ford - Jan 2, 2007
 # - President George H.W. Bush - Dec 5, 2018
 USNationalDaysofMourning = [
+    Timestamp('1885-08-08', tz='UTC'),
     Timestamp('1963-11-25', tz='UTC'),
     Timestamp('1968-04-09', tz='UTC'),
     Timestamp('1969-03-31', tz='UTC'),
