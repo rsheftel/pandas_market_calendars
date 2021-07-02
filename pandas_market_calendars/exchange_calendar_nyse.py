@@ -19,7 +19,7 @@ from itertools import chain
 from pandas.tseries.holiday import AbstractHolidayCalendar, GoodFriday, USLaborDay
 from pytz import timezone
 
-from pandas_market_calendars.holidays_us import (August45VictoryOverJapan, Christmas, ChristmasBefore1954,
+from pandas_market_calendars.holidays_us import (August45VictoryOverJapan, Christmas, SatBeforeChristmas, ChristmasBefore1954,
                                                  ChristmasEveBefore1993, ChristmasEveInOrAfter1993, ChristmasEvesAdhoc,
                                                  DayAfterChristmasAdhoc, DayAfterIndependenceDayAdhoc,
                                                  DayBeforeDecorationAdhoc, FirstLunarLandingClosing,
@@ -37,7 +37,7 @@ from pandas_market_calendars.holidays_us import (August45VictoryOverJapan, Chris
                                                  USThanksgivingDayBefore1939, USVeteransDay1934to1953,
                                                  USWashingtonsBirthDay1964to1970, USWashingtonsBirthDayBefore1964,
                                                  WeatherSnowClosing, WednesdayBeforeIndependenceDayPost2013,
-                                                 Post1952May24Saturdays)
+                                                 SatBeforeIndependenceDay, Pre1952May24Saturdays, Post1952May24Saturdays)
 from .market_calendar import MarketCalendar
 
 # Useful resources for making changes to this file:
@@ -55,7 +55,9 @@ class NYSEExchangeCalendar(MarketCalendar):
     Open Time: 9:30 AM, US/Eastern
     Close Time: 4:00 PM, US/Eastern
     
-    Prior to 5/24/1952 the Market was open most Saturdays        
+    From 1887 to 5/24/1952 the Market was open most Saturdays 10am-noon
+    - https://www.marketwatch.com/story/a-brief-history-of-trading-hours-on-wall-street-2015-05-29
+    - http://www.ltadvisors.net/Info/research/closings.pdf
 
     Regularly-Observed Holidays:
     - New Years Day (observed on monday when Jan 1 is a Sunday)
@@ -171,6 +173,7 @@ class NYSEExchangeCalendar(MarketCalendar):
             USMemorialDay,
             USIndependenceDayBefore1954,
             USIndependenceDay,
+            SatBeforeIndependenceDay,
             USLaborDay,
             USThanksgivingDayBefore1939,
             USThanksgivingDay1939to1941,
@@ -180,6 +183,7 @@ class NYSEExchangeCalendar(MarketCalendar):
             USVeteransDay1934to1953,
             USColumbusDayBefore1954,
             ChristmasBefore1954,
+            SatBeforeChristmas,
             Christmas,
         ])
 
@@ -208,7 +212,8 @@ class NYSEExchangeCalendar(MarketCalendar):
     @property
     def special_closes(self):
         return [
-            (self.regular_early_close, AbstractHolidayCalendar(rules=[
+            (self.regular_early_close, 
+             AbstractHolidayCalendar(rules=[
                 MonTuesThursBeforeIndependenceDay,
                 FridayAfterIndependenceDayPre2013,
                 WednesdayBeforeIndependenceDayPost2013,
@@ -219,6 +224,7 @@ class NYSEExchangeCalendar(MarketCalendar):
                 ChristmasEveBefore1993,
                 USBlackFridayBefore1993,
             ])),
+            
         ]
 
     @property
@@ -229,5 +235,7 @@ class NYSEExchangeCalendar(MarketCalendar):
                 '1999-12-31',
                 '2003-12-26',
                 '2013-07-03'
-            ])
+            ] + 
+             Pre1952May24Saturdays.strftime("%Y-%m-%d").tolist()
+             )
         ]

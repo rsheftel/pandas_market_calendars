@@ -3,7 +3,7 @@ from pandas import (DateOffset, Timestamp, date_range)
 from pandas.tseries.holiday import (Holiday, nearest_workday, sunday_to_monday)
 from pandas.tseries.offsets import Day
 
-from pandas_market_calendars.market_calendar import (FRIDAY, MONDAY, THURSDAY, TUESDAY, WEDNESDAY)
+from pandas_market_calendars.market_calendar import (FRIDAY, SATURDAY, SUNDAY, MONDAY, THURSDAY, TUESDAY, WEDNESDAY)
 
 
 # These have the same definition, but are used in different places because the
@@ -186,7 +186,22 @@ Christmas = Holiday(
     start_date=Timestamp('1954-01-01'),
     observance=nearest_workday,
 )
-
+SatBeforeChristmas = Holiday(
+    'Saturdays Before Christmas',
+    month=12,
+    day=24,
+    days_of_week=(SATURDAY,),
+    start_date=Timestamp("1885-01-01"),
+    end_date=Timestamp("1952-05-25")
+)
+SatBeforeIndependenceDay = Holiday(
+    'Saturdays Before Independence Day',
+    month=7,
+    day=2,
+    days_of_week=(SATURDAY,),
+    start_date=Timestamp("1885-01-01"),
+    end_date=Timestamp("1952-05-25")
+)
 MonTuesThursBeforeIndependenceDay = Holiday(
     # When July 4th is a Tuesday, Wednesday, or Friday, the previous day is a
     # half day.
@@ -339,7 +354,12 @@ Post1952May24Saturdays = date_range('1952-05-25',
                                     freq='W-SAT',
                                     tz='UTC'
 )
-
+# Every Saturday was an early close
+Pre1952May24Saturdays = date_range('1885-01-01', 
+                                    '1952-05-25', 
+                                    freq='W-SAT',
+                                    tz='UTC'
+)
 
 # National Days of Mourning
 # - President Ulysses S Grant Funeral - August 8, 1885
