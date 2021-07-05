@@ -101,7 +101,6 @@ def date_range(schedule, frequency, closed='right', force_close=True, **kwargs):
             index_to_be = pd.concat([index_to_be, schedule.market_open]).sort_values()
 
     if force_close: # add the market close
-        print("adding")
         index_to_be = pd.concat([index_to_be, schedule.market_close]).sort_values()
         index_to_be = index_to_be.drop_duplicates() # since it may already be in there
 
