@@ -23,6 +23,65 @@ def test_get_calendar():
 def test_get_calendar_names():
     assert 'ASX' in mcal.get_calendar_names()
 
+def test_new_date_range():
+    # copy pasted old version of date_range for comparison
+    def _original_date_range(schedule, frequency, closed='right', force_close=True, **kwargs):
+        if pd.Timedelta(frequency) > pd.Timedelta('1D'):
+            raise ValueError('Frequency must be 1D or higher frequency.')
+        kwargs['closed'] = closed
+        ranges = list()
+        breaks = 'break_start' in schedule.columns
+        for row in schedule.itertuples():
+            dates = pd.date_range(row.market_open, row.market_close, freq=frequency, tz='UTC', **kwargs)
+            if force_close:
+                if row.market_close not in dates:
+                    dates = dates.insert(len(dates), row.market_close)
+            if breaks:
+                if closed == 'right':
+                    dates = dates[(dates <= row.break_start) | (row.break_end < dates)]
+                elif closed == 'left':
+                    dates = dates[(dates < row.break_start) | (row.break_end <= dates)]
+                else:
+                    dates = dates[(dates <= row.break_start) | (row.break_end <= dates)]
+
+            ranges.append(dates)
+
+        index = pd.DatetimeIndex([], tz='UTC')
+        return index.union_many(ranges)
+
+    possible_settings = [ {"closed": "right", "force_close": False},
+                          {"closed": "left", "force_close": False},
+                          {"closed": None, "force_close": False},
+                          {"closed": "right", "force_close": True},
+                          {"closed": "left", "force_close": True},
+                          {"closed": None, "force_close": True}
+    ]
+    frequencies = ["1D", "4H", "30min", "12.375min", "1min"]
+
+    cal_without_breaks = FakeCalendar(open_time=datetime.time(9, 0), close_time=datetime.time(11, 15))
+    cal_with_breaks = FakeBreakCalendar(open_time= datetime.time(9), close_time=datetime.time(11, 15))
+
+    _start, _end = "2016-12-15", "2017-01-05"
+    fake_schedules = { "cal_without_breaks": cal_without_breaks.schedule(_start, _end),
+                       "cal_with_breaks": cal_with_breaks.schedule(_start, _end)}
+    all_schedules = {calendar: mcal.get_calendar(calendar).schedule(_start, _end)
+                     for calendar in mcal.get_calendar_names()}
+
+    schedules = {**fake_schedules, **all_schedules}
+    # compare the old version's result to the new version's
+    # for each possible setting, each frequency and each calendar
+    for settings in possible_settings:
+        for freq in frequencies:
+            for calendar, sched in schedules.items():
+                try:
+                    original = _original_date_range(sched, freq, **settings)
+                    new = mcal.date_range(sched, freq, **settings)
+                    assert_index_equal(new, original)
+                except AssertionError:
+                    print(f"test_new_date_range failed with:\n"
+                          f"settings:\n{settings}\nfrequency: {freq}\tcalendar: {calendar}")
+                    raise
+
 
 def test_date_range_daily():
     cal = FakeCalendar(open_time=datetime.time(9, 0), close_time=datetime.time(12, 0))

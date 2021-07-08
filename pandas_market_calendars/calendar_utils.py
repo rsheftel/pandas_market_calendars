@@ -62,56 +62,60 @@ def date_range(schedule, frequency, closed='right', force_close=True, **kwargs):
       frequency. If False then the market close for the day may not be included in the results
     :param kwargs: unused
     :return: DatetimeIndex
+
+    Two Caveats (that also apply to the old version):
+
+        * If the difference between market close and open is smaller than frequency
+        and closed= "right" and force_close = False:
+        ----> the whole day will just disappear
+
+        * If the market close is before the market open, it will only return something
+        if force_close = True, and then it will *only* return the closes of each day,
+        regardless of the frequency
     """
+    frequency = pd.Timedelta(frequency)
+    if frequency > pd.Timedelta("1D"): raise ValueError('Frequency must be 1D or higher frequency.')
 
-    frequency, daily = pd.Timedelta(frequency), pd.Timedelta("1D")
-    if frequency > daily: raise ValueError('Frequency must be 1D or higher frequency.')
-    elif schedule.empty: return pd.DatetimeIndex([], tz= "UTC")
+    # some markets/tests contain rows where the close is before the open,
+    # which the original function drops completely *unless* force_close adds the close anyway
+    difference = schedule.market_close - schedule.market_open
+    negative = difference.lt(pd.Timedelta(0))
+    if negative.any():
+        any_neg = True
+        negatives = schedule[negative].market_close if force_close else [] # keep closes to concat later
+        schedule, difference = schedule[~negative], difference[~negative]
+    else: any_neg= False
 
-    # daily can be handled more efficiently, seperately
-    if frequency == daily:
-        if closed == "right":
-            if force_close is False: return pd.DatetimeIndex([], tz= "UTC")
-            index = pd.DatetimeIndex(schedule.market_close, tz= "UTC")
-        else:
-            if force_close:
-                index = pd.DatetimeIndex(pd.concat(
-                    [schedule.market_open, schedule.market_close]).sort_values(), tz= "UTC")
-            else:
-                index = pd.DatetimeIndex(schedule.market_open, tz="UTC")
-        index.name = None
-        return index
-
-    # if not daily, calculate n bars required for each day,
-    # then create series with market_open and market_closes repeated n times
-    num_bars = (schedule.market_close - schedule.market_open) / frequency
-    _remains = num_bars % 1    # round up, np.ceil-style
-    num_bars = num_bars.where(_remains == 0, num_bars + 1 - _remains).astype("int")
-    opens = schedule.market_open.repeat(num_bars)
-    closes = schedule.market_close.repeat(num_bars)
+    # Calculate number of bars for each day
+    num_bars = difference / frequency
+    remains = num_bars % 1    # round up, np.ceil-style
+    num_bars = num_bars.where(remains == 0, num_bars + 1 - remains).round()
 
     # ---> calculate the desired timeseries:
-    index_to_be = opens.groupby(opens.index).cumcount() * frequency + opens
+    if closed == "right":
+        opens = schedule.market_open.repeat(num_bars)   # dont add row but shift up
+        index_to_be = (opens.groupby(opens.index).cumcount()+ 1) * frequency + opens
+    elif closed is None or force_close:
+        num_bars += 1
+        opens = schedule.market_open.repeat(num_bars)   # add row but dont shift up
+        index_to_be = (opens.groupby(opens.index).cumcount()) * frequency + opens
+    else:
+        opens = schedule.market_open.repeat(num_bars)   # keep as is
+        index_to_be = (opens.groupby(opens.index).cumcount()) * frequency + opens
 
-    # handle the closed/force_close parameters if needed
-    if closed != "left":
-        index_to_be += frequency # shift the timeseries by frequency
-        index_to_be = index_to_be[index_to_be.le(closes)]  # make sure market_close is the max value
-        if closed is None: # add the market_open
-            index_to_be = pd.concat([index_to_be, schedule.market_open]).sort_values()
+    # add close or drop everything larger than close, depending on force_close/negatives
+    closes = schedule.market_close.repeat(num_bars)
+    if force_close:
+        index_to_be = index_to_be.where(index_to_be.le(closes), closes)
+        if any_neg:
+            index_to_be = pd.concat([index_to_be, negatives]).sort_values()
+    else: index_to_be = index_to_be[index_to_be.le(closes)]
 
-    if force_close: # add the market close
-        index_to_be = pd.concat([index_to_be, schedule.market_close]).sort_values()
-        index_to_be = index_to_be.drop_duplicates() # since it may already be in there
-
-    index_to_be = index_to_be.reset_index(drop= True)
+    # handle potential breaks
     if "break_start" in schedule.columns:
-
-        # new num_bars after closed= None/force_close= True were applied
-        num_bars = index_to_be.groupby(index_to_be.dt.date).size()
-        start = schedule.break_start.repeat(num_bars).reset_index(drop= True)
-        end = schedule.break_end.repeat(num_bars).reset_index(drop= True)
-
+        num_bars = index_to_be.groupby(index_to_be.index).size() # may have changed
+        start = schedule.break_start.loc[num_bars.index].repeat(num_bars) # need to be aligned
+        end = schedule.break_end.loc[num_bars.index].repeat(num_bars)
         if closed == "right":
             index_to_be = index_to_be[index_to_be.le(start) | index_to_be.gt(end)]
         elif closed == "left":
@@ -119,4 +123,5 @@ def date_range(schedule, frequency, closed='right', force_close=True, **kwargs):
         else:
             index_to_be = index_to_be[index_to_be.le(start) | index_to_be.ge(end)]
 
-    return pd.DatetimeIndex(index_to_be, tz= "UTC")
+    index_to_be.name = None
+    return pd.DatetimeIndex(index_to_be.drop_duplicates().sort_values(), tz= "UTC")
