@@ -16,35 +16,44 @@
 from datetime import time
 from itertools import chain
 
-from pandas.tseries.holiday import AbstractHolidayCalendar, GoodFriday, USLaborDay
+from pandas.tseries.holiday import AbstractHolidayCalendar
 from pytz import timezone
 
-from pandas_market_calendars.holidays_us import (August45VictoryOverJapan, Christmas, SatBeforeChristmas, ChristmasBefore1954,
-                                                 ChristmasEveBefore1993, ChristmasEveInOrAfter1993, ChristmasEvesAdhoc,
-                                                 DayAfterChristmasAdhoc, DayAfterIndependenceDayAdhoc,
-                                                 DayBeforeDecorationAdhoc, FirstLunarLandingClosing,
-                                                 FridayAfterIndependenceDayPre2013, HurricaneGloriaClosings,
-                                                 HurricaneSandyClosings, LincolnsBirthDayAdhoc, March33BankHoliday,
-                                                 MonTuesThursBeforeIndependenceDay, NewYorkCityBlackout77,
-                                                 November29BacklogRelief, PaperworkCrisis68, September11Closings,
-                                                 USBlackFridayBefore1993, USBlackFridayInOrAfter1993,
-                                                 USColumbusDayBefore1954, USElectionDay1848to1967,
-                                                 USElectionDay1968to1980, USIndependenceDay,
-                                                 USIndependenceDayBefore1954, USLincolnsBirthDayBefore1954,
-                                                 USMartinLutherKingJrAfter1998, USMemorialDay, USMemorialDay1964to1969,
-                                                 USMemorialDayBefore1964, USNationalDaysofMourning, USNewYearsDay,
-                                                 USPresidentsDay, USThanksgivingDay, USThanksgivingDay1939to1941,
-                                                 USThanksgivingDayBefore1939, USVeteransDay1934to1953,
-                                                 USWashingtonsBirthDay1964to1970, USWashingtonsBirthDayBefore1964,
-                                                 WeatherSnowClosing, WednesdayBeforeIndependenceDayPost2013,
-                                                 SatBeforeIndependenceDay, Pre1952May24Saturdays, Post1952May24Saturdays)
+from pandas_market_calendars.holidays_us import (
+    USNewYearsDay,
+    USPresidentsDay, USWashingtonsBirthDay1964to1970, USWashingtonsBirthDayBefore1964,
+    LincolnsBirthDayAdhoc,     
+    USIndependenceDay,SatBeforeIndependenceDay, SatAfterIndependenceDay,
+    USIndependenceDayBefore1954, DayAfterIndependenceDayAdhoc,    
+    FridayAfterIndependenceDayPre2013, MonTuesThursBeforeIndependenceDay,
+    WednesdayBeforeIndependenceDayPost2013,      
+    GoodFriday, GoodFridayPre1898, GoodFriday1899to1905, 
+    USBlackFridayBefore1993, USBlackFridayInOrAfter1993,
+    USColumbusDayBefore1954, USElectionDay1848to1967,
+    USElectionDay1968to1980,  USLincolnsBirthDayBefore1954,
+    USMartinLutherKingJrAfter1998, USMemorialDay, USMemorialDay1964to1969,
+    USMemorialDayBefore1964,
+    USLaborDayStarting1887, SatBeforeLaborDayAdhoc,
+    USThanksgivingDay, USThanksgivingDay1939to1941,
+    USThanksgivingDayBefore1939, FridayAfterThanksgivingAdHoc, USVeteransDay1934to1953,
+    Christmas, ChristmasBefore1954, ChristmasEveBefore1993, ChristmasEveInOrAfter1993, 
+    ChristmasEvesAdhoc, DayAfterChristmasAdhoc,
+    Pre1952May24Saturdays, Post1952May24Saturdays,
+    USNationalDaysofMourning, 
+    USVetransDayAdHoc, August45VictoryOverJapan, DayBeforeDecorationAdhoc, 
+    FirstLunarLandingClosing,
+     WashingtonInaugurationCentennialCelebration,
+    ColumbianCelebration,  
+    March33BankHoliday, November29BacklogRelief, PaperworkCrisis68, September11Closings,
+    WeatherSnowClosing,GreatBlizzardOf1888, HurricaneGloriaClosings,
+    HurricaneSandyClosings, NewYorkCityBlackout77 )
 from .market_calendar import MarketCalendar
 
 # Useful resources for making changes to this file:
 # http://www.nyse.com/pdfs/closings.pdf
 # http://www.stevemorse.org/jcal/whendid.html
 
-# Overwrite the default holiday calendar start_date of 1/1/70 with 1/1/1900
+# Overwrite the default holiday calendar start_date of 1/1/70 
 AbstractHolidayCalendar.start_date = '1885-01-01'
 
 
@@ -168,13 +177,16 @@ class NYSEExchangeCalendar(MarketCalendar):
             USWashingtonsBirthDay1964to1970,
             USPresidentsDay,
             GoodFriday,
+            GoodFridayPre1898,
+            GoodFriday1899to1905, 
             USMemorialDayBefore1964,
             USMemorialDay1964to1969,
             USMemorialDay,
             USIndependenceDayBefore1954,
             USIndependenceDay,
             SatBeforeIndependenceDay,
-            USLaborDay,
+            SatAfterIndependenceDay,
+            USLaborDayStarting1887,
             USThanksgivingDayBefore1939,
             USThanksgivingDay1939to1941,
             USThanksgivingDay,
@@ -182,23 +194,23 @@ class NYSEExchangeCalendar(MarketCalendar):
             USElectionDay1968to1980,
             USVeteransDay1934to1953,
             USColumbusDayBefore1954,
-            ChristmasBefore1954,
-            SatBeforeChristmas,
             Christmas,
+            ChristmasBefore1954,
         ])
 
     @property
     def adhoc_holidays(self):
         return list(chain(
-            November29BacklogRelief,
-            March33BankHoliday,
-            August45VictoryOverJapan,
+            DayAfterIndependenceDayAdhoc,
+            SatBeforeLaborDayAdhoc,
             ChristmasEvesAdhoc,
             DayAfterChristmasAdhoc,
             DayBeforeDecorationAdhoc,
+            November29BacklogRelief,
+            March33BankHoliday,
+            August45VictoryOverJapan,
             LincolnsBirthDayAdhoc,
             PaperworkCrisis68,
-            DayAfterIndependenceDayAdhoc,
             WeatherSnowClosing,
             FirstLunarLandingClosing,
             September11Closings,
@@ -207,6 +219,11 @@ class NYSEExchangeCalendar(MarketCalendar):
             HurricaneSandyClosings,
             USNationalDaysofMourning,
             Post1952May24Saturdays,
+            USVetransDayAdHoc,
+            GreatBlizzardOf1888,
+            FridayAfterThanksgivingAdHoc,
+            WashingtonInaugurationCentennialCelebration,
+            ColumbianCelebration,
         ))
 
     @property
