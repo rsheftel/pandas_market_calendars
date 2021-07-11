@@ -489,6 +489,29 @@ def test_1903():
         assert h not in valid_days
         assert h in all_holidays
         
+def test_1904():
+    nyse = NYSEExchangeCalendar()
+    holidays_1904 = [
+        pd.Timestamp('1904-01-01', tz='UTC'),
+        pd.Timestamp('1904-02-12', tz='UTC'),
+        pd.Timestamp('1904-02-22', tz='UTC'),
+        pd.Timestamp('1904-04-01', tz='UTC'),
+        pd.Timestamp('1904-05-28', tz='UTC'),
+        pd.Timestamp('1904-05-30', tz='UTC'),
+        pd.Timestamp('1904-07-02', tz='UTC'),
+        pd.Timestamp('1904-07-04', tz='UTC'),
+        pd.Timestamp('1904-09-03', tz='UTC'),
+        pd.Timestamp('1904-09-05', tz='UTC'),
+        pd.Timestamp('1904-11-08', tz='UTC'),
+        pd.Timestamp('1904-11-24', tz='UTC'),
+        pd.Timestamp('1904-12-24', tz='UTC'),
+        pd.Timestamp('1904-12-26', tz='UTC')
+    ]
+    valid_days = nyse.valid_days('1904-01-01', '1904-12-31')
+    for h in holidays_1904:
+        assert h not in valid_days
+        assert h in all_holidays        
+        
 def test_special_holidays():
     nyse = NYSEExchangeCalendar()
     good_dates = nyse.valid_days('1885-01-01', '1952-12-31')

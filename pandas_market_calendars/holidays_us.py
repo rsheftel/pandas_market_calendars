@@ -138,14 +138,24 @@ GoodFriday1899to1905 = Holiday(
     day=1, 
     offset=[Easter(), Day(-2)]
 )
-SatAfterGoodFriday = Holiday(
-    'Saturdays After Good Friday 1900 Thru 1952',
-    start_date=Timestamp("1900-01-01"),
-    end_date=Timestamp("1952-05-25"),
-    month=1,
-    day=1,
-    offset=[Easter(), Day(-1)]
-)
+#Not every saturday after Good Friday is a holiday (e.g. 1904)
+SatAfterGoodFridayAdhoc = [
+    Timestamp("1900-04-14"),
+    Timestamp("1901-04-06"),
+    Timestamp("1902-03-29"),
+    Timestamp("1903-04-11"),
+    Timestamp("1905-04-22"),
+    Timestamp("1907-03-30"),
+    Timestamp("1908-04-18"),
+    Timestamp("1909-04-10"),
+    Timestamp("1910-03-26"),
+    Timestamp("1911-04-15"),
+    Timestamp("1913-03-22"),
+    Timestamp("1920-04-03"),
+    Timestamp("1929-03-30"),
+    Timestamp("1930-04-19")
+    ]
+
 
 ##################################################
 # US Memorial Day (Decoration Day) May 30 
@@ -186,6 +196,7 @@ SatAfterDecorationDay = Holiday(
 )
 DayBeforeDecorationAdhoc = [
     Timestamp('1899-05-29', tz='UTC'),
+    Timestamp('1904-05-28', tz='UTC'),
     Timestamp('1961-05-29', tz='UTC')]
 
 
@@ -386,6 +397,7 @@ ChristmasEvesAdhoc = [
     Timestamp('1887-12-24', tz='UTC'),
     Timestamp('1898-12-24', tz='UTC'),
     Timestamp('1900-12-24', tz='UTC'),
+    Timestamp('1904-12-24', tz='UTC'),
     Timestamp('1945-12-24', tz='UTC'),
     Timestamp('1956-12-24', tz='UTC')
 ]
