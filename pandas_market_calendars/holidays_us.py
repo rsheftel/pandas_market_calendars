@@ -6,17 +6,27 @@ from pandas.tseries.offsets import Day
 from pandas_market_calendars.market_calendar import (FRIDAY, SATURDAY, SUNDAY, MONDAY, THURSDAY, TUESDAY, WEDNESDAY)
 
 
-# These have the same definition, but are used in different places because the
-# NYSE closed at 2:00 PM on Christmas Eve until 1993.
-
-
-def july_5th_holiday_observance(datetime_index):
-    return datetime_index[datetime_index.year < 2013]
-
-
-def following_tuesday_every_four_years_observance(dt):
-    return dt + DateOffset(years=(4 - (dt.year % 4)) % 4, weekday=TU(1))
-
+#############################################################################
+# Saturday Trading Thru 1952
+#   NYSE was open on Saturdays thru 5/24/1952
+#   anyone maintaining this code after 2050 will need to update the end date
+#############################################################################
+Post1952May24Saturdays = date_range('1952-05-25', 
+                                    '2050-12-31', 
+                                    freq='W-SAT',
+                                    tz='UTC'
+)
+# Every Saturday was an early close
+Pre1952May24SatEarlyClose = date_range('1885-01-01', 
+                                    '1952-05-25', 
+                                    freq='W-SAT',
+                                    tz='UTC'
+)
+# Adhoc Saturday Closes
+Pre1952MaySatClosesAdhoc = [
+    Timestamp('1901-04-27', tz='UTC'), # Moved to temporary quarters in Produce Exchange
+    Timestamp('1901-05-11', tz='UTC')  # Enlarged Produce Exchange
+    ]
 
 ####################################################
 # US New Years Day Jan 1
@@ -42,6 +52,7 @@ USMartinLutherKingJrAfter1998 = Holiday(
 # US Presidents Day Feb 
 #    Lincoln's birthday closed every year 1896-1953
 #    Washington's birthday closed every year. Observed Mondays since 1971
+#    Grant's birthday was celebrated once in 1897
 ##########################################################################
 # http://www.ltadvisors.net/Info/research/closings.pdf
 USPresidentsDay = Holiday('President''s Day',
@@ -64,6 +75,22 @@ USWashingtonsBirthDay1964to1970 = Holiday(
     end_date=Timestamp('1970-12-31'),
     observance=nearest_workday,
 )
+SatBeforeWashingtonsBirthday = Holiday(
+    'Saturdays Before Linconlns Birthday',
+    month=2,
+    day=21,
+    days_of_week=(SATURDAY,),
+    start_date=Timestamp("1903-01-01"),
+    end_date=Timestamp("1952-05-25")
+)
+SatAfterWashingtonsBirthday = Holiday(
+    'Saturdays Before Linconlns Birthday',
+    month=2,
+    day=23,
+    days_of_week=(SATURDAY,),
+    start_date=Timestamp("1885-01-01"),
+    end_date=Timestamp("1952-05-25")
+)
 USLincolnsBirthDayBefore1954 = Holiday(
     'Lincoln''s Birthday',
     month=2,
@@ -72,8 +99,17 @@ USLincolnsBirthDayBefore1954 = Holiday(
     end_date=Timestamp('1953-12-31'),
     observance=sunday_to_monday,
 )
-# http://www.tradingtheodds.com/nyse-full-day-closings/
+SatBeforeLincolnsBirthday = Holiday(
+    'Saturdays Before Linconlns Birthday',
+    month=2,
+    day=11,
+    days_of_week=(SATURDAY,),
+    start_date=Timestamp("1885-01-01"),
+    end_date=Timestamp("1952-05-25")
+)
+
 LincolnsBirthDayAdhoc = [Timestamp('1968-02-12', tz='UTC')]
+GrantsBirthDayAdhoc   = [Timestamp('1897-04-27', tz='UTC')]
 
 ############################################################
 # Good Friday 
@@ -102,9 +138,17 @@ GoodFriday1899to1905 = Holiday(
     day=1, 
     offset=[Easter(), Day(-2)]
 )
+SatAfterGoodFriday = Holiday(
+    'Saturdays After Good Friday 1900 Thru 1952',
+    start_date=Timestamp("1900-01-01"),
+    end_date=Timestamp("1952-05-25"),
+    month=1,
+    day=1,
+    offset=[Easter(), Day(-1)]
+)
 
 ##################################################
-# US Memorial Day May 30
+# US Memorial Day (Decoration Day) May 30 
 #    Closed every year since 1873
 #    Observed on Monday since 1971
 ##################################################
@@ -132,8 +176,17 @@ USMemorialDay1964to1969 = Holiday(
     end_date=Timestamp('1969-12-31'),
     observance=nearest_workday,
 )
-
-DayBeforeDecorationAdhoc = [Timestamp('1961-05-29', tz='UTC')]
+SatAfterDecorationDay = Holiday(
+    'Saturdays After Decoraton Day 1902 Thru 1952',
+    month=5,
+    day=31,
+    days_of_week=(SATURDAY,),
+    start_date=Timestamp("1902-01-01"),
+    end_date=Timestamp("1952-05-25")
+)
+DayBeforeDecorationAdhoc = [
+    Timestamp('1899-05-29', tz='UTC'),
+    Timestamp('1961-05-29', tz='UTC')]
 
 
 #######################################
@@ -164,6 +217,10 @@ MonTuesThursBeforeIndependenceDay = Holiday(
     days_of_week=(MONDAY, TUESDAY, THURSDAY),
     start_date=Timestamp("1995-01-01"),
 )
+
+def july_5th_holiday_observance(datetime_index):
+    return datetime_index[datetime_index.year < 2013]
+
 FridayAfterIndependenceDayPre2013 = Holiday(
     # When July 4th is a Thursday, the next day is a half day prior to 2013.
     # Since 2013 the early close is on Wednesday and Friday is a full day
@@ -172,7 +229,7 @@ FridayAfterIndependenceDayPre2013 = Holiday(
     day=5,
     days_of_week=(FRIDAY,),
     observance=july_5th_holiday_observance,
-    start_date=Timestamp("1995-01-01"),
+    start_date=Timestamp("1885-01-01"),
 )
 SatBeforeIndependenceDay = Holiday(
     'Saturdays Before Independence Day Thru 1952',
@@ -199,8 +256,11 @@ WednesdayBeforeIndependenceDayPost2013 = Holiday(
     days_of_week=(WEDNESDAY,),
     start_date=Timestamp("2013-01-01"),
 )
-# http://www.tradingtheodds.com/nyse-full-day-closings/
-DayAfterIndependenceDayAdhoc = [Timestamp('1968-07-05', tz='UTC')]
+DaysAfterIndependenceDayAdhoc = [
+    Timestamp('1901-07-05', tz='UTC'),
+    Timestamp('1901-07-06', tz='UTC'),
+    Timestamp('1968-07-05', tz='UTC')
+    ]
 
 
 #################################################
@@ -252,7 +312,10 @@ USElectionDay1848to1967 = Holiday(
     end_date=Timestamp('1967-12-31'),
     offset=DateOffset(weekday=TU(1)),
 )
-# http://www.tradingtheodds.com/nyse-full-day-closings/
+
+def following_tuesday_every_four_years_observance(dt):
+    return dt + DateOffset(years=(4 - (dt.year % 4)) % 4, weekday=TU(1))
+
 USElectionDay1968to1980 = Holiday(
     'Election Day',
     month=11,
@@ -286,13 +349,6 @@ FridayAfterThanksgivingAdHoc = [
 ################################
 # Christmas Dec 25
 ################################
-ChristmasBefore1954 = Holiday(
-    'Christmas',
-    month=12,
-    day=25,
-    end_date=Timestamp('1953-12-31'),
-    observance=sunday_to_monday,
-)
 Christmas = Holiday(
     'Christmas',
     month=12,
@@ -300,6 +356,15 @@ Christmas = Holiday(
     start_date=Timestamp('1954-01-01'),
     observance=nearest_workday,
 )
+ChristmasBefore1954 = Holiday(
+    'Christmas',
+    month=12,
+    day=25,
+    end_date=Timestamp('1953-12-31'),
+    observance=sunday_to_monday,
+)
+    # These have the same definition, but are used in different places because the
+    # NYSE closed at 2:00 PM on Christmas Eve until 1993.
 ChristmasEveBefore1993 = Holiday(
     'Christmas Eve',
     month=12,
@@ -320,19 +385,46 @@ ChristmasEveInOrAfter1993 = Holiday(
 ChristmasEvesAdhoc = [
     Timestamp('1887-12-24', tz='UTC'),
     Timestamp('1898-12-24', tz='UTC'),
+    Timestamp('1900-12-24', tz='UTC'),
     Timestamp('1945-12-24', tz='UTC'),
     Timestamp('1956-12-24', tz='UTC')
 ]
 
-# http://www.tradingtheodds.com/nyse-full-day-closings/
 DayAfterChristmasAdhoc = [
     Timestamp('1891-12-26', tz='UTC'),
+    Timestamp('1896-12-26', tz='UTC'),
+    Timestamp('1903-12-26', tz='UTC'),
     Timestamp('1958-12-26', tz='UTC'),
 ]
 
 #####################################
 # Non-recurring or retired holidays
 #####################################
+
+ColumbianCelebration1892 = [
+    Timestamp("1892-10-12", tz='UTC'),
+    Timestamp("1892-10-21", tz='UTC'),
+    Timestamp("1892-10-22", tz='UTC'),
+    Timestamp("1893-04-27", tz='UTC'),
+]
+
+WashingtonInaugurationCentennialCelebration1889 = [
+    Timestamp("1889-04-29", tz='UTC'),
+    Timestamp("1889-04-30", tz='UTC'),
+    Timestamp("1889-05-01", tz='UTC'),
+]
+
+# NYC's 5 boroughs founded as NYC
+# Not actually celebrated due to Spanish-American war but market was closed
+CharterDay1898 = [Timestamp('1898-05-04', tz='UTC')]
+
+WelcomeNavalCommander1898 = [Timestamp('1898-08-20', tz='UTC')]
+
+AdmiralDeweyCelebration1899 = [Timestamp('1899-09-29', tz='UTC'),Timestamp('1899-09-30', tz='UTC') ]
+
+KingEdwardVIIcoronation1902 = [Timestamp('1902-08-09', tz='UTC')]
+
+NYSEnewBuildingOpen1903 = [Timestamp('1903-04-22', tz='UTC')]
 
 # http://www.tradingtheodds.com/nyse-full-day-closings/
 USVeteransDay1934to1953 = Holiday(
@@ -402,22 +494,6 @@ August45VictoryOverJapan = date_range('1945-08-15', '1945-08-16', tz='UTC')
 
 
 
-
-
-
-WashingtonInaugurationCentennialCelebration = [
-    Timestamp("1889-04-29", tz='UTC'),
-    Timestamp("1889-04-30", tz='UTC'),
-    Timestamp("1889-05-01", tz='UTC'),
-]
-
-ColumbianCelebration = [
-    Timestamp("1892-10-12", tz='UTC'),
-    Timestamp("1892-10-21", tz='UTC'),
-    Timestamp("1892-10-22", tz='UTC'),
-    Timestamp("1893-04-27", tz='UTC'),
-]
-
 # http://www.tradingtheodds.com/nyse-full-day-closings/
 PaperworkCrisis68 = [Timestamp('1968-06-12', tz='UTC'),
                      Timestamp('1968-06-19', tz='UTC'),
@@ -477,20 +553,6 @@ HurricaneSandyClosings = date_range(
     tz='UTC'
 )
 
-# NYSE was open on Saturdays thru 5/24/1952
-#   anyone maintaining this code after 2050 will need to update the end date
-Post1952May24Saturdays = date_range('1952-05-25', 
-                                    '2050-12-31', 
-                                    freq='W-SAT',
-                                    tz='UTC'
-)
-# Every Saturday was an early close
-Pre1952May24Saturdays = date_range('1885-01-01', 
-                                    '1952-05-25', 
-                                    freq='W-SAT',
-                                    tz='UTC'
-)
-
 GreatBlizzardOf1888 = [
     Timestamp('1888-03-12', tz='UTC'),
     Timestamp('1888-03-13', tz='UTC'),
@@ -499,6 +561,10 @@ GreatBlizzardOf1888 = [
 
 # National Days of Mourning
 # - President Ulysses S Grant Funeral - August 8, 1885
+# - Vice President Garret A. Hobart - November 25, 1899
+# - Queen Victoria of England Funderal - February 2, 1901
+# - President William McKinley Death - September 14, 1901
+# - President William McKinley Funderal - September 19, 1901
 # - President John F. Kennedy - November 25, 1963
 # - Martin Luther King - April 9, 1968
 # - President Dwight D. Eisenhower - March 31, 1969
@@ -509,7 +575,11 @@ GreatBlizzardOf1888 = [
 # - President Gerald R. Ford - Jan 2, 2007
 # - President George H.W. Bush - Dec 5, 2018
 USNationalDaysofMourning = [
-    Timestamp('1885-08-08', tz='UTC'),
+    Timestamp('1885-08-08', tz='UTC'), 
+    Timestamp('1899-11-25', tz='UTC'), 
+    Timestamp('1901-02-02', tz='UTC'), 
+    Timestamp('1901-09-14', tz='UTC'),
+    Timestamp('1901-09-19', tz='UTC'),
     Timestamp('1963-11-25', tz='UTC'),
     Timestamp('1968-04-09', tz='UTC'),
     Timestamp('1969-03-31', tz='UTC'),

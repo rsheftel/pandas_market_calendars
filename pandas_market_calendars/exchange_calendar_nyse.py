@@ -20,30 +20,35 @@ from pandas.tseries.holiday import AbstractHolidayCalendar
 from pytz import timezone
 
 from pandas_market_calendars.holidays_us import (
+    Pre1952May24SatEarlyClose, Post1952May24Saturdays, Pre1952MaySatClosesAdhoc,
     USNewYearsDay,
-    USPresidentsDay, USWashingtonsBirthDay1964to1970, USWashingtonsBirthDayBefore1964,
-    LincolnsBirthDayAdhoc,     
+    USPresidentsDay, USWashingtonsBirthDay1964to1970, 
+    USWashingtonsBirthDayBefore1964, 
+    SatBeforeWashingtonsBirthday, SatAfterWashingtonsBirthday, 
+    LincolnsBirthDayAdhoc, SatBeforeLincolnsBirthday, GrantsBirthDayAdhoc,  
+    GoodFriday, GoodFridayPre1898, GoodFriday1899to1905, SatAfterGoodFriday,
     USIndependenceDay,SatBeforeIndependenceDay, SatAfterIndependenceDay,
-    USIndependenceDayBefore1954, DayAfterIndependenceDayAdhoc,    
-    FridayAfterIndependenceDayPre2013, MonTuesThursBeforeIndependenceDay,
-    WednesdayBeforeIndependenceDayPost2013,      
-    GoodFriday, GoodFridayPre1898, GoodFriday1899to1905, 
+    USIndependenceDayBefore1954, FridayAfterIndependenceDayPre2013, 
+    MonTuesThursBeforeIndependenceDay, WednesdayBeforeIndependenceDayPost2013,
+    DaysAfterIndependenceDayAdhoc,
+    USMemorialDay, USMemorialDay1964to1969,
+    USMemorialDayBefore1964, SatAfterDecorationDay, DayBeforeDecorationAdhoc,     
     USBlackFridayBefore1993, USBlackFridayInOrAfter1993,
     USColumbusDayBefore1954, USElectionDay1848to1967,
     USElectionDay1968to1980,  USLincolnsBirthDayBefore1954,
-    USMartinLutherKingJrAfter1998, USMemorialDay, USMemorialDay1964to1969,
-    USMemorialDayBefore1964,
+    USMartinLutherKingJrAfter1998, 
     USLaborDayStarting1887, SatBeforeLaborDayAdhoc,
     USThanksgivingDay, USThanksgivingDay1939to1941,
     USThanksgivingDayBefore1939, FridayAfterThanksgivingAdHoc, USVeteransDay1934to1953,
     Christmas, ChristmasBefore1954, ChristmasEveBefore1993, ChristmasEveInOrAfter1993, 
     ChristmasEvesAdhoc, DayAfterChristmasAdhoc,
-    Pre1952May24Saturdays, Post1952May24Saturdays,
-    USNationalDaysofMourning, 
-    USVetransDayAdHoc, August45VictoryOverJapan, DayBeforeDecorationAdhoc, 
+    USNationalDaysofMourning,
+    ColumbianCelebration1892, WashingtonInaugurationCentennialCelebration1889,
+    CharterDay1898, WelcomeNavalCommander1898, AdmiralDeweyCelebration1899,
+    KingEdwardVIIcoronation1902, NYSEnewBuildingOpen1903,
+    USVetransDayAdHoc, August45VictoryOverJapan, 
     FirstLunarLandingClosing,
-     WashingtonInaugurationCentennialCelebration,
-    ColumbianCelebration,  
+    
     March33BankHoliday, November29BacklogRelief, PaperworkCrisis68, September11Closings,
     WeatherSnowClosing,GreatBlizzardOf1888, HurricaneGloriaClosings,
     HurricaneSandyClosings, NewYorkCityBlackout77 )
@@ -172,16 +177,21 @@ class NYSEExchangeCalendar(MarketCalendar):
         return AbstractHolidayCalendar(rules=[
             USNewYearsDay,
             USMartinLutherKingJrAfter1998,
-            USLincolnsBirthDayBefore1954,
+            USPresidentsDay,
+            SatBeforeWashingtonsBirthday,
+            SatAfterWashingtonsBirthday,
             USWashingtonsBirthDayBefore1964,
             USWashingtonsBirthDay1964to1970,
-            USPresidentsDay,
+            USLincolnsBirthDayBefore1954,
+            SatBeforeLincolnsBirthday,
             GoodFriday,
+            SatAfterGoodFriday,
             GoodFridayPre1898,
             GoodFriday1899to1905, 
+            USMemorialDay,
             USMemorialDayBefore1964,
             USMemorialDay1964to1969,
-            USMemorialDay,
+            SatAfterDecorationDay,
             USIndependenceDayBefore1954,
             USIndependenceDay,
             SatBeforeIndependenceDay,
@@ -201,7 +211,9 @@ class NYSEExchangeCalendar(MarketCalendar):
     @property
     def adhoc_holidays(self):
         return list(chain(
-            DayAfterIndependenceDayAdhoc,
+            Post1952May24Saturdays,
+            Pre1952MaySatClosesAdhoc,
+            DaysAfterIndependenceDayAdhoc,
             SatBeforeLaborDayAdhoc,
             ChristmasEvesAdhoc,
             DayAfterChristmasAdhoc,
@@ -210,6 +222,7 @@ class NYSEExchangeCalendar(MarketCalendar):
             March33BankHoliday,
             August45VictoryOverJapan,
             LincolnsBirthDayAdhoc,
+            GrantsBirthDayAdhoc,
             PaperworkCrisis68,
             WeatherSnowClosing,
             FirstLunarLandingClosing,
@@ -218,12 +231,17 @@ class NYSEExchangeCalendar(MarketCalendar):
             HurricaneGloriaClosings,
             HurricaneSandyClosings,
             USNationalDaysofMourning,
-            Post1952May24Saturdays,
+            ColumbianCelebration1892,
+            WashingtonInaugurationCentennialCelebration1889,
+            CharterDay1898,
+            WelcomeNavalCommander1898,
+            AdmiralDeweyCelebration1899,
+            KingEdwardVIIcoronation1902,
             USVetransDayAdHoc,
             GreatBlizzardOf1888,
+            NYSEnewBuildingOpen1903,
             FridayAfterThanksgivingAdHoc,
-            WashingtonInaugurationCentennialCelebration,
-            ColumbianCelebration,
+                        
         ))
 
     @property
@@ -252,7 +270,7 @@ class NYSEExchangeCalendar(MarketCalendar):
                 '1999-12-31',
                 '2003-12-26',
                 '2013-07-03'
-            ] + 
-             Pre1952May24Saturdays.strftime("%Y-%m-%d").tolist()
+            ] 
+            +  Pre1952May24SatEarlyClose.strftime("%Y-%m-%d").tolist()
              )
         ]
