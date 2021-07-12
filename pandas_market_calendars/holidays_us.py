@@ -1,9 +1,33 @@
 from dateutil.relativedelta import (MO, TH, TU)
 from pandas import (DateOffset, Timestamp, date_range)
+from datetime import datetime, timedelta
 from pandas.tseries.holiday import (Holiday, nearest_workday, sunday_to_monday, Easter)
-from pandas.tseries.offsets import Day
+from pandas.tseries.offsets import Day, CustomBusinessDay
 
 from pandas_market_calendars.market_calendar import (FRIDAY, SATURDAY, SUNDAY, MONDAY, THURSDAY, TUESDAY, WEDNESDAY)
+
+#Monday = 0, Sunday=6
+def previous_saturday(dt):
+    """
+    If holiday falls on Sunday, Monday or Tuesday, Saturday there is no trading
+    """
+    if dt.weekday() == 0:
+        return dt - timedelta(2)
+    elif dt.weekday() == 1:
+        return dt - timedelta(3)
+    elif dt.weekday() == 6:
+        return dt - timedelta(1)
+    return dt
+
+def next_saturday(dt):
+    """
+    If holiday falls on Thursday or Friday, the next Saturday there is no trading
+    """
+    if dt.weekday() == 3:
+        return dt + timedelta(2)
+    elif dt.weekday() == 4:
+        return dt + timedelta(1)
+    return dt
 
 
 #############################################################################
@@ -40,6 +64,11 @@ USNewYearsDay = Holiday(
     # When Jan 1 is a Saturday (as in 2005 and 2011), no holiday is observed.
     observance=sunday_to_monday
 )
+# Not every Saturday before/after Christmas is a holiday
+SatBeforeNewYearsAdhoc = [
+    Timestamp('1916-12-30', tz='UTC')
+]
+
 USMartinLutherKingJrAfter1998 = Holiday(
     'Dr. Martin Luther King Jr. Day',
     month=1,
@@ -99,16 +128,15 @@ USLincolnsBirthDayBefore1954 = Holiday(
     end_date=Timestamp('1953-12-31'),
     observance=sunday_to_monday,
 )
-SatBeforeLincolnsBirthday = Holiday(
-    'Saturdays Before Linconlns Birthday',
-    month=2,
-    day=11,
-    days_of_week=(SATURDAY,),
-    start_date=Timestamp("1885-01-01"),
-    end_date=Timestamp("1952-05-25")
-)
+# Not all Saturdays before/after Lincoln's birthday were holidays
+SatBeforeAfterLincolnsBirthdayAdhoc = [
+    Timestamp('1899-02-11', tz='UTC'),
+    Timestamp('1909-02-13', tz='UTC')
+    ]
 
+# 1968-02-12. Offices were open but trading floor was closed
 LincolnsBirthDayAdhoc = [Timestamp('1968-02-12', tz='UTC')]
+
 GrantsBirthDayAdhoc   = [Timestamp('1897-04-27', tz='UTC')]
 
 ############################################################
@@ -154,7 +182,7 @@ SatAfterGoodFridayAdhoc = [
     Timestamp("1920-04-03"),
     Timestamp("1929-03-30"),
     Timestamp("1930-04-19")
-    ]
+]
 
 
 ##################################################
@@ -186,18 +214,28 @@ USMemorialDay1964to1969 = Holiday(
     end_date=Timestamp('1969-12-31'),
     observance=nearest_workday,
 )
-SatAfterDecorationDay = Holiday(
-    'Saturdays After Decoraton Day 1902 Thru 1952',
-    month=5,
-    day=31,
-    days_of_week=(SATURDAY,),
-    start_date=Timestamp("1902-01-01"),
-    end_date=Timestamp("1952-05-25")
-)
+
+# Not all Saturdays before/after Decoration Day were observed
+SatBeforeDecorationAdhoc = [
+    Timestamp('1904-05-28', tz='UTC'),
+    Timestamp('1909-05-29', tz='UTC'),    
+    Timestamp('1910-05-28', tz='UTC'), 
+    Timestamp('1921-05-28', tz='UTC'), 
+    Timestamp('1926-05-29', tz='UTC'), 
+    Timestamp('1937-05-29', tz='UTC'), 
+]
+SatAfterDecorationAdhoc = [
+    Timestamp('1902-05-31', tz='UTC'),
+    Timestamp('1913-05-31', tz='UTC'),  
+    Timestamp('1919-05-29', tz='UTC'), 
+    Timestamp('1924-05-29', tz='UTC'), 
+    Timestamp('1930-05-29', tz='UTC'), 
+]
+
 DayBeforeDecorationAdhoc = [
     Timestamp('1899-05-29', tz='UTC'),
-    Timestamp('1904-05-28', tz='UTC'),
-    Timestamp('1961-05-29', tz='UTC')]
+    Timestamp('1961-05-29', tz='UTC')
+]
 
 
 #######################################
@@ -242,22 +280,7 @@ FridayAfterIndependenceDayPre2013 = Holiday(
     observance=july_5th_holiday_observance,
     start_date=Timestamp("1885-01-01"),
 )
-SatBeforeIndependenceDay = Holiday(
-    'Saturdays Before Independence Day Thru 1952',
-    month=7,
-    day=2,
-    days_of_week=(SATURDAY,),
-    start_date=Timestamp("1885-01-01"),
-    end_date=Timestamp("1952-05-25")
-)
-SatAfterIndependenceDay = Holiday(
-    'Saturdays After Independence Day Thru 1952',
-    month=7,
-    day=5,
-    days_of_week=(SATURDAY,),
-    start_date=Timestamp("1885-01-01"),
-    end_date=Timestamp("1952-05-25")
-)
+
 WednesdayBeforeIndependenceDayPost2013 = Holiday(
     # When July 4th is a Thursday, the next day is a half day prior to 2013.
     # Since 2013 the early close is on Wednesday and Friday is a full day
@@ -267,6 +290,33 @@ WednesdayBeforeIndependenceDayPost2013 = Holiday(
     days_of_week=(WEDNESDAY,),
     start_date=Timestamp("2013-01-01"),
 )
+MonBeforeIndependenceDayAdhoc = [
+    Timestamp('1899-07-03', tz='UTC'),
+    ]
+# Not all Saturdays before/after Independence day are observed
+SatBeforeIndependenceDayAdhoc = [
+    Timestamp('1887-07-02', tz='UTC'),
+    Timestamp('1892-07-02', tz='UTC'),
+    Timestamp('1898-07-02', tz='UTC'),
+    Timestamp('1904-07-02', tz='UTC'),
+    Timestamp('1909-07-03', tz='UTC'),
+    Timestamp('1910-07-02', tz='UTC'),
+    Timestamp('1920-07-03', tz='UTC'),
+    Timestamp('1921-07-02', tz='UTC'),
+    Timestamp('1926-07-03', tz='UTC'),
+    Timestamp('1932-07-02', tz='UTC'),
+    Timestamp('1937-07-03', tz='UTC'),    
+    ]
+
+SatAfterIndependenceDayAdhoc = [
+    Timestamp('1890-07-05', tz='UTC'),
+    Timestamp('1902-07-05', tz='UTC'),
+    Timestamp('1913-07-05', tz='UTC'),
+    Timestamp('1919-07-05', tz='UTC'),
+    Timestamp('1930-07-05', tz='UTC'),
+    Timestamp('1902-07-05', tz='UTC'),
+    ]
+
 DaysAfterIndependenceDayAdhoc = [
     Timestamp('1901-07-05', tz='UTC'),
     Timestamp('1901-07-06', tz='UTC'),
@@ -392,22 +442,46 @@ ChristmasEveInOrAfter1993 = Holiday(
     # When Christmas is a Saturday, the 24th is a full holiday.
     days_of_week=(MONDAY, TUESDAY, WEDNESDAY, THURSDAY),
 )
-# http://www.tradingtheodds.com/nyse-full-day-closings/
-ChristmasEvesAdhoc = [
+# Not every Saturday before/after Christmas is a holiday
+SatBeforeChristmasAdhoc = [
     Timestamp('1887-12-24', tz='UTC'),
     Timestamp('1898-12-24', tz='UTC'),
-    Timestamp('1900-12-24', tz='UTC'),
     Timestamp('1904-12-24', tz='UTC'),
-    Timestamp('1945-12-24', tz='UTC'),
-    Timestamp('1956-12-24', tz='UTC')
+    Timestamp('1910-12-24', tz='UTC'),
+    Timestamp('1911-12-23', tz='UTC'),
+    Timestamp('1922-12-23', tz='UTC'),
+    Timestamp('1949-12-24', tz='UTC'),
+    Timestamp('1950-12-23', tz='UTC'),
 ]
-
-DayAfterChristmasAdhoc = [
+SatAfterChristmasAdhoc = [
     Timestamp('1891-12-26', tz='UTC'),
     Timestamp('1896-12-26', tz='UTC'),
     Timestamp('1903-12-26', tz='UTC'),
+    Timestamp('1908-12-26', tz='UTC'),
+    Timestamp('1925-12-26', tz='UTC'),
+    Timestamp('1931-12-26', tz='UTC'),
+    Timestamp('1936-12-26', tz='UTC'),
+    ]
+
+ChristmasEvesAdhoc = [
+    Timestamp('1900-12-24', tz='UTC'),
+    Timestamp('1945-12-24', tz='UTC'),
+    Timestamp('1954-12-24', tz='UTC'),
+    Timestamp('1956-12-24', tz='UTC'),
+    Timestamp('1965-12-24', tz='UTC')
+]
+
+DayAfterChristmasAdhoc = [
     Timestamp('1958-12-26', tz='UTC'),
 ]
+
+ChristmasEveEarlyCloseAdhoc = [
+    Timestamp('1951-12-24', tz='UTC'),
+    Timestamp('1974-12-24', tz='UTC'),
+    Timestamp('1975-12-24', tz='UTC'),
+    Timestamp('1990-12-24', tz='UTC'),
+]
+
 
 #####################################
 # Non-recurring or retired holidays
@@ -418,6 +492,11 @@ ColumbianCelebration1892 = [
     Timestamp("1892-10-21", tz='UTC'),
     Timestamp("1892-10-22", tz='UTC'),
     Timestamp("1893-04-27", tz='UTC'),
+]
+
+GreatBlizzardOf1888 = [
+    Timestamp('1888-03-12', tz='UTC'),
+    Timestamp('1888-03-13', tz='UTC'),
 ]
 
 WashingtonInaugurationCentennialCelebration1889 = [
@@ -437,6 +516,45 @@ AdmiralDeweyCelebration1899 = [Timestamp('1899-09-29', tz='UTC'),Timestamp('1899
 KingEdwardVIIcoronation1902 = [Timestamp('1902-08-09', tz='UTC')]
 
 NYSEnewBuildingOpen1903 = [Timestamp('1903-04-22', tz='UTC')]
+
+FuneralOfGroverCleveland1908 = Holiday(
+    'Funeral of Grover Cleveland 1908 1pm Close',
+    month=6,
+    day=26,
+    start_date=Timestamp('1908-06-26'),
+    end_date=Timestamp('1908-06-26'),
+)
+
+# 300th anniversary of Hudson discovering the Hudson river and
+# 100th anniversary of Fulton inventing the paddle steamer
+HudsonFultonCelebration1909 = [Timestamp('1909-09-25', tz='UTC')]
+
+# Reopened for trading bonds (with restrictions) Nov 27, 1914
+# Reopened for trading stocks (with restrictions) Dec 12, 1914
+# Restrictions remained in place until April 1, 1915
+OnsetOfWWI1914 =  date_range('1914-07-31', 
+                             '1914-12-11', 
+                             freq=CustomBusinessDay(weekmask = 'Mon Tue Wed Thu Fri Sat'),
+                             tz='UTC'
+)
+
+DraftRegistrationDay1917 = [Timestamp('1917-06-05', tz='UTC')]
+
+ParadeOfNationalGuardEarlyClose1917 = Holiday(
+    'Parade of National Guard 12pm Early Close Aug 29, 1917',
+    month=8,
+    day=29,
+    start_date=Timestamp('1917-08-29'),
+    end_date=Timestamp('1917-08-29'),
+)
+
+LibertyDayEarlyClose1917 = Holiday(
+    'Liberty Day 12pm Early Close Oct 24, 1917',
+    month=10,
+    day=24,
+    start_date=Timestamp('1917-10-24'),
+    end_date=Timestamp('1917-10-24'),
+)
 
 # http://www.tradingtheodds.com/nyse-full-day-closings/
 USVeteransDay1934to1953 = Holiday(
@@ -460,7 +578,9 @@ USColumbusDayBefore1954 = Holiday(
     end_date=Timestamp('1953-12-31'),
     observance=sunday_to_monday,
 )
-
+SatAfterColumbusDayAdHoc = [
+    Timestamp("1917-10-13", tz="UTC"),
+]
 USBlackFridayBefore1993 = Holiday(
     'Black Friday',
     month=11,
@@ -537,6 +657,8 @@ PaperworkCrisis68 = [Timestamp('1968-06-12', tz='UTC'),
 # http://www.tradingtheodds.com/nyse-full-day-closings/
 WeatherSnowClosing = [Timestamp('1969-02-10', tz='UTC')]
 
+WeatherHeatClosing = [Timestamp('1917-08-04', tz='UTC')]
+
 # http://www.tradingtheodds.com/nyse-full-day-closings/
 FirstLunarLandingClosing = [Timestamp('1969-07-21', tz='UTC')]
 
@@ -565,18 +687,15 @@ HurricaneSandyClosings = date_range(
     tz='UTC'
 )
 
-GreatBlizzardOf1888 = [
-    Timestamp('1888-03-12', tz='UTC'),
-    Timestamp('1888-03-13', tz='UTC'),
-]
 
 
 # National Days of Mourning
 # - President Ulysses S Grant Funeral - August 8, 1885
-# - Vice President Garret A. Hobart - November 25, 1899
+# - Vice-President Garret A. Hobart - November 25, 1899
 # - Queen Victoria of England Funderal - February 2, 1901
 # - President William McKinley Death - September 14, 1901
 # - President William McKinley Funderal - September 19, 1901
+# - Vice-President James S. Sherman - November 2, 1912
 # - President John F. Kennedy - November 25, 1963
 # - Martin Luther King - April 9, 1968
 # - President Dwight D. Eisenhower - March 31, 1969
@@ -592,6 +711,7 @@ USNationalDaysofMourning = [
     Timestamp('1901-02-02', tz='UTC'), 
     Timestamp('1901-09-14', tz='UTC'),
     Timestamp('1901-09-19', tz='UTC'),
+    Timestamp('1912-11-02', tz='UTC'),
     Timestamp('1963-11-25', tz='UTC'),
     Timestamp('1968-04-09', tz='UTC'),
     Timestamp('1969-03-31', tz='UTC'),
