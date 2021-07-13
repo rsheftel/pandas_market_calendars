@@ -49,7 +49,10 @@ Pre1952May24SatEarlyClose = date_range('1885-01-01',
 # Adhoc Saturday Closes
 Pre1952MaySatClosesAdhoc = [
     Timestamp('1901-04-27', tz='UTC'), # Moved to temporary quarters in Produce Exchange
-    Timestamp('1901-05-11', tz='UTC')  # Enlarged Produce Exchange
+    Timestamp('1901-05-11', tz='UTC'),  # Enlarged Produce Exchange
+    Timestamp('1944-08-19', tz='UTC'),
+    Timestamp('1944-08-26', tz='UTC'),
+    Timestamp('1944-09-02', tz='UTC'),
     ]
 
 ####################################################
@@ -112,7 +115,8 @@ SatBeforeWashingtonsBirthdayAdhoc = [
 SatAfterWashingtonsBirthdayAdhoc = [
     Timestamp('1901-02-23', tz='UTC'),
     Timestamp('1907-02-23', tz='UTC'),
-    Timestamp('1929-02-23', tz='UTC')
+    Timestamp('1929-02-23', tz='UTC'),
+    Timestamp('1946-02-23', tz='UTC')
 ]
 
 USLincolnsBirthDayBefore1954 = Holiday(
@@ -504,6 +508,7 @@ USColumbusDayBefore1954 = Holiday(
 )
 SatAfterColumbusDayAdHoc = [
     Timestamp("1917-10-13", tz="UTC"),
+    Timestamp("1945-10-13", tz="UTC"),
 ]
 USBlackFridayBefore1993 = Holiday(
     'Black Friday',
@@ -631,6 +636,22 @@ BacklogRelief1919 = [
 
 GeneralPershingReturn1919 = [Timestamp('1919-09-10', tz='UTC')]
 
+TrafficBlockLateOpen1919 = Holiday(
+    'Traffic Block 10:30am late open Dec. 30, 1919',
+    month=12,
+    day=30,
+    start_date=Timestamp('1919-12-30'),
+    end_date=Timestamp('1919-12-30'),
+)
+
+TrafficBlockLateOpen1920 = Holiday(
+    'Traffic Block 10:30am late open Feb. 6, 1920',
+    month=2,
+    day=6,
+    start_date=Timestamp('1920-02-06'),
+    end_date=Timestamp('1920-02-06'),
+)
+
 OfficeLocationChange1920 = [Timestamp('1920-05-01', tz='UTC')]
 
 WallStreetExplosionEarlyClose1920 = Holiday(
@@ -641,6 +662,15 @@ WallStreetExplosionEarlyClose1920 = Holiday(
     end_date=Timestamp('1920-09-16'),
 )
 
+# 1pm open
+AunnciatorBoardFireLateOpen1921 = Holiday(
+    'Annunciator Board Fire 1pm late open Aug 8, 1921',
+    month=8,
+    day=8,
+    start_date=Timestamp('1921-08-08'),
+    end_date=Timestamp('1921-08-08'),
+)
+
 WoodrowWilsonFuneralEarlyClose1924 = Holiday(
     'Former President Woodrow Wilson Funeral 12:30 Early Close Feb 6, 1924',
     month=2,
@@ -649,9 +679,13 @@ WoodrowWilsonFuneralEarlyClose1924 = Holiday(
     end_date=Timestamp('1924-02-06'),
 )
 
-EclipseOfSunLateOpen1925 = [
-    Timestamp('1925-01-24', tz='UTC'),
-]
+EclipseOfSunLateOpen1925 = Holiday(
+    'Eclipse of Sun 10:45am late open Jan 25, 1925',
+    month=1,
+    day=24,
+    start_date=Timestamp('1925-01-24'),
+    end_date=Timestamp('1925-01-24'),
+)
 
 CromwellFuneralEarlyClose1925 = Holiday(
     'Former NYSE President Seymour L. Cromwell Funeral 2:30pm Early Close Sept 18, 1925',
@@ -713,6 +747,145 @@ BacklogReliefLateOpen1929 = [
     Timestamp('1929-10-31', tz='UTC'),
 ]
 
+TaftFuneralEarlyClose1930 = Holiday(
+    'Former President William Howard Taft Funeral 12:30pm Early Close Mar 11, 1930',
+    month=3,
+    day=11,
+    start_date=Timestamp('1930-03-11'),
+    end_date=Timestamp('1930-03-11'),
+)
+
+BankHolidays1933 = [
+    Timestamp('1933-03-04', tz='UTC'),
+    Timestamp('1933-03-06', tz='UTC'),
+    Timestamp('1933-03-07', tz='UTC'),
+    Timestamp('1933-03-08', tz='UTC'),
+    Timestamp('1933-03-09', tz='UTC'),
+    Timestamp('1933-03-10', tz='UTC'),
+    Timestamp('1933-03-11', tz='UTC'),
+    Timestamp('1933-03-12', tz='UTC'),
+    Timestamp('1933-03-13', tz='UTC'),
+    Timestamp('1933-03-14', tz='UTC'),
+]
+
+GasFumesOnTradingFloorEarlyClose1933 = Holiday(
+    'Gas Fumes on Trading Floor 12:30pm Early Close Aug 4, 1933',
+    month=8,
+    day=4,
+    start_date=Timestamp('1933-08-04'),
+    end_date=Timestamp('1933-08-04'),
+)
+
+
+HeavyVolume1933 = [
+    Timestamp('1933-07-29', tz='UTC'),
+    Timestamp('1933-08-05', tz='UTC'),
+    Timestamp('1933-08-12', tz='UTC'),
+    Timestamp('1933-08-19', tz='UTC'),
+    Timestamp('1933-08-26', tz='UTC'),
+    Timestamp('1933-09-02', tz='UTC'),
+]
+
+
+HeavyVolume12pmLateOpen1933 = [
+    Timestamp('1933-07-24', tz='UTC'),
+    Timestamp('1933-07-25', tz='UTC'),
+]
+
+HeavyVolume11amLateOpen1933 = [
+    Timestamp('1933-07-26', tz='UTC'),
+    Timestamp('1933-07-27', tz='UTC'),
+    Timestamp('1933-07-28', tz='UTC'),
+]
+
+HeavyVolume2pmEarlyClose1933 = [
+    Timestamp('1933-07-26', tz='UTC'),
+    Timestamp('1933-07-27', tz='UTC'),
+    Timestamp('1933-07-28', tz='UTC'),
+]
+
+NRAdemonstrationEarlyClose1933 = Holiday(
+    'NRA Demonstration 12:00 noon Early Close Sept 13, 1933',
+    month=9,
+    day=13,
+    start_date=Timestamp('1933-09-13'),
+    end_date=Timestamp('1933-09-13'),
+)
+
+Snow11amLateOpen1934 = Holiday(
+    'Severe Snowstorm 11:00am late open Feb 20, 1934',
+    month=2,
+    day=20,
+    start_date=Timestamp('1934-02-20'),
+    end_date=Timestamp('1934-02-20'),
+)
+
+# Starting in 1945, no Saturday trading over the summer
+SatClosings1945 = date_range('1945-07-07', 
+                             '1945-09-01', 
+                             freq='W-SAT',
+                             tz='UTC'
+)
+
+VJday1945 = [
+    Timestamp('1945-08-15', tz='UTC'),
+    Timestamp('1945-08-16', tz='UTC'),
+]
+
+NavyDay1945 = [
+    Timestamp('1945-10-27', tz='UTC'),
+]
+
+RailroadStrike1946 = [
+    Timestamp('1946-05-25', tz='UTC'),
+]
+
+SatClosings1946 = date_range('1946-06-01', 
+                             '1946-09-28', 
+                             freq='W-SAT',
+                             tz='UTC'
+)
+
+SatClosings1947 = date_range('1947-05-31', 
+                             '1947-09-27', 
+                             freq='W-SAT',
+                             tz='UTC'
+)
+
+SatClosings1948 = date_range('1948-05-29', 
+                             '1948-09-25', 
+                             freq='W-SAT',
+                             tz='UTC'
+)
+
+SevereWeather1948 = [
+    Timestamp('1948-01-03', tz='UTC'),
+]
+
+SatClosings1949 = date_range('1949-05-28', 
+                             '1949-09-24', 
+                             freq='W-SAT',
+                             tz='UTC'
+)
+
+SatClosings1950 = date_range('1950-06-03', 
+                             '1950-09-30', 
+                             freq='W-SAT',
+                             tz='UTC'
+)
+
+SatClosings1951 = date_range('1951-06-02', 
+                             '1951-09-29', 
+                             freq='W-SAT',
+                             tz='UTC'
+)
+
+SatClosings1951 = date_range('1951-06-02', 
+                             '1951-09-29', 
+                             freq='W-SAT',
+                             tz='UTC'
+)
+
 BattleOfGettysburg = Holiday(
     # All of the floor traders in Chicago were sent to PA
     'Markets were closed during the battle of Gettysburg',
@@ -721,23 +894,6 @@ BattleOfGettysburg = Holiday(
     start_date=Timestamp("1863-07-01"),
     end_date=Timestamp("1863-07-03")
 )
-
-
-# https://en.wikipedia.org/wiki/March_1933#March_6,_1933_(Monday)
-March33BankHoliday = [
-    Timestamp("1933-03-06", tz="UTC"),
-    Timestamp("1933-03-07", tz="UTC"),
-    Timestamp("1933-03-08", tz="UTC"),
-    Timestamp("1933-03-09", tz="UTC"),
-    Timestamp("1933-03-10", tz="UTC"),
-    Timestamp("1933-03-13", tz="UTC"),
-    Timestamp("1933-03-14", tz="UTC"),
-]
-
-# http://www.tradingtheodds.com/nyse-full-day-closings/
-August45VictoryOverJapan = date_range('1945-08-15', '1945-08-16', tz='UTC')
-
-
 
 # http://www.tradingtheodds.com/nyse-full-day-closings/
 PaperworkCrisis68 = [Timestamp('1968-06-12', tz='UTC'),
@@ -818,6 +974,8 @@ HurricaneSandyClosings = date_range(
 # - Vice-President James S. Sherman - November 2, 1912
 # - President Warren G. Harding Death - August 3, 1923
 # - President Warren G. Harding Funeral - August 10, 1923
+# - President Calvin Coolidge Funeral - January 7, 1933
+# - President Franklin D. Roosevelt - April 14, 1945
 # - President John F. Kennedy - November 25, 1963
 # - Martin Luther King - April 9, 1968
 # - President Dwight D. Eisenhower - March 31, 1969
@@ -836,6 +994,8 @@ USNationalDaysofMourning = [
     Timestamp('1912-11-02', tz='UTC'),
     Timestamp('1923-08-03', tz='UTC'),
     Timestamp('1923-08-10', tz='UTC'),
+    Timestamp('1933-01-07', tz='UTC'),
+    Timestamp('1945-04-14', tz='UTC'),
     Timestamp('1963-11-25', tz='UTC'),
     Timestamp('1968-04-09', tz='UTC'),
     Timestamp('1969-03-31', tz='UTC'),

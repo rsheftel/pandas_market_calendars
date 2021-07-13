@@ -61,18 +61,28 @@ from pandas_market_calendars.holidays_us import (
     FalseArmisticeReportEarlyClose1918, ArmisticeSigned1918,
     RooseveltFuneralEarlyClose1919, Homecoming27Division1919, ParadeOf77thDivision1919,
     BacklogRelief1919, GeneralPershingReturn1919,
+    TrafficBlockLateOpen1919, TrafficBlockLateOpen1920,
     OfficeLocationChange1920, WallStreetExplosionEarlyClose1920,
     WoodrowWilsonFuneralEarlyClose1924, 
+    AunnciatorBoardFireLateOpen1921,
     EclipseOfSunLateOpen1925, CromwellFuneralEarlyClose1925,
     LindberghParade1927, BacklogRelief1928, BacklogReliefEarlyClose1928,
     BacklogRelief1929, BacklogReliefEarlyClose1929, BacklogReliefLateOpen1929,
-    
+    TaftFuneralEarlyClose1930,
+    BankHolidays1933, 
+    HeavyVolume1933, HeavyVolume12pmLateOpen1933, HeavyVolume11amLateOpen1933, 
+    HeavyVolume2pmEarlyClose1933, GasFumesOnTradingFloorEarlyClose1933,
+    NRAdemonstrationEarlyClose1933,Snow11amLateOpen1934,
+    SatClosings1945, VJday1945, NavyDay1945,
+    RailroadStrike1946, SatClosings1946,
+    SatClosings1947, SatClosings1948, SevereWeather1948,
+    SatClosings1949, SatClosings1950, SatClosings1951,
     
     USVetransDayAdHoc, SatAfterColumbusDayAdHoc,
-    August45VictoryOverJapan, 
+     
     FirstLunarLandingClosing,
     
-    March33BankHoliday, PaperworkCrisis68, September11Closings,
+    PaperworkCrisis68, September11Closings,
     WeatherSnowClosing, WeatherHeatClosing, WeatherNoHeatClosing,
     GreatBlizzardOf1888, HurricaneGloriaClosings,
     HurricaneSandyClosings, NewYorkCityBlackout77 )
@@ -272,11 +282,22 @@ class NYSEExchangeCalendar(MarketCalendar):
             LindberghParade1927,
             BacklogRelief1928,
             BacklogRelief1929,
+            BankHolidays1933,
+            HeavyVolume1933,
+            SatClosings1945,
+            VJday1945,
+            NavyDay1945,
+            RailroadStrike1946,
+            SatClosings1946,
+            SatClosings1947,
+            SatClosings1948,
+            SevereWeather1948,
+            SatClosings1949,
+            SatClosings1950,
+            SatClosings1951,
             
             USVetransDayAdHoc,
-            SatAfterColumbusDayAdHoc,
-            March33BankHoliday,
-            August45VictoryOverJapan,
+            SatAfterColumbusDayAdHoc,            
             LincolnsBirthDayAdhoc,
             GrantsBirthDayAdhoc,
             PaperworkCrisis68,
@@ -309,10 +330,13 @@ class NYSEExchangeCalendar(MarketCalendar):
                 LibertyDayEarlyClose1917,
                 LibertyDayEarlyClose1918,
                 WallStreetExplosionEarlyClose1920,
+                NRAdemonstrationEarlyClose1933,
             ])),
             (time(hour=12, minute=30), AbstractHolidayCalendar(rules=[
                 RooseveltFuneralEarlyClose1919,
                 WoodrowWilsonFuneralEarlyClose1924,
+                TaftFuneralEarlyClose1930,
+                GasFumesOnTradingFloorEarlyClose1933,
             ])),
             (time(13), AbstractHolidayCalendar(rules=[
                 FuneralOfGroverCleveland1908,
@@ -327,7 +351,7 @@ class NYSEExchangeCalendar(MarketCalendar):
             ])),
  
         ]
-
+#
     @property
     def special_closes_adhoc(self):
         return [
@@ -342,26 +366,36 @@ class NYSEExchangeCalendar(MarketCalendar):
             (time(14), [t.strftime("%Y-%m-%d") for t in ChristmasEveEarlyCloseAdhoc]
              + BacklogReliefEarlyClose1928.strftime("%Y-%m-%d").tolist()
              + [t.strftime("%Y-%m-%d") for t in BacklogReliefEarlyClose1929]
+             + [t.strftime("%Y-%m-%d") for t in HeavyVolume2pmEarlyClose1933]
             ),
         ]
 
-
-#
             
-#    @property
-#    def special_opens(self):
-#        """
-#        A list of special open times and corresponding AbstractHolidayCalendar.
-#
-#        :return: List of (time, AbstractHolidayCalendar) tuples
-#        """
-#        return []
+    @property
+    def special_opens(self):
+        return [
+            (time(hour=10, minute=30), AbstractHolidayCalendar(rules=[
+                TrafficBlockLateOpen1919,
+                TrafficBlockLateOpen1920,
+            ])),
+            (time(hour=10, minute=45), AbstractHolidayCalendar(rules=[
+                EclipseOfSunLateOpen1925,
+            ])),
+            (time(11), AbstractHolidayCalendar(rules=[
+                Snow11amLateOpen1934,
+            ])),
+            (time(13), AbstractHolidayCalendar(rules=[
+                AunnciatorBoardFireLateOpen1921,
+            ])),
+            ]
+
 #
     @property
     def special_opens_adhoc(self):
-        return [            
-            (time(hour=10, minute=30), [t.strftime("%Y-%m-%d") for t in EclipseOfSunLateOpen1925]
-            ),
+        return [                       
+            (time(11), [t.strftime("%Y-%m-%d") for t in HeavyVolume11amLateOpen1933]                     
+            ),     
             (time(12), [t.strftime("%Y-%m-%d") for t in BacklogReliefLateOpen1929]
-            ),
+                     + [t.strftime("%Y-%m-%d") for t in HeavyVolume12pmLateOpen1933]
+            ),            
         ]
