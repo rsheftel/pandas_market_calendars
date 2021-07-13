@@ -641,6 +641,78 @@ WallStreetExplosionEarlyClose1920 = Holiday(
     end_date=Timestamp('1920-09-16'),
 )
 
+WoodrowWilsonFuneralEarlyClose1924 = Holiday(
+    'Former President Woodrow Wilson Funeral 12:30 Early Close Feb 6, 1924',
+    month=2,
+    day=6,
+    start_date=Timestamp('1924-02-06'),
+    end_date=Timestamp('1924-02-06'),
+)
+
+EclipseOfSunLateOpen1925 = [
+    Timestamp('1925-01-24', tz='UTC'),
+]
+
+CromwellFuneralEarlyClose1925 = Holiday(
+    'Former NYSE President Seymour L. Cromwell Funeral 2:30pm Early Close Sept 18, 1925',
+    month=9,
+    day=18,
+    start_date=Timestamp('1925-09-18'),
+    end_date=Timestamp('1925-09-18'),
+)
+
+LindberghParade1927 = [Timestamp('1927-06-13', tz='UTC')]
+
+BacklogRelief1928 = [
+    Timestamp('1928-04-07', tz='UTC'),
+    Timestamp('1928-04-21', tz='UTC'),
+    Timestamp('1928-05-05', tz='UTC'),
+    Timestamp('1928-05-12', tz='UTC'),
+    Timestamp('1928-05-19', tz='UTC'),
+    Timestamp('1928-05-26', tz='UTC'),
+    Timestamp('1928-11-24', tz='UTC'),
+]
+
+# 2pm close
+BacklogReliefEarlyClose1928 =  date_range('1928-05-21', 
+                                          '1928-05-25', 
+                                          freq=CustomBusinessDay(weekmask = 'Mon Tue Wed Thu Fri Sat'),
+                                          tz='UTC'
+)
+
+BacklogRelief1929 = [
+    Timestamp('1929-02-09', tz='UTC'),
+    Timestamp('1929-11-01', tz='UTC'),
+    Timestamp('1929-11-02', tz='UTC'),
+    Timestamp('1929-11-09', tz='UTC'),
+    Timestamp('1929-11-16', tz='UTC'),
+    Timestamp('1929-11-23', tz='UTC'),
+    Timestamp('1929-11-29', tz='UTC'),
+    Timestamp('1929-11-30', tz='UTC'),
+]
+
+# 1pm close
+BacklogReliefEarlyClose1929 = [
+    Timestamp('1929-11-06', tz='UTC'),
+    Timestamp('1929-11-07', tz='UTC'),
+    Timestamp('1929-11-08', tz='UTC'),
+    Timestamp('1929-11-11', tz='UTC'),
+    Timestamp('1929-11-12', tz='UTC'),
+    Timestamp('1929-11-13', tz='UTC'),
+    Timestamp('1929-11-14', tz='UTC'),
+    Timestamp('1929-11-15', tz='UTC'),
+    Timestamp('1929-11-18', tz='UTC'),
+    Timestamp('1929-11-19', tz='UTC'),
+    Timestamp('1929-11-20', tz='UTC'),
+    Timestamp('1929-11-21', tz='UTC'),
+    Timestamp('1929-11-22', tz='UTC')
+]
+
+# 12 noon open
+BacklogReliefLateOpen1929 = [
+    Timestamp('1929-10-31', tz='UTC'),
+]
+
 BattleOfGettysburg = Holiday(
     # All of the floor traders in Chicago were sent to PA
     'Markets were closed during the battle of Gettysburg',
@@ -650,10 +722,6 @@ BattleOfGettysburg = Holiday(
     end_date=Timestamp("1863-07-03")
 )
 
-# http://www.tradingtheodds.com/nyse-full-day-closings/
-
-November29BacklogRelief = [Timestamp('1929-11-01', tz='UTC'),
-                           Timestamp('1929-11-29', tz='UTC')]
 
 # https://en.wikipedia.org/wiki/March_1933#March_6,_1933_(Monday)
 March33BankHoliday = [

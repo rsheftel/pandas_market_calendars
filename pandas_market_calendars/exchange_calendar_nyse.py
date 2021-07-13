@@ -62,12 +62,17 @@ from pandas_market_calendars.holidays_us import (
     RooseveltFuneralEarlyClose1919, Homecoming27Division1919, ParadeOf77thDivision1919,
     BacklogRelief1919, GeneralPershingReturn1919,
     OfficeLocationChange1920, WallStreetExplosionEarlyClose1920,
+    WoodrowWilsonFuneralEarlyClose1924, 
+    EclipseOfSunLateOpen1925, CromwellFuneralEarlyClose1925,
+    LindberghParade1927, BacklogRelief1928, BacklogReliefEarlyClose1928,
+    BacklogRelief1929, BacklogReliefEarlyClose1929, BacklogReliefLateOpen1929,
+    
     
     USVetransDayAdHoc, SatAfterColumbusDayAdHoc,
     August45VictoryOverJapan, 
     FirstLunarLandingClosing,
     
-    March33BankHoliday, November29BacklogRelief, PaperworkCrisis68, September11Closings,
+    March33BankHoliday, PaperworkCrisis68, September11Closings,
     WeatherSnowClosing, WeatherHeatClosing, WeatherNoHeatClosing,
     GreatBlizzardOf1888, HurricaneGloriaClosings,
     HurricaneSandyClosings, NewYorkCityBlackout77 )
@@ -170,6 +175,7 @@ class NYSEExchangeCalendar(MarketCalendar):
     """
     aliases = ['NYSE', 'stock', 'NASDAQ', 'BATS']
     regular_early_close = time(13)
+    regular_late_open = time(10)
 
     @property
     def name(self):
@@ -263,10 +269,12 @@ class NYSEExchangeCalendar(MarketCalendar):
             BacklogRelief1919,
             GeneralPershingReturn1919,
             OfficeLocationChange1920,
+            LindberghParade1927,
+            BacklogRelief1928,
+            BacklogRelief1929,
             
             USVetransDayAdHoc,
             SatAfterColumbusDayAdHoc,
-             November29BacklogRelief,
             March33BankHoliday,
             August45VictoryOverJapan,
             LincolnsBirthDayAdhoc,
@@ -304,6 +312,7 @@ class NYSEExchangeCalendar(MarketCalendar):
             ])),
             (time(hour=12, minute=30), AbstractHolidayCalendar(rules=[
                 RooseveltFuneralEarlyClose1919,
+                WoodrowWilsonFuneralEarlyClose1924,
             ])),
             (time(13), AbstractHolidayCalendar(rules=[
                 FuneralOfGroverCleveland1908,
@@ -314,6 +323,7 @@ class NYSEExchangeCalendar(MarketCalendar):
             ])),
             (time(hour=14, minute=30), AbstractHolidayCalendar(rules=[
                 FalseArmisticeReportEarlyClose1918,
+                CromwellFuneralEarlyClose1925,
             ])),
  
         ]
@@ -326,9 +336,32 @@ class NYSEExchangeCalendar(MarketCalendar):
                 '1999-12-31',
                 '2003-12-26',
                 '2013-07-03'
-            ] 
-            +  Pre1952May24SatEarlyClose.strftime("%Y-%m-%d").tolist()
-            + [t.strftime("%Y-%m-%d") for t in ChristmasEveEarlyCloseAdhoc]
-             )
+            ]),
+            (time(12), Pre1952May24SatEarlyClose.strftime("%Y-%m-%d").tolist()
+             ),
+            (time(14), [t.strftime("%Y-%m-%d") for t in ChristmasEveEarlyCloseAdhoc]
+             + BacklogReliefEarlyClose1928.strftime("%Y-%m-%d").tolist()
+             + [t.strftime("%Y-%m-%d") for t in BacklogReliefEarlyClose1929]
+            ),
         ]
+
+
+#
             
+#    @property
+#    def special_opens(self):
+#        """
+#        A list of special open times and corresponding AbstractHolidayCalendar.
+#
+#        :return: List of (time, AbstractHolidayCalendar) tuples
+#        """
+#        return []
+#
+    @property
+    def special_opens_adhoc(self):
+        return [            
+            (time(hour=10, minute=30), [t.strftime("%Y-%m-%d") for t in EclipseOfSunLateOpen1925]
+            ),
+            (time(12), [t.strftime("%Y-%m-%d") for t in BacklogReliefLateOpen1929]
+            ),
+        ]

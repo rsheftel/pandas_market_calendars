@@ -339,6 +339,16 @@ class MarketCalendar(metaclass=MarketCalendarMeta):
         match_dates = schedule['market_close'].apply(lambda x: x.tz_convert(self.tz).time() != self.close_time)
         return schedule[match_dates]
 
+    def late_opens(self, schedule):
+        """
+        Get a DataFrame of the dates that are an late opens.
+
+        :param schedule: schedule DataFrame
+        :return: schedule DataFrame with rows that are late opens
+        """
+        match_dates = schedule['market_open'].apply(lambda x: x.tz_convert(self.tz).time() != self.close_time)
+        return schedule[match_dates]
+
     def _special_dates(self, calendars, ad_hoc_dates, start_date, end_date):
         """
         Union an iterable of pairs of the form (time, calendar)
