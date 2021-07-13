@@ -26,7 +26,7 @@ from pandas_market_calendars.holidays_us import (
     
     USPresidentsDay, USWashingtonsBirthDay1964to1970, 
     USWashingtonsBirthDayBefore1964, 
-    SatBeforeWashingtonsBirthday, SatAfterWashingtonsBirthday, 
+    SatBeforeWashingtonsBirthdayAdhoc, SatAfterWashingtonsBirthdayAdhoc, 
     LincolnsBirthDayAdhoc, SatBeforeAfterLincolnsBirthdayAdhoc, GrantsBirthDayAdhoc,  
     
     GoodFriday, GoodFridayPre1898, GoodFriday1899to1905, SatAfterGoodFridayAdhoc,
@@ -54,15 +54,21 @@ from pandas_market_calendars.holidays_us import (
     ColumbianCelebration1892, WashingtonInaugurationCentennialCelebration1889,
     CharterDay1898, WelcomeNavalCommander1898, AdmiralDeweyCelebration1899,
     KingEdwardVIIcoronation1902, NYSEnewBuildingOpen1903, FuneralOfGroverCleveland1908,
-    HudsonFultonCelebration1909, OnsetOfWWI1914, DraftRegistrationDay1917,
-    ParadeOfNationalGuardEarlyClose1917, LibertyDayEarlyClose1917,
+    HudsonFultonCelebration1909, OnsetOfWWI1914, 
+    ParadeOfNationalGuardEarlyClose1917, LibertyDayEarlyClose1917, 
+    DraftRegistrationDay1917, DraftRegistrationDay1918,
+    LibertyDayEarlyClose1918,
+    FalseArmisticeReportEarlyClose1918, ArmisticeSigned1918,
+    RooseveltFuneralEarlyClose1919, Homecoming27Division1919, ParadeOf77thDivision1919,
+    BacklogRelief1919, GeneralPershingReturn1919,
+    OfficeLocationChange1920, WallStreetExplosionEarlyClose1920,
     
     USVetransDayAdHoc, SatAfterColumbusDayAdHoc,
     August45VictoryOverJapan, 
     FirstLunarLandingClosing,
     
     March33BankHoliday, November29BacklogRelief, PaperworkCrisis68, September11Closings,
-    WeatherSnowClosing, WeatherHeatClosing,
+    WeatherSnowClosing, WeatherHeatClosing, WeatherNoHeatClosing,
     GreatBlizzardOf1888, HurricaneGloriaClosings,
     HurricaneSandyClosings, NewYorkCityBlackout77 )
 from .market_calendar import MarketCalendar
@@ -191,8 +197,6 @@ class NYSEExchangeCalendar(MarketCalendar):
             USNewYearsDay,
             USMartinLutherKingJrAfter1998,
             USPresidentsDay,
-            SatBeforeWashingtonsBirthday,
-            SatAfterWashingtonsBirthday,
             USWashingtonsBirthDayBefore1964,
             USWashingtonsBirthDay1964to1970,
             USLincolnsBirthDayBefore1954,
@@ -222,6 +226,8 @@ class NYSEExchangeCalendar(MarketCalendar):
             Post1952May24Saturdays,
             Pre1952MaySatClosesAdhoc,
             SatBeforeNewYearsAdhoc,
+            SatBeforeWashingtonsBirthdayAdhoc,
+            SatAfterWashingtonsBirthdayAdhoc,
             SatBeforeAfterLincolnsBirthdayAdhoc,
             SatBeforeDecorationAdhoc,
             SatAfterDecorationAdhoc,
@@ -250,6 +256,13 @@ class NYSEExchangeCalendar(MarketCalendar):
             HudsonFultonCelebration1909,
             OnsetOfWWI1914,
             DraftRegistrationDay1917,
+            DraftRegistrationDay1918,
+            ArmisticeSigned1918,
+            Homecoming27Division1919,
+            ParadeOf77thDivision1919,
+            BacklogRelief1919,
+            GeneralPershingReturn1919,
+            OfficeLocationChange1920,
             
             USVetransDayAdHoc,
             SatAfterColumbusDayAdHoc,
@@ -261,6 +274,7 @@ class NYSEExchangeCalendar(MarketCalendar):
             PaperworkCrisis68,
             WeatherSnowClosing,
             WeatherHeatClosing,
+            WeatherNoHeatClosing,
             FirstLunarLandingClosing,
             September11Closings,
             NewYorkCityBlackout77,
@@ -280,11 +294,16 @@ class NYSEExchangeCalendar(MarketCalendar):
                 FridayAfterIndependenceDayPre2013,
                 WednesdayBeforeIndependenceDayPost2013,
                 USBlackFridayInOrAfter1993,
-                ChristmasEveInOrAfter1993
+                ChristmasEveInOrAfter1993,
             ])),
              (time(12), AbstractHolidayCalendar(rules=[
                 ParadeOfNationalGuardEarlyClose1917,
                 LibertyDayEarlyClose1917,
+                LibertyDayEarlyClose1918,
+                WallStreetExplosionEarlyClose1920,
+            ])),
+            (time(hour=12, minute=30), AbstractHolidayCalendar(rules=[
+                RooseveltFuneralEarlyClose1919,
             ])),
             (time(13), AbstractHolidayCalendar(rules=[
                 FuneralOfGroverCleveland1908,
@@ -292,6 +311,9 @@ class NYSEExchangeCalendar(MarketCalendar):
             (time(14), AbstractHolidayCalendar(rules=[
                 ChristmasEveBefore1993,
                 USBlackFridayBefore1993,
+            ])),
+            (time(hour=14, minute=30), AbstractHolidayCalendar(rules=[
+                FalseArmisticeReportEarlyClose1918,
             ])),
  
         ]

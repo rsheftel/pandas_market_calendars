@@ -104,22 +104,17 @@ USWashingtonsBirthDay1964to1970 = Holiday(
     end_date=Timestamp('1970-12-31'),
     observance=nearest_workday,
 )
-SatBeforeWashingtonsBirthday = Holiday(
-    'Saturdays Before Linconlns Birthday',
-    month=2,
-    day=21,
-    days_of_week=(SATURDAY,),
-    start_date=Timestamp("1903-01-01"),
-    end_date=Timestamp("1952-05-25")
-)
-SatAfterWashingtonsBirthday = Holiday(
-    'Saturdays Before Linconlns Birthday',
-    month=2,
-    day=23,
-    days_of_week=(SATURDAY,),
-    start_date=Timestamp("1885-01-01"),
-    end_date=Timestamp("1952-05-25")
-)
+# Not all Saturdays before Washingtons birthday were holidays (e.g. 1920)
+SatBeforeWashingtonsBirthdayAdhoc = [
+    Timestamp('1903-02-21', tz='UTC'),
+    ]
+# Not all Saturdays after Washington's brithday were holidays (e.g. 1918)
+SatAfterWashingtonsBirthdayAdhoc = [
+    Timestamp('1901-02-23', tz='UTC'),
+    Timestamp('1907-02-23', tz='UTC'),
+    Timestamp('1929-02-23', tz='UTC')
+]
+
 USLincolnsBirthDayBefore1954 = Holiday(
     'Lincoln''s Birthday',
     month=2,
@@ -227,9 +222,9 @@ SatBeforeDecorationAdhoc = [
 SatAfterDecorationAdhoc = [
     Timestamp('1902-05-31', tz='UTC'),
     Timestamp('1913-05-31', tz='UTC'),  
-    Timestamp('1919-05-29', tz='UTC'), 
-    Timestamp('1924-05-29', tz='UTC'), 
-    Timestamp('1930-05-29', tz='UTC'), 
+    Timestamp('1919-05-31', tz='UTC'), 
+    Timestamp('1924-05-31', tz='UTC'), 
+    Timestamp('1930-05-31', tz='UTC'), 
 ]
 
 DayBeforeDecorationAdhoc = [
@@ -484,8 +479,52 @@ ChristmasEveEarlyCloseAdhoc = [
 
 
 #####################################
-# Non-recurring or retired holidays
+# Retired holidays
 #####################################
+# http://www.tradingtheodds.com/nyse-full-day-closings/
+USVeteransDay1934to1953 = Holiday(
+    'Veteran Day',
+    month=11,
+    day=11,
+    start_date=Timestamp('1934-1-1'),
+    end_date=Timestamp('1953-12-31'),
+    observance=sunday_to_monday,
+)
+USVetransDayAdHoc = [
+    Timestamp("1921-11-11", tz="UTC")
+]
+# http://www.tradingtheodds.com/nyse-full-day-closings/
+USColumbusDayBefore1954 = Holiday(
+    'Columbus Day',
+    month=10,
+    day=12,
+    start_date=Timestamp('1909-01-01'),
+    end_date=Timestamp('1953-12-31'),
+    observance=sunday_to_monday,
+)
+SatAfterColumbusDayAdHoc = [
+    Timestamp("1917-10-13", tz="UTC"),
+]
+USBlackFridayBefore1993 = Holiday(
+    'Black Friday',
+    month=11,
+    day=1,
+    # Black Friday was not observed until 1992.
+    start_date=Timestamp('1992-01-01'),
+    end_date=Timestamp('1993-01-01'),
+    offset=[DateOffset(weekday=TH(4)), Day(1)],
+)
+USBlackFridayInOrAfter1993 = Holiday(
+    'Black Friday',
+    month=11,
+    day=1,
+    start_date=Timestamp('1993-01-01'),
+    offset=[DateOffset(weekday=TH(4)), Day(1)],
+)
+
+##########################
+# Non-recurring holidays
+##########################
 
 ColumbianCelebration1892 = [
     Timestamp("1892-10-12", tz='UTC'),
@@ -539,6 +578,7 @@ OnsetOfWWI1914 =  date_range('1914-07-31',
 )
 
 DraftRegistrationDay1917 = [Timestamp('1917-06-05', tz='UTC')]
+DraftRegistrationDay1918 = [Timestamp('1918-09-12', tz='UTC')]
 
 ParadeOfNationalGuardEarlyClose1917 = Holiday(
     'Parade of National Guard 12pm Early Close Aug 29, 1917',
@@ -555,48 +595,52 @@ LibertyDayEarlyClose1917 = Holiday(
     start_date=Timestamp('1917-10-24'),
     end_date=Timestamp('1917-10-24'),
 )
+LibertyDayEarlyClose1918 = Holiday(
+    'Liberty Day 12pm Early Close April 26, 1918',
+    month=4,
+    day=26,
+    start_date=Timestamp('1918-04-26'),
+    end_date=Timestamp('1918-04-26'),
+)
+FalseArmisticeReportEarlyClose1918 = Holiday(
+    'False Armistice Report 2:30pm Early Close Nov 7, 1918',
+    month=11,
+    day=7,
+    start_date=Timestamp('1918-11-07'),
+    end_date=Timestamp('1918-11-07'),
+)
+ArmisticeSigned1918 = [Timestamp('1918-11-11', tz='UTC')]
 
-# http://www.tradingtheodds.com/nyse-full-day-closings/
-USVeteransDay1934to1953 = Holiday(
-    'Veteran Day',
-    month=11,
-    day=11,
-    start_date=Timestamp('1934-1-1'),
-    end_date=Timestamp('1953-12-31'),
-    observance=sunday_to_monday,
+RooseveltFuneralEarlyClose1919 = Holiday(
+    'Former President Roosevelt funeral 12:30pm Early Close Jan 7, 1919',
+    month=1,
+    day=7,
+    start_date=Timestamp('1919-01-07'),
+    end_date=Timestamp('1919-01-07'),
 )
-USVetransDayAdHoc = [
-    Timestamp("1918-11-11", tz="UTC"),
-    Timestamp("1921-11-11", tz="UTC"),
-]
-# http://www.tradingtheodds.com/nyse-full-day-closings/
-USColumbusDayBefore1954 = Holiday(
-    'Columbus Day',
-    month=10,
-    day=12,
-    start_date=Timestamp('1909-01-01'),
-    end_date=Timestamp('1953-12-31'),
-    observance=sunday_to_monday,
+
+Homecoming27Division1919 = [Timestamp('1919-03-25', tz='UTC')]
+
+ParadeOf77thDivision1919 = [Timestamp('1919-05-06', tz='UTC')]
+
+BacklogRelief1919 = [
+    Timestamp('1919-07-19', tz='UTC'),
+    Timestamp('1919-08-02', tz='UTC'),
+    Timestamp('1919-08-16', tz='UTC'),
+    ]
+
+GeneralPershingReturn1919 = [Timestamp('1919-09-10', tz='UTC')]
+
+OfficeLocationChange1920 = [Timestamp('1920-05-01', tz='UTC')]
+
+WallStreetExplosionEarlyClose1920 = Holiday(
+    'Wall Street Explosion 12:00 Early Close Sept 16, 1920',
+    month=9,
+    day=16,
+    start_date=Timestamp('1920-09-16'),
+    end_date=Timestamp('1920-09-16'),
 )
-SatAfterColumbusDayAdHoc = [
-    Timestamp("1917-10-13", tz="UTC"),
-]
-USBlackFridayBefore1993 = Holiday(
-    'Black Friday',
-    month=11,
-    day=1,
-    # Black Friday was not observed until 1992.
-    start_date=Timestamp('1992-01-01'),
-    end_date=Timestamp('1993-01-01'),
-    offset=[DateOffset(weekday=TH(4)), Day(1)],
-)
-USBlackFridayInOrAfter1993 = Holiday(
-    'Black Friday',
-    month=11,
-    day=1,
-    start_date=Timestamp('1993-01-01'),
-    offset=[DateOffset(weekday=TH(4)), Day(1)],
-)
+
 BattleOfGettysburg = Holiday(
     # All of the floor traders in Chicago were sent to PA
     'Markets were closed during the battle of Gettysburg',
@@ -607,6 +651,7 @@ BattleOfGettysburg = Holiday(
 )
 
 # http://www.tradingtheodds.com/nyse-full-day-closings/
+
 November29BacklogRelief = [Timestamp('1929-11-01', tz='UTC'),
                            Timestamp('1929-11-29', tz='UTC')]
 
@@ -659,6 +704,13 @@ WeatherSnowClosing = [Timestamp('1969-02-10', tz='UTC')]
 
 WeatherHeatClosing = [Timestamp('1917-08-04', tz='UTC')]
 
+WeatherNoHeatClosing = [
+    Timestamp('1918-01-28', tz='UTC'),
+    Timestamp('1918-02-04', tz='UTC'),
+    Timestamp('1918-02-11', tz='UTC'),
+    
+    ]
+
 # http://www.tradingtheodds.com/nyse-full-day-closings/
 FirstLunarLandingClosing = [Timestamp('1969-07-21', tz='UTC')]
 
@@ -670,7 +722,7 @@ September11Closings = [
     Timestamp("2001-09-11", tz='UTC'),
     Timestamp("2001-09-12", tz='UTC'),
     Timestamp("2001-09-13", tz='UTC'),
-    Timestamp("2001-09-14", tz='UTC'),
+    Timestamp("2001-09-14", tz='UTC')
 ]
 
 # http://en.wikipedia.org/wiki/Hurricane_Gloria
@@ -696,6 +748,8 @@ HurricaneSandyClosings = date_range(
 # - President William McKinley Death - September 14, 1901
 # - President William McKinley Funderal - September 19, 1901
 # - Vice-President James S. Sherman - November 2, 1912
+# - President Warren G. Harding Death - August 3, 1923
+# - President Warren G. Harding Funeral - August 10, 1923
 # - President John F. Kennedy - November 25, 1963
 # - Martin Luther King - April 9, 1968
 # - President Dwight D. Eisenhower - March 31, 1969
@@ -712,6 +766,8 @@ USNationalDaysofMourning = [
     Timestamp('1901-09-14', tz='UTC'),
     Timestamp('1901-09-19', tz='UTC'),
     Timestamp('1912-11-02', tz='UTC'),
+    Timestamp('1923-08-03', tz='UTC'),
+    Timestamp('1923-08-10', tz='UTC'),
     Timestamp('1963-11-25', tz='UTC'),
     Timestamp('1968-04-09', tz='UTC'),
     Timestamp('1969-03-31', tz='UTC'),
