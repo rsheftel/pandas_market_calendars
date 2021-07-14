@@ -221,6 +221,7 @@ class MarketCalendar(metaclass=MarketCalendarMeta):
             )
         return self._holidays
 
+    #@property
     def valid_days(self, start_date, end_date, tz='UTC'):
         """
         Get a DatetimeIndex of valid open business days.
@@ -346,7 +347,7 @@ class MarketCalendar(metaclass=MarketCalendarMeta):
         :param schedule: schedule DataFrame
         :return: schedule DataFrame with rows that are late opens
         """
-        match_dates = schedule['market_open'].apply(lambda x: x.tz_convert(self.tz).time() != self.close_time)
+        match_dates = schedule['market_open'].apply(lambda x: x.tz_convert(self.tz).time() != self.open_time)
         return schedule[match_dates]
 
     def _special_dates(self, calendars, ad_hoc_dates, start_date, end_date):
