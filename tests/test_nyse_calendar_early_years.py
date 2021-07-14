@@ -1078,7 +1078,7 @@ def test_1921():
         
     # late opens we expect:
     late_opens_1921 = [
-            pd.Timestamp('1921-08-02', tz='UTC'),
+            pd.Timestamp('1921-08-08', tz='UTC'),
     ]
     expected = nyse.late_opens(nyse.schedule('1921-01-01', '1921-12-31'))
     for lo in late_opens_1921:

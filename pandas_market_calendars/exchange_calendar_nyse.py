@@ -16,6 +16,7 @@
 from datetime import time
 from itertools import chain
 
+import pandas as pd
 from pandas.tseries.holiday import AbstractHolidayCalendar
 from pytz import timezone
 
@@ -399,3 +400,29 @@ class NYSEExchangeCalendar(MarketCalendar):
                      + [t.strftime("%Y-%m-%d") for t in HeavyVolume12pmLateOpen1933]
             ),            
         ]
+    
+    # @property 
+    # def valid_days(self, start_date, end_date, tz='UTC'):
+    #     """
+    #     Get a DatetimeIndex of valid open business days.
+
+    #     :param start_date: start date
+    #     :param end_date: end date
+    #     :param tz: time zone in either string or pytz.timezone
+    #     :return: DatetimeIndex of valid business days
+    #     """
+    #     return pd.date_range(start_date, end_date, freq=self.holidays(), normalize=True, tz=tz)
+        # Remove saturday as trading day after Sept 27, 1952
+        #trading_days = pd.date_range(start_date, end_date, freq=self.holidays(), normalize=True, tz=tz)
+    #     if start_date > '1952-09-27':
+    #         return trading_days
+    #     elif start_date <= '1952-09-27' and end_date > '1952-09-27':
+    #         saturdays = pd.date_range('1952-09-28', end_date, freq='W-SAT', tz='UTC')            
+    #     else:
+    #         saturdays = pd.date_range(start_date, end_date, freq='W-SAT', tz='UTC')
+        
+       # drop_days = []
+    #     for s in saturdays:
+    #         if s in trading_days:
+    #             drop_days.append(s)
+        
