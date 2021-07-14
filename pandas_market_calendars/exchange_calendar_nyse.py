@@ -20,6 +20,8 @@ import pandas as pd
 from pandas.tseries.holiday import AbstractHolidayCalendar
 from pytz import timezone
 
+from pandas_market_calendars.market_calendar import clean_dates, days_at_time, _overwrite_special_dates
+
 from pandas_market_calendars.holidays_us import (
     Pre1952May24SatEarlyClose, Post1952May24Saturdays, Pre1952MaySatClosesAdhoc,
     
@@ -77,7 +79,7 @@ from pandas_market_calendars.holidays_us import (
     SatClosings1945, VJday1945, NavyDay1945,
     RailroadStrike1946, SatClosings1946,
     SatClosings1947, SatClosings1948, SevereWeather1948,
-    SatClosings1949, SatClosings1950, SatClosings1951,
+    SatClosings1949, SatClosings1950, SatClosings1951, SatClosings1952,
     
     USVetransDayAdHoc, SatAfterColumbusDayAdHoc,
      
@@ -240,7 +242,7 @@ class NYSEExchangeCalendar(MarketCalendar):
     @property
     def adhoc_holidays(self):
         return list(chain(
-            Post1952May24Saturdays,
+            #Post1952May24Saturdays,
             Pre1952MaySatClosesAdhoc,
             SatBeforeNewYearsAdhoc,
             SatBeforeWashingtonsBirthdayAdhoc,
@@ -296,6 +298,7 @@ class NYSEExchangeCalendar(MarketCalendar):
             SatClosings1949,
             SatClosings1950,
             SatClosings1951,
+            SatClosings1952,
             
             USVetransDayAdHoc,
             SatAfterColumbusDayAdHoc,            
@@ -400,29 +403,82 @@ class NYSEExchangeCalendar(MarketCalendar):
                      + [t.strftime("%Y-%m-%d") for t in HeavyVolume12pmLateOpen1933]
             ),            
         ]
-    
-    # @property 
-    # def valid_days(self, start_date, end_date, tz='UTC'):
-    #     """
-    #     Get a DatetimeIndex of valid open business days.
+ 
+    # Override market_calendar.py
+    def valid_days(self, start_date, end_date, tz='UTC'):
+        """
+        Get a DatetimeIndex of valid open business days.
 
-    #     :param start_date: start date
-    #     :param end_date: end date
-    #     :param tz: time zone in either string or pytz.timezone
-    #     :return: DatetimeIndex of valid business days
-    #     """
-    #     return pd.date_range(start_date, end_date, freq=self.holidays(), normalize=True, tz=tz)
+        :param start_date: start date
+        :param end_date: end date
+        :param tz: time zone in either string or pytz.timezone
+        :return: DatetimeIndex of valid business days
+        """
         # Remove saturday as trading day after Sept 27, 1952
-        #trading_days = pd.date_range(start_date, end_date, freq=self.holidays(), normalize=True, tz=tz)
-    #     if start_date > '1952-09-27':
-    #         return trading_days
-    #     elif start_date <= '1952-09-27' and end_date > '1952-09-27':
-    #         saturdays = pd.date_range('1952-09-28', end_date, freq='W-SAT', tz='UTC')            
-    #     else:
-    #         saturdays = pd.date_range(start_date, end_date, freq='W-SAT', tz='UTC')
+        trading_days = pd.date_range(start_date, end_date, freq=self.holidays(), normalize=True, tz=tz)
+        ts_start_date = pd.Timestamp(start_date, tz='UTC')
+        ts_end_date = pd.Timestamp(end_date, tz='UTC')
+        if ts_end_date <= pd.Timestamp('1952-09-27', tz='UTC'):
+            return trading_days
+        elif (ts_start_date <= pd.Timestamp('1952-09-27', tz='UTC') and
+              ts_end_date   >  pd.Timestamp('1952-09-27', tz='UTC')):
+            saturdays = pd.date_range('1952-09-28', end_date, freq='W-SAT', tz='UTC')            
+        else:
+            saturdays = pd.date_range(start_date, end_date, freq='W-SAT', tz='UTC')
         
-       # drop_days = []
-    #     for s in saturdays:
-    #         if s in trading_days:
-    #             drop_days.append(s)
+        drop_days = []
+        for s in saturdays:
+            if s in trading_days:
+                drop_days.append(s)
+        #return trading_days
+        return trading_days.drop(drop_days)
+    
+    
+    # Override parent method so that derived valid_days is called            
+    def schedule(self, start_date, end_date, tz='UTC'):
+        """
+        Generates the schedule DataFrame. The resulting DataFrame will have all the valid business days as the index
+        and columns for the market opening datetime (market_open) and closing datetime (market_close). All time zones
+        are set to UTC by default. Setting the tz parameter will convert the columns to the desired timezone,
+        such as 'America/New_York'
+
+        :param start_date: start date
+        :param end_date: end date
+        :param tz: timezone
+        :return: schedule DataFrame
+        """
+        start_date, end_date = clean_dates(start_date, end_date)
+        if not (start_date <= end_date):
+            raise ValueError('start_date must be before or equal to end_date.')
+
+        # Setup all valid trading days
+        _all_days = self.valid_days(start_date, end_date)
         
+        # If no valid days return an empty DataFrame
+        if len(_all_days) == 0:
+            return pd.DataFrame(columns=['market_open', 'market_close'], index=pd.DatetimeIndex([], freq='C'))
+
+        # `DatetimeIndex`s of standard opens/closes for each day.
+        opens =  days_at_time(_all_days, self.open_time, self.tz, self.open_offset).tz_convert(tz)
+        closes = days_at_time(_all_days, self.close_time, self.tz, self.close_offset).tz_convert(tz)
+
+        # `DatetimeIndex`s of nonstandard opens/closes
+        _special_opens = self._calculate_special_opens(start_date, end_date)
+        _special_closes = self._calculate_special_closes(start_date, end_date)
+
+        # Overwrite the special opens and closes on top of the standard ones.
+        _overwrite_special_dates(_all_days, opens, _special_opens)
+        _overwrite_special_dates(_all_days, closes, _special_closes)
+
+        result = pd.DataFrame(index=_all_days.tz_localize(None), columns=['market_open', 'market_close'],
+                            data={'market_open': opens, 'market_close': closes})
+
+        if self.break_start:
+            result['break_start'] = days_at_time(_all_days, self.break_start, self.tz).tz_convert(tz)
+            temp = result[['market_open', 'break_start']].max(axis=1)
+            result['break_start'] = temp
+            result['break_end'] = days_at_time(_all_days, self.break_end, self.tz).tz_convert(tz)
+            temp = result[['market_close', 'break_end']].min(axis=1)
+            result['break_end'] = temp
+
+        return result

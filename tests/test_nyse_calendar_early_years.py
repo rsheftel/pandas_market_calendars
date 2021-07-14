@@ -598,8 +598,8 @@ def test_1908():
     early_close_grover_cleveland_funeral = [
         pd.Timestamp(' 1908-06-26' , tz='UTC')
     ]
-
     expected = nyse.early_closes(nyse.schedule('1908-01-01', '1908-12-31'))
+    assert len(expected) == 1
     for ec in early_close_grover_cleveland_funeral:
         assert ec in expected.index
 
@@ -930,6 +930,7 @@ def test_1917():
         pd.Timestamp(' 1917-10-24' , tz='UTC'),
     ]
     expected = nyse.early_closes(nyse.schedule('1917-01-01', '1917-12-31'))
+    assert len(expected) == 2
     for early_close_h in early_closes_1917:
         assert early_close_h in expected.index
 
@@ -963,6 +964,7 @@ def test_1918():
         pd.Timestamp('1918-11-07')
     ]
     expected = nyse.early_closes(nyse.schedule('1918-01-01', '1918-12-31'))
+    assert len(expected) == 1
     for early_close_h in early_closes_1918:
         assert early_close_h in expected.index 
        
@@ -1001,6 +1003,7 @@ def test_1919():
         pd.Timestamp('1919-01-07')
     ]
     expected = nyse.early_closes(nyse.schedule('1919-01-01', '1919-12-31'))
+    assert len(expected) == 1
     for early_close_h in early_closes_1919:
         assert early_close_h in expected.index   
         
@@ -1009,6 +1012,7 @@ def test_1919():
             pd.Timestamp('1919-12-30', tz='UTC'),
     ]
     expected = nyse.late_opens(nyse.schedule('1919-01-01', '1919-12-31'))
+    assert len(expected) == 1
     for lo in late_opens_1919:
         assert lo in expected.index         
    
@@ -1041,6 +1045,7 @@ def test_1920():
         pd.Timestamp('1920-09-16')
     ]
     expected = nyse.early_closes(nyse.schedule('1920-01-01', '1920-12-31'))
+    assert len(expected) == 1
     for early_close_h in early_closes_1920:
         assert early_close_h in expected.index  
         
@@ -1049,6 +1054,7 @@ def test_1920():
             pd.Timestamp('1920-02-06', tz='UTC'),
     ]
     expected = nyse.late_opens(nyse.schedule('1920-01-01', '1920-12-31'))
+    assert len(expected) == 1
     for lo in late_opens_1920:
         assert lo in expected.index         
  
@@ -1081,6 +1087,7 @@ def test_1921():
             pd.Timestamp('1921-08-08', tz='UTC'),
     ]
     expected = nyse.late_opens(nyse.schedule('1921-01-01', '1921-12-31'))
+    assert len(expected) == 1
     for lo in late_opens_1921:
         assert lo in expected.index         
  
@@ -1153,6 +1160,7 @@ def test_1924():
         pd.Timestamp('1924-02-06')
     ]
     expected = nyse.early_closes(nyse.schedule('1924-01-01', '1924-12-31'))
+    assert len(expected) == 1
     for early_close_h in early_closes_1924:
         assert early_close_h in expected.index         
         
@@ -1182,6 +1190,7 @@ def test_1925():
         pd.Timestamp('1925-09-18')
     ]
     expected = nyse.early_closes(nyse.schedule('1925-01-01', '1925-12-31'))
+    assert len(expected) == 1
     for early_close_h in early_closes_1925:
         assert early_close_h in expected.index    
 
@@ -1189,7 +1198,8 @@ def test_1925():
     late_opens_1925 = [
             pd.Timestamp('1925-01-24', tz='UTC'),
     ]
-    expected = nyse.late_opens(nyse.schedule('1925-01-01', '1925-12-31'))
+    expected = nyse.special_opens(nyse.schedule('1925-01-01', '1925-12-31'))
+    assert len(expected) == 1
     for lo in late_opens_1925:
         assert lo in expected.index          
 
@@ -1271,6 +1281,7 @@ def test_1928():
                                        freq=CustomBusinessDay(weekmask = 'Mon Tue Wed Thu Fri Sat'),
                                        tz='UTC').to_list()
     expected = nyse.early_closes(nyse.schedule('1928-01-01', '1928-12-31'))
+    assert len(expected) == 5
     for ec in early_closes_1928:
         assert ec in expected.index        
         

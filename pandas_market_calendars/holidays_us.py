@@ -423,12 +423,12 @@ ChristmasBefore1954 = Holiday(
     end_date=Timestamp('1953-12-31'),
     observance=sunday_to_monday,
 )
-    # These have the same definition, but are used in different places because the
-    # NYSE closed at 2:00 PM on Christmas Eve until 1993.
+    # NYSE closed at 2:00 PM on Christmas Eve from 1974 until 1993.
 ChristmasEveBefore1993 = Holiday(
     'Christmas Eve',
     month=12,
     day=24,
+    start_date=Timestamp('12-24-1974'),
     end_date=Timestamp('1993-01-01'),
     # When Christmas is a Saturday, the 24th is a full holiday.
     days_of_week=(MONDAY, TUESDAY, WEDNESDAY, THURSDAY),
@@ -882,6 +882,12 @@ SatClosings1951 = date_range('1951-06-02',
 
 SatClosings1951 = date_range('1951-06-02', 
                              '1951-09-29', 
+                             freq='W-SAT',
+                             tz='UTC'
+)
+
+SatClosings1952 = date_range('1952-05-31', 
+                             '1952-09-27', 
                              freq='W-SAT',
                              tz='UTC'
 )

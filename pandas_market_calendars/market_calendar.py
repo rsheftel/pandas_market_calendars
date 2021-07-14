@@ -221,7 +221,6 @@ class MarketCalendar(metaclass=MarketCalendarMeta):
             )
         return self._holidays
 
-    #@property
     def valid_days(self, start_date, end_date, tz='UTC'):
         """
         Get a DatetimeIndex of valid open business days.
