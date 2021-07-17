@@ -32,15 +32,8 @@ def next_saturday(dt):
 
 #############################################################################
 # Saturday Trading Thru 1952
-#   NYSE was open on Saturdays thru 5/24/1952
-#   anyone maintaining this code after 2050 will need to update the end date
+#   NYSE was open on Saturdays thru 5/24/1952 10am to noon
 #############################################################################
-Post1952May24Saturdays = date_range('1952-05-25', 
-                                    '2050-12-31', 
-                                    freq='W-SAT',
-                                    tz='UTC'
-)
-# Every Saturday was an early close
 Pre1952May24SatEarlyClose = date_range('1885-01-01', 
                                     '1952-05-25', 
                                     freq='W-SAT',
@@ -247,7 +240,6 @@ USIndependenceDay = Holiday(
     start_date=Timestamp('1954-01-01'),
     observance=nearest_workday,
 )
-# http://www.tradingtheodds.com/nyse-full-day-closings/
 USIndependenceDayBefore1954 = Holiday(
     'July 4th',
     month=7,
@@ -269,6 +261,8 @@ MonTuesThursBeforeIndependenceDay = Holiday(
 def july_5th_holiday_observance(datetime_index):
     return datetime_index[datetime_index.year < 2013]
 
+#TODO: Figure out when this rule begins. 
+# It causes tests  1889, 1896 to fail
 FridayAfterIndependenceDayPre2013 = Holiday(
     # When July 4th is a Thursday, the next day is a half day prior to 2013.
     # Since 2013 the early close is on Wednesday and Friday is a full day
@@ -277,7 +271,7 @@ FridayAfterIndependenceDayPre2013 = Holiday(
     day=5,
     days_of_week=(FRIDAY,),
     observance=july_5th_holiday_observance,
-    start_date=Timestamp("1885-01-01"),
+    start_date=Timestamp("1960-01-01"),
 )
 
 WednesdayBeforeIndependenceDayPost2013 = Holiday(
@@ -313,7 +307,6 @@ SatAfterIndependenceDayAdhoc = [
     Timestamp('1913-07-05', tz='UTC'),
     Timestamp('1919-07-05', tz='UTC'),
     Timestamp('1930-07-05', tz='UTC'),
-    Timestamp('1902-07-05', tz='UTC'),
     ]
 
 DaysAfterIndependenceDayAdhoc = [
@@ -531,12 +524,7 @@ USBlackFridayInOrAfter1993 = Holiday(
 # Non-recurring holidays
 ##########################
 
-ColumbianCelebration1892 = [
-    Timestamp("1892-10-12", tz='UTC'),
-    Timestamp("1892-10-21", tz='UTC'),
-    Timestamp("1892-10-22", tz='UTC'),
-    Timestamp("1893-04-27", tz='UTC'),
-]
+UlyssesGrantFuneral1885 = [Timestamp('1885-08-08', tz='UTC')]
 
 GreatBlizzardOf1888 = [
     Timestamp('1888-03-12', tz='UTC'),
@@ -549,19 +537,39 @@ WashingtonInaugurationCentennialCelebration1889 = [
     Timestamp("1889-05-01", tz='UTC'),
 ]
 
+GarretHobartFuneral1899 = [Timestamp('1899-11-25', tz='UTC')]
+
+ColumbianCelebration1892 = [
+    Timestamp("1892-10-12", tz='UTC'),
+    Timestamp("1892-10-21", tz='UTC'),
+    Timestamp("1892-10-22", tz='UTC'),
+    Timestamp("1893-04-27", tz='UTC'),
+]
+
 # NYC's 5 boroughs founded as NYC
 # Not actually celebrated due to Spanish-American war but market was closed
 CharterDay1898 = [Timestamp('1898-05-04', tz='UTC')]
 
 WelcomeNavalCommander1898 = [Timestamp('1898-08-20', tz='UTC')]
 
-AdmiralDeweyCelebration1899 = [Timestamp('1899-09-29', tz='UTC'),Timestamp('1899-09-30', tz='UTC') ]
+AdmiralDeweyCelebration1899 = [Timestamp('1899-09-29', tz='UTC'),
+                              Timestamp('1899-09-30', tz='UTC') 
+]
+
+QueenVictoriaFuneral1901 = [Timestamp('1901-02-02', tz='UTC')]
+
+MovedToProduceExchange1901 = [Timestamp('1901-04-27', tz='UTC')]
+
+EnlargedProduceExchange1901 = [Timestamp('1901-05-11', tz='UTC')]
+
+McKinleyDeathAndFuneral1901 = [Timestamp('1901-09-14', tz='UTC'), 
+                              Timestamp('1901-09-19', tz='UTC'),]
 
 KingEdwardVIIcoronation1902 = [Timestamp('1902-08-09', tz='UTC')]
 
 NYSEnewBuildingOpen1903 = [Timestamp('1903-04-22', tz='UTC')]
 
-FuneralOfGroverCleveland1908 = Holiday(
+GroverClevelandFuneral1pmClose1908 = Holiday(
     'Funeral of Grover Cleveland 1908 1pm Close',
     month=6,
     day=26,
@@ -572,6 +580,38 @@ FuneralOfGroverCleveland1908 = Holiday(
 # 300th anniversary of Hudson discovering the Hudson river and
 # 100th anniversary of Fulton inventing the paddle steamer
 HudsonFultonCelebration1909 = [Timestamp('1909-09-25', tz='UTC')]
+
+KingEdwardDeath11amyClose1910 = Holiday(
+    'King Edward VII Death May 7, 1910',
+    month=5,
+    day=7,
+    start_date=Timestamp('1910-05-07'),
+    end_date=Timestamp('1910-05-07'),
+)
+
+KingEdwardFuneral12pmOpen1910 = Holiday(
+    'King Edward VII Funeral 12pm late open May 20, 1910',
+    month=5,
+    day=20,
+    start_date=Timestamp('1910-05-20'),
+    end_date=Timestamp('1910-05-20'),
+)
+
+JPMorganFuneral12pmOpen1913 = Holiday(
+    'JP Morgan Funeral 12pm late open April 14, 1913',
+    month=4,
+    day=14,
+    start_date=Timestamp('1913-04-14'),
+    end_date=Timestamp('1913-04-14'),
+)
+
+WilliamGaynorFuneral12pmOpen1913 = Holiday(
+    'Mayor William J. Gaynor Funeral 12pm late open Sept 22, 1913',
+    month=9,
+    day=22,
+    start_date=Timestamp('1913-09-22'),
+    end_date=Timestamp('1913-09-22'),
+)
 
 # Reopened for trading bonds (with restrictions) Nov 27, 1914
 # Reopened for trading stocks (with restrictions) Dec 12, 1914
@@ -972,11 +1012,6 @@ HurricaneSandyClosings = date_range(
 
 
 # National Days of Mourning
-# - President Ulysses S Grant Funeral - August 8, 1885
-# - Vice-President Garret A. Hobart - November 25, 1899
-# - Queen Victoria of England Funderal - February 2, 1901
-# - President William McKinley Death - September 14, 1901
-# - President William McKinley Funderal - September 19, 1901
 # - Vice-President James S. Sherman - November 2, 1912
 # - President Warren G. Harding Death - August 3, 1923
 # - President Warren G. Harding Funeral - August 10, 1923
@@ -992,11 +1027,6 @@ HurricaneSandyClosings = date_range(
 # - President Gerald R. Ford - Jan 2, 2007
 # - President George H.W. Bush - Dec 5, 2018
 USNationalDaysofMourning = [
-    Timestamp('1885-08-08', tz='UTC'), 
-    Timestamp('1899-11-25', tz='UTC'), 
-    Timestamp('1901-02-02', tz='UTC'), 
-    Timestamp('1901-09-14', tz='UTC'),
-    Timestamp('1901-09-19', tz='UTC'),
     Timestamp('1912-11-02', tz='UTC'),
     Timestamp('1923-08-03', tz='UTC'),
     Timestamp('1923-08-10', tz='UTC'),
