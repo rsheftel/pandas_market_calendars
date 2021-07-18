@@ -914,8 +914,8 @@ def test_1917():
     _test_has_early_closes(early_closes, start, end)
 
 def test_1918():
-    start = '1917-01-01'
-    end   = '1917-12-31'    
+    start = '1918-01-01'
+    end   = '1918-12-31'    
     holidays = [
         pd.Timestamp('1918-01-01', tz='UTC'),
         pd.Timestamp('1918-01-28', tz='UTC'),
@@ -939,13 +939,15 @@ def test_1918():
 
     # early closes we expect:
     early_closes = [
-        pd.Timestamp('1918-11-07') # False armistice report
+        pd.Timestamp('1918-04-26'), # Liberty Day
+        pd.Timestamp('1918-11-07'), # False armistice report        
     ]
     _test_has_early_closes(early_closes, start, end)       
         
 def test_1919():
-    nyse = NYSEExchangeCalendar()
-    holidays_1919 = [
+    start = '1919-01-01'
+    end   = '1919-12-31'    
+    holidays = [
         pd.Timestamp('1919-01-01', tz='UTC'),
         pd.Timestamp('1919-02-12', tz='UTC'),
         pd.Timestamp('1919-02-22', tz='UTC'),
@@ -967,32 +969,25 @@ def test_1919():
         pd.Timestamp('1919-11-27', tz='UTC'),
         pd.Timestamp('1919-12-25', tz='UTC')
     ]
-    valid_days = nyse.valid_days('1919-01-01', '1919-12-31')
-    for h in holidays_1919:
-        assert h not in valid_days
-        assert h in all_holidays        
-
+    _test_holidays(holidays, start, end)
+ 
     # early closes we expect:
-    early_closes_1919 = [
+    early_closes = [
         pd.Timestamp('1919-01-07')
     ]
-    expected = nyse.early_closes(nyse.schedule('1919-01-01', '1919-12-31'))
-    assert len(expected) == 1
-    for early_close_h in early_closes_1919:
-        assert early_close_h in expected.index   
-        
+    _test_has_early_closes(early_closes, start, end)        
+    
     # late opens we expect:
-    late_opens_1919 = [
-            pd.Timestamp('1919-12-30', tz='UTC'),
+    late_opens = [
+            pd.Timestamp('1919-12-30', tz='UTC'), # Traffic block
     ]
-    expected = nyse.late_opens(nyse.schedule('1919-01-01', '1919-12-31'))
-    assert len(expected) == 1
-    for lo in late_opens_1919:
-        assert lo in expected.index         
-   
+    _test_has_late_opens(late_opens, start, end)
+
+
 def test_1920():
-    nyse = NYSEExchangeCalendar()
-    holidays_1920 = [
+    start = '1920-01-01'
+    end   = '1920-12-31'    
+    holidays = [
         pd.Timestamp('1920-01-01', tz='UTC'),
         pd.Timestamp('1920-02-12', tz='UTC'),
         pd.Timestamp('1920-02-23', tz='UTC'),
@@ -1009,32 +1004,24 @@ def test_1920():
         pd.Timestamp('1920-11-25', tz='UTC'),
         pd.Timestamp('1920-12-25', tz='UTC')
     ]
-    valid_days = nyse.valid_days('1920-01-01', '1920-12-31')
-    for h in holidays_1920:
-        assert h not in valid_days
-        assert h in all_holidays        
-
+    _test_holidays(holidays, start, end)
+ 
     # early closes we expect:
-    early_closes_1920 = [
-        pd.Timestamp('1920-09-16')
+    early_closes= [
+        pd.Timestamp('1920-09-16') # Wall Street explosion
     ]
-    expected = nyse.early_closes(nyse.schedule('1920-01-01', '1920-12-31'))
-    assert len(expected) == 1
-    for early_close_h in early_closes_1920:
-        assert early_close_h in expected.index  
+    _test_has_early_closes(early_closes, start, end)
         
     # late opens we expect:
-    late_opens_1920 = [
-            pd.Timestamp('1920-02-06', tz='UTC'),
+    late_opens = [
+            pd.Timestamp('1920-02-06', tz='UTC'), # traffic block
     ]
-    expected = nyse.late_opens(nyse.schedule('1920-01-01', '1920-12-31'))
-    assert len(expected) == 1
-    for lo in late_opens_1920:
-        assert lo in expected.index         
+    _test_has_late_opens(late_opens, start, end)    
  
 def test_1921():
-    nyse = NYSEExchangeCalendar()
-    holidays_1921 = [
+    start = '1921-01-01'
+    end   = '1921-12-31'    
+    holidays = [
         pd.Timestamp('1921-01-01', tz='UTC'),
         pd.Timestamp('1921-02-12', tz='UTC'),
         pd.Timestamp('1921-02-22', tz='UTC'),
@@ -1051,23 +1038,19 @@ def test_1921():
         pd.Timestamp('1921-11-24', tz='UTC'),
         pd.Timestamp('1921-12-26', tz='UTC')
     ]
-    valid_days = nyse.valid_days('1921-01-01', '1921-12-31')
-    for h in holidays_1921:
-        assert h not in valid_days
-        assert h in all_holidays        
-        
+    _test_holidays(holidays, start, end)
+    _test_no_special_closes(start, end)
+         
     # late opens we expect:
-    late_opens_1921 = [
-            pd.Timestamp('1921-08-08', tz='UTC'),
+    late_opens = [
+            pd.Timestamp('1921-08-08', tz='UTC'), # fire in annunciator board
     ]
-    expected = nyse.late_opens(nyse.schedule('1921-01-01', '1921-12-31'))
-    assert len(expected) == 1
-    for lo in late_opens_1921:
-        assert lo in expected.index         
+    _test_has_late_opens(late_opens, start, end)
  
 def test_1922():
-    nyse = NYSEExchangeCalendar()
-    holidays_1922 = [
+    start = '1922-01-01'
+    end   = '1922-12-31'    
+    holidays = [
         pd.Timestamp('1922-01-02', tz='UTC'),
         pd.Timestamp('1922-02-13', tz='UTC'),
         pd.Timestamp('1922-02-22', tz='UTC'),
@@ -1081,14 +1064,14 @@ def test_1922():
         pd.Timestamp('1922-12-23', tz='UTC'),
         pd.Timestamp('1922-12-25', tz='UTC')
     ]
-    valid_days = nyse.valid_days('1922-01-01', '1922-12-31')
-    for h in holidays_1922:
-        assert h not in valid_days
-        assert h in all_holidays            
+    _test_holidays(holidays, start, end)
+    _test_no_special_opens_closes(start, end)
+
 
 def test_1923():
-    nyse = NYSEExchangeCalendar()
-    holidays_1923 = [
+    start = '1923-01-01'
+    end   = '1923-12-31'    
+    holidays = [
         pd.Timestamp('1923-01-01', tz='UTC'),
         pd.Timestamp('1923-02-12', tz='UTC'),
         pd.Timestamp('1923-02-22', tz='UTC'),
@@ -1103,14 +1086,14 @@ def test_1923():
         pd.Timestamp('1923-11-29', tz='UTC'),
         pd.Timestamp('1923-12-25', tz='UTC')
     ]
-    valid_days = nyse.valid_days('1923-01-01', '1923-12-31')
-    for h in holidays_1923:
-        assert h not in valid_days
-        assert h in all_holidays            
+    _test_holidays(holidays, start, end)
+    _test_no_special_opens_closes(start, end)
+
         
 def test_1924():
-    nyse = NYSEExchangeCalendar()
-    holidays_1924 = [
+    start = '1924-01-01'
+    end   = '1924-12-31'    
+    holidays = [
         pd.Timestamp('1924-01-01', tz='UTC'),
         pd.Timestamp('1924-02-12', tz='UTC'),
         pd.Timestamp('1924-02-22', tz='UTC'),
@@ -1124,23 +1107,20 @@ def test_1924():
         pd.Timestamp('1924-11-27', tz='UTC'),
         pd.Timestamp('1924-12-25', tz='UTC')
     ]
-    valid_days = nyse.valid_days('1924-01-01', '1924-12-31')
-    for h in holidays_1924:
-        assert h not in valid_days
-        assert h in all_holidays        
+    _test_holidays(holidays, start, end)
+    _test_no_special_opens(start, end)
 
     # early closes we expect:
-    early_closes_1924 = [
-        pd.Timestamp('1924-02-06')
+    early_closes = [
+        pd.Timestamp('1924-02-06') # Former President Woodrow Wilson funeral
     ]
-    expected = nyse.early_closes(nyse.schedule('1924-01-01', '1924-12-31'))
-    assert len(expected) == 1
-    for early_close_h in early_closes_1924:
-        assert early_close_h in expected.index         
+    _test_has_early_closes(early_closes, start, end)
+
         
 def test_1925():
-    nyse = NYSEExchangeCalendar()
-    holidays_1925 = [
+    start = '1925-01-01'
+    end   = '1925-12-31'    
+    holidays = [
         pd.Timestamp('1924-01-01', tz='UTC'),
         pd.Timestamp('1924-02-12', tz='UTC'),
         pd.Timestamp('1924-02-22', tz='UTC'),
@@ -1154,32 +1134,25 @@ def test_1925():
         pd.Timestamp('1924-11-27', tz='UTC'),
         pd.Timestamp('1924-12-25', tz='UTC')
     ]
-    valid_days = nyse.valid_days('1925-01-01', '1925-12-31')
-    for h in holidays_1925:
-        assert h not in valid_days
-        assert h in all_holidays        
-
+    _test_holidays(holidays, start, end)
+ 
     # early closes we expect:
-    early_closes_1925 = [
-        pd.Timestamp('1925-09-18')
+    early_closes = [
+        pd.Timestamp('1925-09-18') # Seymour L. Cromwell funeral
     ]
-    expected = nyse.early_closes(nyse.schedule('1925-01-01', '1925-12-31'))
-    assert len(expected) == 1
-    for early_close_h in early_closes_1925:
-        assert early_close_h in expected.index    
+    _test_has_early_closes(early_closes, start, end)
 
     # late opens we expect:
-    late_opens_1925 = [
-            pd.Timestamp('1925-01-24', tz='UTC'),
+    late_opens = [
+            pd.Timestamp('1925-01-24', tz='UTC'), # Eclipse of sun
     ]
-    expected = nyse.special_opens(nyse.schedule('1925-01-01', '1925-12-31'))
-    assert len(expected) == 1
-    for lo in late_opens_1925:
-        assert lo in expected.index          
+    _test_has_late_opens(late_opens, start, end)
+
 
 def test_1926():
-    nyse = NYSEExchangeCalendar()
-    holidays_1926 = [
+    start = '1926-01-01'
+    end   = '1926-12-31'    
+    holidays = [
         pd.Timestamp('1926-01-01', tz='UTC'),
         pd.Timestamp('1926-02-12', tz='UTC'),
         pd.Timestamp('1926-02-22', tz='UTC'),
@@ -1195,14 +1168,14 @@ def test_1926():
         pd.Timestamp('1926-11-25', tz='UTC'),
         pd.Timestamp('1926-12-25', tz='UTC')
     ]
-    valid_days = nyse.valid_days('1926-01-01', '1926-12-31')
-    for h in holidays_1926:
-        assert h not in valid_days
-        assert h in all_holidays            
+    _test_holidays(holidays, start, end)
+    _test_no_special_opens_closes(start, end)
+
         
 def test_1927():
-    nyse = NYSEExchangeCalendar()
-    holidays_1927 = [
+    start = '1927-01-01'
+    end   = '1927-12-31'    
+    holidays = [
         pd.Timestamp('1927-01-01', tz='UTC'),
         pd.Timestamp('1927-02-12', tz='UTC'),
         pd.Timestamp('1927-02-22', tz='UTC'),
@@ -1216,15 +1189,14 @@ def test_1927():
         pd.Timestamp('1927-11-24', tz='UTC'),
         pd.Timestamp('1927-12-26', tz='UTC')
     ]
-    valid_days = nyse.valid_days('1927-01-01', '1927-12-31')
-    for h in holidays_1927:
-        assert h not in valid_days
-        assert h in all_holidays                    
+    _test_holidays(holidays, start, end)
+    _test_no_special_opens_closes(start, end)
         
         
 def test_1928():
-    nyse = NYSEExchangeCalendar()
-    holidays_1928 = [
+    start = '1928-01-01'
+    end   = '1928-12-31'    
+    holidays = [
         pd.Timestamp('1928-01-02', tz='UTC'),
         pd.Timestamp('1928-02-13', tz='UTC'),
         pd.Timestamp('1928-02-22', tz='UTC'),
@@ -1244,24 +1216,21 @@ def test_1928():
         pd.Timestamp('1928-11-29', tz='UTC'),
         pd.Timestamp('1928-12-25', tz='UTC')
     ]
-    valid_days = nyse.valid_days('1928-01-01', '1928-12-31')
-    for h in holidays_1928:
-        assert h not in valid_days
-        assert h in all_holidays        
+    _test_holidays(holidays, start, end)
+    _test_no_special_opens(start, end)
 
     # early closes we expect:
-    early_closes_1928 = pd.date_range('1928-05-21', 
-                                      '1928-05-25', 
-                                       freq=CustomBusinessDay(weekmask = 'Mon Tue Wed Thu Fri Sat'),
-                                       tz='UTC').to_list()
-    expected = nyse.early_closes(nyse.schedule('1928-01-01', '1928-12-31'))
-    assert len(expected) == 5
-    for ec in early_closes_1928:
-        assert ec in expected.index        
+    early_closes = pd.date_range('1928-05-21', # Backlog catch up
+                                 '1928-05-25', 
+                                  freq=CustomBusinessDay(weekmask = 'Mon Tue Wed Thu Fri Sat'),
+                                   tz='UTC').to_list()
+    _test_has_early_closes(early_closes, start, end)
+    
         
 def test_1929():
-    nyse = NYSEExchangeCalendar()
-    holidays_1929 = [
+    start = '1929-01-01'
+    end   = '1929-12-31'    
+    holidays = [
         pd.Timestamp('1929-01-01', tz='UTC'),
         pd.Timestamp('1929-02-09', tz='UTC'),
         pd.Timestamp('1929-02-12', tz='UTC'),
@@ -1285,14 +1254,11 @@ def test_1929():
         pd.Timestamp('1929-11-30', tz='UTC'),
         pd.Timestamp('1929-12-25', tz='UTC')
     ]
-    valid_days = nyse.valid_days('1929-01-01', '1929-12-31')
-    for h in holidays_1929:
-        assert h not in valid_days
-        assert h in all_holidays        
+    _test_holidays(holidays, start, end)
 
     # early closes we expect:
-    early_closes_1929 = [
-            pd.Timestamp('1929-11-06', tz='UTC'),
+    early_closes = [ # All backlog relief
+            pd.Timestamp('1929-11-06', tz='UTC'), 
             pd.Timestamp('1929-11-07', tz='UTC'),
             pd.Timestamp('1929-11-08', tz='UTC'),
             pd.Timestamp('1929-11-11', tz='UTC'),
@@ -1306,21 +1272,19 @@ def test_1929():
             pd.Timestamp('1929-11-21', tz='UTC'),
             pd.Timestamp('1929-11-22', tz='UTC')
     ]
-    expected = nyse.early_closes(nyse.schedule('1929-01-01', '1929-12-31'))
-    for ec in early_closes_1929:
-        assert ec in expected.index          
+    _test_has_early_closes(early_closes, start, end)
         
     # late opens we expect:
-    late_opens_1929 = [
-            pd.Timestamp('1929-10-31', tz='UTC'),
+    late_opens = [
+            pd.Timestamp('1929-10-31', tz='UTC'), # Backlog relief
     ]
-    expected = nyse.late_opens(nyse.schedule('1929-01-01', '1929-12-31'))
-    for lo in late_opens_1929:
-        assert lo in expected.index          
+    _test_has_late_opens(late_opens, start, end)
+
         
 def test_1930():
-    nyse = NYSEExchangeCalendar()
-    holidays_1930 = [
+    start = '1930-01-01'
+    end   = '1930-12-31'    
+    holidays = [
         pd.Timestamp('1930-01-01', tz='UTC'),
         pd.Timestamp('1930-02-12', tz='UTC'),
         pd.Timestamp('1930-02-22', tz='UTC'),
@@ -1337,22 +1301,20 @@ def test_1930():
         pd.Timestamp('1930-11-27', tz='UTC'),
         pd.Timestamp('1930-12-25', tz='UTC')
     ]
-    valid_days = nyse.valid_days('1930-01-01', '1930-12-31')
-    for h in holidays_1930:
-        assert h not in valid_days
-        assert h in all_holidays        
+    _test_holidays(holidays, start, end)
+    _test_no_special_opens(start, end)
 
     # early closes we expect:
-    early_closes_1930 = [
-            pd.Timestamp('1930-03-11', tz='UTC'),
+    early_closes = [
+            pd.Timestamp('1930-03-11', tz='UTC'), # Taft funeral
     ]
-    expected = nyse.early_closes(nyse.schedule('1930-01-01', '1930-12-31'))
-    for ec in early_closes_1930:
-        assert ec in expected.index          
+    _test_has_early_closes(early_closes, start, end)
+
         
 def test_1931():
-    nyse = NYSEExchangeCalendar()
-    holidays_1931 = [
+    start = '1931-01-01'
+    end   = '1931-12-31'    
+    holidays = [
         pd.Timestamp('1931-01-01', tz='UTC'),
         pd.Timestamp('1931-02-12', tz='UTC'),
         pd.Timestamp('1931-02-23', tz='UTC'),
@@ -1367,14 +1329,14 @@ def test_1931():
         pd.Timestamp('1931-12-25', tz='UTC'),
         pd.Timestamp('1931-12-26', tz='UTC')
     ]
-    valid_days = nyse.valid_days('1931-01-01', '1931-12-31')
-    for h in holidays_1931:
-        assert h not in valid_days
-        assert h in all_holidays         
+    _test_holidays(holidays, start, end)
+    _test_no_special_opens_closes(start, end)
+
         
 def test_1932():
-    nyse = NYSEExchangeCalendar()
-    holidays_1932 = [
+    start = '1932-01-01'
+    end   = '1932-12-31'    
+    holidays = [
         pd.Timestamp('1932-01-01', tz='UTC'),
         pd.Timestamp('1932-02-12', tz='UTC'),
         pd.Timestamp('1932-02-22', tz='UTC'),
@@ -1388,14 +1350,14 @@ def test_1932():
         pd.Timestamp('1932-11-24', tz='UTC'),
         pd.Timestamp('1932-12-26', tz='UTC')
     ]
-    valid_days = nyse.valid_days('1932-01-01', '1932-12-31')
-    for h in holidays_1932:
-        assert h not in valid_days
-        assert h in all_holidays           
+    _test_holidays(holidays, start, end)
+    _test_no_special_opens_closes(start, end)
+
         
 def test_1933():
-    nyse = NYSEExchangeCalendar()
-    holidays_1933 = [
+    start = '1933-01-01'
+    end   = '1933-12-31'    
+    holidays = [
         pd.Timestamp('1933-01-02', tz='UTC'),
         pd.Timestamp('1933-01-07', tz='UTC'),
         pd.Timestamp('1933-02-13', tz='UTC'),
@@ -1425,38 +1387,33 @@ def test_1933():
         pd.Timestamp('1933-11-30', tz='UTC'),
         pd.Timestamp('1933-12-25', tz='UTC')
     ]
-    valid_days = nyse.valid_days('1933-01-01', '1933-12-31')
-    for h in holidays_1933:
-        assert h not in valid_days
-        assert h in all_holidays        
+    _test_holidays(holidays, start, end)
 
     # early closes we expect:
-    early_closes_1933 = [
-        pd.Timestamp('1933-07-26', tz='UTC'),
-        pd.Timestamp('1933-07-27', tz='UTC'),
-        pd.Timestamp('1933-07-28', tz='UTC'),
-        pd.Timestamp('1933-08-04', tz='UTC'),
-        pd.Timestamp('1933-09-13', tz='UTC')
+    early_closes = [
+        pd.Timestamp('1933-07-26', tz='UTC'), # Volume
+        pd.Timestamp('1933-07-27', tz='UTC'), # Volume
+        pd.Timestamp('1933-07-28', tz='UTC'), # Volume
+        pd.Timestamp('1933-08-04', tz='UTC'), # Volume
+        pd.Timestamp('1933-09-13', tz='UTC')  # NRA demonstration
     ]
-    expected = nyse.early_closes(nyse.schedule('1933-01-01', '1933-12-31'))
-    for ec in early_closes_1933:
-        assert ec in expected.index          
+    _test_has_early_closes(early_closes, start, end)
         
     # late opens we expect:
-    late_opens_1933 = [
-        pd.Timestamp('1933-07-24', tz='UTC'),
-        pd.Timestamp('1933-07-25', tz='UTC'),
-        pd.Timestamp('1933-07-26', tz='UTC'),
-        pd.Timestamp('1933-07-27', tz='UTC'),
-        pd.Timestamp('1933-07-28', tz='UTC'),
+    late_opens = [
+        pd.Timestamp('1933-07-24', tz='UTC'), # Volume
+        pd.Timestamp('1933-07-25', tz='UTC'), # Volume
+        pd.Timestamp('1933-07-26', tz='UTC'), # Volume
+        pd.Timestamp('1933-07-27', tz='UTC'), # Volume
+        pd.Timestamp('1933-07-28', tz='UTC'), # Volume
     ]
-    expected = nyse.late_opens(nyse.schedule('1933-01-01', '1933-12-31'))
-    for lo in late_opens_1933:
-        assert lo in expected.index   
+    _test_has_late_opens(late_opens, start, end)
+
         
 def test_1934():
-    nyse = NYSEExchangeCalendar()
-    holidays_1934 = [
+    start = '1934-01-01'
+    end   = '1934-12-31'    
+    holidays = [
         pd.Timestamp('1934-01-01', tz='UTC'),
         pd.Timestamp('1934-02-12', tz='UTC'),
         pd.Timestamp('1934-02-22', tz='UTC'),
@@ -1470,23 +1427,20 @@ def test_1934():
         pd.Timestamp('1934-11-29', tz='UTC'),
         pd.Timestamp('1934-12-25', tz='UTC')
     ]
-    valid_days = nyse.valid_days('1934-01-01', '1934-12-31')
-    for h in holidays_1934:
-        assert h not in valid_days
-        assert h in all_holidays        
+    _test_holidays(holidays, start, end)
         
     # late opens we expect:
-    late_opens_1934 = [
-        pd.Timestamp('1934-02-20', tz='UTC')
+    late_opens = [
+        pd.Timestamp('1934-02-20', tz='UTC') # snow
     ]
-    expected = nyse.late_opens(nyse.schedule('1934-01-01', '1934-12-31'))
-    for lo in late_opens_1934:
-        assert lo in expected.index           
+    _test_has_late_opens(late_opens, start, end)
+       
         
 def test_1935():
-    nyse = NYSEExchangeCalendar()
-    holidays_1935 = [
-        pd.Timestamp('1935-01-01', tz='UTC'),
+    start = '1935-01-01'
+    end   = '1935-12-31'    
+    holidays = [
+       pd.Timestamp('1935-01-01', tz='UTC'),
         pd.Timestamp('1935-02-12', tz='UTC'),
         pd.Timestamp('1935-02-22', tz='UTC'),
         pd.Timestamp('1935-04-19', tz='UTC'),
@@ -1499,14 +1453,14 @@ def test_1935():
         pd.Timestamp('1935-11-28', tz='UTC'),
         pd.Timestamp('1935-12-25', tz='UTC')
     ]
-    valid_days = nyse.valid_days('1935-01-01', '1935-12-31')
-    for h in holidays_1935:
-        assert h not in valid_days
-        assert h in all_holidays         
+    _test_holidays(holidays, start, end)
+    _test_no_special_opens_closes(start, end)
+
         
 def test_1936():
-    nyse = NYSEExchangeCalendar()
-    holidays_1936 = [
+    start = '1936-01-01'
+    end   = '1936-12-31'    
+    holidays = [
         pd.Timestamp('1936-01-01', tz='UTC'),
         pd.Timestamp('1936-02-12', tz='UTC'),
         pd.Timestamp('1936-02-22', tz='UTC'),
@@ -1521,14 +1475,18 @@ def test_1936():
         pd.Timestamp('1936-12-25', tz='UTC'),
         pd.Timestamp('1936-12-26', tz='UTC')
     ]
-    valid_days = nyse.valid_days('1936-01-01', '1936-12-31')
-    for h in holidays_1936:
-        assert h not in valid_days
-        assert h in all_holidays           
+    _test_holidays(holidays, start, end)
+        
+    # late opens we expect:
+    late_opens = [
+        pd.Timestamp('1936-01-28', tz='UTC') # King George V funeral
+    ]
+    _test_has_late_opens(late_opens, start, end)
         
 def test_1937():
-    nyse = NYSEExchangeCalendar()
-    holidays_1937 = [
+    start = '1937-01-01'
+    end   = '1937-12-31'    
+    holidays = [
         pd.Timestamp('1937-01-01', tz='UTC'),
         pd.Timestamp('1937-02-12', tz='UTC'),
         pd.Timestamp('1937-02-22', tz='UTC'),
@@ -1544,14 +1502,14 @@ def test_1937():
         pd.Timestamp('1937-11-25', tz='UTC'),
         pd.Timestamp('1937-12-25', tz='UTC')
     ]
-    valid_days = nyse.valid_days('1937-01-01', '1937-12-31')
-    for h in holidays_1937:
-        assert h not in valid_days
-        assert h in all_holidays           
+    _test_holidays(holidays, start, end)
+    _test_no_special_opens_closes(start, end)
+
         
 def test_1938():
-    nyse = NYSEExchangeCalendar()
-    holidays_1938 = [
+    start = '1938-01-01'
+    end   = '1938-12-31'    
+    holidays = [
         pd.Timestamp('1938-01-01', tz='UTC'),
         pd.Timestamp('1938-02-12', tz='UTC'),
         pd.Timestamp('1938-02-22', tz='UTC'),
@@ -1565,15 +1523,14 @@ def test_1938():
         pd.Timestamp('1938-11-24', tz='UTC'),
         pd.Timestamp('1938-12-26', tz='UTC')
     ]
-    valid_days = nyse.valid_days('1938-01-01', '1938-12-31')
-    for h in holidays_1938:
-        assert h not in valid_days
-        assert h in all_holidays         
+    _test_holidays(holidays, start, end)
+    _test_no_special_opens_closes(start, end)
               
         
 def test_1939():
-    nyse = NYSEExchangeCalendar()
-    holidays_1939 = [
+    start = '1939-01-01'
+    end   = '1939-12-31'    
+    holidays = [
         pd.Timestamp('1939-01-02', tz='UTC'),
         pd.Timestamp('1939-02-13', tz='UTC'),
         pd.Timestamp('1939-02-22', tz='UTC'),
@@ -1587,15 +1544,15 @@ def test_1939():
         pd.Timestamp('1939-11-23', tz='UTC'),
         pd.Timestamp('1939-12-25', tz='UTC')
     ]
-    valid_days = nyse.valid_days('1939-01-01', '1939-12-31')
-    for h in holidays_1939:
-        assert h not in valid_days
-        assert h in all_holidays         
+    _test_holidays(holidays, start, end)
+    _test_no_special_opens_closes(start, end)
+
         
 def test_1940():
-    nyse = NYSEExchangeCalendar()
-    holidays_1940 = [
-        pd.Timestamp('1940-01-01', tz='UTC'),
+    start = '1940-01-01'
+    end   = '1940-12-31'    
+    holidays = [
+         pd.Timestamp('1940-01-01', tz='UTC'),
         pd.Timestamp('1940-02-12', tz='UTC'),
         pd.Timestamp('1940-02-22', tz='UTC'),
         pd.Timestamp('1940-03-22', tz='UTC'),
@@ -1608,14 +1565,14 @@ def test_1940():
         pd.Timestamp('1940-11-21', tz='UTC'),
         pd.Timestamp('1940-12-25', tz='UTC')
     ]
-    valid_days = nyse.valid_days('1940-01-01', '1940-12-31')
-    for h in holidays_1940:
-        assert h not in valid_days
-        assert h in all_holidays           
+    _test_holidays(holidays, start, end)
+    _test_no_special_opens_closes(start, end)
+
         
 def test_1941():
-    nyse = NYSEExchangeCalendar()
-    holidays_1941 = [
+    start = '1941-01-01'
+    end   = '1941-12-31'    
+    holidays = [
         pd.Timestamp('1941-01-01', tz='UTC'),
         pd.Timestamp('1941-02-12', tz='UTC'),
         pd.Timestamp('1941-02-22', tz='UTC'),
@@ -1629,14 +1586,14 @@ def test_1941():
         pd.Timestamp('1941-11-20', tz='UTC'),
         pd.Timestamp('1941-12-25', tz='UTC')
     ]
-    valid_days = nyse.valid_days('1941-01-01', '1941-12-31')
-    for h in holidays_1941:
-        assert h not in valid_days
-        assert h in all_holidays            
+    _test_holidays(holidays, start, end)
+    _test_no_special_opens_closes(start, end)
+
         
 def test_1942():
-    nyse = NYSEExchangeCalendar()
-    holidays_1942 = [
+    start = '1942-01-01'
+    end   = '1942-12-31'    
+    holidays = [
         pd.Timestamp('1942-01-01', tz='UTC'),
         pd.Timestamp('1942-02-12', tz='UTC'),
         pd.Timestamp('1942-02-23', tz='UTC'),
@@ -1650,15 +1607,15 @@ def test_1942():
         pd.Timestamp('1942-11-26', tz='UTC'),
         pd.Timestamp('1942-12-25', tz='UTC')
     ]
-    valid_days = nyse.valid_days('1942-01-01', '1942-12-31')
-    for h in holidays_1942:
-        assert h not in valid_days
-        assert h in all_holidays          
+    _test_holidays(holidays, start, end)
+    _test_no_special_opens_closes(start, end)
+
         
 def test_1943():
-    nyse = NYSEExchangeCalendar()
-    holidays_1943 = [
-            pd.Timestamp('1943-01-01', tz='UTC'),
+    start = '1943-01-01'
+    end   = '1943-12-31'    
+    holidays = [
+        pd.Timestamp('1943-01-01', tz='UTC'),
         pd.Timestamp('1943-02-12', tz='UTC'),
         pd.Timestamp('1943-02-22', tz='UTC'),
         pd.Timestamp('1943-04-23', tz='UTC'),
@@ -1671,14 +1628,14 @@ def test_1943():
         pd.Timestamp('1943-11-25', tz='UTC'),
         pd.Timestamp('1943-12-25', tz='UTC')
     ]
-    valid_days = nyse.valid_days('1943-01-01', '1943-12-31')
-    for h in holidays_1943:
-        assert h not in valid_days
-        assert h in all_holidays            
+    _test_holidays(holidays, start, end)
+    _test_no_special_opens_closes(start, end)
+
         
 def test_1944():
-    nyse = NYSEExchangeCalendar()
-    holidays_1944 = [
+    start = '1944-01-01'
+    end   = '1944-12-31'    
+    holidays = [
         pd.Timestamp('1944-01-01', tz='UTC'),
         pd.Timestamp('1944-02-12', tz='UTC'),
         pd.Timestamp('1944-02-22', tz='UTC'),
@@ -1695,14 +1652,14 @@ def test_1944():
         pd.Timestamp('1944-11-23', tz='UTC'),
         pd.Timestamp('1944-12-25', tz='UTC')
     ]
-    valid_days = nyse.valid_days('1944-01-01', '1944-12-31')
-    for h in holidays_1944:
-        assert h not in valid_days
-        assert h in all_holidays             
+    _test_holidays(holidays, start, end)
+    _test_no_special_opens_closes(start, end)
+
         
 def test_1945():
-    nyse = NYSEExchangeCalendar()
-    holidays_1945 = [
+    start = '1945-01-01'
+    end   = '1945-12-31'    
+    holidays = [
         pd.Timestamp('1945-01-01', tz='UTC'),
         pd.Timestamp('1945-02-12', tz='UTC'),
         pd.Timestamp('1945-02-22', tz='UTC'),
@@ -1731,14 +1688,14 @@ def test_1945():
         pd.Timestamp('1945-12-24', tz='UTC'),
         pd.Timestamp('1945-12-25', tz='UTC')
     ]
-    valid_days = nyse.valid_days('1945-01-01', '1945-12-31')
-    for h in holidays_1945:
-        assert h not in valid_days
-        assert h in all_holidays           
+    _test_holidays(holidays, start, end)
+    _test_no_special_opens_closes(start, end)
+
         
 def test_1946():
-    nyse = NYSEExchangeCalendar()
-    holidays_1946 = [
+    start = '1946-01-01'
+    end   = '1946-12-31'    
+    holidays = [
         pd.Timestamp('1946-01-01', tz='UTC'),
         pd.Timestamp('1946-02-12', tz='UTC'),
         pd.Timestamp('1946-02-22', tz='UTC'),
@@ -1772,14 +1729,14 @@ def test_1946():
         pd.Timestamp('1946-11-28', tz='UTC'),
         pd.Timestamp('1946-12-25', tz='UTC')
     ]
-    valid_days = nyse.valid_days('1946-01-01', '1946-12-31')
-    for h in holidays_1946:
-        assert h not in valid_days
-        assert h in all_holidays              
+    _test_holidays(holidays, start, end)
+    _test_no_special_opens_closes(start, end)
+
         
 def test_1947():
-    nyse = NYSEExchangeCalendar()
-    holidays_1947 = [
+    start = '1947-01-01'
+    end   = '1947-12-31'    
+    holidays = [
         pd.Timestamp('1947-01-01', tz='UTC'),
         pd.Timestamp('1947-02-12', tz='UTC'),
         pd.Timestamp('1947-02-22', tz='UTC'),
@@ -1811,14 +1768,14 @@ def test_1947():
         pd.Timestamp('1947-11-27', tz='UTC'),
         pd.Timestamp('1947-12-25', tz='UTC')
     ]
-    valid_days = nyse.valid_days('1947-01-01', '1947-12-31')
-    for h in holidays_1947:
-        assert h not in valid_days
-        assert h in all_holidays                      
+    _test_holidays(holidays, start, end)
+    _test_no_special_opens_closes(start, end)
+
         
 def test_1948():
-    nyse = NYSEExchangeCalendar()
-    holidays_1948 = [
+    start = '1948-01-01'
+    end   = '1948-12-31'    
+    holidays = [
         pd.Timestamp('1948-01-01', tz='UTC'),
         pd.Timestamp('1948-01-03', tz='UTC'),
         pd.Timestamp('1948-02-12', tz='UTC'),
@@ -1851,14 +1808,14 @@ def test_1948():
         pd.Timestamp('1948-11-25', tz='UTC'),
         pd.Timestamp('1948-12-25', tz='UTC')
     ]
-    valid_days = nyse.valid_days('1948-01-01', '1948-12-31')
-    for h in holidays_1948:
-        assert h not in valid_days
-        assert h in all_holidays               
+    _test_holidays(holidays, start, end)
+    _test_no_special_opens_closes(start, end)
+
         
 def test_1949():
-    nyse = NYSEExchangeCalendar()
-    holidays_1949 = [
+    start = '1949-01-01'
+    end   = '1949-12-31'    
+    holidays = [
         pd.Timestamp('1949-01-01', tz='UTC'),
         pd.Timestamp('1949-02-12', tz='UTC'),
         pd.Timestamp('1949-02-22', tz='UTC'),
@@ -1891,14 +1848,13 @@ def test_1949():
         pd.Timestamp('1949-12-24', tz='UTC'),
         pd.Timestamp('1949-12-26', tz='UTC')
     ]
-    valid_days = nyse.valid_days('1949-01-01', '1949-12-31')
-    for h in holidays_1949:
-        assert h not in valid_days
-        assert h in all_holidays             
+    _test_holidays(holidays, start, end)
+    _test_no_special_opens_closes(start, end)
         
 def test_1950():
-    nyse = NYSEExchangeCalendar()
-    holidays_1950 = [
+    start = '1950-01-01'
+    end   = '1950-12-31'    
+    holidays = [
         pd.Timestamp('1950-01-02', tz='UTC'),
         pd.Timestamp('1950-02-13', tz='UTC'),
         pd.Timestamp('1950-02-22', tz='UTC'),
@@ -1931,14 +1887,14 @@ def test_1950():
         pd.Timestamp('1950-12-23', tz='UTC'),
         pd.Timestamp('1950-12-25', tz='UTC')
     ]
-    valid_days = nyse.valid_days('1950-01-01', '1950-12-31')
-    for h in holidays_1950:
-        assert h not in valid_days
-        assert h in all_holidays          
+    _test_holidays(holidays, start, end)
+    _test_no_special_opens_closes(start, end)
+
         
 def test_1951():
-    nyse = NYSEExchangeCalendar()
-    holidays_1951 = [
+    start = '1951-01-01'
+    end   = '1951-12-31'    
+    holidays = [
         pd.Timestamp('1951-01-01', tz='UTC'),
         pd.Timestamp('1951-02-12', tz='UTC'),
         pd.Timestamp('1951-02-22', tz='UTC'),
@@ -1970,14 +1926,20 @@ def test_1951():
         pd.Timestamp('1951-11-22', tz='UTC'),
         pd.Timestamp('1951-12-25', tz='UTC')
     ]
-    valid_days = nyse.valid_days('1951-01-01', '1951-12-31')
-    for h in holidays_1951:
-        assert h not in valid_days
-        assert h in all_holidays             
+    _test_holidays(holidays, start, end)
+    _test_no_special_opens(start, end)
+
+    # early closes we expect:
+    early_closes = [
+        pd.Timestamp('1951-12-24', tz='UTC'), # Christmas Eve
+     ]
+    _test_has_early_closes(early_closes, start, end)
+
         
 def test_1952():
-    nyse = NYSEExchangeCalendar()
-    holidays_1952 = [
+    start = '1952-01-01'
+    end   = '1952-12-31'    
+    holidays = [
         pd.Timestamp('1952-01-01', tz='UTC'),
         pd.Timestamp('1952-02-12', tz='UTC'),
         pd.Timestamp('1952-02-22', tz='UTC'),
@@ -2003,26 +1965,11 @@ def test_1952():
         pd.Timestamp('1952-09-13', tz='UTC'),
         pd.Timestamp('1952-09-20', tz='UTC'),
         pd.Timestamp('1952-09-27', tz='UTC'),
-        pd.Timestamp('1952-10-04', tz='UTC'),
-        pd.Timestamp('1952-10-11', tz='UTC'),
         pd.Timestamp('1952-10-13', tz='UTC'),
-        pd.Timestamp('1952-10-18', tz='UTC'),
-        pd.Timestamp('1952-10-25', tz='UTC'),
-        pd.Timestamp('1952-11-01', tz='UTC'),
         pd.Timestamp('1952-11-04', tz='UTC'),
-        pd.Timestamp('1952-11-08', tz='UTC'),
         pd.Timestamp('1952-11-11', tz='UTC'),
-        pd.Timestamp('1952-11-15', tz='UTC'),
-        pd.Timestamp('1952-11-22', tz='UTC'),
         pd.Timestamp('1952-11-27', tz='UTC'),
-        pd.Timestamp('1952-11-29', tz='UTC'),
-        pd.Timestamp('1952-12-06', tz='UTC'),
-        pd.Timestamp('1952-12-13', tz='UTC'),
-        pd.Timestamp('1952-12-20', tz='UTC'),
         pd.Timestamp('1952-12-25', tz='UTC'),
-        pd.Timestamp('1952-12-27', tz='UTC')
     ]
-    valid_days = nyse.valid_days('1952-01-01', '1952-12-31')
-    for h in holidays_1952:
-        assert h not in valid_days
-        assert h in all_holidays           
+    _test_holidays(holidays, start, end)
+    _test_no_special_opens_closes(start, end)

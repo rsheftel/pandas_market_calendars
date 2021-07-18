@@ -52,50 +52,100 @@ from pandas_market_calendars.holidays_us import (
     USThanksgivingDayBefore1939, FridayAfterThanksgivingAdHoc, USVeteransDay1934to1953,
     Christmas, ChristmasBefore1954, ChristmasEveBefore1993, ChristmasEveInOrAfter1993, 
     SatBeforeChristmasAdhoc, SatAfterChristmasAdhoc,
-    ChristmasEvesAdhoc, DayAfterChristmasAdhoc, ChristmasEveEarlyCloseAdhoc,
+    ChristmasEvesAdhoc, DayAfterChristmasAdhoc, ChristmasEve1pmEarlyCloseAdhoc,
     USNationalDaysofMourning,
-    
-    
+    # 1885    
     UlyssesGrantFuneral1885,
+    # 1892
     ColumbianCelebration1892, 
+    # 1889
     WashingtonInaugurationCentennialCelebration1889,
+    # 1898
     CharterDay1898, WelcomeNavalCommander1898, 
+    # 1899
     AdmiralDeweyCelebration1899, GarretHobartFuneral1899,
-    McKinleyDeathAndFuneral1901, QueenVictoriaFuneral1901, MovedToProduceExchange1901, EnlargedProduceExchange1901,
-    
-    KingEdwardVIIcoronation1902, NYSEnewBuildingOpen1903, GroverClevelandFuneral1pmClose1908,
-    HudsonFultonCelebration1909, KingEdwardDeath11amyClose1910, KingEdwardFuneral12pmOpen1910,
+    # 1901
+    McKinleyDeathAndFuneral1901, QueenVictoriaFuneral1901, 
+    MovedToProduceExchange1901, EnlargedProduceExchange1901,
+    # 1902
+    KingEdwardVIIcoronation1902, 
+    # 1903
+    NYSEnewBuildingOpen1903, 
+    # 1908
+    GroverClevelandFuneral1pmClose1908,
+    # 1909
+    HudsonFultonCelebration1909, 
+    # 1910
+    KingEdwardDeath11amyClose1910, KingEdwardFuneral12pmOpen1910,
+    # 1912
+    JamesShermanFuneral1912,
+    # 1913
     JPMorganFuneral12pmOpen1913, WilliamGaynorFuneral12pmOpen1913,
+    # 1914
     OnsetOfWWI1914, 
-    ParadeOfNationalGuardEarlyClose1917, LibertyDayEarlyClose1917, 
-    DraftRegistrationDay1917, DraftRegistrationDay1918,
-    LibertyDayEarlyClose1918,
-    FalseArmisticeReportEarlyClose1918, ArmisticeSigned1918,
-    RooseveltFuneralEarlyClose1919, Homecoming27Division1919, ParadeOf77thDivision1919,
-    BacklogRelief1919, GeneralPershingReturn1919,
-    TrafficBlockLateOpen1919, TrafficBlockLateOpen1920,
-    OfficeLocationChange1920, WallStreetExplosionEarlyClose1920,
-    WoodrowWilsonFuneralEarlyClose1924, 
-    AunnciatorBoardFireLateOpen1921,
-    EclipseOfSunLateOpen1925, CromwellFuneralEarlyClose1925,
-    LindberghParade1927, BacklogRelief1928, BacklogReliefEarlyClose1928,
-    BacklogRelief1929, BacklogReliefEarlyClose1929, BacklogReliefLateOpen1929,
-    TaftFuneralEarlyClose1930,
-    BankHolidays1933, 
+    # 1917
+    WeatherHeatClosing1917, ParadeOfNationalGuardEarlyClose1917,
+     LibertyDay12pmEarlyClose1917,  DraftRegistrationDay1917, 
+    # 1918
+    WeatherNoHeatClosing1918, DraftRegistrationDay1918, 
+    LibertyDay12pmEarlyClose1918, FalseArmisticeReport1430EarlyClose1918, 
+    ArmisticeSigned1918,
+    # 1919
+    RooseveltFuneral1230EarlyClose1919, Homecoming27Division1919, 
+    ParadeOf77thDivision1919,  BacklogRelief1919, GeneralPershingReturn1919,
+    TrafficBlockLateOpen1919, 
+    # 1920
+    TrafficBlockLateOpen1920, OfficeLocationChange1920, 
+    WallStreetExplosionEarlyClose1920,
+    # 1921
+    AnnunciatorBoardFire1pmLateOpen1921,
+    # 1923
+    HardingDeath1923, HardingFuneral1923,
+    # 1924
+    WoodrowWilsonFuneral1230EarlyClose1924, 
+    # 1925
+    EclipseOfSunLateOpen1925, CromwellFuneral1430EarlyClose1925,
+    # 1927
+    LindberghParade1927,
+    # 1928
+    BacklogRelief1928, BacklogRelief2pmEarlyClose1928,
+    # 1929
+    BacklogRelief1929, BacklogRelief1pmEarlyClose1929, BacklogRelief12pmLateOpen1929,
+    # 1930
+    TaftFuneral1230EarlyClose1930,
+    # 1933
+    BankHolidays1933, GasFumesOnTradingFloor1230EarlyClose1933,
     HeavyVolume1933, HeavyVolume12pmLateOpen1933, HeavyVolume11amLateOpen1933, 
-    HeavyVolume2pmEarlyClose1933, GasFumesOnTradingFloorEarlyClose1933,
-    NRAdemonstrationEarlyClose1933,Snow11amLateOpen1934,
+    HeavyVolume2pmEarlyClose1933, NRAdemonstration12pmEarlyClose1933,
+    # 1924
+    Snow11amLateOpen1934,
+    # 1936
+    KingGeorgeVFuneral11amLateOpen1936,
+    # 1944
+    SatClosings1944,
+    # 1945
     SatClosings1945, VJday1945, NavyDay1945,
+    # 1946
     RailroadStrike1946, SatClosings1946,
-    SatClosings1947, SatClosings1948, SevereWeather1948,
-    SatClosings1949, SatClosings1950, SatClosings1951, SatClosings1952,
+    # 1947
+    SatClosings1947, 
+    # 1948
+    SatClosings1948, SevereWeather1948,
+    # 1949
+    SatClosings1949, 
+    # 1950
+    SatClosings1950, 
+    # 1951
+    SatClosings1951, 
+    # 1952
+    SatClosings1952,
     
     USVetransDayAdHoc, SatAfterColumbusDayAdHoc,
      
     FirstLunarLandingClosing,
     
     PaperworkCrisis68, September11Closings,
-    WeatherSnowClosing, WeatherHeatClosing, WeatherNoHeatClosing,
+    WeatherSnowClosing,  
     GreatBlizzardOf1888, HurricaneGloriaClosings,
     HurricaneSandyClosings, NewYorkCityBlackout77 )
 from .market_calendar import MarketCalendar
@@ -109,17 +159,21 @@ AbstractHolidayCalendar.start_date = '1885-01-01'
 
 class NYSEExchangeCalendar(MarketCalendar):
     """
-    Exchange calendar for NYSE from 1885-02-16 (when the DOW average was first recorded)
+    Exchange calendar for NYSE from 1885-01-01
+        - Note: DJIA was first recorded 1885-02-16
 
     - https://web.archive.org/web/20141224054812/http://www.nyse.com/about/history/timeline_trading.html
     - https://www.marketwatch.com/story/a-brief-history-of-trading-hours-on-wall-street-2015-05-29
     - http://www.ltadvisors.net/Info/research/closings.pdf
+    - https://github.com/rsheftel/pandas_market_calendars/files/6827110/Stocks.NYSE-Closings.pdf 
     
     - 1792: 5 securities traded
     - 1871: Continuous trading begins
-    - 1885 to 1887: trading hours Mon-Sat 10am to variable 2pm thru 4pm (encoded as 3pm)
+    - 1885 to 1887: trading hours Mon-Sat 10am to variable 2pm thru 4pm (coded as 3pm)
     - 1887: trading hours Mon-Fri 10am-3pm Sat 10am-noon
-    - 1952-09-29: trading hours Mon-Fri 10am-3:30pm, Sat trading removed after Sept 27
+    - 1952-09-29: trading hours Mon-Fri 10am-3:30pm, 
+        - Sat trading removed after Sept 27
+        - Last effective Saturday traded was May 24, 1952
     - 1974: trading hours Mon-Fri 10am-4pm
     - 1985: trading hours Mon-Fri 9:30am-4pm
 
@@ -167,8 +221,7 @@ class NYSEExchangeCalendar(MarketCalendar):
     Retired Regularly-Observed Holidays:
     ####################################
     - Columbus Day (after 1953)
-    - Veterans Day (after 1953)
-
+    - Armistice/Veterans Day (after 1953)
 
     #################################
     Irregularities Openings/Closings:
@@ -276,12 +329,126 @@ class NYSEExchangeCalendar(MarketCalendar):
     - Closed on Sep 12, 1918 (Thu): Draft registration day
     - Early Close 2:30pm on Nov 7, 1918 (Thu): False armistice report
     - Closed on Nov 11, 1918 (Mon): Armistice signed
+    - Early Close 12:30pm on Jan 7, 1919 (Tue): Former President Theodore Roosevelt funeral
+    - Closed on Mar 25, 1919 (Tue): Homecoming of 27th Division
+    - Closed on May 6, 1919 (Tue): Parade of 77th Division
+    - Closed on May 31, 1919 (Sat): Saturday after Decoratin Day
+    - Closed on Jul 5, 1919 (Sat): Saturday after Independence Day
+    - Closed on Jul 19, 1919 (Sat): Heat and backlog catch up
+    - Closed on Aug 2, 1919 (Sat): Backlog catch up
+    - Closed on Aug 16, 1919 (Sat): Backlog catch up
+    - Closed on Aug 30, 1919 (Sat): Saturday before Labor Day
+    - Closed on Sep 10, 1919 (Wed): Return of General John J. Pershing
+    - Late Open 10:30am on Dec 30, 1919 (Tue): Traffic block
+    - Late Open 10:30am on Feb 6, 1920 (Fri): Traffic block
+    - Closed on Apr 3, 1920 (Sat): Saturday after Good Friday
+    - Closed on May 1, 1920 (Sat): Many firms changed office locations
+    - Closed on Jul 3, 1920 (Sat): Saturday before Independence Day
+    - Closed on Sep 4, 1920 (Sat): Saturday before Labor Day
+    - Early Close 12pm on Sep 16, 1920 (Thu): Wall Street explosion
+    - Closed on May 28, 1921 (Sat): Saturday before Decoration Day
+    - Closed on Jul 2, 1921 (Sat): Saturday before Independence Day
+    - Late Open 1pm on Aug 2, 1921 (Tue): Fire in annunciator board
+    - Closed on Sep 3, 1921 (Sat): Saturday before Labor Day
+    - Closed on Dec 23, 1922 (Sat): Saturday before Christmas
+    - Closed on Aug 3, 1923 (Fri): President Warren G. Harding death
+    - NOT IMPLEMENTED: Break 11am to 12:30pm on Aug 8, 1923 (Wed): President Warren G. Harding funeral
+    - Closed on Aug 10, 1923 (Fri): President Warren G. Harding funeral
+    - Early Close 12:30pm on Feb 6, 1924 (Wed): Former President Woodrow Wilson funderal
+    - Closed on May 31, 1924 (Sat): Saturday after Decoration Day
+    - Late Open 10:45am on Jan 24, 1925 (Sat): Eclipse of sun
+    - Early Close 2:30pm on Sep 18, 1925 (Fri): Seymour L. Cromwell funeral (former NYSE president)
+    - Closed on Dec 26, 1925 (Sat): Saturday after Christmas
+    - Closed on May 29, 1926 (Sat): Saturday before Decoration Day
+    - Closed on Jul 3, 1926 (Sat): Saturday before Independence Day
+    - Closed on Sep 4, 1926 (Sat): Saturday before Labor Day
+    - Closed on Jun 13, 1927 (Mon): Colonel Charles A. Lindberg parade
+    - Closed on Apr 7, 1928 (Sat): Backlog catch up
+    - Closed on Apr 21, 1928 (Sat): Backlog catch up
+    - Closed on May 5, 1928 (Sat): Backlog catch up
+    - Closed on May 12, 1928 (Sat): Backlog catch up
+    - Closed on May 19, 1928 (Sat): Backlog catch up
+    - Early Closes May 21-25, 1928 (Mon-Fri): Backlog catch up
+    - Closed on May 26, 1928 (Sat): Backlog catch up
+    - Closed on Nov 24, 1928 (Sat): Backlog catch up
+    - Closed on Feb 9, 1929 (Sat): Backlog catch up
+    - Closed on Feb 23, 1929 (Sat): Saturday after Washington's birthday
+    - Closed on Mar 30, 1929 (Sat): Saturday after Good Friday
+    - Closed on Aug 31, 1929 (Sat): Saturday before Labor Day
+    - Late Open 12pm on Oct 31, 1929 (Thu): Backlog catch up and relieve personnel
+    - Closed on Nov 1-2, 1929 (Fri-Sat): Backlog catch up and relieve personnel
+    - Early Closes 1pm on Nov 6-8, 1929 (Wed-Fri): Backlog catch up and relieve personnel
+    - Closed on Nov 9, 1929 (Sat): Backlog catch up and relieve personnel
+    - Early Closes 1pm on Nov 11-15, 1929 (Mon-Fri): Backlog catch up and relieve personnel
+    - Closed on Nov 16, 1929 (Sat): Backlog catch up and relieve personnel
+    - Closed on Nov 18-22, 1929 (Mon-Fri): Backlog catch up and relieve personnel
+    - Closed on Nov 23, 1929 (Sat): Backlog catch up and relieve personnel
+    - Closed on Nov 29-30, 1929 (Fri-Sat): Backlog catch up and relieve personnel
+    - Early Close 12:30pm on Mar 11, 1930 (Tue): Former President William Howard Taft funeral
+    - Closed on Apr 19, 1930 (Sat): Saturday after Good Friday
+    - Closed on May 31, 1930 (Sat): Saturday after Decoration Dday
+    - Closed on Jul 5, 1930 (Sat): Saturday after Independence Day
+    - Closed on Aug 30, 1930 (Sat): Saturday before Labor Day
+    - Closed on Sep 5, 1931 (Sat): Saturday before Labor Day
+    - Closed on Dec 26, 1931 (Sat): Saturday after Christmas
+    - Closed on Jul 2, 1932 (Sat): Saturday before Independence Day
+    - Closed on Jan 7, 1933 (Sat): Former President Calvin Coolidge funeral
+    - Closed on Mar 4, 1933 (Sat): State banking holiday
+    - Closed on Mar 6-14, 1933 (Mon-Tue): National banking holiday
+    - Late Open 12pm on Jul 24-25, 1933 (Mon-Tue): Volume activity
+    - Late Opens AND Early Closes on Jul 26-28, 1933 (Wed-Fri): Volume activity
+    - Closed on July 29, 1933 (Sat): Volume activity
+    - Early Close 12:30pm on Aug 4, 1933 (Fri): Gas fumes on trading floor
+    - Closed on Aug 5, 1933 (Sat): Volume activity
+    - Closed on Aug 12, 1933 (Sat): Volume activity
+    - Closed on Aug 19, 1933 (Sat): Volume activity
+    - Closed on Aug 26, 1933 (Sat): Volume activity
+    - Closed on Sep 2, 1933 (Sat): Volume activity
+    - Early Close 12pm on Sep 13, 1933 (Wed): NRA demonstration
+    - Late Open 11am on Feb 20, 1934 (Tue): severe snowstorm
+    - Late Open 11am on Jan 28, 1936 (Tue): King George V of England funeral
+    - Closed on Dec 26, 1936 (Sat): Saturday after Christmas
+    - Closed on May 29, 1937 (Sat): Saturday before Decoration Day
+    - Closed on Jul 3, 1937 (Sat): Saturday before Independence Day
+    - NOT IMPLEMENTED Break from 12-13:00 on May 18, 1942 (Mon): NYSE 150th anniversary
+    - NOT IMPLEMENTED Break from 14:32-14:58 on Oct 22, 1942 (Thu): Civil Defense drill
+    - NOT IMPLEMENTED Break from 14:38-14:59 on Oct 26, 1943 (Tue): Civil Defense drill
+        - Reopened from 15:20-15:40 under special rule of the Board
+    - Closed on Aug 19, 1944 (Sat)
+    - Closed on Aug 26, 1944 (Sat)
+    - Closed on Sep 2, 1944 (Sat)
+    - Closed on Apr 14, 1945 (Sat): President Franklin D. Roosevelt National Day of mourning
+    - NOT IMPLEMENTED Break 11:00-13:00 on Jun 19, 1945 (Tue): Parade for General Eisenhower
+    - Closed on Saturdays Jul 7-Sep 1, 1945 
+    - Closed on Aug 15-16, 1945 (Wed-Thu): VJ Day. End of World War II
+    - Closed on Oct 13, 1945 (Sat): Saturday after Columbus Day
+    - Closed on Oct 27, 1945 (Sat): Navy Day
+    - Closed on Dec 24, 1945 (Mon): Christmas Eve 
+    - Closed on Feb 23, 1946 (Sat): Saturday after Washington's birthday
+    - Closed on May 25, 1946 (Sat): Railroad strike
+    - Closed on Saturdays Jun 1-Sep 28, 1946 (Sat-Sat)
+    - Closed on Saturdays May 31-Sep 27, 1947 (Sat-Sat)
+    - Closed on Jan 3, 1948 (Sat): severe weather
+    - Closed on Saturdays May 29-Sep 25, 1948 (Sat-Sat)
+    - Closed on Saturdays May 28-Sep 4, 1948 (Sat-Sat)
+    - Cosed on Dec 24, 1949 (Sat): Christmas Eve
+    - Closed on Saturdays Jun 3-Sep 30, 1950 (Sat-Sat)
+    - Closed on Dec 12, 1950 (Sat): Saturday before Christmas Eve
+    - NOT IMPLEMENTED Break from 11:00-13:00 on Apr 20, 1951 (Fri): Parade for General MacArthur
+    - Closed on Saturdays Jun 2-Sep 29, 1951 (Sat-Sat)
+    - NOT IMPLEMENTED Break from 10:33-11:05 (Wed): Civil Defense Drill
+    - Early Close 1pm on Dec 24, 1951 (Mon): Christmas Eve
+    - Closed on Saturdays May 31-Sep 27, 1952 (Sat-Sat)
+        - As of Sep 29, 1952 Saturdays were retired as trading days
+        - As of Sep 29, 1952, M-F trading closes at 3:30pm (30 minutes longer)
     
     
-    - Closed on 11/1/1929 and 11/29/1929 for backlog relief.
-    - Closed between 3/6/1933 and 3/14/1933 due to bank holiday.
-    - Closed on 8/15/1945 and 8/16/1945 following victory over Japan.
-    - Closed on Christmas Eve in 1945 and 1946.
+    
+    
+    
+    
+    
+    
     - Closed on December 26th in 1958.
     - Closed the day before Memorial Day in 1961.
     - Closed on 11/25/1963 due to John F. Kennedy's death.
@@ -314,9 +481,7 @@ class NYSEExchangeCalendar(MarketCalendar):
     we've done alright...and we should check if it's a half day.
     
     """
-    aliases = ['NYSE', 'stock', 'NASDAQ', 'BATS', 'DJIA']
-    regular_early_close = time(13)
-    regular_late_open = time(10)
+    aliases = ['NYSE', 'stock', 'NASDAQ', 'BATS', 'DJIA', 'DOW']
 
     @property
     def name(self):
@@ -405,8 +570,11 @@ class NYSEExchangeCalendar(MarketCalendar):
             KingEdwardVIIcoronation1902,
             NYSEnewBuildingOpen1903,
             HudsonFultonCelebration1909,
+            JamesShermanFuneral1912,
             OnsetOfWWI1914,
+            WeatherHeatClosing1917,
             DraftRegistrationDay1917,
+            WeatherNoHeatClosing1918,
             DraftRegistrationDay1918,
             ArmisticeSigned1918,
             Homecoming27Division1919,
@@ -414,11 +582,14 @@ class NYSEExchangeCalendar(MarketCalendar):
             BacklogRelief1919,
             GeneralPershingReturn1919,
             OfficeLocationChange1920,
+            HardingDeath1923,
+            HardingFuneral1923,
             LindberghParade1927,
             BacklogRelief1928,
             BacklogRelief1929,
             BankHolidays1933,
             HeavyVolume1933,
+            SatClosings1944,
             SatClosings1945,
             VJday1945,
             NavyDay1945,
@@ -438,8 +609,8 @@ class NYSEExchangeCalendar(MarketCalendar):
             GrantsBirthDayAdhoc,
             PaperworkCrisis68,
             WeatherSnowClosing,
-            WeatherHeatClosing,
-            WeatherNoHeatClosing,
+            
+            
             FirstLunarLandingClosing,
             September11Closings,
             NewYorkCityBlackout77,
@@ -457,16 +628,16 @@ class NYSEExchangeCalendar(MarketCalendar):
             ])),
             (time(12), AbstractHolidayCalendar(rules=[
                 ParadeOfNationalGuardEarlyClose1917,
-                LibertyDayEarlyClose1917,
-                LibertyDayEarlyClose1918,
+                LibertyDay12pmEarlyClose1917,
+                LibertyDay12pmEarlyClose1918,
                 WallStreetExplosionEarlyClose1920,
-                NRAdemonstrationEarlyClose1933,
+                NRAdemonstration12pmEarlyClose1933,
             ])),
             (time(hour=12, minute=30), AbstractHolidayCalendar(rules=[
-                RooseveltFuneralEarlyClose1919,
-                WoodrowWilsonFuneralEarlyClose1924,
-                TaftFuneralEarlyClose1930,
-                GasFumesOnTradingFloorEarlyClose1933,
+                RooseveltFuneral1230EarlyClose1919,
+                WoodrowWilsonFuneral1230EarlyClose1924,
+                TaftFuneral1230EarlyClose1930,
+                GasFumesOnTradingFloor1230EarlyClose1933,
             ])),
             (time(13), AbstractHolidayCalendar(rules=[               
                 MonTuesThursBeforeIndependenceDay,
@@ -481,8 +652,8 @@ class NYSEExchangeCalendar(MarketCalendar):
                 USBlackFridayBefore1993,
             ])),
             (time(hour=14, minute=30), AbstractHolidayCalendar(rules=[
-                FalseArmisticeReportEarlyClose1918,
-                CromwellFuneralEarlyClose1925,
+                FalseArmisticeReport1430EarlyClose1918,
+                CromwellFuneral1430EarlyClose1925,
             ])),
  
         ]
@@ -496,9 +667,9 @@ class NYSEExchangeCalendar(MarketCalendar):
                 '2003-12-26',
                 '2013-07-03'
             ]),
-            (time(14), [t.strftime("%Y-%m-%d") for t in ChristmasEveEarlyCloseAdhoc]
-             + BacklogReliefEarlyClose1928.strftime("%Y-%m-%d").tolist()
-             + [t.strftime("%Y-%m-%d") for t in BacklogReliefEarlyClose1929]
+            (time(14), [t.strftime("%Y-%m-%d") for t in ChristmasEve1pmEarlyCloseAdhoc]
+             + BacklogRelief2pmEarlyClose1928.strftime("%Y-%m-%d").tolist()
+             + [t.strftime("%Y-%m-%d") for t in BacklogRelief1pmEarlyClose1929]
              + [t.strftime("%Y-%m-%d") for t in HeavyVolume2pmEarlyClose1933]
             ),
         ]
@@ -515,6 +686,7 @@ class NYSEExchangeCalendar(MarketCalendar):
             ])),
             (time(11), AbstractHolidayCalendar(rules=[
                 Snow11amLateOpen1934,
+                KingGeorgeVFuneral11amLateOpen1936,
             ])),
             (time(12), AbstractHolidayCalendar(rules=[
                 KingEdwardFuneral12pmOpen1910,
@@ -522,7 +694,7 @@ class NYSEExchangeCalendar(MarketCalendar):
                 WilliamGaynorFuneral12pmOpen1913,
             ])),
             (time(13), AbstractHolidayCalendar(rules=[
-                AunnciatorBoardFireLateOpen1921,
+                AnnunciatorBoardFire1pmLateOpen1921,
             ])),
             ]
 
@@ -532,7 +704,7 @@ class NYSEExchangeCalendar(MarketCalendar):
         return [                       
             (time(11), [t.strftime("%Y-%m-%d") for t in HeavyVolume11amLateOpen1933]                     
             ),     
-            (time(12), [t.strftime("%Y-%m-%d") for t in BacklogReliefLateOpen1929]
+            (time(12), [t.strftime("%Y-%m-%d") for t in BacklogRelief12pmLateOpen1929]
                      + [t.strftime("%Y-%m-%d") for t in HeavyVolume12pmLateOpen1933]
             ),            
         ]

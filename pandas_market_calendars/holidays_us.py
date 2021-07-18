@@ -467,7 +467,7 @@ DayAfterChristmasAdhoc = [
     Timestamp('1958-12-26', tz='UTC'),
 ]
 
-ChristmasEveEarlyCloseAdhoc = [
+ChristmasEve1pmEarlyCloseAdhoc = [
     Timestamp('1951-12-24', tz='UTC'),
     Timestamp('1974-12-24', tz='UTC'),
     Timestamp('1975-12-24', tz='UTC'),
@@ -478,7 +478,7 @@ ChristmasEveEarlyCloseAdhoc = [
 #####################################
 # Retired holidays
 #####################################
-# http://www.tradingtheodds.com/nyse-full-day-closings/
+# Armistice/Veterans day
 USVeteransDay1934to1953 = Holiday(
     'Veteran Day',
     month=11,
@@ -524,21 +524,24 @@ USBlackFridayInOrAfter1993 = Holiday(
 # Non-recurring holidays
 ##########################
 
+# 1885
 UlyssesGrantFuneral1885 = [Timestamp('1885-08-08', tz='UTC')]
 
+# 1888
 GreatBlizzardOf1888 = [
     Timestamp('1888-03-12', tz='UTC'),
     Timestamp('1888-03-13', tz='UTC'),
 ]
 
+# 1889
 WashingtonInaugurationCentennialCelebration1889 = [
     Timestamp("1889-04-29", tz='UTC'),
     Timestamp("1889-04-30", tz='UTC'),
     Timestamp("1889-05-01", tz='UTC'),
 ]
 
-GarretHobartFuneral1899 = [Timestamp('1899-11-25', tz='UTC')]
 
+# 1892
 ColumbianCelebration1892 = [
     Timestamp("1892-10-12", tz='UTC'),
     Timestamp("1892-10-21", tz='UTC'),
@@ -546,16 +549,21 @@ ColumbianCelebration1892 = [
     Timestamp("1893-04-27", tz='UTC'),
 ]
 
-# NYC's 5 boroughs founded as NYC
-# Not actually celebrated due to Spanish-American war but market was closed
+# 1898
+    # NYC's 5 boroughs founded as NYC
+    # Not actually celebrated due to Spanish-American war but market was closed
 CharterDay1898 = [Timestamp('1898-05-04', tz='UTC')]
 
 WelcomeNavalCommander1898 = [Timestamp('1898-08-20', tz='UTC')]
 
+# 1899
 AdmiralDeweyCelebration1899 = [Timestamp('1899-09-29', tz='UTC'),
                               Timestamp('1899-09-30', tz='UTC') 
 ]
 
+GarretHobartFuneral1899 = [Timestamp('1899-11-25', tz='UTC')]
+
+# 1901
 QueenVictoriaFuneral1901 = [Timestamp('1901-02-02', tz='UTC')]
 
 MovedToProduceExchange1901 = [Timestamp('1901-04-27', tz='UTC')]
@@ -565,10 +573,13 @@ EnlargedProduceExchange1901 = [Timestamp('1901-05-11', tz='UTC')]
 McKinleyDeathAndFuneral1901 = [Timestamp('1901-09-14', tz='UTC'), 
                               Timestamp('1901-09-19', tz='UTC'),]
 
+# 1902
 KingEdwardVIIcoronation1902 = [Timestamp('1902-08-09', tz='UTC')]
 
+# 1903
 NYSEnewBuildingOpen1903 = [Timestamp('1903-04-22', tz='UTC')]
 
+# 1908
 GroverClevelandFuneral1pmClose1908 = Holiday(
     'Funeral of Grover Cleveland 1908 1pm Close',
     month=6,
@@ -577,10 +588,12 @@ GroverClevelandFuneral1pmClose1908 = Holiday(
     end_date=Timestamp('1908-06-26'),
 )
 
-# 300th anniversary of Hudson discovering the Hudson river and
-# 100th anniversary of Fulton inventing the paddle steamer
+# 1909
+    # 300th anniversary of Hudson discovering the Hudson river and
+    # 100th anniversary of Fulton inventing the paddle steamer
 HudsonFultonCelebration1909 = [Timestamp('1909-09-25', tz='UTC')]
 
+# 1910
 KingEdwardDeath11amyClose1910 = Holiday(
     'King Edward VII Death May 7, 1910',
     month=5,
@@ -597,6 +610,10 @@ KingEdwardFuneral12pmOpen1910 = Holiday(
     end_date=Timestamp('1910-05-20'),
 )
 
+# 1912
+JamesShermanFuneral1912 = [Timestamp('1912-11-02', tz='UTC')]
+
+# 1913
 JPMorganFuneral12pmOpen1913 = Holiday(
     'JP Morgan Funeral 12pm late open April 14, 1913',
     month=4,
@@ -613,6 +630,8 @@ WilliamGaynorFuneral12pmOpen1913 = Holiday(
     end_date=Timestamp('1913-09-22'),
 )
 
+# 1914
+
 # Reopened for trading bonds (with restrictions) Nov 27, 1914
 # Reopened for trading stocks (with restrictions) Dec 12, 1914
 # Restrictions remained in place until April 1, 1915
@@ -622,8 +641,10 @@ OnsetOfWWI1914 =  date_range('1914-07-31',
                              tz='UTC'
 )
 
+# 1917
 DraftRegistrationDay1917 = [Timestamp('1917-06-05', tz='UTC')]
-DraftRegistrationDay1918 = [Timestamp('1918-09-12', tz='UTC')]
+
+WeatherHeatClosing1917 = [Timestamp('1917-08-04', tz='UTC')]
 
 ParadeOfNationalGuardEarlyClose1917 = Holiday(
     'Parade of National Guard 12pm Early Close Aug 29, 1917',
@@ -633,21 +654,33 @@ ParadeOfNationalGuardEarlyClose1917 = Holiday(
     end_date=Timestamp('1917-08-29'),
 )
 
-LibertyDayEarlyClose1917 = Holiday(
+LibertyDay12pmEarlyClose1917 = Holiday(
     'Liberty Day 12pm Early Close Oct 24, 1917',
     month=10,
     day=24,
     start_date=Timestamp('1917-10-24'),
     end_date=Timestamp('1917-10-24'),
 )
-LibertyDayEarlyClose1918 = Holiday(
+
+# 1918
+WeatherNoHeatClosing1918 = [
+    Timestamp('1918-01-28', tz='UTC'),
+    Timestamp('1918-02-04', tz='UTC'),
+    Timestamp('1918-02-11', tz='UTC'),
+    
+    ]
+
+LibertyDay12pmEarlyClose1918 = Holiday(
     'Liberty Day 12pm Early Close April 26, 1918',
     month=4,
     day=26,
     start_date=Timestamp('1918-04-26'),
     end_date=Timestamp('1918-04-26'),
 )
-FalseArmisticeReportEarlyClose1918 = Holiday(
+
+DraftRegistrationDay1918 = [Timestamp('1918-09-12', tz='UTC')]
+
+FalseArmisticeReport1430EarlyClose1918 = Holiday(
     'False Armistice Report 2:30pm Early Close Nov 7, 1918',
     month=11,
     day=7,
@@ -656,7 +689,8 @@ FalseArmisticeReportEarlyClose1918 = Holiday(
 )
 ArmisticeSigned1918 = [Timestamp('1918-11-11', tz='UTC')]
 
-RooseveltFuneralEarlyClose1919 = Holiday(
+# 1919
+RooseveltFuneral1230EarlyClose1919 = Holiday(
     'Former President Roosevelt funeral 12:30pm Early Close Jan 7, 1919',
     month=1,
     day=7,
@@ -684,6 +718,7 @@ TrafficBlockLateOpen1919 = Holiday(
     end_date=Timestamp('1919-12-30'),
 )
 
+# 1920
 TrafficBlockLateOpen1920 = Holiday(
     'Traffic Block 10:30am late open Feb. 6, 1920',
     month=2,
@@ -702,8 +737,8 @@ WallStreetExplosionEarlyClose1920 = Holiday(
     end_date=Timestamp('1920-09-16'),
 )
 
-# 1pm open
-AunnciatorBoardFireLateOpen1921 = Holiday(
+# 1921
+AnnunciatorBoardFire1pmLateOpen1921 = Holiday(
     'Annunciator Board Fire 1pm late open Aug 8, 1921',
     month=8,
     day=8,
@@ -711,7 +746,13 @@ AunnciatorBoardFireLateOpen1921 = Holiday(
     end_date=Timestamp('1921-08-08'),
 )
 
-WoodrowWilsonFuneralEarlyClose1924 = Holiday(
+# 1923
+HardingDeath1923 = [Timestamp('1923-08-03', tz='UTC')]
+
+HardingFuneral1923 = [Timestamp('1923-08-10', tz='UTC')]
+
+# 1924
+WoodrowWilsonFuneral1230EarlyClose1924 = Holiday(
     'Former President Woodrow Wilson Funeral 12:30 Early Close Feb 6, 1924',
     month=2,
     day=6,
@@ -719,6 +760,7 @@ WoodrowWilsonFuneralEarlyClose1924 = Holiday(
     end_date=Timestamp('1924-02-06'),
 )
 
+# 1925
 EclipseOfSunLateOpen1925 = Holiday(
     'Eclipse of Sun 10:45am late open Jan 25, 1925',
     month=1,
@@ -727,7 +769,7 @@ EclipseOfSunLateOpen1925 = Holiday(
     end_date=Timestamp('1925-01-24'),
 )
 
-CromwellFuneralEarlyClose1925 = Holiday(
+CromwellFuneral1430EarlyClose1925 = Holiday(
     'Former NYSE President Seymour L. Cromwell Funeral 2:30pm Early Close Sept 18, 1925',
     month=9,
     day=18,
@@ -735,8 +777,10 @@ CromwellFuneralEarlyClose1925 = Holiday(
     end_date=Timestamp('1925-09-18'),
 )
 
+# 1927
 LindberghParade1927 = [Timestamp('1927-06-13', tz='UTC')]
 
+# 1928
 BacklogRelief1928 = [
     Timestamp('1928-04-07', tz='UTC'),
     Timestamp('1928-04-21', tz='UTC'),
@@ -747,13 +791,13 @@ BacklogRelief1928 = [
     Timestamp('1928-11-24', tz='UTC'),
 ]
 
-# 2pm close
-BacklogReliefEarlyClose1928 =  date_range('1928-05-21', 
+BacklogRelief2pmEarlyClose1928 =  date_range('1928-05-21', 
                                           '1928-05-25', 
                                           freq=CustomBusinessDay(weekmask = 'Mon Tue Wed Thu Fri Sat'),
                                           tz='UTC'
 )
 
+# 1929
 BacklogRelief1929 = [
     Timestamp('1929-02-09', tz='UTC'),
     Timestamp('1929-11-01', tz='UTC'),
@@ -765,8 +809,7 @@ BacklogRelief1929 = [
     Timestamp('1929-11-30', tz='UTC'),
 ]
 
-# 1pm close
-BacklogReliefEarlyClose1929 = [
+BacklogRelief1pmEarlyClose1929 = [
     Timestamp('1929-11-06', tz='UTC'),
     Timestamp('1929-11-07', tz='UTC'),
     Timestamp('1929-11-08', tz='UTC'),
@@ -782,12 +825,12 @@ BacklogReliefEarlyClose1929 = [
     Timestamp('1929-11-22', tz='UTC')
 ]
 
-# 12 noon open
-BacklogReliefLateOpen1929 = [
+BacklogRelief12pmLateOpen1929 = [
     Timestamp('1929-10-31', tz='UTC'),
 ]
 
-TaftFuneralEarlyClose1930 = Holiday(
+# 1930
+TaftFuneral1230EarlyClose1930 = Holiday(
     'Former President William Howard Taft Funeral 12:30pm Early Close Mar 11, 1930',
     month=3,
     day=11,
@@ -795,6 +838,7 @@ TaftFuneralEarlyClose1930 = Holiday(
     end_date=Timestamp('1930-03-11'),
 )
 
+# 1933
 BankHolidays1933 = [
     Timestamp('1933-03-04', tz='UTC'),
     Timestamp('1933-03-06', tz='UTC'),
@@ -808,7 +852,7 @@ BankHolidays1933 = [
     Timestamp('1933-03-14', tz='UTC'),
 ]
 
-GasFumesOnTradingFloorEarlyClose1933 = Holiday(
+GasFumesOnTradingFloor1230EarlyClose1933 = Holiday(
     'Gas Fumes on Trading Floor 12:30pm Early Close Aug 4, 1933',
     month=8,
     day=4,
@@ -844,7 +888,7 @@ HeavyVolume2pmEarlyClose1933 = [
     Timestamp('1933-07-28', tz='UTC'),
 ]
 
-NRAdemonstrationEarlyClose1933 = Holiday(
+NRAdemonstration12pmEarlyClose1933 = Holiday(
     'NRA Demonstration 12:00 noon Early Close Sept 13, 1933',
     month=9,
     day=13,
@@ -852,6 +896,7 @@ NRAdemonstrationEarlyClose1933 = Holiday(
     end_date=Timestamp('1933-09-13'),
 )
 
+# 1934
 Snow11amLateOpen1934 = Holiday(
     'Severe Snowstorm 11:00am late open Feb 20, 1934',
     month=2,
@@ -860,7 +905,24 @@ Snow11amLateOpen1934 = Holiday(
     end_date=Timestamp('1934-02-20'),
 )
 
-# Starting in 1945, no Saturday trading over the summer
+# 1936
+KingGeorgeVFuneral11amLateOpen1936 = Holiday(
+    'King George V of England 11:00am late open Jan 28, 1936',
+    month=1,
+    day=28,
+    start_date=Timestamp('1936-01-28'),
+    end_date=Timestamp('1936-01-28'),
+)
+
+# 1944
+SatClosings1944 = [
+    Timestamp('1944-08-19', tz='UTC'),
+    Timestamp('1944-08-26', tz='UTC'),
+    Timestamp('1944-09-02', tz='UTC'),
+]
+
+# 1945
+    # Starting in 1945, no Saturday trading over the summer
 SatClosings1945 = date_range('1945-07-07', 
                              '1945-09-01', 
                              freq='W-SAT',
@@ -880,17 +942,24 @@ RailroadStrike1946 = [
     Timestamp('1946-05-25', tz='UTC'),
 ]
 
+# 1946
 SatClosings1946 = date_range('1946-06-01', 
                              '1946-09-28', 
                              freq='W-SAT',
                              tz='UTC'
 )
 
+# 1947
 SatClosings1947 = date_range('1947-05-31', 
                              '1947-09-27', 
                              freq='W-SAT',
                              tz='UTC'
 )
+
+# 1948
+SevereWeather1948 = [
+    Timestamp('1948-01-03', tz='UTC'),
+]
 
 SatClosings1948 = date_range('1948-05-29', 
                              '1948-09-25', 
@@ -898,50 +967,36 @@ SatClosings1948 = date_range('1948-05-29',
                              tz='UTC'
 )
 
-SevereWeather1948 = [
-    Timestamp('1948-01-03', tz='UTC'),
-]
-
+# 1949
 SatClosings1949 = date_range('1949-05-28', 
                              '1949-09-24', 
                              freq='W-SAT',
                              tz='UTC'
 )
 
+# 1950
 SatClosings1950 = date_range('1950-06-03', 
                              '1950-09-30', 
                              freq='W-SAT',
                              tz='UTC'
 )
 
+# 1951
 SatClosings1951 = date_range('1951-06-02', 
                              '1951-09-29', 
                              freq='W-SAT',
                              tz='UTC'
 )
 
-SatClosings1951 = date_range('1951-06-02', 
-                             '1951-09-29', 
-                             freq='W-SAT',
-                             tz='UTC'
-)
-
+# 1952
 SatClosings1952 = date_range('1952-05-31', 
                              '1952-09-27', 
                              freq='W-SAT',
                              tz='UTC'
 )
 
-BattleOfGettysburg = Holiday(
-    # All of the floor traders in Chicago were sent to PA
-    'Markets were closed during the battle of Gettysburg',
-    month=7,
-    day=(1, 2, 3),
-    start_date=Timestamp("1863-07-01"),
-    end_date=Timestamp("1863-07-03")
-)
 
-# http://www.tradingtheodds.com/nyse-full-day-closings/
+# 1968
 PaperworkCrisis68 = [Timestamp('1968-06-12', tz='UTC'),
                      Timestamp('1968-06-19', tz='UTC'),
                      Timestamp('1968-06-26', tz='UTC'),
@@ -972,14 +1027,7 @@ PaperworkCrisis68 = [Timestamp('1968-06-12', tz='UTC'),
 # http://www.tradingtheodds.com/nyse-full-day-closings/
 WeatherSnowClosing = [Timestamp('1969-02-10', tz='UTC')]
 
-WeatherHeatClosing = [Timestamp('1917-08-04', tz='UTC')]
 
-WeatherNoHeatClosing = [
-    Timestamp('1918-01-28', tz='UTC'),
-    Timestamp('1918-02-04', tz='UTC'),
-    Timestamp('1918-02-11', tz='UTC'),
-    
-    ]
 
 # http://www.tradingtheodds.com/nyse-full-day-closings/
 FirstLunarLandingClosing = [Timestamp('1969-07-21', tz='UTC')]
@@ -1012,9 +1060,6 @@ HurricaneSandyClosings = date_range(
 
 
 # National Days of Mourning
-# - Vice-President James S. Sherman - November 2, 1912
-# - President Warren G. Harding Death - August 3, 1923
-# - President Warren G. Harding Funeral - August 10, 1923
 # - President Calvin Coolidge Funeral - January 7, 1933
 # - President Franklin D. Roosevelt - April 14, 1945
 # - President John F. Kennedy - November 25, 1963
@@ -1027,9 +1072,6 @@ HurricaneSandyClosings = date_range(
 # - President Gerald R. Ford - Jan 2, 2007
 # - President George H.W. Bush - Dec 5, 2018
 USNationalDaysofMourning = [
-    Timestamp('1912-11-02', tz='UTC'),
-    Timestamp('1923-08-03', tz='UTC'),
-    Timestamp('1923-08-10', tz='UTC'),
     Timestamp('1933-01-07', tz='UTC'),
     Timestamp('1945-04-14', tz='UTC'),
     Timestamp('1963-11-25', tz='UTC'),
