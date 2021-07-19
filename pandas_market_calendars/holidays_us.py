@@ -1,7 +1,7 @@
 from dateutil.relativedelta import (MO, TH, TU)
 from pandas import (DateOffset, Timestamp, date_range)
 from datetime import datetime, timedelta
-from pandas.tseries.holiday import (Holiday, nearest_workday, sunday_to_monday, Easter)
+from pandas.tseries.holiday import (Holiday, nearest_workday, sunday_to_monday,  Easter)
 from pandas.tseries.offsets import Day, CustomBusinessDay
 
 from pandas_market_calendars.market_calendar import (FRIDAY, SATURDAY, SUNDAY, MONDAY, THURSDAY, TUESDAY, WEDNESDAY)
@@ -56,10 +56,22 @@ USNewYearsDay = Holiday(
     'New Years Day',
     month=1,
     day=1,
+    start_date = Timestamp('1952-09-29'),
     # When Jan 1 is a Sunday, US markets observe the subsequent Monday.
     # When Jan 1 is a Saturday (as in 2005 and 2011), no holiday is observed.
-    observance=sunday_to_monday
+    observance=sunday_to_monday,
+    days_of_week=(0,1,2,3,4,)    
 )
+
+USNewYearsDayPre1952 = Holiday(
+    'New Years Day Before Saturday Trading Ceased',
+    month=1,
+    day=1,
+    end_date = Timestamp('1952-09-28'),
+    observance=sunday_to_monday,
+    days_of_week=(0,1,2,3,4,5,)
+)
+
 # Not every Saturday before/after Christmas is a holiday
 SatBeforeNewYearsAdhoc = [
     Timestamp('1916-12-30', tz='UTC')
@@ -71,6 +83,7 @@ USMartinLutherKingJrAfter1998 = Holiday(
     day=1,
     # The US markets didn't observe MLK day as a holiday until 1998.
     start_date=Timestamp('1998-01-01'),
+    days_of_week=(0,1,2,3,4,),
     offset=DateOffset(weekday=MO(3)),
 )
 #########################################################################
@@ -83,15 +96,27 @@ USMartinLutherKingJrAfter1998 = Holiday(
 USPresidentsDay = Holiday('President''s Day',
                           start_date=Timestamp('1971-01-01'),
                           month=2, day=1,
+                          days_of_week=(0,1,2,3,4,),
                           offset=DateOffset(weekday=MO(3)))
-USWashingtonsBirthDayBefore1964 = Holiday(
+
+USWashingtonsBirthDayBefore1952 = Holiday(
     'Washington''s Birthday',
     month=2,
     day=22,
-    start_date=Timestamp('1880-01-01'),
-    end_date=Timestamp('1963-12-31'),
+    end_date=Timestamp('1952-09-28'),
+    days_of_week=(0,1,2,3,4,5,),
     observance=sunday_to_monday,
 )
+USWashingtonsBirthDay1952to1963 = Holiday(
+    'Washington''s Birthday',
+    month=2,
+    day=22,
+    start_date=Timestamp('1952-09-29'),
+    end_date=Timestamp('1963-12-31'),
+    days_of_week=(0,1,2,3,4,),
+    observance=sunday_to_monday,
+)
+
 USWashingtonsBirthDay1964to1970 = Holiday(
     'Washington''s Birthday',
     month=2,
@@ -188,16 +213,27 @@ USMemorialDay = Holiday(
     month=5,
     day=25,
     start_date=Timestamp('1971-01-01'),
+    days_of_week=(0,1,2,3,4,),
     offset=DateOffset(weekday=MO(1)),
 )
-USMemorialDayBefore1964 = Holiday(
+USMemorialDayBefore1952 = Holiday(
     'Memorial Day',
     month=5,
     day=30,
+    end_date=Timestamp('1952-09-28'),
+    observance=sunday_to_monday,
+    days_of_week=(0,1,2,3,4,5,)
+)
+USMemorialDay1952to1964 = Holiday(
+    'Memorial Day',
+    month=5,
+    day=30,
+    start_date=Timestamp('1952-09-29'),
     end_date=Timestamp('1963-12-31'),
     observance=sunday_to_monday,
+    days_of_week=(0,1,2,3,4,)
 )
-# http://www.tradingtheodds.com/nyse-full-day-closings/
+
 USMemorialDay1964to1969 = Holiday(
     'Memorial Day',
     month=5,
@@ -238,13 +274,24 @@ USIndependenceDay = Holiday(
     month=7,
     day=4,
     start_date=Timestamp('1954-01-01'),
+    days_of_week=(0,1,2,3,4,),
     observance=nearest_workday,
 )
-USIndependenceDayBefore1954 = Holiday(
+USIndependenceDayPre1952 = Holiday(
     'July 4th',
     month=7,
     day=4,
+    end_date=Timestamp('1952-09-28'),
+    days_of_week=(0,1,2,3,4,5,),
+    observance=sunday_to_monday,
+)
+USIndependenceDay1952to1954 = Holiday(
+    'July 4th',
+    month=7,
+    day=4,
+    start_date=Timestamp('1952-09-29'),
     end_date=Timestamp('1953-12-31'),
+    days_of_week=(0,1,2,3,4,),
     observance=sunday_to_monday,
 )
 
@@ -271,7 +318,7 @@ FridayAfterIndependenceDayPre2013 = Holiday(
     day=5,
     days_of_week=(FRIDAY,),
     observance=july_5th_holiday_observance,
-    start_date=Timestamp("1960-01-01"),
+    start_date=Timestamp("1970-01-01"),
 )
 
 WednesdayBeforeIndependenceDayPost2013 = Holiday(
@@ -366,17 +413,24 @@ USElectionDay1848to1967 = Holiday(
     offset=DateOffset(weekday=TU(1)),
 )
 
-def following_tuesday_every_four_years_observance(dt):
-    return dt + DateOffset(years=(4 - (dt.year % 4)) % 4, weekday=TU(1))
+USElectionDay1968to1980Adhoc = [
+    Timestamp('1968-11-05'),
+    Timestamp('1972-11-07'),
+    Timestamp('1976-11-02'),
+    Timestamp('1980-11-04')]
 
-USElectionDay1968to1980 = Holiday(
-    'Election Day',
-    month=11,
-    day=2,
-    start_date=Timestamp('1968-01-01'),
-    end_date=Timestamp('1980-12-31'),
-    observance=following_tuesday_every_four_years_observance
-)
+# This rule creates duplicate entries. Opted for Adhoc
+# def following_tuesday_every_four_years_observance(dt):
+#     return dt + DateOffset(years=(4 - (dt.year % 4)) % 4, weekday=TU(1))
+
+# USElectionDay1968to1980 = Holiday( 
+#     'Election Day',
+#     month=11,
+#     day=2,
+#     start_date=Timestamp('1968-01-01'), 
+#     end_date=Timestamp('1980-12-31'),
+#     observance=following_tuesday_every_four_years_observance
+# )
 ################################################
 # US Thanksgiving Nov 30
 ################################################
@@ -458,9 +512,7 @@ SatAfterChristmasAdhoc = [
 ChristmasEvesAdhoc = [
     Timestamp('1900-12-24', tz='UTC'),
     Timestamp('1945-12-24', tz='UTC'),
-    Timestamp('1954-12-24', tz='UTC'),
     Timestamp('1956-12-24', tz='UTC'),
-    Timestamp('1965-12-24', tz='UTC')
 ]
 
 DayAfterChristmasAdhoc = [
@@ -488,7 +540,8 @@ USVeteransDay1934to1953 = Holiday(
     observance=sunday_to_monday,
 )
 USVetransDayAdHoc = [
-    Timestamp("1921-11-11", tz="UTC")
+    Timestamp("1921-11-11", tz="UTC"),
+    Timestamp("1968-11-11", tz="UTC")
 ]
 # http://www.tradingtheodds.com/nyse-full-day-closings/
 USColumbusDayBefore1954 = Holiday(
@@ -839,6 +892,8 @@ TaftFuneral1230EarlyClose1930 = Holiday(
 )
 
 # 1933
+CoolidgeFuneral1933 = [Timestamp('1933-01-07', tz='UTC'),]
+
 BankHolidays1933 = [
     Timestamp('1933-03-04', tz='UTC'),
     Timestamp('1933-03-06', tz='UTC'),
@@ -922,6 +977,8 @@ SatClosings1944 = [
 ]
 
 # 1945
+RooseveltDayOfMourning1945 = [Timestamp('1945-04-14', tz='UTC'),]
+
     # Starting in 1945, no Saturday trading over the summer
 SatClosings1945 = date_range('1945-07-07', 
                              '1945-09-01', 
@@ -995,9 +1052,77 @@ SatClosings1952 = date_range('1952-05-31',
                              tz='UTC'
 )
 
+# 1960
+Snow11amLateOpening1960 = Holiday(
+    'Severe Snow 11am Late Opening on Dec 12, 1960',
+    month=12,
+    day=12,
+    start_date=Timestamp('1960-12-12'),
+    end_date=Timestamp('1960-12-12'),
+)
+
+# 1963
+KennedyAssassination1407EarlyClose = Holiday(
+    'President John F. Kennedy Assassination',
+    month=11,
+    day=22,
+    start_date=Timestamp('1963-11-22'),
+    end_date=Timestamp('1963-11-22'),
+)
+
+KennedyFuneral1963 = [Timestamp('1963-11-25', tz='UTC')]
+
+# 1964
+HooverFuneral1400EarlyClose1964 = Holiday(
+    'Former President Herbert C. Hoover Funeral',
+    month=10,
+    day=23,
+    start_date=Timestamp('1964-10-23'),
+    end_date=Timestamp('1964-10-23'),
+)
+
+# 1965
+PowerFail1105LateOpen = Holiday(
+    'Power Failure in NY grid supply',
+    month=11,
+    day=10,
+    start_date=Timestamp('1965-11-10'),
+    end_date=Timestamp('1965-11-10'),
+)
+
+# 1966
+TransitStrike2pmEarlyClose1966 = date_range('1966-01-06', '1966-01-14', 
+                 freq=CustomBusinessDay(weekmask = 'Mon Tue Wed Thu Fri'),
+                 tz='UTC')
+
+# 1967
+Snow1015LateOpen1967 = Holiday(
+    'Late Open due to snow',
+    month=2,
+    day=7,
+    start_date=Timestamp('1967-02-07'),
+    end_date=Timestamp('1967-02-07'),
+)
+Snow2pmEarlyClose1967 = Holiday(
+    'Late Open due to snow',
+    month=2,
+    day=7,
+    start_date=Timestamp('1967-02-07'),
+    end_date=Timestamp('1967-02-07'),
+)
+Backlog2pmEarlyCloses1967 =  date_range('1967-08-09', '1967-08-18', 
+                 freq=CustomBusinessDay(weekmask = 'Mon Tue Wed Thu Fri'),
+                 tz='UTC')
 
 # 1968
-PaperworkCrisis68 = [Timestamp('1968-06-12', tz='UTC'),
+Backlog2pmEarlyCloses1968 =  date_range('1968-01-22', '1968-03-01', 
+                 freq=CustomBusinessDay(weekmask = 'Mon Tue Wed Thu Fri'),
+                 tz='UTC')
+
+MLKdayOfMourning1968 = [Timestamp('1968-04-09', tz='UTC'),]
+
+
+PaperworkCrisis1968 = [Timestamp('1968-06-12', tz='UTC'),
                      Timestamp('1968-06-19', tz='UTC'),
                      Timestamp('1968-06-26', tz='UTC'),
                      Timestamp('1968-07-10', tz='UTC'),
@@ -1016,21 +1141,46 @@ PaperworkCrisis68 = [Timestamp('1968-06-12', tz='UTC'),
                      Timestamp('1968-10-16', tz='UTC'),
                      Timestamp('1968-10-23', tz='UTC'),
                      Timestamp('1968-10-30', tz='UTC'),
-                     Timestamp('1968-11-11', tz='UTC'),
                      Timestamp('1968-11-20', tz='UTC'),
                      Timestamp('1968-12-04', tz='UTC'),
                      Timestamp('1968-12-11', tz='UTC'),
-                     Timestamp('1968-12-18', tz='UTC'),
-                     Timestamp('1968-12-25', tz='UTC')]
+                     Timestamp('1968-12-18', tz='UTC'),]
 
 
-# http://www.tradingtheodds.com/nyse-full-day-closings/
-WeatherSnowClosing = [Timestamp('1969-02-10', tz='UTC')]
+# 1969
+PaperworkCrisis2pmEarlyCloses1969 =  date_range('1969-01-01', '1969-07-03', 
+                 freq=CustomBusinessDay(weekmask = 'Mon Tue Wed Thu Fri'),
+                 tz='UTC')
 
+SnowClosing1969 = [Timestamp('1969-02-10', tz='UTC')]
 
+Snow11amLateOpen1969 = Holiday(
+    'Late Open due to snow',
+    month=2,
+    day=11,
+    start_date=Timestamp('1969-02-11'),
+    end_date=Timestamp('1969-02-11'),
+)
 
-# http://www.tradingtheodds.com/nyse-full-day-closings/
-FirstLunarLandingClosing = [Timestamp('1969-07-21', tz='UTC')]
+EisenhowerFuneral1969 = [Timestamp('1969-03-31', tz='UTC'),]
+
+Storm1045LateOpen1969 = Holiday(
+    'Late Open due to storm',
+    month=6,
+    day=2,
+    start_date=Timestamp('1969-06-02'),
+    end_date=Timestamp('1969-06-02'),
+)
+
+PaperworkCrisis230pmEarlyCloses1969 =  date_range('1969-07-07', '1969-09-26', 
+                 freq=CustomBusinessDay(weekmask = 'Mon Tue Wed Thu Fri'),
+                 tz='UTC')
+
+FirstLunarLandingClosing1969 = [Timestamp('1969-07-21', tz='UTC')]
+
+PaperworkCrisis3pmEarlyCloses1969to1970 =  date_range('1969-09-29', '1970-05-01', 
+                 freq=CustomBusinessDay(weekmask = 'Mon Tue Wed Thu Fri'),
+                 tz='UTC')
 
 # http://www.tradingtheodds.com/nyse-full-day-closings/
 NewYorkCityBlackout77 = [Timestamp('1977-07-14', tz='UTC')]
@@ -1060,11 +1210,6 @@ HurricaneSandyClosings = date_range(
 
 
 # National Days of Mourning
-# - President Calvin Coolidge Funeral - January 7, 1933
-# - President Franklin D. Roosevelt - April 14, 1945
-# - President John F. Kennedy - November 25, 1963
-# - Martin Luther King - April 9, 1968
-# - President Dwight D. Eisenhower - March 31, 1969
 # - President Harry S. Truman - December 28, 1972
 # - President Lyndon B. Johnson - January 25, 1973
 # - President Richard Nixon - April 27, 1994
@@ -1072,11 +1217,6 @@ HurricaneSandyClosings = date_range(
 # - President Gerald R. Ford - Jan 2, 2007
 # - President George H.W. Bush - Dec 5, 2018
 USNationalDaysofMourning = [
-    Timestamp('1933-01-07', tz='UTC'),
-    Timestamp('1945-04-14', tz='UTC'),
-    Timestamp('1963-11-25', tz='UTC'),
-    Timestamp('1968-04-09', tz='UTC'),
-    Timestamp('1969-03-31', tz='UTC'),
     Timestamp('1972-12-28', tz='UTC'),
     Timestamp('1973-01-25', tz='UTC'),
     Timestamp('1994-04-27', tz='UTC'),

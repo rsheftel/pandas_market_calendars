@@ -1476,6 +1476,7 @@ def test_1936():
         pd.Timestamp('1936-12-26', tz='UTC')
     ]
     _test_holidays(holidays, start, end)
+    _test_no_special_closes(start, end)
         
     # late opens we expect:
     late_opens = [
@@ -1973,3 +1974,445 @@ def test_1952():
     ]
     _test_holidays(holidays, start, end)
     _test_no_special_opens_closes(start, end)
+    
+def test_1952_no_saturdays():
+    start = '1952-09-29'
+    end   = '2025-12-31'    
+    
+    # Check no saturdays in valid trading days post 1952-09-29
+    valid_days = nyse.valid_days(start, end )
+    for d in valid_days:
+        assert d.dayofweek != 5
+        
+    # Check no Saturdays in Holiday post 1952-09-29
+    df = pd.DataFrame(nyse.holidays().holidays, columns=['holidays'])
+    mask = df['holidays'].isin(pd.date_range(start,end,freq='W-SAT'))
+    df = df[mask]
+    assert len(df) == 0
+
+        
+def test_1953():
+    start = '1953-01-01'
+    end   = '1953-12-31'    
+    holidays = [
+        pd.Timestamp('1953-01-01', tz='UTC'),
+        pd.Timestamp('1953-02-12', tz='UTC'),
+        pd.Timestamp('1953-02-23', tz='UTC'),
+        pd.Timestamp('1953-04-03', tz='UTC'),
+        pd.Timestamp('1953-09-07', tz='UTC'),
+        pd.Timestamp('1953-10-12', tz='UTC'),
+        pd.Timestamp('1953-11-03', tz='UTC'),
+        pd.Timestamp('1953-11-11', tz='UTC'),
+        pd.Timestamp('1953-11-26', tz='UTC'),
+        pd.Timestamp('1953-12-25', tz='UTC')    
+    ]
+    _test_holidays(holidays, start, end)
+    _test_no_special_opens_closes(start, end)
+    
+def test_1954():
+    start = '1954-01-01'
+    end   = '1954-12-31'    
+    holidays = [
+        pd.Timestamp('1954-01-01', tz='UTC'),
+        pd.Timestamp('1954-02-22', tz='UTC'),
+        pd.Timestamp('1954-04-16', tz='UTC'),
+        pd.Timestamp('1954-05-31', tz='UTC'),
+        pd.Timestamp('1954-07-05', tz='UTC'),
+        pd.Timestamp('1954-09-06', tz='UTC'),
+        pd.Timestamp('1954-11-02', tz='UTC'),
+        pd.Timestamp('1954-11-25', tz='UTC'),
+        pd.Timestamp('1954-12-24', tz='UTC')   
+    ]        
+    _test_holidays(holidays, start, end)
+    _test_no_special_opens_closes(start, end)    
+    
+def test_1955():
+    start = '1955-01-01'
+    end   = '1955-12-31'    
+    holidays = [
+        pd.Timestamp('1954-02-22', tz='UTC'),
+        pd.Timestamp('1954-04-16', tz='UTC'),
+        pd.Timestamp('1954-05-31', tz='UTC'),
+        pd.Timestamp('1954-07-05', tz='UTC'),
+        pd.Timestamp('1954-09-06', tz='UTC'),
+        pd.Timestamp('1954-11-02', tz='UTC'),
+        pd.Timestamp('1954-11-25', tz='UTC'),
+        pd.Timestamp('1954-12-24', tz='UTC')   
+    ]        
+    _test_holidays(holidays, start, end)
+    _test_no_special_opens_closes(start, end)     
+    
+    
+def test_1956():
+    start = '1956-01-01'
+    end   = '1956-12-31'    
+    holidays = [
+        pd.Timestamp('1956-01-02', tz='UTC'),
+        pd.Timestamp('1956-02-22', tz='UTC'),
+        pd.Timestamp('1956-03-30', tz='UTC'),
+        pd.Timestamp('1956-05-30', tz='UTC'),
+        pd.Timestamp('1956-07-04', tz='UTC'),
+        pd.Timestamp('1956-09-03', tz='UTC'),
+        pd.Timestamp('1956-11-06', tz='UTC'),
+        pd.Timestamp('1956-11-22', tz='UTC'),
+        pd.Timestamp('1956-12-24', tz='UTC'),
+        pd.Timestamp('1956-12-25', tz='UTC')    
+    ]        
+    _test_holidays(holidays, start, end)
+    _test_no_special_opens_closes(start, end)         
+
+    
+def test_1957():
+    start = '1957-01-01'
+    end   = '1957-12-31'    
+    holidays = [
+        pd.Timestamp('1957-01-01', tz='UTC'),
+        pd.Timestamp('1957-02-22', tz='UTC'),
+        pd.Timestamp('1957-04-19', tz='UTC'),
+        pd.Timestamp('1957-05-30', tz='UTC'),
+        pd.Timestamp('1957-07-04', tz='UTC'),
+        pd.Timestamp('1957-09-02', tz='UTC'),
+        pd.Timestamp('1957-11-05', tz='UTC'),
+        pd.Timestamp('1957-11-28', tz='UTC'),
+        pd.Timestamp('1957-12-25', tz='UTC')
+    ]        
+    _test_holidays(holidays, start, end)
+    _test_no_special_opens_closes(start, end)     
+
+
+def test_1958():
+    start = '1958-01-01'
+    end   = '1958-12-31'    
+    holidays = [
+        pd.Timestamp('1958-01-01', tz='UTC'),
+        pd.Timestamp('1958-04-04', tz='UTC'),
+        pd.Timestamp('1958-05-30', tz='UTC'),
+        pd.Timestamp('1958-07-04', tz='UTC'),
+        pd.Timestamp('1958-09-01', tz='UTC'),
+        pd.Timestamp('1958-11-04', tz='UTC'),
+        pd.Timestamp('1958-11-27', tz='UTC'),
+        pd.Timestamp('1958-12-25', tz='UTC'),
+        pd.Timestamp('1958-12-26', tz='UTC')
+    ]        
+    _test_holidays(holidays, start, end)
+    _test_no_special_opens_closes(start, end) 
+    
+    
+def test_1959():
+    start = '1959-01-01'
+    end   = '1959-12-31'    
+    holidays = [
+        pd.Timestamp('1959-01-01', tz='UTC'),
+        pd.Timestamp('1959-02-23', tz='UTC'),
+        pd.Timestamp('1959-03-27', tz='UTC'),
+        pd.Timestamp('1959-07-03', tz='UTC'),
+        pd.Timestamp('1959-09-07', tz='UTC'),
+        pd.Timestamp('1959-11-03', tz='UTC'),
+        pd.Timestamp('1959-11-26', tz='UTC'),
+        pd.Timestamp('1959-12-25', tz='UTC')
+    ]        
+    _test_holidays(holidays, start, end)
+    _test_no_special_opens_closes(start, end)     
+    
+    
+def test_1960():
+    start = '1960-01-01'
+    end   = '1960-12-31'    
+    holidays = [
+        pd.Timestamp('1960-01-01', tz='UTC'),
+        pd.Timestamp('1960-02-22', tz='UTC'),
+        pd.Timestamp('1960-04-15', tz='UTC'),
+        pd.Timestamp('1960-05-30', tz='UTC'),
+        pd.Timestamp('1960-07-04', tz='UTC'),
+        pd.Timestamp('1960-09-05', tz='UTC'),
+        pd.Timestamp('1960-11-08', tz='UTC'),
+        pd.Timestamp('1960-11-24', tz='UTC'),
+        pd.Timestamp('1960-12-26', tz='UTC')
+    ]        
+    _test_holidays(holidays, start, end)
+    _test_no_special_closes(start, end)     
+    
+    # late opens we expect:
+    late_opens = [
+        pd.Timestamp('1960-12-12', tz='UTC') # snow
+    ]
+    _test_has_late_opens(late_opens, start, end)
+    
+    
+def test_1961():
+    start = '1961-01-01'
+    end   = '1961-12-31'    
+    holidays = [
+        pd.Timestamp('1961-01-02', tz='UTC'),
+        pd.Timestamp('1961-02-22', tz='UTC'),
+        pd.Timestamp('1961-03-31', tz='UTC'),
+        pd.Timestamp('1961-05-29', tz='UTC'),
+        pd.Timestamp('1961-05-30', tz='UTC'),
+        pd.Timestamp('1961-07-04', tz='UTC'),
+        pd.Timestamp('1961-09-04', tz='UTC'),
+        pd.Timestamp('1961-11-07', tz='UTC'),
+        pd.Timestamp('1961-11-23', tz='UTC'),
+        pd.Timestamp('1961-12-25', tz='UTC')
+    ]        
+    _test_holidays(holidays, start, end)
+    _test_no_special_opens_closes(start, end)     
+    
+    
+def test_1962():
+    start = '1962-01-01'
+    end   = '1962-12-31'    
+    holidays = [
+        pd.Timestamp('1962-01-01', tz='UTC'),
+        pd.Timestamp('1962-02-22', tz='UTC'),
+        pd.Timestamp('1962-04-20', tz='UTC'),
+        pd.Timestamp('1962-05-30', tz='UTC'),
+        pd.Timestamp('1962-07-04', tz='UTC'),
+        pd.Timestamp('1962-09-03', tz='UTC'),
+        pd.Timestamp('1962-11-06', tz='UTC'),
+        pd.Timestamp('1962-11-22', tz='UTC'),
+        pd.Timestamp('1962-12-25', tz='UTC')
+    ]        
+    _test_holidays(holidays, start, end)
+    _test_no_special_opens_closes(start, end)     
+    
+    
+def test_1963():
+    start = '1963-01-01'
+    end   = '1963-12-31'    
+    holidays = [
+        pd.Timestamp('1963-01-01', tz='UTC'),
+        pd.Timestamp('1963-02-22', tz='UTC'),
+        pd.Timestamp('1963-04-12', tz='UTC'),
+        pd.Timestamp('1963-05-30', tz='UTC'),
+        pd.Timestamp('1963-07-04', tz='UTC'),
+        pd.Timestamp('1963-09-02', tz='UTC'),
+        pd.Timestamp('1963-11-05', tz='UTC'),
+        pd.Timestamp('1963-11-25', tz='UTC'),
+        pd.Timestamp('1963-11-28', tz='UTC'),
+        pd.Timestamp('1963-12-25', tz='UTC')
+    ]
+    _test_holidays(holidays, start, end)
+    _test_no_special_opens(start, end)
+
+    # early closes we expect:
+    early_closes = [
+        pd.Timestamp('1963-11-22', tz='UTC'), # JFK Assassination
+     ]
+    _test_has_early_closes(early_closes, start, end)    
+    
+    
+def test_1964():
+    start = '1964-01-01'
+    end   = '1964-12-31'    
+    holidays = [
+        pd.Timestamp('1964-01-01', tz='UTC'),
+        pd.Timestamp('1964-02-21', tz='UTC'),
+        pd.Timestamp('1964-03-27', tz='UTC'),
+        pd.Timestamp('1964-05-29', tz='UTC'),
+        pd.Timestamp('1964-07-03', tz='UTC'),
+        pd.Timestamp('1964-09-07', tz='UTC'),
+        pd.Timestamp('1964-11-03', tz='UTC'),
+        pd.Timestamp('1964-11-26', tz='UTC'),
+        pd.Timestamp('1964-12-25', tz='UTC')
+    ]
+    _test_holidays(holidays, start, end)
+    _test_no_special_opens(start, end)
+
+    # early closes we expect:
+    early_closes = [
+        pd.Timestamp('1964-10-23', tz='UTC'), # Hoover funeral
+     ]
+    _test_has_early_closes(early_closes, start, end)     
+            
+    
+def test_1965():
+    start = '1965-01-01'
+    end   = '1965-12-31'    
+    holidays = [
+        pd.Timestamp('1965-01-01', tz='UTC'),
+        pd.Timestamp('1965-02-22', tz='UTC'),
+        pd.Timestamp('1965-04-16', tz='UTC'),
+        pd.Timestamp('1965-05-31', tz='UTC'),
+        pd.Timestamp('1965-07-05', tz='UTC'),
+        pd.Timestamp('1965-09-06', tz='UTC'),
+        pd.Timestamp('1965-11-02', tz='UTC'),
+        pd.Timestamp('1965-11-25', tz='UTC'),
+        pd.Timestamp('1965-12-24', tz='UTC')
+    ]        
+    _test_holidays(holidays, start, end)
+    _test_no_special_closes(start, end)     
+    
+    # late opens we expect:
+    late_opens = [
+        pd.Timestamp('1965-11-10', tz='UTC') # NY power grid failure
+    ]
+    _test_has_late_opens(late_opens, start, end)    
+    
+    
+def test_1966():
+    start = '1966-01-01'
+    end   = '1966-12-31'    
+    holidays = [
+        pd.Timestamp('1966-02-22', tz='UTC'),
+        pd.Timestamp('1966-04-08', tz='UTC'),
+        pd.Timestamp('1966-05-30', tz='UTC'),
+        pd.Timestamp('1966-07-04', tz='UTC'),
+        pd.Timestamp('1966-09-05', tz='UTC'),
+        pd.Timestamp('1966-11-08', tz='UTC'),
+        pd.Timestamp('1966-11-24', tz='UTC'),
+        pd.Timestamp('1966-12-26', tz='UTC')
+    ]
+    _test_holidays(holidays, start, end)
+    _test_no_special_opens(start, end)
+
+    # early closes we expect:
+    early_closes = pd.date_range('1966-01-06', '1966-01-14', 
+                 freq=CustomBusinessDay(weekmask = 'Mon Tue Wed Thu Fri'),
+                 tz='UTC') # Transit strike
+    _test_has_early_closes(early_closes, start, end)     
+    
+    
+def test_1967():
+    start = '1967-01-01'
+    end   = '1967-12-31'    
+    holidays = [
+        pd.Timestamp('1967-01-02', tz='UTC'),
+        pd.Timestamp('1967-02-22', tz='UTC'),
+        pd.Timestamp('1967-03-24', tz='UTC'),
+        pd.Timestamp('1967-05-30', tz='UTC'),
+        pd.Timestamp('1967-07-04', tz='UTC'),
+        pd.Timestamp('1967-09-04', tz='UTC'),
+        pd.Timestamp('1967-11-07', tz='UTC'),
+        pd.Timestamp('1967-11-23', tz='UTC'),
+        pd.Timestamp('1967-12-25', tz='UTC')
+    ]
+    _test_holidays(holidays, start, end)
+
+    # early closes we expect:
+    early_closes = [
+        pd.Timestamp('1967-02-07', tz='UTC'), # snow
+        pd.Timestamp('1967-08-09', tz='UTC'), # Backlog relief
+        pd.Timestamp('1967-08-10', tz='UTC'), # Backlog relief
+        pd.Timestamp('1967-08-11', tz='UTC'), # Backlog relief
+        pd.Timestamp('1967-08-14', tz='UTC'), # Backlog relief
+        pd.Timestamp('1967-08-15', tz='UTC'), # Backlog relief
+        pd.Timestamp('1967-08-16', tz='UTC'), # Backlog relief
+        pd.Timestamp('1967-08-17', tz='UTC'), # Backlog relief
+        pd.Timestamp('1967-08-18', tz='UTC')  # Backlog relief
+    ]
+    _test_has_early_closes(early_closes, start, end)
+        
+    # late opens we expect:
+    late_opens = [
+        pd.Timestamp('1967-02-07', tz='UTC'), # snow    
+    ]
+    _test_has_late_opens(late_opens, start, end)    
+    
+    
+def test_1968():
+    start = '1968-01-01'
+    end   = '1968-12-31'    
+    holidays = [
+        pd.Timestamp('1968-01-01', tz='UTC'),
+        pd.Timestamp('1968-02-12', tz='UTC'),
+        pd.Timestamp('1968-02-22', tz='UTC'),
+        pd.Timestamp('1968-04-09', tz='UTC'),
+        pd.Timestamp('1968-04-12', tz='UTC'),
+        pd.Timestamp('1968-05-30', tz='UTC'),
+        pd.Timestamp('1968-06-12', tz='UTC'),
+        pd.Timestamp('1968-06-19', tz='UTC'),
+        pd.Timestamp('1968-06-26', tz='UTC'),
+        pd.Timestamp('1968-07-04', tz='UTC'),
+        pd.Timestamp('1968-07-05', tz='UTC'),
+        pd.Timestamp('1968-07-10', tz='UTC'),
+        pd.Timestamp('1968-07-17', tz='UTC'),
+        pd.Timestamp('1968-07-24', tz='UTC'),
+        pd.Timestamp('1968-07-31', tz='UTC'),
+        pd.Timestamp('1968-08-07', tz='UTC'),
+        pd.Timestamp('1968-08-14', tz='UTC'),
+        pd.Timestamp('1968-08-21', tz='UTC'),
+        pd.Timestamp('1968-08-28', tz='UTC'),
+        pd.Timestamp('1968-09-02', tz='UTC'),
+        pd.Timestamp('1968-09-11', tz='UTC'),
+        pd.Timestamp('1968-09-18', tz='UTC'),
+        pd.Timestamp('1968-09-25', tz='UTC'),
+        pd.Timestamp('1968-10-02', tz='UTC'),
+        pd.Timestamp('1968-10-09', tz='UTC'),
+        pd.Timestamp('1968-10-16', tz='UTC'),
+        pd.Timestamp('1968-10-23', tz='UTC'),
+        pd.Timestamp('1968-10-30', tz='UTC'),
+        pd.Timestamp('1968-11-05', tz='UTC'),
+        pd.Timestamp('1968-11-11', tz='UTC'),
+        pd.Timestamp('1968-11-20', tz='UTC'),
+        pd.Timestamp('1968-11-28', tz='UTC'),
+        pd.Timestamp('1968-12-04', tz='UTC'),
+        pd.Timestamp('1968-12-11', tz='UTC'),
+        pd.Timestamp('1968-12-18', tz='UTC'),
+        pd.Timestamp('1968-12-25', tz='UTC')
+    ]
+    _test_holidays(holidays, start, end)
+    _test_no_special_opens(start, end)
+
+    # early closes we expect:
+    early_closes = [
+        pd.Timestamp('1968-01-22', tz='UTC'),
+        pd.Timestamp('1968-01-23', tz='UTC'),
+        pd.Timestamp('1968-01-24', tz='UTC'),
+        pd.Timestamp('1968-01-25', tz='UTC'),
+        pd.Timestamp('1968-01-26', tz='UTC'),
+        pd.Timestamp('1968-01-29', tz='UTC'),
+        pd.Timestamp('1968-01-30', tz='UTC'),
+        pd.Timestamp('1968-01-31', tz='UTC'),
+        pd.Timestamp('1968-02-01', tz='UTC'),
+        pd.Timestamp('1968-02-02', tz='UTC'),
+        pd.Timestamp('1968-02-05', tz='UTC'),
+        pd.Timestamp('1968-02-06', tz='UTC'),
+        pd.Timestamp('1968-02-07', tz='UTC'),
+        pd.Timestamp('1968-02-08', tz='UTC'),
+        pd.Timestamp('1968-02-09', tz='UTC'),
+        pd.Timestamp('1968-02-13', tz='UTC'),
+        pd.Timestamp('1968-02-14', tz='UTC'),
+        pd.Timestamp('1968-02-15', tz='UTC'),
+        pd.Timestamp('1968-02-16', tz='UTC'),
+        pd.Timestamp('1968-02-19', tz='UTC'),
+        pd.Timestamp('1968-02-20', tz='UTC'),
+        pd.Timestamp('1968-02-21', tz='UTC'),
+        pd.Timestamp('1968-02-23', tz='UTC'),
+        pd.Timestamp('1968-02-26', tz='UTC'),
+        pd.Timestamp('1968-02-27', tz='UTC'),
+        pd.Timestamp('1968-02-28', tz='UTC'),
+        pd.Timestamp('1968-02-29', tz='UTC'),
+        pd.Timestamp('1968-03-01', tz='UTC')        
+        ]
+    _test_has_early_closes(early_closes, start, end)
+        
+
+def test_1969():
+    start = '1969-01-01'
+    end   = '1969-12-31'    
+    holidays = [
+        pd.Timestamp('1969-01-01', tz='UTC'),
+        pd.Timestamp('1969-02-10', tz='UTC'),
+        pd.Timestamp('1969-02-21', tz='UTC'),
+        pd.Timestamp('1969-03-31', tz='UTC'),
+        pd.Timestamp('1969-04-04', tz='UTC'),
+        pd.Timestamp('1969-05-30', tz='UTC'),
+        pd.Timestamp('1969-07-04', tz='UTC'),
+        pd.Timestamp('1969-07-21', tz='UTC'),
+        pd.Timestamp('1969-09-01', tz='UTC'),
+        pd.Timestamp('1969-11-27', tz='UTC'),
+        pd.Timestamp('1969-12-25', tz='UTC')
+    ]
+    _test_holidays(holidays, start, end)
+
+    # early closes we expect:
+    # Every trading day was an early close in 1969
+    early_closes = nyse.valid_days(start, end)
+    _test_has_early_closes(early_closes, start, end)
+        
+    # late opens we expect:
+    late_opens = [
+        pd.Timestamp('1969-02-11', tz='UTC'), # snow
+        pd.Timestamp('1969-06-02', tz='UTC'), # storm
+    ]
+    _test_has_late_opens(late_opens, start, end)                  
