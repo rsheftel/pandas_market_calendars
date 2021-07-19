@@ -1182,8 +1182,99 @@ PaperworkCrisis3pmEarlyCloses1969to1970 =  date_range('1969-09-29', '1970-05-01'
                  freq=CustomBusinessDay(weekmask = 'Mon Tue Wed Thu Fri'),
                  tz='UTC')
 
-# http://www.tradingtheodds.com/nyse-full-day-closings/
+# 1972
+TrumanFuneral1972 = [Timestamp('1972-12-28', tz='UTC'),]
+
+# 1973
+JohnsonFuneral1973 = [Timestamp('1973-01-25', tz='UTC'),]
+
+Ice11amLateOpen1973 = Holiday(
+    'Late Open due to storm',
+    month=12,
+    day=17,
+    start_date=Timestamp('1973-12-17'),
+    end_date=Timestamp('1973-12-17'),
+)
+
+# 1974
+MerrillLynchComputer1015LateOpen1974 = Holiday(
+    'Late Open due to Merrill Lynch Computer trouble',
+    month=1,
+    day=16,
+    start_date=Timestamp('1974-01-16'),
+    end_date=Timestamp('1974-01-16'),
+)
+FireDrill1015LateOpen1974 = Holiday(
+    'Late Open due to Merrill Lynch Computer trouble',
+    month=11,
+    day=22,
+    start_date=Timestamp('1974-11-22'),
+    end_date=Timestamp('1974-11-22'),
+)
+
+# 1975
+Snow230EarlyClose1975 = Holiday(
+    'Early Close at 2:30pm due to snow',
+    month=2,
+    day=12,
+    start_date=Timestamp('1975-02-12'),
+    end_date=Timestamp('1975-02-12'),
+)
+
+# 1976
+Storm1115LateOpen1976 = Holiday(
+    'Late Open 11:15am due to storm',
+    month=2,
+    day=2,
+    start_date=Timestamp('1976-02-02'),
+    end_date=Timestamp('1976-02-02'),
+)
+
+FireDrill1015LateOpen1976 = Holiday(
+    'Late Open 10:15am due to fire drill',
+    month=6,
+    day=8,
+    start_date=Timestamp('1976-06-08'),
+    end_date=Timestamp('1976-06-08'),
+)
+
+HurricaneWatch3pmEarlyClose1976 = Holiday(
+    'Early Close 3pm for Hurricane Watch',
+    month=8,
+    day=9,
+    start_date=Timestamp('1976-08-09'),
+    end_date=Timestamp('1976-08-09'),
+)
+
+# 1977
 NewYorkCityBlackout77 = [Timestamp('1977-07-14', tz='UTC')]
+
+# 1978
+Snow12pmLateOpen1978 = Holiday(
+    'Late Open due to snow',
+    month=1,
+    day=20,
+    start_date=Timestamp('1978-01-20'),
+    end_date=Timestamp('1978-01-20'),
+)
+
+Snow2pmEarlyClose1978 = Holiday(
+    'Early close due to snow',
+    month=2,
+    day=6,
+    start_date=Timestamp('1978-02-06'),
+    end_date=Timestamp('1978-02-06'),
+)
+
+Snow11amLateOpen1978 = Holiday(
+    'Late Open due to snow',
+    month=2,
+    day=7,
+    start_date=Timestamp('1978-02-07'),
+    end_date=Timestamp('1978-02-07'),
+)
+
+
 
 # http://en.wikipedia.org/wiki/Aftermath_of_the_September_11_attacks
 September11Closings = [
@@ -1192,6 +1283,7 @@ September11Closings = [
     Timestamp("2001-09-13", tz='UTC'),
     Timestamp("2001-09-14", tz='UTC')
 ]
+
 
 # http://en.wikipedia.org/wiki/Hurricane_Gloria
 HurricaneGloriaClosings = date_range(
@@ -1210,15 +1302,11 @@ HurricaneSandyClosings = date_range(
 
 
 # National Days of Mourning
-# - President Harry S. Truman - December 28, 1972
-# - President Lyndon B. Johnson - January 25, 1973
 # - President Richard Nixon - April 27, 1994
 # - President Ronald W. Reagan - June 11, 2004
 # - President Gerald R. Ford - Jan 2, 2007
 # - President George H.W. Bush - Dec 5, 2018
 USNationalDaysofMourning = [
-    Timestamp('1972-12-28', tz='UTC'),
-    Timestamp('1973-01-25', tz='UTC'),
     Timestamp('1994-04-27', tz='UTC'),
     Timestamp('2004-06-11', tz='UTC'),
     Timestamp('2007-01-02', tz='UTC'),

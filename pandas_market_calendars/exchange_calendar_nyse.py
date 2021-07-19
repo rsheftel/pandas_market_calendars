@@ -164,7 +164,7 @@ from pandas_market_calendars.holidays_us import (
     Backlog2pmEarlyCloses1968,
     MLKdayOfMourning1968,
     PaperworkCrisis1968,
-    # 1969
+    # 1969 - 1970
     PaperworkCrisis2pmEarlyCloses1969,
     SnowClosing1969,
     Snow11amLateOpen1969,
@@ -173,7 +173,24 @@ from pandas_market_calendars.holidays_us import (
     PaperworkCrisis230pmEarlyCloses1969,
     FirstLunarLandingClosing1969,
     PaperworkCrisis3pmEarlyCloses1969to1970,
-    
+    # 1972
+    TrumanFuneral1972,
+    # 1973
+    JohnsonFuneral1973,
+    Ice11amLateOpen1973,
+    # 1974
+    MerrillLynchComputer1015LateOpen1974,
+    FireDrill1015LateOpen1974,
+    # 1975
+    Snow230EarlyClose1975,
+    # 1976
+    Storm1115LateOpen1976,
+    FireDrill1015LateOpen1976,
+    HurricaneWatch3pmEarlyClose1976,
+    # 1978
+    Snow12pmLateOpen1978,
+    Snow2pmEarlyClose1978,
+    Snow11amLateOpen1978,
      
      September11Closings,
       
@@ -510,6 +527,37 @@ class NYSEExchangeCalendar(MarketCalendar):
     - Early Closes 14:30 on Jul 7-Sep 26,1969 (Mon-Fri): Paperwork Crisis
     - Closed on Jul 21, 1969 (Mon): National Day of Participation for lunar exploration
     - NOT IMPLEMENTED Break 12:35-13:05 on Sep 3, 1969 (Wed): power failure
+    - Early Closes 15:00 on Sep 29, 1969 to May 1, 1970: Paperwork Crisis
+    - Closed on Dec 28, 1972 (Thu): Former President Harry S. Truman funeral
+    - Closed on Jan 25, 1973 (Thu): Former President Lyndon B. Johnson funeral
+    - Late Open 11am on Dec 17, 1973 (Mon): ice storm
+    - Late Open 10:15 on Jan 16, 1974 (Wed): Merrill Lynch computer trouble
+    - NOT IMPLEMENTED Break 11:09-11:35 on Apr 10, 1974 (Wed): computer malfunction
+    - NOT IMPLEMENTED Break 11:46-12:22 on Oct 15, 1974 (Wed): Ticker down at 11:37 to 12:22
+    - Late Open 10:15 on Nov 22, 1974 (Fri): Fire drill
+    - Early Close 14:00 on Dec 24, 1974 (Tue): Christmas Eve
+    - NOT IMPLEMENTED Break 10:07-10:50 on Jan 7, 1975 (Tue): Computer stopped
+    - NOT IMPLEMENTED Break 13:24-13:45 on Jan 15, 1975 (Wed): Computer stopped
+    - NOT IMPLEMENTED Break 10:24-11:00 on Feb 7, 1975 (Fri): Computer failure
+    - Early Close 14:30 on Feb 12, 1975 (Wed): snowstorm
+    - NOT IMPLEMENTED Break 10:09-10:35 on Apr 9, 1975 (Wed): Computer stopped
+    - Early Close 14:00 on Dec 24, 1975 (Wed): Christmas Eve    
+    - Late Open 11:15 on Feb 2, 1976 (Mon): storm
+    - Late Open UNKNOWN (coded as 10:15) on Jun 8, 1976 (Tue): fire drill
+    - Early Close 15:00 on Aug 9, 1976 (Mon): hurricane watch
+    - NOT IMPLEMENTED Break 1 minute time UNKNOWN on Nov 4, 1976 (Thu): Former NYSE Chair Gustave L. Levy moment of silence
+    - NOT IMPLEMENTED Break 11:00-11:01 on Feb 24, 1977 (Thu): Former NYSE Chair John A. Coleman moment of silence
+    - NOT IMPLEMENTED Break 10:24-11:45 on Mar 1, 1977 (Tue): Fire on moving ramp between trading floor and Blue Room
+    - Closed on July 14, 1977 (Thu): Power failure in NYC
+    - Late Open 12pm on Jan 20, 1978 (Fri): snowstorm
+    - Early Close 2pm on Feb 6, 1978 (Mon): snowstorm
+    - Late Open 11am on Feb 7, 1978 (Tue): snowstorm
+    - NOT IMPLEMENTED Break 1 minute time UNKNOWN on Dec 13, 1979 (Thu): Former NYSE Chair Robert L. Stott minute of silence
+    
+    
+
+
+    
     
     
     
@@ -683,6 +731,8 @@ class NYSEExchangeCalendar(MarketCalendar):
             SnowClosing1969,
             EisenhowerFuneral1969,
             FirstLunarLandingClosing1969,
+            TrumanFuneral1972,
+            JohnsonFuneral1973,
             
             USVetransDayAdHoc,
             SatAfterColumbusDayAdHoc,            
@@ -699,7 +749,7 @@ class NYSEExchangeCalendar(MarketCalendar):
             
                         
         ))
-#
+# 
     @property
     def special_closes(self):
         return [
@@ -732,6 +782,7 @@ class NYSEExchangeCalendar(MarketCalendar):
                 USBlackFridayBefore1993,
                 HooverFuneral1400EarlyClose1964,
                 Snow2pmEarlyClose1967,
+                Snow2pmEarlyClose1978,
             ])),
             (time(14, 7), AbstractHolidayCalendar(rules=[
                 KennedyAssassination1407EarlyClose,
@@ -739,8 +790,11 @@ class NYSEExchangeCalendar(MarketCalendar):
             (time(hour=14, minute=30), AbstractHolidayCalendar(rules=[
                 FalseArmisticeReport1430EarlyClose1918,
                 CromwellFuneral1430EarlyClose1925,
+                Snow230EarlyClose1975,
             ])),
- 
+            (time(15), AbstractHolidayCalendar(rules=[
+                HurricaneWatch3pmEarlyClose1976,
+            ])),             
         ]
 # 
     @property
@@ -772,7 +826,10 @@ class NYSEExchangeCalendar(MarketCalendar):
     def special_opens(self):
         return [
             (time(hour=10, minute=15), AbstractHolidayCalendar(rules=[
-                Snow1015LateOpen1967,                
+                Snow1015LateOpen1967,     
+                MerrillLynchComputer1015LateOpen1974,
+                FireDrill1015LateOpen1974,
+                FireDrill1015LateOpen1976,
             ])),
             (time(hour=10, minute=30), AbstractHolidayCalendar(rules=[
                 TrafficBlockLateOpen1919,
@@ -787,14 +844,20 @@ class NYSEExchangeCalendar(MarketCalendar):
                 KingGeorgeVFuneral11amLateOpen1936,
                 Snow11amLateOpening1960,
                 Snow11amLateOpen1969,
+                Ice11amLateOpen1973,                    
+                Snow11amLateOpen1978,
             ])),
             (time(11, 5), AbstractHolidayCalendar(rules=[
                 PowerFail1105LateOpen,
-            ])),            
+            ])),    
+            (time(11, 15), AbstractHolidayCalendar(rules=[
+                Storm1115LateOpen1976,
+            ])),                        
             (time(12), AbstractHolidayCalendar(rules=[
                 KingEdwardFuneral12pmOpen1910,
                 JPMorganFuneral12pmOpen1913,
                 WilliamGaynorFuneral12pmOpen1913,
+                Snow12pmLateOpen1978,
             ])),
             (time(13), AbstractHolidayCalendar(rules=[
                 AnnunciatorBoardFire1pmLateOpen1921,
