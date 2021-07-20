@@ -1,5 +1,5 @@
 from dateutil.relativedelta import (MO, TH, TU)
-from pandas import (DateOffset, Timestamp, date_range)
+from pandas import (DateOffset, Timestamp, date_range, bdate_range)
 from datetime import datetime, timedelta
 from pandas.tseries.holiday import (Holiday, nearest_workday, sunday_to_monday,  Easter)
 from pandas.tseries.offsets import Day, CustomBusinessDay
@@ -30,29 +30,21 @@ def next_saturday(dt):
     return dt
 
 
-#############################################################################
-# Saturday Trading Thru 1952
-#   NYSE was open on Saturdays thru 5/24/1952 10am to noon
-#############################################################################
-Pre1952May24SatEarlyClose = date_range('1885-01-01', 
-                                    '1952-05-25', 
-                                    freq='W-SAT',
-                                    tz='UTC'
-)
-# Adhoc Saturday Closes
-Pre1952MaySatClosesAdhoc = [
-    Timestamp('1901-04-27', tz='UTC'), # Moved to temporary quarters in Produce Exchange
-    Timestamp('1901-05-11', tz='UTC'),  # Enlarged Produce Exchange
-    Timestamp('1944-08-19', tz='UTC'),
-    Timestamp('1944-08-26', tz='UTC'),
-    Timestamp('1944-09-02', tz='UTC'),
-    ]
 
 ####################################################
 # US New Years Day Jan 1
 #    Closed every year since the stock market opened
 #####################################################
 USNewYearsDay = Holiday(
+    'New Years Day',
+    month=1,
+    day=1,
+    # When Jan 1 is a Sunday, US markets observe the subsequent Monday.
+    # When Jan 1 is a Saturday (as in 2005 and 2011), no holiday is observed.
+    observance=sunday_to_monday,
+)
+
+USNewYearsDayNYSEpost1952 = Holiday(
     'New Years Day',
     month=1,
     day=1,
@@ -63,7 +55,7 @@ USNewYearsDay = Holiday(
     days_of_week=(0,1,2,3,4,)    
 )
 
-USNewYearsDayPre1952 = Holiday(
+USNewYearsDayNYSEpre1952 = Holiday(
     'New Years Day Before Saturday Trading Ceased',
     month=1,
     day=1,
@@ -308,8 +300,7 @@ MonTuesThursBeforeIndependenceDay = Holiday(
 def july_5th_holiday_observance(datetime_index):
     return datetime_index[datetime_index.year < 2013]
 
-#TODO: Figure out when this rule begins. 
-# It causes tests  1889, 1896 to fail
+# This is not NYSE
 FridayAfterIndependenceDayPre2013 = Holiday(
     # When July 4th is a Thursday, the next day is a half day prior to 2013.
     # Since 2013 the early close is on Wednesday and Friday is a full day
@@ -318,8 +309,10 @@ FridayAfterIndependenceDayPre2013 = Holiday(
     day=5,
     days_of_week=(FRIDAY,),
     observance=july_5th_holiday_observance,
-    start_date=Timestamp("1970-01-01"),
+    #start_date=Timestamp("1970-01-01"),
 )
+FridayAfterIndependenceDayNYSEadhoc =[]
+
 
 WednesdayBeforeIndependenceDayPost2013 = Holiday(
     # When July 4th is a Thursday, the next day is a half day prior to 2013.
@@ -470,24 +463,41 @@ ChristmasBefore1954 = Holiday(
     end_date=Timestamp('1953-12-31'),
     observance=sunday_to_monday,
 )
-    # NYSE closed at 2:00 PM on Christmas Eve from 1974 until 1993.
-ChristmasEveBefore1993 = Holiday(
-    'Christmas Eve',
-    month=12,
-    day=24,
-    start_date=Timestamp('12-24-1974'),
-    end_date=Timestamp('1993-01-01'),
-    # When Christmas is a Saturday, the 24th is a full holiday.
-    days_of_week=(MONDAY, TUESDAY, WEDNESDAY, THURSDAY),
-)
-ChristmasEveInOrAfter1993 = Holiday(
-    'Christmas Eve',
-    month=12,
-    day=24,
-    start_date=Timestamp('1993-01-01'),
-    # When Christmas is a Saturday, the 24th is a full holiday.
-    days_of_week=(MONDAY, TUESDAY, WEDNESDAY, THURSDAY),
-)
+
+# Only some Christmas Eve's were fully close
+ChristmasEvesAdhoc = [
+    Timestamp('1900-12-24', tz='UTC'),
+    Timestamp('1945-12-24', tz='UTC'),
+    Timestamp('1956-12-24', tz='UTC'),
+]
+
+DayAfterChristmasAdhoc = [
+    Timestamp('1958-12-26', tz='UTC'),
+]
+
+# Only some Christmas Eve's were early close (1976-1979 were not)
+ChristmasEve2pmEarlyCloseAdhoc = [
+    Timestamp('1974-12-24', tz='UTC'),
+    Timestamp('1975-12-24', tz='UTC'),
+    Timestamp('1990-12-24', tz='UTC'),
+    Timestamp('1991-12-24', tz='UTC'),
+    Timestamp('1992-12-24', tz='UTC'),
+]
+ChristmasEve1pmEarlyCloseAdhoc = [
+    Timestamp('1951-12-24', tz='UTC'),
+    Timestamp('1990-12-24', tz='UTC'),
+    Timestamp('1996-12-24', tz='UTC'),
+    Timestamp('1997-12-24', tz='UTC'),
+    Timestamp('1998-12-24', tz='UTC'),
+    Timestamp('2001-12-24', tz='UTC'),
+    Timestamp('2002-12-24', tz='UTC'),
+    Timestamp('2003-12-24', tz='UTC'),
+    Timestamp('2007-12-24', tz='UTC'),
+    Timestamp('2008-12-24', tz='UTC'),
+    Timestamp('2009-12-24', tz='UTC'),
+    Timestamp('2012-12-24', tz='UTC'),
+]
+
 # Not every Saturday before/after Christmas is a holiday
 SatBeforeChristmasAdhoc = [
     Timestamp('1887-12-24', tz='UTC'),
@@ -509,22 +519,25 @@ SatAfterChristmasAdhoc = [
     Timestamp('1936-12-26', tz='UTC'),
     ]
 
-ChristmasEvesAdhoc = [
-    Timestamp('1900-12-24', tz='UTC'),
-    Timestamp('1945-12-24', tz='UTC'),
-    Timestamp('1956-12-24', tz='UTC'),
-]
-
-DayAfterChristmasAdhoc = [
-    Timestamp('1958-12-26', tz='UTC'),
-]
-
-ChristmasEve1pmEarlyCloseAdhoc = [
-    Timestamp('1951-12-24', tz='UTC'),
-    Timestamp('1974-12-24', tz='UTC'),
-    Timestamp('1975-12-24', tz='UTC'),
-    Timestamp('1990-12-24', tz='UTC'),
-]
+# These Holidays are NOT correct for NYSE.
+# They are left in this file because exchange_calendar_cme.py imports them
+ChristmasEveBefore1993 = Holiday(
+    'Christmas Eve',
+    month=12,
+    day=24,
+    start_date=Timestamp('12-24-1974'),
+    end_date=Timestamp('1993-01-01'),
+    # When Christmas is a Saturday, the 24th is a full holiday.
+    days_of_week=(MONDAY, TUESDAY, WEDNESDAY, THURSDAY),
+)
+ChristmasEveInOrAfter1993 = Holiday(
+    'Christmas Eve',
+    month=12,
+    day=24,
+    start_date=Timestamp('1993-01-01'),
+    # When Christmas is a Saturday, the 24th is a full holiday.
+    days_of_week=(MONDAY, TUESDAY, WEDNESDAY, THURSDAY),
+)
 
 
 #####################################
@@ -794,9 +807,9 @@ WallStreetExplosionEarlyClose1920 = Holiday(
 AnnunciatorBoardFire1pmLateOpen1921 = Holiday(
     'Annunciator Board Fire 1pm late open Aug 8, 1921',
     month=8,
-    day=8,
-    start_date=Timestamp('1921-08-08'),
-    end_date=Timestamp('1921-08-08'),
+    day=2,
+    start_date=Timestamp('1921-08-02'),
+    end_date=Timestamp('1921-08-02'),
 )
 
 # 1923
@@ -1116,8 +1129,9 @@ Backlog2pmEarlyCloses1967 =  date_range('1967-08-09', '1967-08-18',
 
 # 1968
 Backlog2pmEarlyCloses1968 =  date_range('1968-01-22', '1968-03-01', 
-                 freq=CustomBusinessDay(weekmask = 'Mon Tue Wed Thu Fri'),
-                 tz='UTC')
+                  freq=CustomBusinessDay(weekmask = 'Mon Tue Wed Thu Fri'),
+                  tz='UTC')
+
 
 MLKdayOfMourning1968 = [Timestamp('1968-04-09', tz='UTC'),]
 
@@ -1299,8 +1313,6 @@ HurricaneSandyClosings = date_range(
     tz='UTC'
 )
 
-
-
 # National Days of Mourning
 # - President Richard Nixon - April 27, 1994
 # - President Ronald W. Reagan - June 11, 2004
@@ -1312,3 +1324,16 @@ USNationalDaysofMourning = [
     Timestamp('2007-01-02', tz='UTC'),
     Timestamp('2018-12-05', tz='UTC'),
 ]
+
+
+
+BattleOfGettysburg = Holiday(
+    # All of the floor traders in Chicago were sent to PA
+    'Markets were closed during the battle of Gettysburg',
+    month=7,
+    day=(1, 2, 3),
+    start_date=Timestamp("1863-07-01"),
+    end_date=Timestamp("1863-07-03")
+)
+
+

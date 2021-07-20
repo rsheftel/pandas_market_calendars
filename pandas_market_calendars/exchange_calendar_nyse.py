@@ -24,13 +24,17 @@ from pytz import timezone
 import pandas_market_calendars.market_calendar as mc
 from pandas_market_calendars.market_calendar import clean_dates, _overwrite_special_dates
 
-from pandas_market_calendars.holidays_us import (       
-    USNewYearsDay, USNewYearsDayPre1952, SatBeforeNewYearsAdhoc,
+from pandas_market_calendars.holidays_us import (    
+    # Always Celebrated Holidays
+    USNewYearsDayNYSEpost1952, USNewYearsDayNYSEpre1952, SatBeforeNewYearsAdhoc,
     
     USPresidentsDay, USWashingtonsBirthDay1964to1970, 
     USWashingtonsBirthDayBefore1952, USWashingtonsBirthDay1952to1963,
     SatBeforeWashingtonsBirthdayAdhoc, SatAfterWashingtonsBirthdayAdhoc, 
-    LincolnsBirthDayAdhoc, SatBeforeAfterLincolnsBirthdayAdhoc, GrantsBirthDayAdhoc,  
+    LincolnsBirthDayAdhoc, SatBeforeAfterLincolnsBirthdayAdhoc, USLincolnsBirthDayBefore1954,
+    GrantsBirthDayAdhoc,  
+    
+    USMartinLutherKingJrAfter1998, 
     
     GoodFriday, GoodFridayPre1898, GoodFriday1899to1905, SatAfterGoodFridayAdhoc,
     
@@ -39,26 +43,30 @@ from pandas_market_calendars.holidays_us import (
     DayBeforeDecorationAdhoc,
     
     USIndependenceDay,SatBeforeIndependenceDayAdhoc, SatAfterIndependenceDayAdhoc,
-    USIndependenceDayPre1952, USIndependenceDay1952to1954, FridayAfterIndependenceDayPre2013, 
+    USIndependenceDayPre1952, USIndependenceDay1952to1954, 
     MonTuesThursBeforeIndependenceDay, WednesdayBeforeIndependenceDayPost2013,
     MonBeforeIndependenceDayAdhoc, DaysAfterIndependenceDayAdhoc,
     
     USBlackFridayBefore1993, USBlackFridayInOrAfter1993,
     USColumbusDayBefore1954, USElectionDay1848to1967, 
-    USElectionDay1968to1980Adhoc,
-  
-    USLincolnsBirthDayBefore1954,
-    USMartinLutherKingJrAfter1998, 
+    
     USLaborDayStarting1887, SatBeforeLaborDayAdhoc,
+    
     USThanksgivingDay, USThanksgivingDay1939to1941,
     USThanksgivingDayBefore1939, FridayAfterThanksgivingAdHoc, USVeteransDay1934to1953,
-    Christmas, ChristmasBefore1954, ChristmasEveBefore1993, ChristmasEveInOrAfter1993, 
-    SatBeforeChristmasAdhoc, SatAfterChristmasAdhoc,
-    ChristmasEvesAdhoc, DayAfterChristmasAdhoc, ChristmasEve1pmEarlyCloseAdhoc,
-    USNationalDaysofMourning,
     
+    USElectionDay1968to1980Adhoc,
+    
+    Christmas, ChristmasBefore1954, 
+    ChristmasEvesAdhoc, DayAfterChristmasAdhoc,
+    ChristmasEve1pmEarlyCloseAdhoc, ChristmasEve2pmEarlyCloseAdhoc,
+    SatBeforeChristmasAdhoc, SatAfterChristmasAdhoc,
+    
+    # Retired Holidays
+    USNationalDaysofMourning,    
     USVetransDayAdHoc, SatAfterColumbusDayAdHoc,
     
+    # Adhoc Holidays
     # 1885    
     UlyssesGrantFuneral1885,
     # 1892
@@ -90,7 +98,7 @@ from pandas_market_calendars.holidays_us import (
     OnsetOfWWI1914, 
     # 1917
     WeatherHeatClosing1917, ParadeOfNationalGuardEarlyClose1917,
-     LibertyDay12pmEarlyClose1917,  DraftRegistrationDay1917, 
+    LibertyDay12pmEarlyClose1917,  DraftRegistrationDay1917, 
     # 1918
     WeatherNoHeatClosing1918, DraftRegistrationDay1918, 
     LibertyDay12pmEarlyClose1918, FalseArmisticeReport1430EarlyClose1918, 
@@ -166,12 +174,9 @@ from pandas_market_calendars.holidays_us import (
     PaperworkCrisis1968,
     # 1969 - 1970
     PaperworkCrisis2pmEarlyCloses1969,
-    SnowClosing1969,
-    Snow11amLateOpen1969,
-    EisenhowerFuneral1969,
-    Storm1045LateOpen1969,
-    PaperworkCrisis230pmEarlyCloses1969,
-    FirstLunarLandingClosing1969,
+    SnowClosing1969, Snow11amLateOpen1969,
+    EisenhowerFuneral1969, Storm1045LateOpen1969,
+    PaperworkCrisis230pmEarlyCloses1969, FirstLunarLandingClosing1969,
     PaperworkCrisis3pmEarlyCloses1969to1970,
     # 1972
     TrumanFuneral1972,
@@ -179,23 +184,21 @@ from pandas_market_calendars.holidays_us import (
     JohnsonFuneral1973,
     Ice11amLateOpen1973,
     # 1974
-    MerrillLynchComputer1015LateOpen1974,
-    FireDrill1015LateOpen1974,
+    MerrillLynchComputer1015LateOpen1974, FireDrill1015LateOpen1974,
     # 1975
     Snow230EarlyClose1975,
     # 1976
-    Storm1115LateOpen1976,
-    FireDrill1015LateOpen1976,
+    Storm1115LateOpen1976, FireDrill1015LateOpen1976,
     HurricaneWatch3pmEarlyClose1976,
+    # 1977
+    NewYorkCityBlackout77,
     # 1978
-    Snow12pmLateOpen1978,
-    Snow2pmEarlyClose1978,
-    Snow11amLateOpen1978,
+    Snow12pmLateOpen1978, Snow2pmEarlyClose1978, Snow11amLateOpen1978,
      
      September11Closings,
       
     GreatBlizzardOf1888, HurricaneGloriaClosings,
-    HurricaneSandyClosings, NewYorkCityBlackout77 )
+    HurricaneSandyClosings  )
 from .market_calendar import MarketCalendar
 
 # Useful resources for making changes to this file:
@@ -623,8 +626,8 @@ class NYSEExchangeCalendar(MarketCalendar):
     @property
     def regular_holidays(self):
         return AbstractHolidayCalendar(rules=[
-            USNewYearsDay,
-            USNewYearsDayPre1952,
+            USNewYearsDayNYSEpost1952,
+            USNewYearsDayNYSEpre1952,
             USMartinLutherKingJrAfter1998,
             USPresidentsDay,
             USWashingtonsBirthDayBefore1952,
@@ -753,46 +756,43 @@ class NYSEExchangeCalendar(MarketCalendar):
     @property
     def special_closes(self):
         return [
-             (time(11), AbstractHolidayCalendar(rules=[
+             (time(11, tzinfo=timezone('America/New_York')), AbstractHolidayCalendar(rules=[
                 KingEdwardDeath11amyClose1910,
             ])),
-            (time(12), AbstractHolidayCalendar(rules=[
+            (time(12, tzinfo=timezone('America/New_York')), AbstractHolidayCalendar(rules=[
                 ParadeOfNationalGuardEarlyClose1917,
                 LibertyDay12pmEarlyClose1917,
                 LibertyDay12pmEarlyClose1918,
                 WallStreetExplosionEarlyClose1920,
                 NRAdemonstration12pmEarlyClose1933,
             ])),
-            (time(hour=12, minute=30), AbstractHolidayCalendar(rules=[
+            (time(hour=12, minute=30, tzinfo=timezone('America/New_York')), AbstractHolidayCalendar(rules=[
                 RooseveltFuneral1230EarlyClose1919,
                 WoodrowWilsonFuneral1230EarlyClose1924,
                 TaftFuneral1230EarlyClose1930,
                 GasFumesOnTradingFloor1230EarlyClose1933,
             ])),
-            (time(13), AbstractHolidayCalendar(rules=[               
+            (time(13, tzinfo=timezone('America/New_York')), AbstractHolidayCalendar(rules=[               
                 MonTuesThursBeforeIndependenceDay,
-                FridayAfterIndependenceDayPre2013,
                 WednesdayBeforeIndependenceDayPost2013,
                 GroverClevelandFuneral1pmClose1908,
                 USBlackFridayInOrAfter1993,
-                ChristmasEveInOrAfter1993,               
             ])),
-            (time(14), AbstractHolidayCalendar(rules=[
-                ChristmasEveBefore1993,
+            (time(14, tzinfo=timezone('America/New_York')), AbstractHolidayCalendar(rules=[                
                 USBlackFridayBefore1993,
                 HooverFuneral1400EarlyClose1964,
                 Snow2pmEarlyClose1967,
                 Snow2pmEarlyClose1978,
             ])),
-            (time(14, 7), AbstractHolidayCalendar(rules=[
+            (time(14, 7, tzinfo=timezone('America/New_York')), AbstractHolidayCalendar(rules=[
                 KennedyAssassination1407EarlyClose,
             ])),            
-            (time(hour=14, minute=30), AbstractHolidayCalendar(rules=[
+            (time(hour=14, minute=30, tzinfo=timezone('America/New_York')), AbstractHolidayCalendar(rules=[
                 FalseArmisticeReport1430EarlyClose1918,
                 CromwellFuneral1430EarlyClose1925,
                 Snow230EarlyClose1975,
             ])),
-            (time(15), AbstractHolidayCalendar(rules=[
+            (time(15, tzinfo=timezone('America/New_York')), AbstractHolidayCalendar(rules=[
                 HurricaneWatch3pmEarlyClose1976,
             ])),             
         ]
@@ -800,24 +800,27 @@ class NYSEExchangeCalendar(MarketCalendar):
     @property
     def special_closes_adhoc(self):
         return [            
-            (time(13), [
+            (time(13, tzinfo=timezone('America/New_York')), [
                 '1997-12-26',
                 '1999-12-31',
                 '2003-12-26',
                 '2013-07-03'
-            ]),
-            (time(14), [t.strftime("%Y-%m-%d") for t in ChristmasEve1pmEarlyCloseAdhoc]
-             + BacklogRelief2pmEarlyClose1928.strftime("%Y-%m-%d").tolist()
-             + [t.strftime("%Y-%m-%d") for t in BacklogRelief1pmEarlyClose1929]
+            ]
+            + [t.strftime("%Y-%m-%d") for t in ChristmasEve1pmEarlyCloseAdhoc]   
+            + [t.strftime("%Y-%m-%d") for t in BacklogRelief1pmEarlyClose1929]
+            ),
+            (time(14, tzinfo=timezone('America/New_York')), 
+             [t.strftime("%Y-%m-%d") for t in ChristmasEve2pmEarlyCloseAdhoc]
+             + BacklogRelief2pmEarlyClose1928.strftime("%Y-%m-%d").tolist()             
              + [t.strftime("%Y-%m-%d") for t in HeavyVolume2pmEarlyClose1933]
              + [t.strftime("%Y-%m-%d") for t in TransitStrike2pmEarlyClose1966]
              + [t.strftime("%Y-%m-%d") for t in Backlog2pmEarlyCloses1967]
-             + [t.strftime("%Y-%m-%d") for t in Backlog2pmEarlyCloses1968]
-             + [t.strftime("%Y-%m-%d") for t in PaperworkCrisis2pmEarlyCloses1969]
+             + [t.strftime("%Y-%m-%d") for t in Backlog2pmEarlyCloses1968]             
+             + [t.strftime("%Y-%m-%d") for t in PaperworkCrisis2pmEarlyCloses1969] 
             ),
-            (time(14, 30), [t.strftime("%Y-%m-%d") for t in PaperworkCrisis230pmEarlyCloses1969]
+            (time(14, 30, tzinfo=timezone('America/New_York')), [t.strftime("%Y-%m-%d") for t in PaperworkCrisis230pmEarlyCloses1969]
             ),      
-            (time(15), [t.strftime("%Y-%m-%d") for t in PaperworkCrisis3pmEarlyCloses1969to1970]
+            (time(15, tzinfo=timezone('America/New_York')), [t.strftime("%Y-%m-%d") for t in PaperworkCrisis3pmEarlyCloses1969to1970]
             ),                        
         ]
 
@@ -825,21 +828,21 @@ class NYSEExchangeCalendar(MarketCalendar):
     @property
     def special_opens(self):
         return [
-            (time(hour=10, minute=15), AbstractHolidayCalendar(rules=[
+            (time(hour=10, minute=15, tzinfo=timezone('America/New_York')), AbstractHolidayCalendar(rules=[
                 Snow1015LateOpen1967,     
                 MerrillLynchComputer1015LateOpen1974,
                 FireDrill1015LateOpen1974,
                 FireDrill1015LateOpen1976,
             ])),
-            (time(hour=10, minute=30), AbstractHolidayCalendar(rules=[
+            (time(hour=10, minute=30, tzinfo=timezone('America/New_York')), AbstractHolidayCalendar(rules=[
                 TrafficBlockLateOpen1919,
                 TrafficBlockLateOpen1920,
             ])),
-            (time(hour=10, minute=45), AbstractHolidayCalendar(rules=[
+            (time(hour=10, minute=45, tzinfo=timezone('America/New_York')), AbstractHolidayCalendar(rules=[
                 EclipseOfSunLateOpen1925,
                 Storm1045LateOpen1969,
             ])),
-            (time(11), AbstractHolidayCalendar(rules=[
+            (time(11, tzinfo=timezone('America/New_York')), AbstractHolidayCalendar(rules=[
                 Snow11amLateOpen1934,
                 KingGeorgeVFuneral11amLateOpen1936,
                 Snow11amLateOpening1960,
@@ -847,19 +850,19 @@ class NYSEExchangeCalendar(MarketCalendar):
                 Ice11amLateOpen1973,                    
                 Snow11amLateOpen1978,
             ])),
-            (time(11, 5), AbstractHolidayCalendar(rules=[
+            (time(11, 5, tzinfo=timezone('America/New_York')), AbstractHolidayCalendar(rules=[
                 PowerFail1105LateOpen,
             ])),    
-            (time(11, 15), AbstractHolidayCalendar(rules=[
+            (time(11, 15, tzinfo=timezone('America/New_York')), AbstractHolidayCalendar(rules=[
                 Storm1115LateOpen1976,
             ])),                        
-            (time(12), AbstractHolidayCalendar(rules=[
+            (time(12, tzinfo=timezone('America/New_York')), AbstractHolidayCalendar(rules=[
                 KingEdwardFuneral12pmOpen1910,
                 JPMorganFuneral12pmOpen1913,
                 WilliamGaynorFuneral12pmOpen1913,
                 Snow12pmLateOpen1978,
             ])),
-            (time(13), AbstractHolidayCalendar(rules=[
+            (time(13, tzinfo=timezone('America/New_York')), AbstractHolidayCalendar(rules=[
                 AnnunciatorBoardFire1pmLateOpen1921,
             ])),
             ]
@@ -868,9 +871,10 @@ class NYSEExchangeCalendar(MarketCalendar):
     @property
     def special_opens_adhoc(self):
         return [                       
-            (time(11), [t.strftime("%Y-%m-%d") for t in HeavyVolume11amLateOpen1933]                     
+            (time(11, tzinfo=timezone('America/New_York')), 
+             [t.strftime("%Y-%m-%d") for t in HeavyVolume11amLateOpen1933]                     
             ),     
-            (time(12), [t.strftime("%Y-%m-%d") for t in BacklogRelief12pmLateOpen1929]
+            (time(12, tzinfo=timezone('America/New_York')), [t.strftime("%Y-%m-%d") for t in BacklogRelief12pmLateOpen1929]
                      + [t.strftime("%Y-%m-%d") for t in HeavyVolume12pmLateOpen1933]
             ),            
         ]

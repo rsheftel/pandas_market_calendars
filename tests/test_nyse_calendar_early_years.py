@@ -41,20 +41,36 @@ def _test_no_special_closes(start, end):
 def _test_no_special_opens_closes(start, end):
     _test_no_special_opens(start, end)
     _test_no_special_closes(start, end)
+
+def _test_verify_late_open_time(schedule, timestamp):
+    date = pd.Timestamp(pd.Timestamp(timestamp).tz_convert('UTC').date())
+    if date in schedule.index:
+        return schedule.at[date, 'market_open'] == timestamp
+    else:
+        return False
     
 def _test_has_late_opens(late_opens, start, end):
-    expected = nyse.late_opens(nyse.schedule(start, end))
+    schedule = nyse.schedule(start, end)
+    expected = nyse.late_opens(schedule)
     assert len(expected) == len(late_opens)
-    for lo in late_opens:
-        assert lo in expected.index
+    assert(all(_test_verify_late_open_time(schedule, ts) is True for ts in late_opens))
+    
+def _test_verify_early_close_time(schedule, timestamp):
+    date = pd.Timestamp(pd.Timestamp(timestamp).tz_convert('UTC').date())
+    if date in schedule.index:
+        return schedule.at[date, 'market_close'] == timestamp
+    else:
+        return False
     
 def _test_has_early_closes(early_closes, start, end):
-    expected = nyse.early_closes(nyse.schedule(start, end))
+    schedule = nyse.schedule(start, end)
+    expected = nyse.early_closes(schedule)
     assert len(expected) == len(early_closes)
-    for ec in early_closes:
-        assert ec in expected.index
+    assert(all(_test_verify_early_close_time(schedule, ts) is True for ts in early_closes))
                            
-
+#########################################################################
+# TESTS BEGIN
+#########################################################################
 def test_1885():
     start = '1885-01-01'
     end   = '1885-12-31'
@@ -563,7 +579,7 @@ def test_1908():
         
     # early closes we expect:
     early_closes = [
-        pd.Timestamp(' 1908-06-26' , tz='UTC') # Grover Cleveland funeral
+        pd.Timestamp('1908-06-26 1:00PM', tz='America/New_York') # Grover Cleveland funeral
     ]
     _test_has_early_closes(early_closes, start, end )
         
@@ -620,13 +636,13 @@ def test_1910():
         
     # early closes:
     early_closes = [
-        pd.Timestamp('1910-05-07' , tz='UTC') #King Edward VII death
+        pd.Timestamp('1910-05-07 11:00AM', tz='America/New_York') #King Edward VII death
     ]
     _test_has_early_closes(early_closes, start, end)
 
     # late opens:
     late_opens= [
-        pd.Timestamp('1910-05-20' , tz='UTC') # King Edward VII funderal
+        pd.Timestamp('1910-05-20 12:00PM', tz='America/New_York') # King Edward VII funderal
     ]
     _test_has_late_opens(late_opens, start, end)
         
@@ -701,8 +717,8 @@ def test_1913():
 
     # late opens:
     late_opens = [
-        pd.Timestamp('1913-04-14' , tz='UTC'), # JP Morgan Funeral
-        pd.Timestamp('1913-09-22' , tz='UTC')  # Mayor William J. Gaynor Funeral
+        pd.Timestamp('1913-04-14 12:00PM', tz='America/New_York'), # JP Morgan Funeral
+        pd.Timestamp('1913-09-22 12:00PM', tz='America/New_York')  # Mayor William J. Gaynor Funeral
     ]
     _test_has_late_opens(late_opens, start, end)
 
@@ -908,8 +924,8 @@ def test_1917():
 
     # early closes we expect:
     early_closes = [
-        pd.Timestamp(' 1917-08-29' , tz='UTC'), # Parade of National Guard
-        pd.Timestamp(' 1917-10-24' , tz='UTC'), # Liberty Day
+        pd.Timestamp(' 1917-08-29 12:00PM', tz='America/New_York'), # Parade of National Guard
+        pd.Timestamp(' 1917-10-24 12:00PM', tz='America/New_York'), # Liberty Day
     ]
     _test_has_early_closes(early_closes, start, end)
 
@@ -939,8 +955,8 @@ def test_1918():
 
     # early closes we expect:
     early_closes = [
-        pd.Timestamp('1918-04-26'), # Liberty Day
-        pd.Timestamp('1918-11-07'), # False armistice report        
+        pd.Timestamp('1918-04-26 12:00PM', tz='America/New_York'), # Liberty Day
+        pd.Timestamp('1918-11-07 2:30PM', tz='America/New_York'), # False armistice report        
     ]
     _test_has_early_closes(early_closes, start, end)       
         
@@ -973,13 +989,13 @@ def test_1919():
  
     # early closes we expect:
     early_closes = [
-        pd.Timestamp('1919-01-07')
+        pd.Timestamp('1919-01-07 12:30PM', tz='America/New_York')
     ]
     _test_has_early_closes(early_closes, start, end)        
     
     # late opens we expect:
     late_opens = [
-            pd.Timestamp('1919-12-30', tz='UTC'), # Traffic block
+            pd.Timestamp('1919-12-30 10:30AM', tz='America/New_York'), # Traffic block
     ]
     _test_has_late_opens(late_opens, start, end)
 
@@ -1008,13 +1024,13 @@ def test_1920():
  
     # early closes we expect:
     early_closes= [
-        pd.Timestamp('1920-09-16') # Wall Street explosion
+        pd.Timestamp('1920-09-16 12:00PM', tz='America/New_York') # Wall Street explosion
     ]
     _test_has_early_closes(early_closes, start, end)
         
     # late opens we expect:
     late_opens = [
-            pd.Timestamp('1920-02-06', tz='UTC'), # traffic block
+            pd.Timestamp('1920-02-06 10:30AM', tz='America/New_York'), # traffic block
     ]
     _test_has_late_opens(late_opens, start, end)    
  
@@ -1043,7 +1059,7 @@ def test_1921():
          
     # late opens we expect:
     late_opens = [
-            pd.Timestamp('1921-08-08', tz='UTC'), # fire in annunciator board
+            pd.Timestamp('1921-08-02 1:00PM', tz='America/New_York'), # fire in annunciator board
     ]
     _test_has_late_opens(late_opens, start, end)
  
@@ -1112,7 +1128,7 @@ def test_1924():
 
     # early closes we expect:
     early_closes = [
-        pd.Timestamp('1924-02-06') # Former President Woodrow Wilson funeral
+        pd.Timestamp('1924-02-06 12:30PM', tz='America/New_York') # Former President Woodrow Wilson funeral
     ]
     _test_has_early_closes(early_closes, start, end)
 
@@ -1138,13 +1154,13 @@ def test_1925():
  
     # early closes we expect:
     early_closes = [
-        pd.Timestamp('1925-09-18') # Seymour L. Cromwell funeral
+        pd.Timestamp('1925-09-18 2:30PM', tz='America/New_York') # Seymour L. Cromwell funeral
     ]
     _test_has_early_closes(early_closes, start, end)
 
     # late opens we expect:
     late_opens = [
-            pd.Timestamp('1925-01-24', tz='UTC'), # Eclipse of sun
+            pd.Timestamp('1925-01-24 10:45AM', tz='America/New_York'), # Eclipse of sun
     ]
     _test_has_late_opens(late_opens, start, end)
 
@@ -1220,10 +1236,10 @@ def test_1928():
     _test_no_special_opens(start, end)
 
     # early closes we expect:
-    early_closes = pd.date_range('1928-05-21', # Backlog catch up
-                                 '1928-05-25', 
+    early_closes = pd.date_range('1928-05-21 2:00PM', # Backlog catch up
+                                 '1928-05-25 2:00PM', 
                                   freq=CustomBusinessDay(weekmask = 'Mon Tue Wed Thu Fri Sat'),
-                                   tz='UTC').to_list()
+                                  tz='America/New_York').to_list()
     _test_has_early_closes(early_closes, start, end)
     
         
@@ -1258,25 +1274,25 @@ def test_1929():
 
     # early closes we expect:
     early_closes = [ # All backlog relief
-            pd.Timestamp('1929-11-06', tz='UTC'), 
-            pd.Timestamp('1929-11-07', tz='UTC'),
-            pd.Timestamp('1929-11-08', tz='UTC'),
-            pd.Timestamp('1929-11-11', tz='UTC'),
-            pd.Timestamp('1929-11-12', tz='UTC'),
-            pd.Timestamp('1929-11-13', tz='UTC'),
-            pd.Timestamp('1929-11-14', tz='UTC'),
-            pd.Timestamp('1929-11-15', tz='UTC'),
-            pd.Timestamp('1929-11-18', tz='UTC'),
-            pd.Timestamp('1929-11-19', tz='UTC'),
-            pd.Timestamp('1929-11-20', tz='UTC'),
-            pd.Timestamp('1929-11-21', tz='UTC'),
-            pd.Timestamp('1929-11-22', tz='UTC')
+            pd.Timestamp('1929-11-06 1:00PM', tz='America/New_York'), 
+            pd.Timestamp('1929-11-07 1:00PM', tz='America/New_York'),
+            pd.Timestamp('1929-11-08 1:00PM', tz='America/New_York'),
+            pd.Timestamp('1929-11-11 1:00PM', tz='America/New_York'),
+            pd.Timestamp('1929-11-12 1:00PM', tz='America/New_York'),
+            pd.Timestamp('1929-11-13 1:00PM', tz='America/New_York'),
+            pd.Timestamp('1929-11-14 1:00PM', tz='America/New_York'),
+            pd.Timestamp('1929-11-15 1:00PM', tz='America/New_York'),
+            pd.Timestamp('1929-11-18 1:00PM', tz='America/New_York'),
+            pd.Timestamp('1929-11-19 1:00PM', tz='America/New_York'),
+            pd.Timestamp('1929-11-20 1:00PM', tz='America/New_York'),
+            pd.Timestamp('1929-11-21 1:00PM', tz='America/New_York'),
+            pd.Timestamp('1929-11-22 1:00PM', tz='America/New_York')
     ]
     _test_has_early_closes(early_closes, start, end)
         
     # late opens we expect:
     late_opens = [
-            pd.Timestamp('1929-10-31', tz='UTC'), # Backlog relief
+            pd.Timestamp('1929-10-31 12:00PM', tz='America/New_York'), # Backlog relief
     ]
     _test_has_late_opens(late_opens, start, end)
 
@@ -1306,7 +1322,7 @@ def test_1930():
 
     # early closes we expect:
     early_closes = [
-            pd.Timestamp('1930-03-11', tz='UTC'), # Taft funeral
+            pd.Timestamp('1930-03-11 12:30PM', tz='America/New_York'), # Taft funeral
     ]
     _test_has_early_closes(early_closes, start, end)
 
@@ -1391,21 +1407,21 @@ def test_1933():
 
     # early closes we expect:
     early_closes = [
-        pd.Timestamp('1933-07-26', tz='UTC'), # Volume
-        pd.Timestamp('1933-07-27', tz='UTC'), # Volume
-        pd.Timestamp('1933-07-28', tz='UTC'), # Volume
-        pd.Timestamp('1933-08-04', tz='UTC'), # Volume
-        pd.Timestamp('1933-09-13', tz='UTC')  # NRA demonstration
+        pd.Timestamp('1933-07-26 2:00PM', tz='America/New_York'), # Volume
+        pd.Timestamp('1933-07-27 2:00PM', tz='America/New_York'), # Volume
+        pd.Timestamp('1933-07-28 2:00PM', tz='America/New_York'), # Volume
+        pd.Timestamp('1933-08-04 12:30PM', tz='America/New_York'), # Volume
+        pd.Timestamp('1933-09-13 12:00PM', tz='America/New_York')  # NRA demonstration
     ]
     _test_has_early_closes(early_closes, start, end)
         
     # late opens we expect:
     late_opens = [
-        pd.Timestamp('1933-07-24', tz='UTC'), # Volume
-        pd.Timestamp('1933-07-25', tz='UTC'), # Volume
-        pd.Timestamp('1933-07-26', tz='UTC'), # Volume
-        pd.Timestamp('1933-07-27', tz='UTC'), # Volume
-        pd.Timestamp('1933-07-28', tz='UTC'), # Volume
+        pd.Timestamp('1933-07-24 12:00PM', tz='America/New_York'), # Volume
+        pd.Timestamp('1933-07-25 12:00PM', tz='America/New_York'), # Volume
+        pd.Timestamp('1933-07-26 11:00AM', tz='America/New_York'), # Volume
+        pd.Timestamp('1933-07-27 11:00AM', tz='America/New_York'), # Volume
+        pd.Timestamp('1933-07-28 11:00AM', tz='America/New_York'), # Volume
     ]
     _test_has_late_opens(late_opens, start, end)
 
@@ -1431,7 +1447,7 @@ def test_1934():
         
     # late opens we expect:
     late_opens = [
-        pd.Timestamp('1934-02-20', tz='UTC') # snow
+        pd.Timestamp('1934-02-20 11:00AM', tz='America/New_York') # snow
     ]
     _test_has_late_opens(late_opens, start, end)
        
@@ -1480,7 +1496,7 @@ def test_1936():
         
     # late opens we expect:
     late_opens = [
-        pd.Timestamp('1936-01-28', tz='UTC') # King George V funeral
+        pd.Timestamp('1936-01-28 11:00AM', tz='America/New_York') # King George V funeral
     ]
     _test_has_late_opens(late_opens, start, end)
         
@@ -1932,7 +1948,7 @@ def test_1951():
 
     # early closes we expect:
     early_closes = [
-        pd.Timestamp('1951-12-24', tz='UTC'), # Christmas Eve
+        pd.Timestamp('1951-12-24 1:00PM', tz='America/New_York'), # Christmas Eve
      ]
     _test_has_early_closes(early_closes, start, end)
 
@@ -2134,7 +2150,7 @@ def test_1960():
     
     # late opens we expect:
     late_opens = [
-        pd.Timestamp('1960-12-12', tz='UTC') # snow
+        pd.Timestamp('1960-12-12 11:00AM', tz='America/New_York') # snow
     ]
     _test_has_late_opens(late_opens, start, end)
     
@@ -2196,7 +2212,7 @@ def test_1963():
 
     # early closes we expect:
     early_closes = [
-        pd.Timestamp('1963-11-22', tz='UTC'), # JFK Assassination
+        pd.Timestamp('1963-11-22 2:07PM', tz='America/New_York'), # JFK Assassination
      ]
     _test_has_early_closes(early_closes, start, end)    
     
@@ -2220,7 +2236,7 @@ def test_1964():
 
     # early closes we expect:
     early_closes = [
-        pd.Timestamp('1964-10-23', tz='UTC'), # Hoover funeral
+        pd.Timestamp('1964-10-23 2:00PM', tz='America/New_York'), # Hoover funeral
      ]
     _test_has_early_closes(early_closes, start, end)     
             
@@ -2244,7 +2260,7 @@ def test_1965():
     
     # late opens we expect:
     late_opens = [
-        pd.Timestamp('1965-11-10', tz='UTC') # NY power grid failure
+        pd.Timestamp('1965-11-10 11:05AM', tz='America/New_York') # NY power grid failure
     ]
     _test_has_late_opens(late_opens, start, end)    
     
@@ -2266,9 +2282,9 @@ def test_1966():
     _test_no_special_opens(start, end)
 
     # early closes we expect:
-    early_closes = pd.date_range('1966-01-06', '1966-01-14', 
+    early_closes = pd.date_range('1966-01-06 2:00PM', '1966-01-14 2:00PM', 
                  freq=CustomBusinessDay(weekmask = 'Mon Tue Wed Thu Fri'),
-                 tz='UTC') # Transit strike
+                 tz='America/New_York') # Transit strike
     _test_has_early_closes(early_closes, start, end)     
     
     
@@ -2290,21 +2306,21 @@ def test_1967():
 
     # early closes we expect:
     early_closes = [
-        pd.Timestamp('1967-02-07', tz='UTC'), # snow
-        pd.Timestamp('1967-08-09', tz='UTC'), # Backlog relief
-        pd.Timestamp('1967-08-10', tz='UTC'), # Backlog relief
-        pd.Timestamp('1967-08-11', tz='UTC'), # Backlog relief
-        pd.Timestamp('1967-08-14', tz='UTC'), # Backlog relief
-        pd.Timestamp('1967-08-15', tz='UTC'), # Backlog relief
-        pd.Timestamp('1967-08-16', tz='UTC'), # Backlog relief
-        pd.Timestamp('1967-08-17', tz='UTC'), # Backlog relief
-        pd.Timestamp('1967-08-18', tz='UTC')  # Backlog relief
+        pd.Timestamp('1967-02-07 2:00PM', tz='America/New_York'), # snow
+        pd.Timestamp('1967-08-09 2:00PM', tz='America/New_York'), # Backlog relief
+        pd.Timestamp('1967-08-10 2:00PM', tz='America/New_York'), # Backlog relief
+        pd.Timestamp('1967-08-11 2:00PM', tz='America/New_York'), # Backlog relief
+        pd.Timestamp('1967-08-14 2:00PM', tz='America/New_York'), # Backlog relief
+        pd.Timestamp('1967-08-15 2:00PM', tz='America/New_York'), # Backlog relief
+        pd.Timestamp('1967-08-16 2:00PM', tz='America/New_York'), # Backlog relief
+        pd.Timestamp('1967-08-17 2:00PM', tz='America/New_York'), # Backlog relief
+        pd.Timestamp('1967-08-18 2:00PM', tz='America/New_York')  # Backlog relief
     ]
     _test_has_early_closes(early_closes, start, end)
         
     # late opens we expect:
     late_opens = [
-        pd.Timestamp('1967-02-07', tz='UTC'), # snow    
+        pd.Timestamp('1967-02-07 10:15AM', tz='America/New_York'), # snow    
     ]
     _test_has_late_opens(late_opens, start, end)    
     
@@ -2353,37 +2369,11 @@ def test_1968():
     _test_holidays(holidays, start, end)
     _test_no_special_opens(start, end)
 
-    # early closes we expect:
-    early_closes = [
-        pd.Timestamp('1968-01-22', tz='UTC'),
-        pd.Timestamp('1968-01-23', tz='UTC'),
-        pd.Timestamp('1968-01-24', tz='UTC'),
-        pd.Timestamp('1968-01-25', tz='UTC'),
-        pd.Timestamp('1968-01-26', tz='UTC'),
-        pd.Timestamp('1968-01-29', tz='UTC'),
-        pd.Timestamp('1968-01-30', tz='UTC'),
-        pd.Timestamp('1968-01-31', tz='UTC'),
-        pd.Timestamp('1968-02-01', tz='UTC'),
-        pd.Timestamp('1968-02-02', tz='UTC'),
-        pd.Timestamp('1968-02-05', tz='UTC'),
-        pd.Timestamp('1968-02-06', tz='UTC'),
-        pd.Timestamp('1968-02-07', tz='UTC'),
-        pd.Timestamp('1968-02-08', tz='UTC'),
-        pd.Timestamp('1968-02-09', tz='UTC'),
-        pd.Timestamp('1968-02-13', tz='UTC'),
-        pd.Timestamp('1968-02-14', tz='UTC'),
-        pd.Timestamp('1968-02-15', tz='UTC'),
-        pd.Timestamp('1968-02-16', tz='UTC'),
-        pd.Timestamp('1968-02-19', tz='UTC'),
-        pd.Timestamp('1968-02-20', tz='UTC'),
-        pd.Timestamp('1968-02-21', tz='UTC'),
-        pd.Timestamp('1968-02-23', tz='UTC'),
-        pd.Timestamp('1968-02-26', tz='UTC'),
-        pd.Timestamp('1968-02-27', tz='UTC'),
-        pd.Timestamp('1968-02-28', tz='UTC'),
-        pd.Timestamp('1968-02-29', tz='UTC'),
-        pd.Timestamp('1968-03-01', tz='UTC')        
-        ]
+    # early closes we expect
+    early_closes = pd.date_range('1968-01-22 2:00PM', '1968-03-01 2:00PM', 
+                freq=CustomBusinessDay(holidays=nyse.holidays().holidays, 
+                                       weekmask="Mon Tue Wed Thu Fri"),
+                                       tz='America/New_York') # Backlog relief
     _test_has_early_closes(early_closes, start, end)
         
 
@@ -2407,13 +2397,27 @@ def test_1969():
 
     # early closes we expect:
     # Every trading day was an early close in 1969 for Paperwork Crisis
-    early_closes = nyse.valid_days(start, end)
+    ec1 = pd.date_range('1969-01-01 2:00PM', '1969-07-03 2:00PM', 
+                freq=CustomBusinessDay(holidays=nyse.holidays().holidays, 
+                                       weekmask="Mon Tue Wed Thu Fri"),
+                                       tz='America/New_York') # Backlog relief
+
+    ec2 = pd.date_range('1969-07-07 2:30PM', '1969-09-26 2:30PM', 
+                freq=CustomBusinessDay(holidays=nyse.holidays().holidays, 
+                                       weekmask="Mon Tue Wed Thu Fri"),
+                                       tz='America/New_York') # Backlog relief
+
+    ec3 = pd.date_range('1969-09-29 3:00PM', '1969-12-31 3:00PM', 
+                freq=CustomBusinessDay(holidays=nyse.holidays().holidays, 
+                                       weekmask="Mon Tue Wed Thu Fri"),
+                                       tz='America/New_York') # Backlog relief
+    early_closes = ec1.append(ec2).append(ec3)
     _test_has_early_closes(early_closes, start, end)
         
     # late opens we expect:
     late_opens = [
-        pd.Timestamp('1969-02-11', tz='UTC'), # snow
-        pd.Timestamp('1969-06-02', tz='UTC'), # storm
+        pd.Timestamp('1969-02-11 11:00AM', tz='America/New_York'), # snow
+        pd.Timestamp('1969-06-02 10:45AM', tz='America/New_York'), # storm
     ]
     _test_has_late_opens(late_opens, start, end)            
 
@@ -2433,93 +2437,10 @@ def test_1970():
     _test_holidays(holidays, start, end)
     _test_no_special_opens(start, end)
 
-    # early closes we expect:
-    early_closes = [    # Paperwork Crisis
-        pd.Timestamp('1970-01-02', tz='UTC'),
-        pd.Timestamp('1970-01-05', tz='UTC'),
-        pd.Timestamp('1970-01-06', tz='UTC'),
-        pd.Timestamp('1970-01-07', tz='UTC'),
-        pd.Timestamp('1970-01-08', tz='UTC'),
-        pd.Timestamp('1970-01-09', tz='UTC'),
-        pd.Timestamp('1970-01-12', tz='UTC'),
-        pd.Timestamp('1970-01-13', tz='UTC'),
-        pd.Timestamp('1970-01-14', tz='UTC'),
-        pd.Timestamp('1970-01-15', tz='UTC'),
-        pd.Timestamp('1970-01-16', tz='UTC'),
-        pd.Timestamp('1970-01-19', tz='UTC'),
-        pd.Timestamp('1970-01-20', tz='UTC'),
-        pd.Timestamp('1970-01-21', tz='UTC'),
-        pd.Timestamp('1970-01-22', tz='UTC'),
-        pd.Timestamp('1970-01-23', tz='UTC'),
-        pd.Timestamp('1970-01-26', tz='UTC'),
-        pd.Timestamp('1970-01-27', tz='UTC'),
-        pd.Timestamp('1970-01-28', tz='UTC'),
-        pd.Timestamp('1970-01-29', tz='UTC'),
-        pd.Timestamp('1970-01-30', tz='UTC'),
-        pd.Timestamp('1970-02-02', tz='UTC'),
-        pd.Timestamp('1970-02-03', tz='UTC'),
-        pd.Timestamp('1970-02-04', tz='UTC'),
-        pd.Timestamp('1970-02-05', tz='UTC'),
-        pd.Timestamp('1970-02-06', tz='UTC'),
-        pd.Timestamp('1970-02-09', tz='UTC'),
-        pd.Timestamp('1970-02-10', tz='UTC'),
-        pd.Timestamp('1970-02-11', tz='UTC'),
-        pd.Timestamp('1970-02-12', tz='UTC'),
-        pd.Timestamp('1970-02-13', tz='UTC'),
-        pd.Timestamp('1970-02-16', tz='UTC'),
-        pd.Timestamp('1970-02-17', tz='UTC'),
-        pd.Timestamp('1970-02-18', tz='UTC'),
-        pd.Timestamp('1970-02-19', tz='UTC'),
-        pd.Timestamp('1970-02-20', tz='UTC'),
-        pd.Timestamp('1970-02-24', tz='UTC'),
-        pd.Timestamp('1970-02-25', tz='UTC'),
-        pd.Timestamp('1970-02-26', tz='UTC'),
-        pd.Timestamp('1970-02-27', tz='UTC'),
-        pd.Timestamp('1970-03-02', tz='UTC'),
-        pd.Timestamp('1970-03-03', tz='UTC'),
-        pd.Timestamp('1970-03-04', tz='UTC'),
-        pd.Timestamp('1970-03-05', tz='UTC'),
-        pd.Timestamp('1970-03-06', tz='UTC'),
-        pd.Timestamp('1970-03-09', tz='UTC'),
-        pd.Timestamp('1970-03-10', tz='UTC'),
-        pd.Timestamp('1970-03-11', tz='UTC'),
-        pd.Timestamp('1970-03-12', tz='UTC'),
-        pd.Timestamp('1970-03-13', tz='UTC'),
-        pd.Timestamp('1970-03-16', tz='UTC'),
-        pd.Timestamp('1970-03-17', tz='UTC'),
-        pd.Timestamp('1970-03-18', tz='UTC'),
-        pd.Timestamp('1970-03-19', tz='UTC'),
-        pd.Timestamp('1970-03-20', tz='UTC'),
-        pd.Timestamp('1970-03-23', tz='UTC'),
-        pd.Timestamp('1970-03-24', tz='UTC'),
-        pd.Timestamp('1970-03-25', tz='UTC'),
-        pd.Timestamp('1970-03-26', tz='UTC'),
-        pd.Timestamp('1970-03-30', tz='UTC'),
-        pd.Timestamp('1970-03-31', tz='UTC'),
-        pd.Timestamp('1970-04-01', tz='UTC'),
-        pd.Timestamp('1970-04-02', tz='UTC'),
-        pd.Timestamp('1970-04-03', tz='UTC'),
-        pd.Timestamp('1970-04-06', tz='UTC'),
-        pd.Timestamp('1970-04-07', tz='UTC'),
-        pd.Timestamp('1970-04-08', tz='UTC'),
-        pd.Timestamp('1970-04-09', tz='UTC'),
-        pd.Timestamp('1970-04-10', tz='UTC'),
-        pd.Timestamp('1970-04-13', tz='UTC'),
-        pd.Timestamp('1970-04-14', tz='UTC'),
-        pd.Timestamp('1970-04-15', tz='UTC'),
-        pd.Timestamp('1970-04-16', tz='UTC'),
-        pd.Timestamp('1970-04-17', tz='UTC'),
-        pd.Timestamp('1970-04-20', tz='UTC'),
-        pd.Timestamp('1970-04-21', tz='UTC'),
-        pd.Timestamp('1970-04-22', tz='UTC'),
-        pd.Timestamp('1970-04-23', tz='UTC'),
-        pd.Timestamp('1970-04-24', tz='UTC'),
-        pd.Timestamp('1970-04-27', tz='UTC'),
-        pd.Timestamp('1970-04-28', tz='UTC'),
-        pd.Timestamp('1970-04-29', tz='UTC'),
-        pd.Timestamp('1970-04-30', tz='UTC'),
-        pd.Timestamp('1970-05-01', tz='UTC')       
-        ]
+    early_closes = pd.date_range('1970-01-01 3:00PM', '1970-05-01 3:00PM', 
+                freq=CustomBusinessDay(holidays=nyse.holidays().holidays, 
+                                       weekmask="Mon Tue Wed Thu Fri"),
+                                       tz='America/New_York') # Backlog relief
     _test_has_early_closes(early_closes, start, end)
     
     
@@ -2577,7 +2498,7 @@ def test_1973():
     
     # late opens we expect:
     late_opens = [
-        pd.Timestamp('1973-12-17', tz='UTC'), # ice storm
+        pd.Timestamp('1973-12-17 11:00AM', tz='America/New_York'), # ice storm
     ]
     _test_has_late_opens(late_opens, start, end)      
     
@@ -2599,15 +2520,14 @@ def test_1974():
 
     # early closes we expect:
     early_closes = [        
-        #pd.Timestamp('1974-07-05', tz='UTC'),  # TODO: Check this was actually an early close
-        pd.Timestamp('1974-12-24', tz='UTC'),
+        pd.Timestamp('1974-12-24 2:00PM', tz='America/New_York'),
         ]
     _test_has_early_closes(early_closes, start, end)
         
     # late opens we expect:
     late_opens = [
-        pd.Timestamp('1974-01-16', tz='UTC'), # Merrill Lynch computer trouble
-        pd.Timestamp('1974-11-22', tz='UTC')  # Fire drill
+        pd.Timestamp('1974-01-16 10:15AM', tz='America/New_York'), # Merrill Lynch computer trouble
+        pd.Timestamp('1974-11-22 10:15AM', tz='America/New_York')  # Fire drill
     ]
     _test_has_late_opens(late_opens, start, end)       
     
@@ -2629,8 +2549,8 @@ def test_1975():
 
     # early closes we expect:
     early_closes = [        
-        pd.Timestamp('1975-02-12', tz='UTC'), # snow
-        pd.Timestamp('1975-12-24', tz='UTC')  # Christmas Eve
+        pd.Timestamp('1975-02-12 2:30PM', tz='America/New_York'), # snow
+        pd.Timestamp('1975-12-24 2:00PM', tz='America/New_York')  # Christmas Eve
         ]
     _test_has_early_closes(early_closes, start, end)
         
@@ -2653,14 +2573,14 @@ def test_1976():
 
     # early closes we expect:
     early_closes = [        
-        pd.Timestamp('1976-08-09', tz='UTC'), # Hurricane watch
+        pd.Timestamp('1976-08-09 3:00PM', tz='America/New_York'), # Hurricane watch
     ]
     _test_has_early_closes(early_closes, start, end)
         
     # late opens we expect:
     late_opens = [
-        pd.Timestamp('1976-02-02', tz='UTC'), # storm
-        pd.Timestamp('1976-06-08', tz='UTC'), # fire drill
+        pd.Timestamp('1976-02-02 11:15AM', tz='America/New_York'), # storm
+        pd.Timestamp('1976-06-08 10:15AM', tz='America/New_York'), # fire drill
     ]
     _test_has_late_opens(late_opens, start, end)  
     
@@ -2699,14 +2619,14 @@ def test_1978():
 
     # early closes we expect:
     early_closes = [        
-        pd.Timestamp('1978-02-06', tz='UTC'), # snow
+        pd.Timestamp('1978-02-06 2:00PM', tz='America/New_York'), # snow
     ]
     _test_has_early_closes(early_closes, start, end)
         
     # late opens we expect:
     late_opens = [
-        pd.Timestamp('1978-01-20', tz='UTC'), # snow
-        pd.Timestamp('1978-02-07', tz='UTC'), # snow
+        pd.Timestamp('1978-01-20 12:00PM', tz='America/New_York'), # snow
+        pd.Timestamp('1978-02-07 11:00AM', tz='America/New_York'), # snow
     ]
     _test_has_late_opens(late_opens, start, end)     
     
@@ -2726,8 +2646,4 @@ def test_1979():
     _test_holidays(holidays, start, end)
     _test_no_special_opens_closes(start, end)     
     
-    # early closes we expect:
-    early_closes = [        
-        #pd.Timestamp('1979-12-24', tz='UTC'),  # TODO: Verify if true
-    ]
-    _test_has_early_closes(early_closes, start, end)
+
