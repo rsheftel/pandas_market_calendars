@@ -194,6 +194,9 @@ from pandas_market_calendars.holidays_us import (
     NewYorkCityBlackout77,
     # 1978
     Snow12pmLateOpen1978, Snow2pmEarlyClose1978, Snow11amLateOpen1978,
+    # 1981
+    ReaganAssassAttempt317pmEarlyClose1981,
+    ConEdPowerFail328pmEarlyClose1981,
      
      September11Closings,
       
@@ -557,33 +560,16 @@ class NYSEExchangeCalendar(MarketCalendar):
     - Late Open 11am on Feb 7, 1978 (Tue): snowstorm
     - NOT IMPLEMENTED Break 1 minute time UNKNOWN on Dec 13, 1979 (Thu): Former NYSE Chair Robert L. Stott minute of silence
     
+    - NOT IMPLEMENTED Break 11:11-12:04 on Oct 13, 1980 (Mon): Computer malfunction
+    - NOT IMPLEMENTED Break 1 minute time UNKNOWN on Dec 30, 1980 (Tue): Former NYSE Chair James Crane Kellogg III moment of silence
+    - Early Close 3:17pm on Mar 30, 1981 (Mon): President Reagan assassination attempt
+    - Early Close 3:28pm on Sep 9, 1981 (Wed): Con Edison power failure
+    - NOT IMPLEMENTED Break 12:26-12:45pm on Sep 16, 1981 (Wed): Fire alarm malfunction
+    - NOT IMPLEMENTED Break 10:25-11:00am on Dec 28, 1982 (Tue): small fire
+    - NOT IMPLEMENTED Break 13:51-15:30 on Oct 13, 1983 (Thu): low speed ticker malfunction
+    - Closed on Sep 27, 1985 (Fri): Hurricane Gloria
     
 
-
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    - Closed on December 26th in 1958.
-    - Closed the day before Memorial Day in 1961.
-    - Closed on 11/25/1963 due to John F. Kennedy's death.
-    - Closed for Lincoln's Birthday in 1968.
-    - Closed a number of days between June 12th and  December 24th in 1968
-      due to paperwork crisis.
-    - Closed on 4/9/1968 due to Martin Luther King's death.
-    - Closed the day after Independence Day in 1968.
-    - Closed on 2/10/1969 due to weather (snow).
-    - Closed on 3/31/1969 due to Dwight D. Eisenhower's death.
-    - Closed on 7/21/1969 following the first lunar landing.
-    - Closed on 12/28/1972 due to Harry S. Truman's death.
-    - Closed on 1/25/1973 due to Lyndon B. Johnson's death.
-    - Closed on 7/14/1977 due to New York City blackout.
-    - Closed on 9/27/1985 due to Hurricane Gloria.
     - Closed on 4/27/1994 due to Richard Nixon's death.
     - Closed from 9/11/2001 to 9/16/2001 due to terrorist attacks in NYC.
     - Closed on 6/11/2004 due to Ronald Reagan's death.
@@ -795,6 +781,12 @@ class NYSEExchangeCalendar(MarketCalendar):
             (time(15, tzinfo=timezone('America/New_York')), AbstractHolidayCalendar(rules=[
                 HurricaneWatch3pmEarlyClose1976,
             ])),             
+            (time(15, 17, tzinfo=timezone('America/New_York')), AbstractHolidayCalendar(rules=[
+                ReaganAssassAttempt317pmEarlyClose1981,   
+            ])),             
+            (time(15, 28, tzinfo=timezone('America/New_York')), AbstractHolidayCalendar(rules=[
+               ConEdPowerFail328pmEarlyClose1981,
+            ])),                                     
         ]
 # 
     @property

@@ -2647,3 +2647,43 @@ def test_1979():
     _test_no_special_opens_closes(start, end)     
     
 
+def test_1980():
+    start = '1980-01-01'
+    end   = '1980-12-31'    
+    holidays = [            
+        pd.Timestamp('1980-01-01', tz='UTC'),
+        pd.Timestamp('1980-02-18', tz='UTC'),
+        pd.Timestamp('1980-04-04', tz='UTC'),
+        pd.Timestamp('1980-05-26', tz='UTC'),
+        pd.Timestamp('1980-07-04', tz='UTC'),
+        pd.Timestamp('1980-09-01', tz='UTC'),
+        pd.Timestamp('1980-11-04', tz='UTC'),
+        pd.Timestamp('1980-11-27', tz='UTC'),
+        pd.Timestamp('1980-12-25', tz='UTC')
+    ]
+    _test_holidays(holidays, start, end)
+    _test_no_special_opens_closes(start, end)    
+    
+    
+def test_1981():
+    start = '1981-01-01'
+    end   = '1981-12-31'    
+    holidays = [            
+        pd.Timestamp('1981-01-01', tz='UTC'),
+        pd.Timestamp('1981-02-16', tz='UTC'),
+        pd.Timestamp('1981-04-17', tz='UTC'),
+        pd.Timestamp('1981-05-25', tz='UTC'),
+        pd.Timestamp('1981-07-03', tz='UTC'),
+        pd.Timestamp('1981-09-07', tz='UTC'),
+        pd.Timestamp('1981-11-26', tz='UTC'),
+        pd.Timestamp('1981-12-25', tz='UTC')
+    ]
+    _test_holidays(holidays, start, end)
+    _test_no_special_opens(start, end)  
+    
+    # early closes we expect:
+    early_closes = [        
+        pd.Timestamp('1981-03-30 3:17PM', tz='America/New_York'), # Reagan Assassination attemp
+        pd.Timestamp('1981-09-09 3:28PM', tz='America/New_York'), # Con Edison power failure
+    ]
+    _test_has_early_closes(early_closes, start, end)

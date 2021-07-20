@@ -1288,7 +1288,22 @@ Snow11amLateOpen1978 = Holiday(
     end_date=Timestamp('1978-02-07'),
 )
 
+# 1981
+ReaganAssassAttempt317pmEarlyClose1981 = Holiday(
+    'President Reagan Assassination Attempt',
+    month=3,
+    day=30,
+    start_date=Timestamp('1981-03-30'),
+    end_date=Timestamp('1981-03-30'),
+)
 
+ConEdPowerFail328pmEarlyClose1981 = Holiday(
+    'Con Edison power failure',
+    month=9,
+    day=9,
+    start_date=Timestamp('1981-09-09'),
+    end_date=Timestamp('1981-09-09'),
+)
 
 # http://en.wikipedia.org/wiki/Aftermath_of_the_September_11_attacks
 September11Closings = [
