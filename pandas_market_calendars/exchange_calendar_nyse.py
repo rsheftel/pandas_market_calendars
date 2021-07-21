@@ -44,7 +44,8 @@ from pandas_market_calendars.holidays_us import (
     
     USIndependenceDay,SatBeforeIndependenceDayAdhoc, SatAfterIndependenceDayAdhoc,
     USIndependenceDayPre1952, USIndependenceDay1952to1954, 
-    MonTuesThursBeforeIndependenceDay, WednesdayBeforeIndependenceDayPost2013,
+    MonTuesThursBeforeIndependenceDay, FridayAfterIndependenceDayNYSEpre2013,
+    WednesdayBeforeIndependenceDayPost2013,
     MonBeforeIndependenceDayAdhoc, DaysAfterIndependenceDayAdhoc,
     
     USBlackFridayBefore1993, USBlackFridayInOrAfter1993,
@@ -63,7 +64,6 @@ from pandas_market_calendars.holidays_us import (
     SatBeforeChristmasAdhoc, SatAfterChristmasAdhoc,
     
     # Retired Holidays
-    USNationalDaysofMourning,    
     USVetransDayAdHoc, SatAfterColumbusDayAdHoc,
     
     # Adhoc Holidays
@@ -71,6 +71,8 @@ from pandas_market_calendars.holidays_us import (
     UlyssesGrantFuneral1885,
     # 1892
     ColumbianCelebration1892, 
+    # 1888
+    GreatBlizzardOf1888,
     # 1889
     WashingtonInaugurationCentennialCelebration1889,
     # 1898
@@ -197,10 +199,33 @@ from pandas_market_calendars.holidays_us import (
     # 1981
     ReaganAssassAttempt317pmEarlyClose1981,
     ConEdPowerFail328pmEarlyClose1981,
-     
-     September11Closings,
+    # 1985
+    HurricaneGloriaClosings1985,
+    # 1987
+    Backlog2pmEarlyCloses1987, Backlog230pmEarlyCloses1987,
+    Backlog3pmEarlyCloses1987, Backlog330pmEarlyCloses1987,
+    # 1989
+    Fire11amLateOpen1989,
+    # 1990
+    ConEdXformer931amLateOpen1990,
+    # 1991
+    TroopsInGulf931LateOpens1991,
+    # 1994
+    Snow230pmEarlyClose1994,
+    NixonFuneral1994,
+    # 1995
+    Computer1030LateOpen1995,
+    # 1996
+    Snow11amLateOpen1996,
+    Snow2pmEarlyClose1996,
+    # 1997
+    CircuitBreakerTriggered330pmEarlyClose1997,
+    # 2001
+    September11Closings2001,
+    Sept11MomentSilence933amLateOpen2001,
+    EnduringFreedomMomentSilence931amLateOpen2001,
       
-    GreatBlizzardOf1888, HurricaneGloriaClosings,
+    
     HurricaneSandyClosings  )
 from .market_calendar import MarketCalendar
 
@@ -558,8 +583,7 @@ class NYSEExchangeCalendar(MarketCalendar):
     - Late Open 12pm on Jan 20, 1978 (Fri): snowstorm
     - Early Close 2pm on Feb 6, 1978 (Mon): snowstorm
     - Late Open 11am on Feb 7, 1978 (Tue): snowstorm
-    - NOT IMPLEMENTED Break 1 minute time UNKNOWN on Dec 13, 1979 (Thu): Former NYSE Chair Robert L. Stott minute of silence
-    
+    - NOT IMPLEMENTED Break 1 minute time UNKNOWN on Dec 13, 1979 (Thu): Former NYSE Chair Robert L. Stott minute of silence    
     - NOT IMPLEMENTED Break 11:11-12:04 on Oct 13, 1980 (Mon): Computer malfunction
     - NOT IMPLEMENTED Break 1 minute time UNKNOWN on Dec 30, 1980 (Tue): Former NYSE Chair James Crane Kellogg III moment of silence
     - Early Close 3:17pm on Mar 30, 1981 (Mon): President Reagan assassination attempt
@@ -567,8 +591,100 @@ class NYSEExchangeCalendar(MarketCalendar):
     - NOT IMPLEMENTED Break 12:26-12:45pm on Sep 16, 1981 (Wed): Fire alarm malfunction
     - NOT IMPLEMENTED Break 10:25-11:00am on Dec 28, 1982 (Tue): small fire
     - NOT IMPLEMENTED Break 13:51-15:30 on Oct 13, 1983 (Thu): low speed ticker malfunction
-    - Closed on Sep 27, 1985 (Fri): Hurricane Gloria
+    - Closed on Sep 27, 1985 (Fri): Hurricane Gloria    
+    - NOT IMPLEMENTED Break 11:00-11:01 on Jan 29, 1986 (Wed): Challenger space crew moment of silence    
+    - Early Closes 2pm on Oct 23-30, 1987 (Fri-Fri): October 19th break volume
+    - Early Closes 2:30pm on Nov 2-4, 1987 (Mon-Wed): reason not given volume assumed
+    - Early Closes 3pm on Nov 5-6, 1987 (Thu-Fri): reason not given volume assumed
+    - Early Closes 3:30pm on Nov 9-11, 1987 (Mon-Wed): Trading floor and clerical staff strike
+    - Late Open 11am on Nov 10, 1989 (Fri): Electrical fire    
+    - NOT IMPLEMENTED Break 9:41-11:15 on Nov 23, 1990 (Fri): Internal power failure    
+    - Early Close 2pm on Dec 24, 1990 (Mon): Christmas Eve
+    - Late Open 11am on Dec 27, 1990 (Thu): explosion of Con Edison transformer    
+    - Late Open 9:31am on Jan 17, 1991 (Thu): American troops in Persian Gulf moment of silence
+    - Late Open 9:31am on Feb 25, 1991 (Thu): American troops in Persian Gulf moment of silence
+    - NOT IMPLEMENTED Break 10:21-10:45am on Oct 22, 1991 (Tue): power dip
+    - Early Close 2pm on Dec 24, 1991 (Tue): Christmas Eve   
+    - NOT IMPLEMENTED Break 1 minute time UNKNOWN on Mar 19, 1992 (Thu): Former NYSE Chair Bernard J. Lasker moment of silence
+    - NOT IMPLEMENTED Break 1 minute time UNKNOWN on May 15, 1992 (Fri): Former NYSE President G. Keith Funston moment of silence
+    - NOT IMPELMENTED Break 1 minute time UNKNOWN on Jun 15, 1992 (Mon): Former NYSE President Robert W. Haack moment of silence      
+    - Early Close 2pm on Nov 27, 1992 (Fri): Day after Thanksgiving
+    - Early Close 2pm on Dec 24, 1992 (Thu): Christmas Eve           
+    - Early Close 1pm on Nov 26, 1993 (Fri): Day after Thanksgiving
+    - Early Close 14:30 on Feb 11, 1994 (Fri): snowstorm
+    - NOT IMPLEMENTED Break 12:00-12:02 on Apr 25, 1994 (Mon): Former President Richard M. Nixon moment of silence
+    - Closed on Apr 27, 1994 (Wed): Former President Richard M. Nixon funderal
+    - Early Close 1pm on Nov 25, 1994 (Fri): Day after Thanksgiving          
+    - NOT IMPLEMENTED Break 10:02-10:03 on Apr 26, 1995 (Wed): Oklahoma City bombing victims moment of silence
+    - Early Close 1pm on Jul 3, 1995 (Mon): Day before Independence Day
+    - Early Close 1pm on Nov 24, 1995 (Fri): Day after Thanksgiving
+    - Late Open 10:30am on Dec 18, 1995 (Mon): Computer system troubles
+    - Late Open 11am AND Early Close 2pm on Jan 8, 1996 (Mon): snowstorm
+    - NOT IMPLEMENTED Break time UNKNOWN on Apr 4, 1996 (Thu): Commerce Secretary Ron Brown and others killed in Balkans plane crash
+    - Early Close 1pm on July 5, 1996 (Fri): Day after Independence Day
+    - Early Close 1pm on Nov 29, 1996 (Fri): Day after Thanksgiving
+    - Early Close 1pm on Dec 24, 1996 (Tue): Christmas Eve        
+    - Early Close 1pm on Jul 3, 1997 (Thu): Day before Independence Day
+    - NOT IMPLEMENTED Break 14:35-15:05 on Oct 27, 1997 (Mon): Circuit breaker triggered
+    - Early Close 3:30pm on Oct 27, 1997 (Mon): Circuit breaker triggered
+    - Early Close 1pm on Nov 28, 1997 (Fri): Day after Thanksgiving
+    - Early Close 1pm on Dec 24, 1997 (Wed): Christmas Eve
+    - Early Close 1pm on Dec 26, 1997 (Fri): Friday after Christmas        
+    - NOT IMPLEMENTED Break time UNKNOWN on Jul 29, 1998 (Wed): Former NYSE President William McChesney Marting, Jr. moment of silence
+    - NOT IMPLEMENTED Break 13:16-14:15 on Oct 26, 1998 (Mon): Computer switch malfunction
+    - Early Close 1pm on Nov 27, 1998 (Fri): Day after Thanksgiving
+    - Early Close 1pm on Dec 24, 1998 (Thu): Christmas Eve   
+    - NOT IMPLEMENTED Break 10:00-10:02 on Mar 25, 1999 (Thu): NATO troops in Kosovo minute of silence
+    - NOT IMPLEMENTED Break 12:00-12:02 on Apr 26, 1999 (Mon): Columbine High School killings moment of silence
+    - Early Close 1pm on Nov 26, 1999 (Fri): Day after Thanksgiving
+    - Early Close 1pm on Dec 24, 1999 (Fri): Christmas Eve       
+    - NOT IMPLEMENTED Break 12:00-12:01 on Feb 16, 2000 (Wed): Former NYSE Chair Walter N. Frank moment of silence
+    - NOT IMPLEMENTED Break 12:00-12:01 on May 4, 2000 (Thu): Archbishop of NY Cardinal John O'Connor moment of silence
+    - Early Close 1pm on Jul 3, 2000 (Mon): Day before Independence Day
+    - Early Close 1pm on Nov 24, 2000 (Fri): Day after Thanksgiving
     
+    
+    - NOT IMPLEMENTED Break 10:10-11:35 on Jun 8, 2001 (Fri): computer systems connectivity problem
+    - Early Close 1pm on Jul 3, 2001 (Tue): Day before Independence Day
+    - Closed on Sep 11-14, 2001 (Tue-Fri): Terrorist attack on World Trade Center
+    - Late Open 9:33am on Sep 17, 2001 (Mon): 2 minutes silence in honor of lives lost on 9/11
+    - Late Open 9:31am on Oct 8, 2001 (Mon): 1 minute silence for troops engaged in Operation Enduring Freedom
+    - Early Close 1pm on Nov 23, 2001 (Fri): Day after Thanksgiving
+    - Early Close 1pm on Dec 24, 2001 (Mon): Christmas Eve
+    
+    
+    - NOT IMPLEMENTED Break 10:29-10:31 on May 30, 2002 (Thu): Commemorate end of recovery work at Ground Zero
+    - Early Close 1pm on Jul 5, 2002 (Fri): Day after Independence Day
+    - Late Opening 12:00pm on Sep 11, 2002 (Wed): 1 year anniversary of 9/11 attack
+    - Early Close 1pm on Nov 29, 2002 (Fri): Day after Thanksgiving
+    - Early Close 1pm on Dec 24, 2002 (Tue): Christmas Eve
+    - NOT IMPLEMENTED Break 11:00-11:02 on Feb 3, 2002 (Mon): Columbia Space Shuttle lives lost moment of silence
+    - Late Opening 9:32am on Mar 20, 2003 (Thu): Operation Iraqi Freedom Troops moment of silence
+    - Early Close 1pm on Jul 3, 2003 (Thu): Day before Independence Day
+    - NOT IMPLEMENTED multiple 1-minute Breaks 9:59 and 10:29 on Sep 11, 2003 (Thu): 9/11 Commemoration
+    - Early Close 1pm on Nov 28, 2003 (Fri): Day after Thanksgiving
+    - Early Close 1pm on Dec 24, 2003 (Wed): Christmas Eve
+    - Early Close 1pm on Dec 25, 2003 (Fri): Friday after Christmas
+    - Late Open 9:32am on Jun 7, 2004 (Mon): Former President Ronald Reagan death moment of silence
+    - Closed on Jun 11, 2004 (Fri): Former President Ronald Reagan National Day of Mourning
+    - Early Close 1pm on Nov 26, 2004 (Fri): Day after Thanksgiving
+    - Early Close 3:56pm on Jun 1, 2005 (Wed): Systems communication problem
+    - Early Close 1pm on Nov 25, 2005 (Fri): Day after Thanksgiving
+    - Early Close 1pm on Jul 3, 2005 (Mon): Day before Independence Day
+    - Early Close 1pm on Nov 24, 2006 (Fri): Day after Thanksgiving
+    - Late Open 9:32am on Dec 27, 2006 (Wed): Former President Gerald Ford moment of silence
+    - Closed on Jan 2, 2007 (Tue): Former President Gerald Ford National Day of Mourning
+    - Early Close 1pm on Jul 3, 2007 (Tue): Day before Independence Day
+    - Early Close 1pm on Nov 23, 2007 (Fri): Day after Thanksgiving
+    - Early Close 1pm on Dec 24, 2007 (Mon): Christmas Eve
+    - Early Close 1pm on Jul 4, 2008 (Thu): Day before Independence Day
+    - Early Close 1pm on Nov 28, 2008 (Fri): Day after Thanksgiving
+    - Early Close 1pm on Dec 24, 2008 (Wed): Christmas Eve
+    - NOT IMPLEMENTED Extended Close 4:15pm on Jul 2, 2009 (Thu): Execute customer orders impacted by system irregularities
+    - Early Close 1pm on Nov 27, 2009 (Fri): Day after Thanksgiving
+    - Early Close 1pm on Dec 24, 2009 (Thu): Christmas Eve
+    - Early Close 1pm on Nov 26, 2010 (Fri): Day after Thanksgiving
+    - NOT IMPLEMENTED Break 11:00-11:01 on Jan 10, 2011 (Mon): Arizona shooting victims moment of silence    
 
     - Closed on 4/27/1994 due to Richard Nixon's death.
     - Closed from 9/11/2001 to 9/16/2001 due to terrorist attacks in NYC.
@@ -664,7 +780,6 @@ class NYSEExchangeCalendar(MarketCalendar):
             ChristmasEvesAdhoc,
             DayAfterChristmasAdhoc,
            
-            USNationalDaysofMourning,
             UlyssesGrantFuneral1885,
             ColumbianCelebration1892,
             GreatBlizzardOf1888,
@@ -722,6 +837,8 @@ class NYSEExchangeCalendar(MarketCalendar):
             FirstLunarLandingClosing1969,
             TrumanFuneral1972,
             JohnsonFuneral1973,
+            HurricaneGloriaClosings1985,
+            NixonFuneral1994,
             
             USVetransDayAdHoc,
             SatAfterColumbusDayAdHoc,            
@@ -731,9 +848,9 @@ class NYSEExchangeCalendar(MarketCalendar):
             
             
         
-            September11Closings,
+            September11Closings2001,
             NewYorkCityBlackout77,
-            HurricaneGloriaClosings,
+            
             HurricaneSandyClosings,
             
                         
@@ -759,6 +876,7 @@ class NYSEExchangeCalendar(MarketCalendar):
                 GasFumesOnTradingFloor1230EarlyClose1933,
             ])),
             (time(13, tzinfo=timezone('America/New_York')), AbstractHolidayCalendar(rules=[               
+                FridayAfterIndependenceDayNYSEpre2013,
                 MonTuesThursBeforeIndependenceDay,
                 WednesdayBeforeIndependenceDayPost2013,
                 GroverClevelandFuneral1pmClose1908,
@@ -769,6 +887,7 @@ class NYSEExchangeCalendar(MarketCalendar):
                 HooverFuneral1400EarlyClose1964,
                 Snow2pmEarlyClose1967,
                 Snow2pmEarlyClose1978,
+                Snow2pmEarlyClose1996,
             ])),
             (time(14, 7, tzinfo=timezone('America/New_York')), AbstractHolidayCalendar(rules=[
                 KennedyAssassination1407EarlyClose,
@@ -777,6 +896,7 @@ class NYSEExchangeCalendar(MarketCalendar):
                 FalseArmisticeReport1430EarlyClose1918,
                 CromwellFuneral1430EarlyClose1925,
                 Snow230EarlyClose1975,
+                Snow230pmEarlyClose1994,
             ])),
             (time(15, tzinfo=timezone('America/New_York')), AbstractHolidayCalendar(rules=[
                 HurricaneWatch3pmEarlyClose1976,
@@ -786,6 +906,9 @@ class NYSEExchangeCalendar(MarketCalendar):
             ])),             
             (time(15, 28, tzinfo=timezone('America/New_York')), AbstractHolidayCalendar(rules=[
                ConEdPowerFail328pmEarlyClose1981,
+            ])),                 
+            (time(15, 30, tzinfo=timezone('America/New_York')), AbstractHolidayCalendar(rules=[
+               CircuitBreakerTriggered330pmEarlyClose1997,
             ])),                                     
         ]
 # 
@@ -809,17 +932,32 @@ class NYSEExchangeCalendar(MarketCalendar):
              + [t.strftime("%Y-%m-%d") for t in Backlog2pmEarlyCloses1967]
              + [t.strftime("%Y-%m-%d") for t in Backlog2pmEarlyCloses1968]             
              + [t.strftime("%Y-%m-%d") for t in PaperworkCrisis2pmEarlyCloses1969] 
+             + [t.strftime("%Y-%m-%d") for t in Backlog2pmEarlyCloses1987] 
             ),
-            (time(14, 30, tzinfo=timezone('America/New_York')), [t.strftime("%Y-%m-%d") for t in PaperworkCrisis230pmEarlyCloses1969]
+            (time(14, 30, tzinfo=timezone('America/New_York')), 
+               [t.strftime("%Y-%m-%d") for t in PaperworkCrisis230pmEarlyCloses1969]
+             + [t.strftime("%Y-%m-%d") for t in Backlog230pmEarlyCloses1987]  
             ),      
-            (time(15, tzinfo=timezone('America/New_York')), [t.strftime("%Y-%m-%d") for t in PaperworkCrisis3pmEarlyCloses1969to1970]
-            ),                        
+            (time(15, tzinfo=timezone('America/New_York')), 
+               [t.strftime("%Y-%m-%d") for t in PaperworkCrisis3pmEarlyCloses1969to1970]
+             + [t.strftime("%Y-%m-%d") for t in Backlog3pmEarlyCloses1987]  
+            ),
+            (time(15, 30, tzinfo=timezone('America/New_York')), 
+               [t.strftime("%Y-%m-%d") for t in Backlog330pmEarlyCloses1987]        
+            ),                            
         ]
 
 # 
     @property
     def special_opens(self):
         return [
+            (time(hour=9, minute=31, tzinfo=timezone('America/New_York')), AbstractHolidayCalendar(rules=[
+                ConEdXformer931amLateOpen1990,  
+                EnduringFreedomMomentSilence931amLateOpen2001,                   
+            ])),
+            (time(hour=9, minute=33, tzinfo=timezone('America/New_York')), AbstractHolidayCalendar(rules=[
+                Sept11MomentSilence933amLateOpen2001,                     
+            ])),
             (time(hour=10, minute=15, tzinfo=timezone('America/New_York')), AbstractHolidayCalendar(rules=[
                 Snow1015LateOpen1967,     
                 MerrillLynchComputer1015LateOpen1974,
@@ -829,6 +967,7 @@ class NYSEExchangeCalendar(MarketCalendar):
             (time(hour=10, minute=30, tzinfo=timezone('America/New_York')), AbstractHolidayCalendar(rules=[
                 TrafficBlockLateOpen1919,
                 TrafficBlockLateOpen1920,
+                Computer1030LateOpen1995,
             ])),
             (time(hour=10, minute=45, tzinfo=timezone('America/New_York')), AbstractHolidayCalendar(rules=[
                 EclipseOfSunLateOpen1925,
@@ -841,6 +980,8 @@ class NYSEExchangeCalendar(MarketCalendar):
                 Snow11amLateOpen1969,
                 Ice11amLateOpen1973,                    
                 Snow11amLateOpen1978,
+                Fire11amLateOpen1989,
+                Snow11amLateOpen1996,
             ])),
             (time(11, 5, tzinfo=timezone('America/New_York')), AbstractHolidayCalendar(rules=[
                 PowerFail1105LateOpen,
@@ -859,14 +1000,18 @@ class NYSEExchangeCalendar(MarketCalendar):
             ])),
             ]
 
-#
+# 
     @property
     def special_opens_adhoc(self):
         return [                       
+            (time(9, 31, tzinfo=timezone('America/New_York')), 
+             [t.strftime("%Y-%m-%d") for t in TroopsInGulf931LateOpens1991]                     
+            ),     
             (time(11, tzinfo=timezone('America/New_York')), 
              [t.strftime("%Y-%m-%d") for t in HeavyVolume11amLateOpen1933]                     
             ),     
-            (time(12, tzinfo=timezone('America/New_York')), [t.strftime("%Y-%m-%d") for t in BacklogRelief12pmLateOpen1929]
+            (time(12, tzinfo=timezone('America/New_York')), 
+                       [t.strftime("%Y-%m-%d") for t in BacklogRelief12pmLateOpen1929]
                      + [t.strftime("%Y-%m-%d") for t in HeavyVolume12pmLateOpen1933]
             ),            
         ]
@@ -928,17 +1073,19 @@ class NYSEExchangeCalendar(MarketCalendar):
             else:
                 t = time(10)
             
-            # TODO: Figure out why dates before 1901-12-14 have a 4 minute time shift
-            if(d < pd.Timestamp('1901-12-14')):
-                d = d + pd.Timedelta(minutes=4)
                            
             delta =  pd.Timedelta(
                         days=day_offset,
                         hours=t.hour,
                         minutes=t.minute,
                         seconds=t.second)
-        
-            dti.append( (d + delta).tz_localize(tz).tz_convert('UTC') )
+
+            # dates before 1901-12-14 have a 4 minute time shift. rounding removes it
+            # You also can't round when open/close is within the rounding period
+            if (d < pd.Timestamp('1901-12-14')):
+                dti.append( (d + delta).tz_localize(tz).tz_convert('UTC').round('15min') )
+            else:
+                dti.append( (d + delta).tz_localize(tz).tz_convert('UTC'))
                 
         return pd.DatetimeIndex(dti)
     
@@ -961,15 +1108,7 @@ class NYSEExchangeCalendar(MarketCalendar):
     
         # Offset days without tz to avoid timezone issues.
         days = pd.DatetimeIndex(days).tz_localize(None)
-        
-        # Prior to 1952-09-29 close was Mon-Fri 3pm and Sat noon
-        # 1952-1973 close was Mon-Fri 3:30pm (no saturday trades)
-        # 1974+ close is 4pm 
-        # TODO: Vectorize
-
-        #tmp = pd.DatetimeIndex(days.to_series().apply(lambda d: self.normal_close_time(d, self.tz)))
-        #print("tmp= \n", tmp)
-        
+                
         dti = []
         for d in days:
             if d < pd.Timestamp('1952-09-29'):
@@ -991,7 +1130,12 @@ class NYSEExchangeCalendar(MarketCalendar):
                         seconds=t.second)
 
             # dates before 1901-12-14 have a 4 minute time shift. rounding removes it
-            dti.append( (d + delta).tz_localize(tz).tz_convert('UTC').round('15min') )
+            # You also can't round when open/close is within the rounding period
+            if (d < pd.Timestamp('1901-12-14')):
+                dti.append( (d + delta).tz_localize(tz).tz_convert('UTC').round('15min') )
+            else:
+                dti.append( (d + delta).tz_localize(tz).tz_convert('UTC'))
+
                 
         return pd.DatetimeIndex(dti)
     
@@ -1026,8 +1170,6 @@ class NYSEExchangeCalendar(MarketCalendar):
         _special_opens = self._calculate_special_opens(start_date, end_date)
         _special_closes = self._calculate_special_closes(start_date, end_date)
         
-        print("special closes= ", _special_closes)
-
         # Overwrite the special opens and closes on top of the standard ones.
         _overwrite_special_dates(_all_days, opens, _special_opens)
         _overwrite_special_dates(_all_days, closes, _special_closes)
@@ -1035,7 +1177,6 @@ class NYSEExchangeCalendar(MarketCalendar):
         result = pd.DataFrame(index=_all_days.tz_localize(None), columns=['market_open', 'market_close'],
                             data={'market_open': opens, 'market_close': closes})
 
-        #TODO: TEST
         if self.break_start:
             result['break_start'] = self.days_at_time(_all_days, self.break_start, self.tz).tz_convert(tz)
             temp = result[['market_open', 'break_start']].max(axis=1)
@@ -1061,24 +1202,35 @@ class NYSEExchangeCalendar(MarketCalendar):
         # 1974+ close is 4pm 
         # dates before 1901-12-14 have a 4 minute time shift. rounding removes it
               
-        close3pm = schedule['market_close'].apply(lambda x: (x.tz_convert(self.tz).round('15min').time() != time(15)) &
+        close3pmPre1901 = schedule['market_close'].apply(lambda x: (x.tz_convert(self.tz).round('15min').time() != time(15)) &
+                                                            (x < pd.Timestamp('1901-12-14', tz='UTC')) &
+                                                            (x < pd.Timestamp('1952-09-29', tz='UTC')) &
+                                                            (x.dayofweek != 5)) 
+        
+        close3pm = schedule['market_close'].apply(lambda x: (x.tz_convert(self.tz).time() != time(15)) &
+                                                            (x >= pd.Timestamp('1901-12-14', tz='UTC')) &
                                                             (x < pd.Timestamp('1952-09-29', tz='UTC')) &
                                                             (x.dayofweek != 5)) 
         
         
-        close12Sat  = schedule['market_close'].apply(lambda x: (x.tz_convert(self.tz).round('15min').time() != time(12)) &
+        close12SatPre1901  = schedule['market_close'].apply(lambda x: (x.tz_convert(self.tz).round('15min').time() != time(12)) &
+                                                                (x < pd.Timestamp('1901-12-14', tz='UTC')) &
+                                                                (x.dayofweek == 5))
+
+        close12Sat  = schedule['market_close'].apply(lambda x: (x.tz_convert(self.tz).time() != time(12)) &
+                                                               (x >= pd.Timestamp('1901-12-14', tz='UTC')) &
                                                                (x.dayofweek == 5))
         
-        close330pm = schedule['market_close'].apply(lambda x: (x.tz_convert(self.tz).round('15min').time() != time(15,30)) &
+        close330pm = schedule['market_close'].apply(lambda x: (x.tz_convert(self.tz).time() != time(15,30)) &
                                                               (x >= pd.Timestamp('1952-09-29', tz='UTC')) &
                                                               (x < pd.Timestamp('1974-01-01', tz='UTC')) 
                                                     )
         
-        close4pm = schedule['market_close'].apply(lambda x: (x.tz_convert(self.tz).round('15min').time() != time(16)) &                                                              
+        close4pm = schedule['market_close'].apply(lambda x: (x.tz_convert(self.tz).time() != time(16)) &                                                              
                                                               (x >= pd.Timestamp('1974-01-01', tz='UTC'))
                                                     )
         
-        mask = close3pm | close330pm | close4pm | close12Sat
+        mask = close3pm | close3pmPre1901 | close330pm | close4pm | close12Sat | close12SatPre1901
 
         return schedule[mask]
  
@@ -1094,12 +1246,17 @@ class NYSEExchangeCalendar(MarketCalendar):
         # Prior to 1985 trading began at 10am
         # After 1985 trading begins at 9:30am 
         # dates before 1901-12-14 have a 4 minute time shift. rounding removes it
-        open10am = schedule['market_open'].apply(lambda x: (x.tz_convert(self.tz).round('15min').time() != time(10)) &
-                                                            (x < pd.Timestamp('1985-01-01', tz='UTC')) )
+        open10amPre1901 = schedule['market_open'].apply(lambda x: (x.tz_convert(self.tz).round('15min').time() != time(10)) &
+                                                            (x < pd.Timestamp('1985-01-01', tz='UTC')) &
+                                                            (x < pd.Timestamp('1901-12-14', tz='UTC')))
+        
+        open10am        = schedule['market_open'].apply(lambda x: (x.tz_convert(self.tz).time() != time(10)) &
+                                                            (x < pd.Timestamp('1985-01-01', tz='UTC')) &
+                                                            (x >= pd.Timestamp('1901-12-14', tz='UTC')))
                                                            
-        open930am = schedule['market_open'].apply(lambda x: (x.tz_convert(self.tz).round('15min').time() != time(9,30)) &
+        open930am = schedule['market_open'].apply(lambda x: (x.tz_convert(self.tz).time() != time(9,30)) &
                                                             (x >= pd.Timestamp('1985-01-01', tz='UTC')) )
         
-        mask = open10am | open930am
+        mask = open10am | open10amPre1901 | open930am
 
         return schedule[mask]

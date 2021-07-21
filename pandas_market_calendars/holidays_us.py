@@ -300,7 +300,7 @@ MonTuesThursBeforeIndependenceDay = Holiday(
 def july_5th_holiday_observance(datetime_index):
     return datetime_index[datetime_index.year < 2013]
 
-# This is not NYSE
+# This is not NYSE. Earlier start date breaks other calendars
 FridayAfterIndependenceDayPre2013 = Holiday(
     # When July 4th is a Thursday, the next day is a half day prior to 2013.
     # Since 2013 the early close is on Wednesday and Friday is a full day
@@ -311,8 +311,17 @@ FridayAfterIndependenceDayPre2013 = Holiday(
     observance=july_5th_holiday_observance,
     #start_date=Timestamp("1970-01-01"),
 )
-FridayAfterIndependenceDayNYSEadhoc =[]
 
+FridayAfterIndependenceDayNYSEpre2013 = Holiday(
+    # When July 4th is a Thursday, the next day is a half day prior to 2013.
+    # Since 2013 the early close is on Wednesday and Friday is a full day
+    "Fridays after Independence Day prior to 2013",
+    month=7,
+    day=5,
+    days_of_week=(FRIDAY,),
+    observance=july_5th_holiday_observance,
+    start_date=Timestamp("1996-01-01"),
+)
 
 WednesdayBeforeIndependenceDayPost2013 = Holiday(
     # When July 4th is a Thursday, the next day is a half day prior to 2013.
@@ -443,6 +452,25 @@ USThanksgivingDay = Holiday('Thanksgiving',
                             start_date=Timestamp('1942-01-01'),
                             month=11, day=1,
                             offset=DateOffset(weekday=TH(4)))
+
+
+USBlackFridayBefore1993 = Holiday(
+    'Black Friday',
+    month=11,
+    day=1,
+    # Black Friday was not observed until 1992.
+    start_date=Timestamp('1992-01-01'),
+    end_date=Timestamp('1993-01-01'),
+    offset=[DateOffset(weekday=TH(4)), Day(1)],
+)
+USBlackFridayInOrAfter1993 = Holiday(
+    'Black Friday',
+    month=11,
+    day=1,
+    start_date=Timestamp('1993-01-01'),
+    offset=[DateOffset(weekday=TH(4)), Day(1)],
+)
+
 FridayAfterThanksgivingAdHoc = [
     Timestamp('1888-11-30', tz='UTC'),
 ]
@@ -569,22 +597,7 @@ SatAfterColumbusDayAdHoc = [
     Timestamp("1917-10-13", tz="UTC"),
     Timestamp("1945-10-13", tz="UTC"),
 ]
-USBlackFridayBefore1993 = Holiday(
-    'Black Friday',
-    month=11,
-    day=1,
-    # Black Friday was not observed until 1992.
-    start_date=Timestamp('1992-01-01'),
-    end_date=Timestamp('1993-01-01'),
-    offset=[DateOffset(weekday=TH(4)), Day(1)],
-)
-USBlackFridayInOrAfter1993 = Holiday(
-    'Black Friday',
-    month=11,
-    day=1,
-    start_date=Timestamp('1993-01-01'),
-    offset=[DateOffset(weekday=TH(4)), Day(1)],
-)
+
 
 ##########################
 # Non-recurring holidays
@@ -1305,20 +1318,112 @@ ConEdPowerFail328pmEarlyClose1981 = Holiday(
     end_date=Timestamp('1981-09-09'),
 )
 
+# http://en.wikipedia.org/wiki/Hurricane_Gloria
+HurricaneGloriaClosings1985 = date_range(
+    '1985-09-27',
+    '1985-09-27',
+    tz='UTC'
+)
+
+# 1987
+Backlog2pmEarlyCloses1987   = date_range('1987-10-23', '1987-10-30', tz='UTC') 
+Backlog230pmEarlyCloses1987 = date_range('1987-11-02', '1987-11-04', tz='UTC')
+Backlog3pmEarlyCloses1987   = date_range('1987-11-05', '1987-11-06', tz='UTC') 
+Backlog330pmEarlyCloses1987 = date_range('1987-11-09', '1987-11-11', tz='UTC') 
+
+# 1989
+Fire11amLateOpen1989 = Holiday(
+    'Electrical Fire',
+    month=11,
+    day=10,
+    start_date=Timestamp('1989-11-10'),
+    end_date=Timestamp('1989-11-10'),
+)
+
+# 1990
+
+ConEdXformer931amLateOpen1990 = Holiday(
+    'Con Edison transformer explosion',
+    month=12,
+    day=27,
+    start_date=Timestamp('1990-12-27'),
+    end_date=Timestamp('1990-12-27'),
+)
+
+# 1991
+TroopsInGulf931LateOpens1991 = [
+    Timestamp("1991-01-17", tz='UTC'),
+    Timestamp("1991-02-25", tz='UTC')
+]
+
+# 1994
+Snow230pmEarlyClose1994 = Holiday(
+    'Snowstorm',
+    month=2,
+    day=11,
+    start_date=Timestamp('1994-02-11'),
+    end_date=Timestamp('1994-02-11'),
+)
+
+NixonFuneral1994 = [Timestamp('1994-04-27', tz='UTC'),]
+
+# 1995
+Computer1030LateOpen1995 = Holiday(
+    'Computer Systems Troubles',
+    month=12,
+    day=18,
+    start_date=Timestamp('1995-12-18'),
+    end_date=Timestamp('1995-12-18'),
+)
+
+# 1996
+Snow11amLateOpen1996 = Holiday(
+    'Snow',
+    month=1,
+    day=8,
+    start_date=Timestamp('1996-01-08'),
+    end_date=Timestamp('1996-01-08'),
+)
+
+Snow2pmEarlyClose1996 = Holiday(
+    'Snow',
+    month=1,
+    day=8,
+    start_date=Timestamp('1996-01-08'),
+    end_date=Timestamp('1996-01-08'),
+)
+
+CircuitBreakerTriggered330pmEarlyClose1997 =  Holiday(
+    'Oct 27 1997 Stock Market Drop Circuit Breaker Triggered',
+    month=10,
+    day=27,
+    start_date=Timestamp('1997-10-27'),
+    end_date=Timestamp('1997-10-27'),
+)
+
+# 2001
 # http://en.wikipedia.org/wiki/Aftermath_of_the_September_11_attacks
-September11Closings = [
+September11Closings2001 = [
     Timestamp("2001-09-11", tz='UTC'),
     Timestamp("2001-09-12", tz='UTC'),
     Timestamp("2001-09-13", tz='UTC'),
     Timestamp("2001-09-14", tz='UTC')
 ]
 
+Sept11MomentSilence933amLateOpen2001 =  Holiday(
+    'Moment of silence for terrorist attacks on 9/11',
+    month=9,
+    day=17,
+    start_date=Timestamp('2001-09-17'),
+    end_date=Timestamp('2001-09-17'),
+)
 
-# http://en.wikipedia.org/wiki/Hurricane_Gloria
-HurricaneGloriaClosings = date_range(
-    '1985-09-27',
-    '1985-09-27',
-    tz='UTC'
+EnduringFreedomMomentSilence931amLateOpen2001 =  Holiday(
+    'Moment of silence for Enduring Freedom troops',
+    month=10,
+    day=8,
+    start_date=Timestamp('2001-10-08'),
+    end_date=Timestamp('2001-10-08'),
 )
 
 # http://en.wikipedia.org/wiki/Hurricane_sandy
@@ -1328,18 +1433,28 @@ HurricaneSandyClosings = date_range(
     tz='UTC'
 )
 
-# National Days of Mourning
+
+# National Days of Mourning - not used in NYSE calendar
+# - President John F. Kennedy - November 25, 1963
+# - Martin Luther King - April 9, 1968
+# - President Dwight D. Eisenhower - March 31, 1969
+# - President Harry S. Truman - December 28, 1972
+# - President Lyndon B. Johnson - January 25, 1973
 # - President Richard Nixon - April 27, 1994
 # - President Ronald W. Reagan - June 11, 2004
 # - President Gerald R. Ford - Jan 2, 2007
 # - President George H.W. Bush - Dec 5, 2018
 USNationalDaysofMourning = [
+    Timestamp('1963-11-25', tz='UTC'),
+    Timestamp('1968-04-09', tz='UTC'),
+    Timestamp('1969-03-31', tz='UTC'),
+    Timestamp('1972-12-28', tz='UTC'),
+    Timestamp('1973-01-25', tz='UTC'),
     Timestamp('1994-04-27', tz='UTC'),
     Timestamp('2004-06-11', tz='UTC'),
     Timestamp('2007-01-02', tz='UTC'),
     Timestamp('2018-12-05', tz='UTC'),
 ]
-
 
 
 BattleOfGettysburg = Holiday(
