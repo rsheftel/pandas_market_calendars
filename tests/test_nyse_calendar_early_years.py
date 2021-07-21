@@ -54,7 +54,7 @@ def _test_has_late_opens(late_opens, start, end):
     expected = nyse.late_opens(schedule)
     assert len(expected) == len(late_opens)
     for ts in late_opens:
-        _test_verify_late_open_time(schedule, ts)
+        assert _test_verify_late_open_time(schedule, ts) == True
     
 def _test_verify_early_close_time(schedule, timestamp):
     date = pd.Timestamp(pd.Timestamp(timestamp).tz_convert('UTC').date())
@@ -68,7 +68,7 @@ def _test_has_early_closes(early_closes, start, end):
     expected = nyse.early_closes(schedule)
     assert len(expected) == len(early_closes)
     for ts in early_closes:
-        _test_verify_early_close_time(schedule, ts)
+       assert _test_verify_early_close_time(schedule, ts) == True
                            
 #########################################################################
 # TESTS BEGIN
@@ -3175,3 +3175,65 @@ def test_2001():
         pd.Timestamp('2001-10-08 9:31AM', tz='America/New_York'), # Enduring Freedom troops moment of silence
     ]
     _test_has_late_opens(late_opens, start, end)     
+    
+    
+def test_2002():
+    start = '2002-01-01'
+    end   = '2002-12-31'    
+    holidays = [
+        pd.Timestamp('2002-01-01', tz='UTC'),
+        pd.Timestamp('2002-01-21', tz='UTC'),
+        pd.Timestamp('2002-02-18', tz='UTC'),
+        pd.Timestamp('2002-03-29', tz='UTC'),
+        pd.Timestamp('2002-05-27', tz='UTC'),
+        pd.Timestamp('2002-07-04', tz='UTC'),
+        pd.Timestamp('2002-09-02', tz='UTC'),
+        pd.Timestamp('2002-11-28', tz='UTC'),
+        pd.Timestamp('2002-12-25', tz='UTC')
+    ]
+    _test_holidays(holidays, start, end)
+
+    # early closes we expect:
+    early_closes = [      
+        pd.Timestamp('2002-07-05 1:00PM', tz='America/New_York'), # Day after Independence Day
+        pd.Timestamp('2002-11-29 1:00PM', tz='America/New_York'), # Day after Thanksgiving     
+        pd.Timestamp('2002-12-24 1:00PM', tz='America/New_York'), # Christmas eve
+    ]
+    _test_has_early_closes(early_closes, start, end)
+        
+    # late opens we expect:
+    late_opens = [
+        pd.Timestamp('2001-09-11 12:00PM', tz='America/New_York'), # 9/11 anniversary
+    ]
+    _test_has_late_opens(late_opens, start, end)     
+    
+    
+def test_2003():
+    start = '2003-01-01'
+    end   = '2003-12-31'    
+    holidays = [
+        pd.Timestamp('2003-01-01', tz='UTC'),
+        pd.Timestamp('2003-01-20', tz='UTC'),
+        pd.Timestamp('2003-02-17', tz='UTC'),
+        pd.Timestamp('2003-04-18', tz='UTC'),
+        pd.Timestamp('2003-05-26', tz='UTC'),
+        pd.Timestamp('2003-07-04', tz='UTC'),
+        pd.Timestamp('2003-09-01', tz='UTC'),
+        pd.Timestamp('2003-11-27', tz='UTC'),
+        pd.Timestamp('2003-12-25', tz='UTC')
+    ]
+    _test_holidays(holidays, start, end)
+
+    # early closes we expect:
+    early_closes = [      
+        pd.Timestamp('2003-07-03 1:00PM', tz='America/New_York'), # Day before Independence Day
+        pd.Timestamp('2003-11-28 1:00PM', tz='America/New_York'), # Day after Thanksgiving     
+        pd.Timestamp('2003-12-25 1:00PM', tz='America/New_York'), # Friday after Christmas
+    ]
+    _test_has_early_closes(early_closes, start, end)
+        
+    # late opens we expect:
+    late_opens = [
+        pd.Timestamp('2003-03-20 9:32AM', tz='America/New_York'), # Iraqi freedom moment of silence
+    ]
+    _test_has_late_opens(late_opens, start, end)         

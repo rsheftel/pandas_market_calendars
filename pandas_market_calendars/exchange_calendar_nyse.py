@@ -224,6 +224,10 @@ from pandas_market_calendars.holidays_us import (
     September11Closings2001,
     Sept11MomentSilence933amLateOpen2001,
     EnduringFreedomMomentSilence931amLateOpen2001,
+    # 2002
+    Sept11Anniversary12pmLateOpen2002,
+    # 2003
+    IraqiFreedom932amLateOpen2003,
       
     
     HurricaneSandyClosings  )
@@ -641,30 +645,30 @@ class NYSEExchangeCalendar(MarketCalendar):
     - NOT IMPLEMENTED Break 12:00-12:01 on Feb 16, 2000 (Wed): Former NYSE Chair Walter N. Frank moment of silence
     - NOT IMPLEMENTED Break 12:00-12:01 on May 4, 2000 (Thu): Archbishop of NY Cardinal John O'Connor moment of silence
     - Early Close 1pm on Jul 3, 2000 (Mon): Day before Independence Day
-    - Early Close 1pm on Nov 24, 2000 (Fri): Day after Thanksgiving
-    
-    
+    - Early Close 1pm on Nov 24, 2000 (Fri): Day after Thanksgiving        
     - NOT IMPLEMENTED Break 10:10-11:35 on Jun 8, 2001 (Fri): computer systems connectivity problem
     - Early Close 1pm on Jul 3, 2001 (Tue): Day before Independence Day
     - Closed on Sep 11-14, 2001 (Tue-Fri): Terrorist attack on World Trade Center
     - Late Open 9:33am on Sep 17, 2001 (Mon): 2 minutes silence in honor of lives lost on 9/11
     - Late Open 9:31am on Oct 8, 2001 (Mon): 1 minute silence for troops engaged in Operation Enduring Freedom
     - Early Close 1pm on Nov 23, 2001 (Fri): Day after Thanksgiving
-    - Early Close 1pm on Dec 24, 2001 (Mon): Christmas Eve
-    
-    
+    - Early Close 1pm on Dec 24, 2001 (Mon): Christmas Eve    
     - NOT IMPLEMENTED Break 10:29-10:31 on May 30, 2002 (Thu): Commemorate end of recovery work at Ground Zero
-    - Early Close 1pm on Jul 5, 2002 (Fri): Day after Independence Day
-    - Late Opening 12:00pm on Sep 11, 2002 (Wed): 1 year anniversary of 9/11 attack
+    - Early Close 1pm on Jul 5, 2002 (Fri): Day after Independence Day    
+    - Late Opening 12:00pm on Sep 11, 2002 (Wed): 1 year anniversary of 9/11 attack    
     - Early Close 1pm on Nov 29, 2002 (Fri): Day after Thanksgiving
     - Early Close 1pm on Dec 24, 2002 (Tue): Christmas Eve
     - NOT IMPLEMENTED Break 11:00-11:02 on Feb 3, 2002 (Mon): Columbia Space Shuttle lives lost moment of silence
+    
+    
     - Late Opening 9:32am on Mar 20, 2003 (Thu): Operation Iraqi Freedom Troops moment of silence
     - Early Close 1pm on Jul 3, 2003 (Thu): Day before Independence Day
     - NOT IMPLEMENTED multiple 1-minute Breaks 9:59 and 10:29 on Sep 11, 2003 (Thu): 9/11 Commemoration
     - Early Close 1pm on Nov 28, 2003 (Fri): Day after Thanksgiving
     - Early Close 1pm on Dec 24, 2003 (Wed): Christmas Eve
     - Early Close 1pm on Dec 25, 2003 (Fri): Friday after Christmas
+    
+    
     - Late Open 9:32am on Jun 7, 2004 (Mon): Former President Ronald Reagan death moment of silence
     - Closed on Jun 11, 2004 (Fri): Former President Ronald Reagan National Day of Mourning
     - Early Close 1pm on Nov 26, 2004 (Fri): Day after Thanksgiving
@@ -955,6 +959,9 @@ class NYSEExchangeCalendar(MarketCalendar):
                 ConEdXformer931amLateOpen1990,  
                 EnduringFreedomMomentSilence931amLateOpen2001,                   
             ])),
+            (time(hour=9, minute=32, tzinfo=timezone('America/New_York')), AbstractHolidayCalendar(rules=[
+                IraqiFreedom932amLateOpen2003,                   
+            ])),
             (time(hour=9, minute=33, tzinfo=timezone('America/New_York')), AbstractHolidayCalendar(rules=[
                 Sept11MomentSilence933amLateOpen2001,                     
             ])),
@@ -994,6 +1001,7 @@ class NYSEExchangeCalendar(MarketCalendar):
                 JPMorganFuneral12pmOpen1913,
                 WilliamGaynorFuneral12pmOpen1913,
                 Snow12pmLateOpen1978,
+                Sept11Anniversary12pmLateOpen2002,
             ])),
             (time(13, tzinfo=timezone('America/New_York')), AbstractHolidayCalendar(rules=[
                 AnnunciatorBoardFire1pmLateOpen1921,

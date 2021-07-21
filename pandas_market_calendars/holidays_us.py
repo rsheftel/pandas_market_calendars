@@ -1425,6 +1425,24 @@ EnduringFreedomMomentSilence931amLateOpen2001 =  Holiday(
     start_date=Timestamp('2001-10-08'),
     end_date=Timestamp('2001-10-08'),
 )
+# 2002
+Sept11Anniversary12pmLateOpen2002 =  Holiday(
+    '1 year anniversary of terrorist attacks on 9/11',
+    month=9,
+    day=11,
+    start_date=Timestamp('2002-09-11'),
+    end_date=Timestamp('2002-09-11'),
+)
+
+# 2003
+IraqiFreedom932amLateOpen2003 =  Holiday(
+    'Operation Iraqi freedom moment of silence',
+    month=3,
+    day=20,
+    start_date=Timestamp('2003-03-20'),
+    end_date=Timestamp('2002-03-20'),
+)
+
 
 # http://en.wikipedia.org/wiki/Hurricane_sandy
 HurricaneSandyClosings = date_range(
