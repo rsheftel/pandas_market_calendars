@@ -42,11 +42,12 @@ from pandas_market_calendars.holidays_us import (
     SatBeforeDecorationAdhoc, SatAfterDecorationAdhoc,
     DayBeforeDecorationAdhoc,
     
-    USIndependenceDay,SatBeforeIndependenceDayAdhoc, SatAfterIndependenceDayAdhoc,
-    USIndependenceDayPre1952, USIndependenceDay1952to1954, 
+    USIndependenceDay, USIndependenceDayPre1952, USIndependenceDay1952to1954,    
+    SatBeforeIndependenceDayAdhoc, SatAfterIndependenceDayAdhoc,
     MonTuesThursBeforeIndependenceDay, FridayAfterIndependenceDayNYSEpre2013,
     WednesdayBeforeIndependenceDayPost2013,
     MonBeforeIndependenceDayAdhoc, DaysAfterIndependenceDayAdhoc,
+    DaysBeforeIndependenceDay1pmEarlyCloseAdhoc, 
     
     USBlackFridayBefore1993, USBlackFridayInOrAfter1993,
     USColumbusDayBefore1954, USElectionDay1848to1967, 
@@ -58,8 +59,8 @@ from pandas_market_calendars.holidays_us import (
     
     USElectionDay1968to1980Adhoc,
     
-    Christmas, ChristmasBefore1954, 
-    ChristmasEvesAdhoc, DayAfterChristmasAdhoc,
+    ChristmasNYSE, Christmas54to98NYSE, ChristmasBefore1954, 
+    ChristmasEvesAdhoc, DayAfterChristmasAdhoc, DayAfterChristmas1pmEarlyCloseAdhoc,
     ChristmasEve1pmEarlyCloseAdhoc, ChristmasEve2pmEarlyCloseAdhoc,
     SatBeforeChristmasAdhoc, SatAfterChristmasAdhoc,
     
@@ -666,7 +667,7 @@ class NYSEExchangeCalendar(MarketCalendar):
     - NOT IMPLEMENTED multiple 1-minute Breaks 9:59 and 10:29 on Sep 11, 2003 (Thu): 9/11 Commemoration
     - Early Close 1pm on Nov 28, 2003 (Fri): Day after Thanksgiving
     - Early Close 1pm on Dec 24, 2003 (Wed): Christmas Eve
-    - Early Close 1pm on Dec 25, 2003 (Fri): Friday after Christmas
+    - Early Close 1pm on Dec 26, 2003 (Fri): Friday after Christmas
     
     
     - Late Open 9:32am on Jun 7, 2004 (Mon): Former President Ronald Reagan death moment of silence
@@ -757,7 +758,8 @@ class NYSEExchangeCalendar(MarketCalendar):
             USElectionDay1848to1967,
             USVeteransDay1934to1953,
             USColumbusDayBefore1954,
-            Christmas,
+            ChristmasNYSE,
+            Christmas54to98NYSE,
             ChristmasBefore1954,
         ])
 
@@ -919,13 +921,10 @@ class NYSEExchangeCalendar(MarketCalendar):
     @property
     def special_closes_adhoc(self):
         return [            
-            (time(13, tzinfo=timezone('America/New_York')), [
-                '1997-12-26',
-                '1999-12-31',
-                '2003-12-26',
-                '2013-07-03'
-            ]
-            + [t.strftime("%Y-%m-%d") for t in ChristmasEve1pmEarlyCloseAdhoc]   
+            (time(13, tzinfo=timezone('America/New_York')), 
+              [t.strftime("%Y-%m-%d") for t in DaysBeforeIndependenceDay1pmEarlyCloseAdhoc] 
+            + [t.strftime("%Y-%m-%d") for t in ChristmasEve1pmEarlyCloseAdhoc] 
+            + [t.strftime("%Y-%m-%d") for t in DayAfterChristmas1pmEarlyCloseAdhoc]   
             + [t.strftime("%Y-%m-%d") for t in BacklogRelief1pmEarlyClose1929]
             ),
             (time(14, tzinfo=timezone('America/New_York')), 

@@ -64,6 +64,10 @@ USNewYearsDayNYSEpre1952 = Holiday(
     days_of_week=(0,1,2,3,4,5,)
 )
 
+NewYearsEve1pmCloseAdhoc = [
+    #Timestamp('1999-12-31', tz='UTC'), # Disputed. Not in reference source
+]
+
 # Not every Saturday before/after Christmas is a holiday
 SatBeforeNewYearsAdhoc = [
     Timestamp('1916-12-30', tz='UTC')
@@ -364,6 +368,9 @@ DaysAfterIndependenceDayAdhoc = [
     Timestamp('1968-07-05', tz='UTC')
     ]
 
+DaysBeforeIndependenceDay1pmEarlyCloseAdhoc = [
+    Timestamp('2013-07-03', tz='UTC')
+    ]
 
 #################################################
 # US Labor Day Starting 1887
@@ -484,6 +491,24 @@ Christmas = Holiday(
     start_date=Timestamp('1954-01-01'),
     observance=nearest_workday,
 )
+ChristmasNYSE = Holiday(
+    'Christmas',
+    month=12,
+    day=25,
+    start_date=Timestamp('2000-01-01'),
+    #days_of_week=(0,1,2,3,4,),
+    observance=nearest_workday, 
+)
+
+Christmas54to98NYSE = Holiday(
+    'Christmas',
+    month=12,
+    day=25,
+    start_date=Timestamp('1954-01-01'),
+    end_date=Timestamp('1998-12-31'),
+    observance=nearest_workday, 
+)
+
 ChristmasBefore1954 = Holiday(
     'Christmas',
     month=12,
@@ -503,7 +528,12 @@ DayAfterChristmasAdhoc = [
     Timestamp('1958-12-26', tz='UTC'),
 ]
 
-# Only some Christmas Eve's were early close (1976-1979 were not)
+DayAfterChristmas1pmEarlyCloseAdhoc = [
+    Timestamp('1997-12-26', tz='UTC'),
+    Timestamp('2003-12-26', tz='UTC'),
+]
+
+# Only some Christmas Eve's were 2pm early close (1976-1979 were not)
 ChristmasEve2pmEarlyCloseAdhoc = [
     Timestamp('1974-12-24', tz='UTC'),
     Timestamp('1975-12-24', tz='UTC'),
@@ -517,6 +547,7 @@ ChristmasEve1pmEarlyCloseAdhoc = [
     Timestamp('1996-12-24', tz='UTC'),
     Timestamp('1997-12-24', tz='UTC'),
     Timestamp('1998-12-24', tz='UTC'),
+    Timestamp('1999-12-24', tz='UTC'),
     Timestamp('2001-12-24', tz='UTC'),
     Timestamp('2002-12-24', tz='UTC'),
     Timestamp('2003-12-24', tz='UTC'),
@@ -547,25 +578,7 @@ SatAfterChristmasAdhoc = [
     Timestamp('1936-12-26', tz='UTC'),
     ]
 
-# These Holidays are NOT correct for NYSE.
-# They are left in this file because exchange_calendar_cme.py imports them
-ChristmasEveBefore1993 = Holiday(
-    'Christmas Eve',
-    month=12,
-    day=24,
-    start_date=Timestamp('12-24-1974'),
-    end_date=Timestamp('1993-01-01'),
-    # When Christmas is a Saturday, the 24th is a full holiday.
-    days_of_week=(MONDAY, TUESDAY, WEDNESDAY, THURSDAY),
-)
-ChristmasEveInOrAfter1993 = Holiday(
-    'Christmas Eve',
-    month=12,
-    day=24,
-    start_date=Timestamp('1993-01-01'),
-    # When Christmas is a Saturday, the 24th is a full holiday.
-    days_of_week=(MONDAY, TUESDAY, WEDNESDAY, THURSDAY),
-)
+
 
 
 #####################################
@@ -1440,7 +1453,7 @@ IraqiFreedom932amLateOpen2003 =  Holiday(
     month=3,
     day=20,
     start_date=Timestamp('2003-03-20'),
-    end_date=Timestamp('2002-03-20'),
+    end_date=Timestamp('2003-03-20'),
 )
 
 
@@ -1484,4 +1497,22 @@ BattleOfGettysburg = Holiday(
     end_date=Timestamp("1863-07-03")
 )
 
-
+# These Holidays are NOT correct for NYSE.
+# They are left in this file because exchange_calendar_cme.py imports them
+ChristmasEveBefore1993 = Holiday(
+    'Christmas Eve',
+    month=12,
+    day=24,
+    start_date=Timestamp('12-24-1974'),
+    end_date=Timestamp('1993-01-01'),
+    # When Christmas is a Saturday, the 24th is a full holiday.
+    days_of_week=(MONDAY, TUESDAY, WEDNESDAY, THURSDAY),
+)
+ChristmasEveInOrAfter1993 = Holiday(
+    'Christmas Eve',
+    month=12,
+    day=24,
+    start_date=Timestamp('1993-01-01'),
+    # When Christmas is a Saturday, the 24th is a full holiday.
+    days_of_week=(MONDAY, TUESDAY, WEDNESDAY, THURSDAY),
+)
