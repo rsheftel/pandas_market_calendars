@@ -3549,3 +3549,129 @@ def test_2015():
         pd.Timestamp('2015-12-24 1:00PM', tz='America/New_York'), # Christmas eve
     ]
     _test_has_early_closes(early_closes, start, end)         
+    
+def test_2016():
+    start = '2016-01-01'
+    end   = '2016-12-31'    
+    holidays = [
+        pd.Timestamp('2016-01-01', tz='UTC'),
+        pd.Timestamp('2016-01-18', tz='UTC'),
+        pd.Timestamp('2016-02-15', tz='UTC'),
+        pd.Timestamp('2016-03-25', tz='UTC'),
+        pd.Timestamp('2016-05-30', tz='UTC'),
+        pd.Timestamp('2016-07-04', tz='UTC'),
+        pd.Timestamp('2016-09-05', tz='UTC'),
+        pd.Timestamp('2016-11-24', tz='UTC'),
+        pd.Timestamp('2016-12-26', tz='UTC')
+    ]
+    _test_holidays(holidays, start, end)
+    _test_no_special_opens(start, end)
+
+    # early closes we expect:
+    early_closes = [     
+        pd.Timestamp('2016-11-25 1:00PM', tz='America/New_York'), # Day after Thanksgiving  
+    ]
+    _test_has_early_closes(early_closes, start, end)       
+    
+    
+def test_2017():
+    start = '2017-01-01'
+    end   = '2017-12-31'    
+    holidays = [
+        pd.Timestamp('2017-01-02', tz='UTC'),
+        pd.Timestamp('2017-01-16', tz='UTC'),
+        pd.Timestamp('2017-02-20', tz='UTC'),
+        pd.Timestamp('2017-04-14', tz='UTC'),
+        pd.Timestamp('2017-05-29', tz='UTC'),
+        pd.Timestamp('2017-07-04', tz='UTC'),
+        pd.Timestamp('2017-09-04', tz='UTC'),
+        pd.Timestamp('2017-11-23', tz='UTC'),
+        pd.Timestamp('2017-12-25', tz='UTC')
+    ]
+    _test_holidays(holidays, start, end)
+    _test_no_special_opens(start, end)
+
+    # early closes we expect:
+    early_closes = [     
+        pd.Timestamp('2017-07-03 1:00PM', tz='America/New_York'), # Day before Independence Day        
+        pd.Timestamp('2017-11-24 1:00PM', tz='America/New_York'), # Day after Thanksgiving  
+    ]
+    _test_has_early_closes(early_closes, start, end)       
+        
+    
+def test_2018():
+    start = '2018-01-01'
+    end   = '2018-12-31'    
+    holidays = [
+        pd.Timestamp('2018-01-01', tz='UTC'),
+        pd.Timestamp('2018-01-15', tz='UTC'),
+        pd.Timestamp('2018-02-19', tz='UTC'),
+        pd.Timestamp('2018-03-30', tz='UTC'),
+        pd.Timestamp('2018-05-28', tz='UTC'),
+        pd.Timestamp('2018-07-04', tz='UTC'),
+        pd.Timestamp('2018-09-03', tz='UTC'),
+        pd.Timestamp('2018-11-22', tz='UTC'),
+        pd.Timestamp('2018-12-05', tz='UTC'),
+        pd.Timestamp('2018-12-25', tz='UTC')
+    ]
+    _test_holidays(holidays, start, end)
+    _test_no_special_opens(start, end)
+
+    # early closes we expect:
+    early_closes = [     
+        pd.Timestamp('2018-07-03 1:00PM', tz='America/New_York'), # Day before Independence Day        
+        pd.Timestamp('2018-11-23 1:00PM', tz='America/New_York'), # Day after Thanksgiving  
+        pd.Timestamp('2018-12-24 1:00PM', tz='America/New_York'), # Christmas eve
+    ]
+    _test_has_early_closes(early_closes, start, end)       
+    
+    
+def test_2019():
+    start = '2019-01-01'
+    end   = '2019-12-31'    
+    holidays = [
+        pd.Timestamp('2019-01-01', tz='UTC'),
+        pd.Timestamp('2019-01-21', tz='UTC'),
+        pd.Timestamp('2019-02-18', tz='UTC'),
+        pd.Timestamp('2019-04-19', tz='UTC'),
+        pd.Timestamp('2019-05-27', tz='UTC'),
+        pd.Timestamp('2019-07-04', tz='UTC'),
+        pd.Timestamp('2019-09-02', tz='UTC'),
+        pd.Timestamp('2019-11-28', tz='UTC'),
+        pd.Timestamp('2019-12-25', tz='UTC')
+    ]
+    _test_holidays(holidays, start, end)
+    _test_no_special_opens(start, end)
+
+    # early closes we expect:
+    early_closes = [     
+        pd.Timestamp('2019-07-03 1:00PM', tz='America/New_York'), # Day before Independence Day        
+        pd.Timestamp('2019-11-29 1:00PM', tz='America/New_York'), # Day after Thanksgiving  
+        pd.Timestamp('2019-12-24 1:00PM', tz='America/New_York'), # Christmas eve
+    ]
+    _test_has_early_closes(early_closes, start, end)       
+    
+    
+def test_2020():
+    start = '2020-01-01'
+    end   = '2020-12-31'    
+    holidays = [
+        pd.Timestamp('2020-01-01', tz='UTC'),
+        pd.Timestamp('2020-01-20', tz='UTC'),
+        pd.Timestamp('2020-02-17', tz='UTC'),
+        pd.Timestamp('2020-04-10', tz='UTC'),
+        pd.Timestamp('2020-05-25', tz='UTC'),
+        pd.Timestamp('2020-07-03', tz='UTC'),
+        pd.Timestamp('2020-09-07', tz='UTC'),
+        pd.Timestamp('2020-11-26', tz='UTC'),
+        pd.Timestamp('2020-12-25', tz='UTC')
+    ]
+    _test_holidays(holidays, start, end)
+    _test_no_special_opens(start, end)
+
+    # early closes we expect:
+    early_closes = [     
+        pd.Timestamp('2020-11-27 1:00PM', tz='America/New_York'), # Day after Thanksgiving  
+        pd.Timestamp('2020-12-24 1:00PM', tz='America/New_York'), # Christmas eve
+    ]
+    _test_has_early_closes(early_closes, start, end)     

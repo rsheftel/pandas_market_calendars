@@ -63,6 +63,7 @@ from pandas_market_calendars.holidays_nyse import (
     
     ChristmasNYSE, Christmas54to98NYSE, ChristmasBefore1954, 
     ChristmasEvesAdhoc, DayAfterChristmasAdhoc, DayAfterChristmas1pmEarlyCloseAdhoc,
+    ChristmasEvePost1999Early1pmClose,
     ChristmasEve1pmEarlyCloseAdhoc, ChristmasEve2pmEarlyCloseAdhoc,
     SatBeforeChristmasAdhoc, SatAfterChristmasAdhoc,
     
@@ -241,7 +242,9 @@ from pandas_market_calendars.holidays_nyse import (
     # 2007
     FordMourning2007,
     # 2012  
-    HurricaneSandyClosings2012  
+    HurricaneSandyClosings2012,
+    # 2018
+    GeorgeHWBushDeath2018
 )
 from .market_calendar import MarketCalendar
 
@@ -707,9 +710,9 @@ class NYSEExchangeCalendar(MarketCalendar):
 
     https://holidaystracker.com/stock-market/new-york-stock-exchange-holidays-2012/
     - Early Close 1pm on Jul 4, 2012 (Tue): Day before Independence Day
+    - Closed on 10/29/2012 and 10/30/2012 due to Hurricane Sandy.
     - Early Close 1pm on Nov 23, 2012 (Fri): Day after Thanksgiving    
     - Early Close 1pm on Dec 24, 2012 (Mon): Christmas Eve
-    - Closed on 10/29/2012 and 10/30/2012 due to Hurricane Sandy.
 
     https://holidaystracker.com/stock-market/new-york-stock-exchange-nyse-holidays-2013/    
     - Early Close 1pm on Jul 3, 2013 (Wed): Day before Independence Day
@@ -721,14 +724,26 @@ class NYSEExchangeCalendar(MarketCalendar):
     - Early Close 1pm on Nov 28, 2014 (Fri): Day after Thanksgiving    
     - Early Close 1pm on Dec 24, 2014 (Wed): Christmas Eve
 
+    https://www.businesswire.com/news/home/20141208006349/en/NYSE-Group-2016-Holiday-Calendar-and-Early-Closings
     - Early Close 1pm on Nov 27, 2015 (Fri): Day after Thanksgiving    
     - Early Close 1pm on Dec 24, 2015 (Thu): Christmas Eve
+    - Early Close 1pm on Nov 25, 2016 (Fri): Day after Thanksgiving    
 
-    
-    
-    
+    https://www.stockinvestor.com/30380/stock-market-holidays-2017/
+    - Early Close 1pm on Jul 3, 2017 (Mon): Day before Independence Day
+    - Early Close 1pm on Nov 24, 2017 (Fri): Day after Thanksgiving    
+    - Early Close 1pm on Jul 3, 2018 (Tue): Day before Independence Day
+    - Early Close 1pm on Nov 23, 2018 (Fri): Day after Thanksgiving    
     - Closed on 12/5/2018 due to George H.W. Bush's death.
-    - Closed at 1:00 PM on Wednesday, July 3rd, 2013
+    - Early Close 1pm on Dec 24, 2018 (Tue): Christmas Eve
+    - Early Close 1pm on Jul 3, 2019 (Wed): Day before Independence Day
+    - Early Close 1pm on Nov 29, 2019 (Fri): Day after Thanksgiving    
+    - Early Close 1pm on Dec 24, 2019 (Wed): Christmas Eve
+
+    https://holidaystracker.com/stock-market/new-york-stock-exchange-nyse-holidays-2020/
+    - Early Close 1pm on Nov 27, 2020 (Fri): Day after Thanksgiving    
+    - Early Close 1pm on Dec 24, 2020 (Thu): Christmas Eve
+    
 
     NOTE: The exchange was **not** closed early on Friday December 26, 2008,
     nor was it closed on Friday December 26, 2014. The next Thursday Christmas
@@ -883,7 +898,8 @@ class NYSEExchangeCalendar(MarketCalendar):
             ReaganMourning2004,
             FordMourning2007,        
             September11Closings2001,            
-            HurricaneSandyClosings2012,                                    
+            HurricaneSandyClosings2012, 
+            GeorgeHWBushDeath2018,                                   
         ))
 # 
     @property
@@ -909,8 +925,9 @@ class NYSEExchangeCalendar(MarketCalendar):
                 FridayAfterIndependenceDayNYSEpre2013,
                 MonTuesThursBeforeIndependenceDay,
                 WednesdayBeforeIndependenceDayPost2013,
-                GroverClevelandFuneral1pmClose1908,
                 DayAfterThanksgiving1pmEarlyCloseInOrAfter1993,
+                ChristmasEvePost1999Early1pmClose,
+                GroverClevelandFuneral1pmClose1908,                
             ])),
             (time(14, tzinfo=timezone('America/New_York')), AbstractHolidayCalendar(rules=[                
                 DayAfterThanksgiving2pmEarlyCloseBefore1993,

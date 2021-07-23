@@ -543,24 +543,38 @@ ChristmasEve2pmEarlyCloseAdhoc = [
     Timestamp('1992-12-24', tz='UTC'),
 ]
 # TODO: Figure out the pattern
+# Looks like since 2000 when Christmas Eve is Friday it is full holiday
+# If Christmas Eve is Mon-Thu then it is 1pm close
 ChristmasEve1pmEarlyCloseAdhoc = [
     Timestamp('1951-12-24', tz='UTC'),
     Timestamp('1990-12-24', tz='UTC'),
-    Timestamp('1996-12-24', tz='UTC'),
-    Timestamp('1997-12-24', tz='UTC'),
-    Timestamp('1998-12-24', tz='UTC'),
-    Timestamp('1999-12-24', tz='UTC'),
-    Timestamp('2001-12-24', tz='UTC'),
-    Timestamp('2002-12-24', tz='UTC'),
-    Timestamp('2003-12-24', tz='UTC'),
-    Timestamp('2007-12-24', tz='UTC'),
-    Timestamp('2008-12-24', tz='UTC'),
-    Timestamp('2009-12-24', tz='UTC'),
-    Timestamp('2012-12-24', tz='UTC'),
-    Timestamp('2013-12-24', tz='UTC'),
-    Timestamp('2014-12-24', tz='UTC'),
-    Timestamp('2015-12-24', tz='UTC'),
+    Timestamp('1996-12-24', tz='UTC'), # Tue
+    Timestamp('1997-12-24', tz='UTC'), # Wed
+    Timestamp('1998-12-24', tz='UTC'), # Thu
+    Timestamp('1999-12-24', tz='UTC'), # Fri
+    # Timestamp('2001-12-24', tz='UTC'), # Tue
+    # Timestamp('2002-12-24', tz='UTC'), # Tue
+    # Timestamp('2003-12-24', tz='UTC'), # Wed
+    # Timestamp('2007-12-24', tz='UTC'), # Mon
+    # Timestamp('2008-12-24', tz='UTC'), # Wed
+    # Timestamp('2009-12-24', tz='UTC'), # Thu
+    # Timestamp('2012-12-24', tz='UTC'), # Mon
+    # Timestamp('2013-12-24', tz='UTC'), # Tue
+    # Timestamp('2014-12-24', tz='UTC'), # Wed
+    # Timestamp('2015-12-24', tz='UTC'), # Thu
+    # Timestamp('2018-12-24', tz='UTC'), # Tue
+    # Timestamp('2019-12-24', tz='UTC'), # Wed
+    # Timestamp('2020-12-24', tz='UTC'), # Thu
 ]
+ChristmasEvePost1999Early1pmClose = Holiday(
+    # When Christmas Eve is Mon-Thu it is a 1pm early close
+    'Mondays, Tuesdays, Wednesdays, and Thursdays Before Christmas',
+    month=12,
+    day=24,
+    days_of_week=(MONDAY, TUESDAY, WEDNESDAY, THURSDAY),
+    start_date=Timestamp("1999-01-01"),
+)
+
 
 # Not every Saturday before/after Christmas is a holiday
 SatBeforeChristmasAdhoc = [
@@ -1501,12 +1515,8 @@ HurricaneSandyClosings2012 = date_range(
     tz='UTC'
 )
 
-
-# National Days of Mourning - not used in NYSE calendar
-# - President George H.W. Bush - Dec 5, 2018
-USNationalDaysofMourning = [
-    Timestamp('2018-12-05', tz='UTC'),
-]
+# 2018
+GeorgeHWBushDeath2018 = [Timestamp('2018-12-05', tz='UTC'),]
 
 
 BattleOfGettysburg = Holiday(
