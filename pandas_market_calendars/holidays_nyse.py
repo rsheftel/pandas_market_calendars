@@ -1465,6 +1465,29 @@ ReaganMomentSilence932amLateOpen2004 =  Holiday(
     end_date=Timestamp('2004-06-07'),
 )
 
+ReaganMourning2004 =  [Timestamp('2004-06-11')]
+
+# 2005
+SystemProb356pmEarlyClose2005 =  Holiday(
+    'Systems Communication Problem',
+    month=6,
+    day=1,
+    start_date=Timestamp('2005-06-01'),
+    end_date=Timestamp('2005-06-01'),
+)
+
+# 2006
+FordMomentSilence932amLateOpen2006 =  Holiday(
+    'Former President Gerald Ford moment of silence',
+    month=12,
+    day=27,
+    start_date=Timestamp('2006-12-27'),
+    end_date=Timestamp('2006-12-27'),
+)
+
+# 2007
+FordMourning2007 = [Timestamp('2007-01-02', tz='UTC'),]
+
 # http://en.wikipedia.org/wiki/Hurricane_sandy
 HurricaneSandyClosings = date_range(
     '2012-10-29',
@@ -1474,24 +1497,8 @@ HurricaneSandyClosings = date_range(
 
 
 # National Days of Mourning - not used in NYSE calendar
-# - President John F. Kennedy - November 25, 1963
-# - Martin Luther King - April 9, 1968
-# - President Dwight D. Eisenhower - March 31, 1969
-# - President Harry S. Truman - December 28, 1972
-# - President Lyndon B. Johnson - January 25, 1973
-# - President Richard Nixon - April 27, 1994
-# - President Ronald W. Reagan - June 11, 2004
-# - President Gerald R. Ford - Jan 2, 2007
 # - President George H.W. Bush - Dec 5, 2018
 USNationalDaysofMourning = [
-    Timestamp('1963-11-25', tz='UTC'),
-    Timestamp('1968-04-09', tz='UTC'),
-    Timestamp('1969-03-31', tz='UTC'),
-    Timestamp('1972-12-28', tz='UTC'),
-    Timestamp('1973-01-25', tz='UTC'),
-    Timestamp('1994-04-27', tz='UTC'),
-    Timestamp('2004-06-11', tz='UTC'),
-    Timestamp('2007-01-02', tz='UTC'),
     Timestamp('2018-12-05', tz='UTC'),
 ]
 

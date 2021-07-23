@@ -24,15 +24,15 @@ from pytz import timezone
 import pandas_market_calendars.market_calendar as mc
 from pandas_market_calendars.market_calendar import clean_dates, _overwrite_special_dates
 
-from pandas_market_calendars.holidays_us import (    
+from pandas_market_calendars.holidays_nyse import (    
     # Always Celebrated Holidays
     USNewYearsDayNYSEpost1952, USNewYearsDayNYSEpre1952, SatBeforeNewYearsAdhoc,
     
     USPresidentsDay, USWashingtonsBirthDay1964to1970, 
     USWashingtonsBirthDayBefore1952, USWashingtonsBirthDay1952to1963,
+    USLincolnsBirthDayBefore1954, LincolnsBirthDayAdhoc, 
     SatBeforeWashingtonsBirthdayAdhoc, SatAfterWashingtonsBirthdayAdhoc, 
-    LincolnsBirthDayAdhoc, SatBeforeAfterLincolnsBirthdayAdhoc, USLincolnsBirthDayBefore1954,
-    GrantsBirthDayAdhoc,  
+    SatBeforeAfterLincolnsBirthdayAdhoc,  GrantsBirthDayAdhoc,  
     
     USMartinLutherKingJrAfter1998, 
     
@@ -231,6 +231,13 @@ from pandas_market_calendars.holidays_us import (
     IraqiFreedom932amLateOpen2003,
     # 2004
     ReaganMomentSilence932amLateOpen2004,
+    ReaganMourning2004,
+    # 2005
+    SystemProb356pmEarlyClose2005,
+    # 2006
+    FordMomentSilence932amLateOpen2006,
+    # 2007
+    FordMourning2007,
       
     
     HurricaneSandyClosings  )
@@ -312,6 +319,7 @@ class NYSEExchangeCalendar(MarketCalendar):
     #################################
     Irregularities Openings/Closings:
     #################################
+    begin reference: https://github.com/rsheftel/pandas_market_calendars/files/6827110/Stocks.NYSE-Closings.pdf 
     - Closed on Aug 8, 1885 (Sat): President Ulysses S. Grant funeral
     - Closed on Jul 2, 1887 (Sat): Saturday before Independence Day
     - Closed on Dec 24, 1887 (Sat): Christmas Eve
@@ -667,42 +675,35 @@ class NYSEExchangeCalendar(MarketCalendar):
     - NOT IMPLEMENTED multiple 1-minute Breaks 9:59 and 10:29 on Sep 11, 2003 (Thu): 9/11 Commemoration
     - Early Close 1pm on Nov 28, 2003 (Fri): Day after Thanksgiving
     - Early Close 1pm on Dec 24, 2003 (Wed): Christmas Eve
-    - Early Close 1pm on Dec 26, 2003 (Fri): Friday after Christmas
-    
-    
+    - Early Close 1pm on Dec 26, 2003 (Fri): Friday after Christmas        
     - Late Open 9:32am on Jun 7, 2004 (Mon): Former President Ronald Reagan death moment of silence
     - Closed on Jun 11, 2004 (Fri): Former President Ronald Reagan National Day of Mourning
-    - Early Close 1pm on Nov 26, 2004 (Fri): Day after Thanksgiving
-    
-    
+    - Early Close 1pm on Nov 26, 2004 (Fri): Day after Thanksgiving    
     - Early Close 3:56pm on Jun 1, 2005 (Wed): Systems communication problem
-    - Early Close 1pm on Nov 25, 2005 (Fri): Day after Thanksgiving
-    - Early Close 1pm on Jul 3, 2005 (Mon): Day before Independence Day
+    - Early Close 1pm on Nov 25, 2005 (Fri): Day after Thanksgiving       
+    - Early Close 1pm on Jul 3, 2006 (Mon): Day before Independence Day        
     - Early Close 1pm on Nov 24, 2006 (Fri): Day after Thanksgiving
-    - Late Open 9:32am on Dec 27, 2006 (Wed): Former President Gerald Ford moment of silence
+    - Late Open 9:32am on Dec 27, 2006 (Wed): Former President Gerald Ford moment of silence        
     - Closed on Jan 2, 2007 (Tue): Former President Gerald Ford National Day of Mourning
     - Early Close 1pm on Jul 3, 2007 (Tue): Day before Independence Day
     - Early Close 1pm on Nov 23, 2007 (Fri): Day after Thanksgiving
-    - Early Close 1pm on Dec 24, 2007 (Mon): Christmas Eve
+    - Early Close 1pm on Dec 24, 2007 (Mon): Christmas Eve        
     - Early Close 1pm on Jul 4, 2008 (Thu): Day before Independence Day
     - Early Close 1pm on Nov 28, 2008 (Fri): Day after Thanksgiving
-    - Early Close 1pm on Dec 24, 2008 (Wed): Christmas Eve
+    - Early Close 1pm on Dec 24, 2008 (Wed): Christmas Eve        
     - NOT IMPLEMENTED Extended Close 4:15pm on Jul 2, 2009 (Thu): Execute customer orders impacted by system irregularities
     - Early Close 1pm on Nov 27, 2009 (Fri): Day after Thanksgiving
     - Early Close 1pm on Dec 24, 2009 (Thu): Christmas Eve
+    end of reference: https://github.com/rsheftel/pandas_market_calendars/files/6827110/Stocks.NYSE-Closings.pdf 
+    *******************************************************************
+    
     - Early Close 1pm on Nov 26, 2010 (Fri): Day after Thanksgiving
+    
     - NOT IMPLEMENTED Break 11:00-11:01 on Jan 10, 2011 (Mon): Arizona shooting victims moment of silence    
 
-    - Closed on 4/27/1994 due to Richard Nixon's death.
-    - Closed from 9/11/2001 to 9/16/2001 due to terrorist attacks in NYC.
-    - Closed on 6/11/2004 due to Ronald Reagan's death.
-    - Closed on 1/2/2007 due to Gerald Ford's death.
     - Closed on 10/29/2012 and 10/30/2012 due to Hurricane Sandy.
     - Closed on 12/5/2018 due to George H.W. Bush's death.
     - Closed at 1:00 PM on Wednesday, July 3rd, 2013
-    - Closed at 1:00 PM on Friday, December 31, 1999
-    - Closed at 1:00 PM on Friday, December 26, 1997
-    - Closed at 1:00 PM on Friday, December 26, 2003
 
     NOTE: The exchange was **not** closed early on Friday December 26, 2008,
     nor was it closed on Friday December 26, 2014. The next Thursday Christmas
@@ -847,6 +848,8 @@ class NYSEExchangeCalendar(MarketCalendar):
             JohnsonFuneral1973,
             HurricaneGloriaClosings1985,
             NixonFuneral1994,
+            ReaganMourning2004,
+            FordMourning2007,
             
             USVetransDayAdHoc,
             SatAfterColumbusDayAdHoc,            
@@ -918,6 +921,9 @@ class NYSEExchangeCalendar(MarketCalendar):
             (time(15, 30, tzinfo=timezone('America/New_York')), AbstractHolidayCalendar(rules=[
                CircuitBreakerTriggered330pmEarlyClose1997,
             ])),                                     
+            (time(15, 56, tzinfo=timezone('America/New_York')), AbstractHolidayCalendar(rules=[
+               SystemProb356pmEarlyClose2005,
+            ])),                                     
         ]
 # 
     @property
@@ -958,11 +964,12 @@ class NYSEExchangeCalendar(MarketCalendar):
         return [
             (time(hour=9, minute=31, tzinfo=timezone('America/New_York')), AbstractHolidayCalendar(rules=[
                 ConEdXformer931amLateOpen1990,  
-                EnduringFreedomMomentSilence931amLateOpen2001, 
-                ReaganMomentSilence932amLateOpen2004,                  
+                EnduringFreedomMomentSilence931amLateOpen2001,                              
             ])),
             (time(hour=9, minute=32, tzinfo=timezone('America/New_York')), AbstractHolidayCalendar(rules=[
-                IraqiFreedom932amLateOpen2003,                   
+                IraqiFreedom932amLateOpen2003,  
+                ReaganMomentSilence932amLateOpen2004, 
+                FordMomentSilence932amLateOpen2006,                     
             ])),
             (time(hour=9, minute=33, tzinfo=timezone('America/New_York')), AbstractHolidayCalendar(rules=[
                 Sept11MomentSilence933amLateOpen2001,                     
