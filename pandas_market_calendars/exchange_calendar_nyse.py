@@ -49,13 +49,15 @@ from pandas_market_calendars.holidays_nyse import (
     MonBeforeIndependenceDayAdhoc, DaysAfterIndependenceDayAdhoc,
     DaysBeforeIndependenceDay1pmEarlyCloseAdhoc, 
     
-    USBlackFridayBefore1993, USBlackFridayInOrAfter1993,
     USColumbusDayBefore1954, USElectionDay1848to1967, 
     
     USLaborDayStarting1887, SatBeforeLaborDayAdhoc,
     
     USThanksgivingDay, USThanksgivingDay1939to1941,
-    USThanksgivingDayBefore1939, FridayAfterThanksgivingAdHoc, USVeteransDay1934to1953,
+    USThanksgivingDayBefore1939, 
+    DayAfterThanksgiving2pmEarlyCloseBefore1993, 
+    DayAfterThanksgiving1pmEarlyCloseInOrAfter1993,
+    FridayAfterThanksgivingAdHoc, 
     
     USElectionDay1968to1980Adhoc,
     
@@ -65,7 +67,7 @@ from pandas_market_calendars.holidays_nyse import (
     SatBeforeChristmasAdhoc, SatAfterChristmasAdhoc,
     
     # Retired Holidays
-    USVetransDayAdHoc, SatAfterColumbusDayAdHoc,
+    USVetransDayAdHoc, SatAfterColumbusDayAdHoc, USVeteransDay1934to1953,
     
     # Adhoc Holidays
     # 1885    
@@ -238,9 +240,9 @@ from pandas_market_calendars.holidays_nyse import (
     FordMomentSilence932amLateOpen2006,
     # 2007
     FordMourning2007,
-      
-    
-    HurricaneSandyClosings  )
+    # 2012  
+    HurricaneSandyClosings2012  
+)
 from .market_calendar import MarketCalendar
 
 # Useful resources for making changes to this file:
@@ -694,14 +696,37 @@ class NYSEExchangeCalendar(MarketCalendar):
     - NOT IMPLEMENTED Extended Close 4:15pm on Jul 2, 2009 (Thu): Execute customer orders impacted by system irregularities
     - Early Close 1pm on Nov 27, 2009 (Fri): Day after Thanksgiving
     - Early Close 1pm on Dec 24, 2009 (Thu): Christmas Eve
+    - Early Close 1pm on Nov 26, 2010 (Fri): Day after Thanksgiving    
+    - NOT IMPLEMENTED Break 11:00-11:01 on Jan 10, 2011 (Mon): Arizona shooting victims moment of silence    
+
     end of reference: https://github.com/rsheftel/pandas_market_calendars/files/6827110/Stocks.NYSE-Closings.pdf 
     *******************************************************************
     
-    - Early Close 1pm on Nov 26, 2010 (Fri): Day after Thanksgiving
-    
-    - NOT IMPLEMENTED Break 11:00-11:01 on Jan 10, 2011 (Mon): Arizona shooting victims moment of silence    
+    https://www.streetinsider.com/Insiders+Blog/NYSE+Releases+2010+and+2011+Holiday+Calendar/4915576.html
+    - Early Close 1pm on Nov 25, 2011 (Fri): Day after Thanksgiving    
 
+    https://holidaystracker.com/stock-market/new-york-stock-exchange-holidays-2012/
+    - Early Close 1pm on Jul 4, 2012 (Tue): Day before Independence Day
+    - Early Close 1pm on Nov 23, 2012 (Fri): Day after Thanksgiving    
+    - Early Close 1pm on Dec 24, 2012 (Mon): Christmas Eve
     - Closed on 10/29/2012 and 10/30/2012 due to Hurricane Sandy.
+
+    https://holidaystracker.com/stock-market/new-york-stock-exchange-nyse-holidays-2013/    
+    - Early Close 1pm on Jul 3, 2013 (Wed): Day before Independence Day
+    - Early Close 1pm on Nov 29, 2013 (Fri): Day after Thanksgiving    
+    - Early Close 1pm on Dec 24, 2013 (Tue): Christmas Eve
+   
+    https://www.streetinsider.com/Insiders+Blog/NYSE+2014+and+2015+Holiday+Hours/8999575.html    - Early Close 1pm on Jul 3, 2014 (Thu): Day before Independence Day
+    - Early Close 1pm on Jul 3, 2014 (Thu): Day before Independence Day
+    - Early Close 1pm on Nov 28, 2014 (Fri): Day after Thanksgiving    
+    - Early Close 1pm on Dec 24, 2014 (Wed): Christmas Eve
+
+    - Early Close 1pm on Nov 27, 2015 (Fri): Day after Thanksgiving    
+    - Early Close 1pm on Dec 24, 2015 (Thu): Christmas Eve
+
+    
+    
+    
     - Closed on 12/5/2018 due to George H.W. Bush's death.
     - Closed at 1:00 PM on Wednesday, July 3rd, 2013
 
@@ -769,13 +794,7 @@ class NYSEExchangeCalendar(MarketCalendar):
     @property
     def adhoc_holidays(self):
         return list(chain(
-            SatBeforeNewYearsAdhoc,
-            SatBeforeWashingtonsBirthdayAdhoc,
-            SatAfterWashingtonsBirthdayAdhoc,
-            SatBeforeAfterLincolnsBirthdayAdhoc,
-            SatBeforeDecorationAdhoc,
-            SatAfterDecorationAdhoc,
-            DayBeforeDecorationAdhoc,
+            # Recurring Holidays
             SatAfterGoodFridayAdhoc,
             MonBeforeIndependenceDayAdhoc,
             SatBeforeIndependenceDayAdhoc,
@@ -788,7 +807,19 @@ class NYSEExchangeCalendar(MarketCalendar):
             SatAfterChristmasAdhoc,
             ChristmasEvesAdhoc,
             DayAfterChristmasAdhoc,
-           
+            # Retired
+            USVetransDayAdHoc,
+            SatAfterColumbusDayAdHoc,            
+            LincolnsBirthDayAdhoc,
+            GrantsBirthDayAdhoc,            
+            SatBeforeNewYearsAdhoc,
+            SatBeforeWashingtonsBirthdayAdhoc,
+            SatAfterWashingtonsBirthdayAdhoc,
+            SatBeforeAfterLincolnsBirthdayAdhoc,
+            SatBeforeDecorationAdhoc,
+            SatAfterDecorationAdhoc,
+            DayBeforeDecorationAdhoc,
+           # Irregularities
             UlyssesGrantFuneral1885,
             ColumbianCelebration1892,
             GreatBlizzardOf1888,
@@ -846,25 +877,13 @@ class NYSEExchangeCalendar(MarketCalendar):
             FirstLunarLandingClosing1969,
             TrumanFuneral1972,
             JohnsonFuneral1973,
+            NewYorkCityBlackout77,
             HurricaneGloriaClosings1985,
             NixonFuneral1994,
             ReaganMourning2004,
-            FordMourning2007,
-            
-            USVetransDayAdHoc,
-            SatAfterColumbusDayAdHoc,            
-            LincolnsBirthDayAdhoc,
-            GrantsBirthDayAdhoc,            
-            
-            
-            
-        
-            September11Closings2001,
-            NewYorkCityBlackout77,
-            
-            HurricaneSandyClosings,
-            
-                        
+            FordMourning2007,        
+            September11Closings2001,            
+            HurricaneSandyClosings2012,                                    
         ))
 # 
     @property
@@ -891,10 +910,10 @@ class NYSEExchangeCalendar(MarketCalendar):
                 MonTuesThursBeforeIndependenceDay,
                 WednesdayBeforeIndependenceDayPost2013,
                 GroverClevelandFuneral1pmClose1908,
-                USBlackFridayInOrAfter1993,
+                DayAfterThanksgiving1pmEarlyCloseInOrAfter1993,
             ])),
             (time(14, tzinfo=timezone('America/New_York')), AbstractHolidayCalendar(rules=[                
-                USBlackFridayBefore1993,
+                DayAfterThanksgiving2pmEarlyCloseBefore1993,
                 HooverFuneral1400EarlyClose1964,
                 Snow2pmEarlyClose1967,
                 Snow2pmEarlyClose1978,

@@ -461,7 +461,7 @@ USThanksgivingDay = Holiday('Thanksgiving',
                             offset=DateOffset(weekday=TH(4)))
 
 
-USBlackFridayBefore1993 = Holiday(
+DayAfterThanksgiving2pmEarlyCloseBefore1993 = Holiday(
     'Black Friday',
     month=11,
     day=1,
@@ -470,7 +470,8 @@ USBlackFridayBefore1993 = Holiday(
     end_date=Timestamp('1993-01-01'),
     offset=[DateOffset(weekday=TH(4)), Day(1)],
 )
-USBlackFridayInOrAfter1993 = Holiday(
+
+DayAfterThanksgiving1pmEarlyCloseInOrAfter1993 = Holiday(
     'Black Friday',
     month=11,
     day=1,
@@ -541,6 +542,7 @@ ChristmasEve2pmEarlyCloseAdhoc = [
     Timestamp('1991-12-24', tz='UTC'),
     Timestamp('1992-12-24', tz='UTC'),
 ]
+# TODO: Figure out the pattern
 ChristmasEve1pmEarlyCloseAdhoc = [
     Timestamp('1951-12-24', tz='UTC'),
     Timestamp('1990-12-24', tz='UTC'),
@@ -555,6 +557,9 @@ ChristmasEve1pmEarlyCloseAdhoc = [
     Timestamp('2008-12-24', tz='UTC'),
     Timestamp('2009-12-24', tz='UTC'),
     Timestamp('2012-12-24', tz='UTC'),
+    Timestamp('2013-12-24', tz='UTC'),
+    Timestamp('2014-12-24', tz='UTC'),
+    Timestamp('2015-12-24', tz='UTC'),
 ]
 
 # Not every Saturday before/after Christmas is a holiday
@@ -1488,8 +1493,9 @@ FordMomentSilence932amLateOpen2006 =  Holiday(
 # 2007
 FordMourning2007 = [Timestamp('2007-01-02', tz='UTC'),]
 
+# 2012
 # http://en.wikipedia.org/wiki/Hurricane_sandy
-HurricaneSandyClosings = date_range(
+HurricaneSandyClosings2012 = date_range(
     '2012-10-29',
     '2012-10-30',
     tz='UTC'
