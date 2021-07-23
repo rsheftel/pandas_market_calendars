@@ -1456,6 +1456,14 @@ IraqiFreedom932amLateOpen2003 =  Holiday(
     end_date=Timestamp('2003-03-20'),
 )
 
+# 2004
+ReaganMomentSilence932amLateOpen2004 =  Holiday(
+    'Death of Former President Ronald Reagan moment of silence',
+    month=6,
+    day=7,
+    start_date=Timestamp('2004-06-07'),
+    end_date=Timestamp('2004-06-07'),
+)
 
 # http://en.wikipedia.org/wiki/Hurricane_sandy
 HurricaneSandyClosings = date_range(

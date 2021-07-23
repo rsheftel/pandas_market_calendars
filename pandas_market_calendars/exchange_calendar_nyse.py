@@ -229,6 +229,8 @@ from pandas_market_calendars.holidays_us import (
     Sept11Anniversary12pmLateOpen2002,
     # 2003
     IraqiFreedom932amLateOpen2003,
+    # 2004
+    ReaganMomentSilence932amLateOpen2004,
       
     
     HurricaneSandyClosings  )
@@ -659,9 +661,7 @@ class NYSEExchangeCalendar(MarketCalendar):
     - Late Opening 12:00pm on Sep 11, 2002 (Wed): 1 year anniversary of 9/11 attack    
     - Early Close 1pm on Nov 29, 2002 (Fri): Day after Thanksgiving
     - Early Close 1pm on Dec 24, 2002 (Tue): Christmas Eve
-    - NOT IMPLEMENTED Break 11:00-11:02 on Feb 3, 2002 (Mon): Columbia Space Shuttle lives lost moment of silence
-    
-    
+    - NOT IMPLEMENTED Break 11:00-11:02 on Feb 3, 2002 (Mon): Columbia Space Shuttle lives lost moment of silence        
     - Late Opening 9:32am on Mar 20, 2003 (Thu): Operation Iraqi Freedom Troops moment of silence
     - Early Close 1pm on Jul 3, 2003 (Thu): Day before Independence Day
     - NOT IMPLEMENTED multiple 1-minute Breaks 9:59 and 10:29 on Sep 11, 2003 (Thu): 9/11 Commemoration
@@ -673,6 +673,8 @@ class NYSEExchangeCalendar(MarketCalendar):
     - Late Open 9:32am on Jun 7, 2004 (Mon): Former President Ronald Reagan death moment of silence
     - Closed on Jun 11, 2004 (Fri): Former President Ronald Reagan National Day of Mourning
     - Early Close 1pm on Nov 26, 2004 (Fri): Day after Thanksgiving
+    
+    
     - Early Close 3:56pm on Jun 1, 2005 (Wed): Systems communication problem
     - Early Close 1pm on Nov 25, 2005 (Fri): Day after Thanksgiving
     - Early Close 1pm on Jul 3, 2005 (Mon): Day before Independence Day
@@ -956,7 +958,8 @@ class NYSEExchangeCalendar(MarketCalendar):
         return [
             (time(hour=9, minute=31, tzinfo=timezone('America/New_York')), AbstractHolidayCalendar(rules=[
                 ConEdXformer931amLateOpen1990,  
-                EnduringFreedomMomentSilence931amLateOpen2001,                   
+                EnduringFreedomMomentSilence931amLateOpen2001, 
+                ReaganMomentSilence932amLateOpen2004,                  
             ])),
             (time(hour=9, minute=32, tzinfo=timezone('America/New_York')), AbstractHolidayCalendar(rules=[
                 IraqiFreedom932amLateOpen2003,                   
