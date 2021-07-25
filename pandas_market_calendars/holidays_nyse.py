@@ -209,7 +209,7 @@ USMemorialDay = Holiday(
     month=5,
     day=25,
     start_date=Timestamp('1971-01-01'),
-    days_of_week=(0,1,2,3,4,),
+    days_of_week=(MONDAY, TUESDAY, WEDNESDAY, THURSDAY, FRIDAY),
     offset=DateOffset(weekday=MO(1)),
 )
 USMemorialDayBefore1952 = Holiday(
@@ -218,7 +218,7 @@ USMemorialDayBefore1952 = Holiday(
     day=30,
     end_date=Timestamp('1952-09-28'),
     observance=sunday_to_monday,
-    days_of_week=(0,1,2,3,4,5,)
+    days_of_week=(MONDAY, TUESDAY, WEDNESDAY, THURSDAY, FRIDAY, SATURDAY)
 )
 USMemorialDay1952to1964 = Holiday(
     'Memorial Day',
@@ -227,7 +227,7 @@ USMemorialDay1952to1964 = Holiday(
     start_date=Timestamp('1952-09-29'),
     end_date=Timestamp('1963-12-31'),
     observance=sunday_to_monday,
-    days_of_week=(0,1,2,3,4,)
+    days_of_week=(MONDAY, TUESDAY, WEDNESDAY, THURSDAY, FRIDAY)
 )
 
 USMemorialDay1964to1969 = Holiday(
@@ -270,7 +270,7 @@ USIndependenceDay = Holiday(
     month=7,
     day=4,
     start_date=Timestamp('1954-01-01'),
-    days_of_week=(0,1,2,3,4,),
+    days_of_week=(MONDAY, TUESDAY, WEDNESDAY, THURSDAY, FRIDAY),
     observance=nearest_workday,
 )
 USIndependenceDayPre1952 = Holiday(
@@ -278,7 +278,7 @@ USIndependenceDayPre1952 = Holiday(
     month=7,
     day=4,
     end_date=Timestamp('1952-09-28'),
-    days_of_week=(0,1,2,3,4,5,),
+    days_of_week=(MONDAY, TUESDAY, WEDNESDAY, THURSDAY, FRIDAY, SATURDAY),
     observance=sunday_to_monday,
 )
 USIndependenceDay1952to1954 = Holiday(
@@ -287,7 +287,7 @@ USIndependenceDay1952to1954 = Holiday(
     day=4,
     start_date=Timestamp('1952-09-29'),
     end_date=Timestamp('1953-12-31'),
-    days_of_week=(0,1,2,3,4,),
+    days_of_week=(MONDAY, TUESDAY, WEDNESDAY, THURSDAY, FRIDAY),
     observance=sunday_to_monday,
 )
 
@@ -497,7 +497,6 @@ ChristmasNYSE = Holiday(
     month=12,
     day=25,
     start_date=Timestamp('2000-01-01'),
-    #days_of_week=(0,1,2,3,4,),
     observance=nearest_workday, 
 )
 
@@ -534,38 +533,6 @@ DayAfterChristmas1pmEarlyCloseAdhoc = [
     Timestamp('2003-12-26', tz='UTC'),
 ]
 
-# Only some Christmas Eve's were 2pm early close (1976-1979 were not)
-ChristmasEve2pmEarlyCloseAdhoc = [
-    Timestamp('1974-12-24', tz='UTC'),
-    Timestamp('1975-12-24', tz='UTC'),
-    Timestamp('1990-12-24', tz='UTC'),
-    Timestamp('1991-12-24', tz='UTC'),
-    Timestamp('1992-12-24', tz='UTC'),
-]
-# TODO: Figure out the pattern
-# Looks like since 2000 when Christmas Eve is Friday it is full holiday
-# If Christmas Eve is Mon-Thu then it is 1pm close
-ChristmasEve1pmEarlyCloseAdhoc = [
-    Timestamp('1951-12-24', tz='UTC'),
-    Timestamp('1990-12-24', tz='UTC'),
-    Timestamp('1996-12-24', tz='UTC'), # Tue
-    Timestamp('1997-12-24', tz='UTC'), # Wed
-    Timestamp('1998-12-24', tz='UTC'), # Thu
-    Timestamp('1999-12-24', tz='UTC'), # Fri
-    # Timestamp('2001-12-24', tz='UTC'), # Tue
-    # Timestamp('2002-12-24', tz='UTC'), # Tue
-    # Timestamp('2003-12-24', tz='UTC'), # Wed
-    # Timestamp('2007-12-24', tz='UTC'), # Mon
-    # Timestamp('2008-12-24', tz='UTC'), # Wed
-    # Timestamp('2009-12-24', tz='UTC'), # Thu
-    # Timestamp('2012-12-24', tz='UTC'), # Mon
-    # Timestamp('2013-12-24', tz='UTC'), # Tue
-    # Timestamp('2014-12-24', tz='UTC'), # Wed
-    # Timestamp('2015-12-24', tz='UTC'), # Thu
-    # Timestamp('2018-12-24', tz='UTC'), # Tue
-    # Timestamp('2019-12-24', tz='UTC'), # Wed
-    # Timestamp('2020-12-24', tz='UTC'), # Thu
-]
 ChristmasEvePost1999Early1pmClose = Holiday(
     # When Christmas Eve is Mon-Thu it is a 1pm early close
     'Mondays, Tuesdays, Wednesdays, and Thursdays Before Christmas',
@@ -575,6 +542,23 @@ ChristmasEvePost1999Early1pmClose = Holiday(
     start_date=Timestamp("1999-01-01"),
 )
 
+ChristmasEve1pmEarlyCloseAdhoc = [
+    Timestamp('1951-12-24', tz='UTC'),
+    Timestamp('1990-12-24', tz='UTC'),
+    Timestamp('1996-12-24', tz='UTC'), 
+    Timestamp('1997-12-24', tz='UTC'), 
+    Timestamp('1998-12-24', tz='UTC'), 
+    Timestamp('1999-12-24', tz='UTC'), 
+]
+
+# Only some Christmas Eve's were 2pm early close (1976-1979 were not)
+ChristmasEve2pmEarlyCloseAdhoc = [
+    Timestamp('1974-12-24', tz='UTC'),
+    Timestamp('1975-12-24', tz='UTC'),
+    Timestamp('1990-12-24', tz='UTC'),
+    Timestamp('1991-12-24', tz='UTC'),
+    Timestamp('1992-12-24', tz='UTC'),
+]
 
 # Not every Saturday before/after Christmas is a holiday
 SatBeforeChristmasAdhoc = [
@@ -596,8 +580,6 @@ SatAfterChristmasAdhoc = [
     Timestamp('1931-12-26', tz='UTC'),
     Timestamp('1936-12-26', tz='UTC'),
     ]
-
-
 
 
 #####################################

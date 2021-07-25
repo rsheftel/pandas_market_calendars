@@ -7,12 +7,12 @@ from pandas.tseries.offsets import CustomBusinessDay
 
 from pandas_market_calendars.exchange_calendar_nyse import NYSEExchangeCalendar
 
-all_holidays = pd.DatetimeIndex(NYSEExchangeCalendar().holidays().holidays)
 nyse = NYSEExchangeCalendar()
+all_holidays = pd.DatetimeIndex(nyse.holidays().holidays)
 
 def test_time_zone():
-    assert NYSEExchangeCalendar().tz == pytz.timezone('America/New_York')
-    assert NYSEExchangeCalendar().name == 'NYSE'
+    assert nyse.tz == pytz.timezone('America/New_York')
+    assert nyse.name == 'NYSE'
 
 
 def test_open_time_tz():
@@ -3673,5 +3673,51 @@ def test_2020():
     early_closes = [     
         pd.Timestamp('2020-11-27 1:00PM', tz='America/New_York'), # Day after Thanksgiving  
         pd.Timestamp('2020-12-24 1:00PM', tz='America/New_York'), # Christmas eve
+    ]
+    _test_has_early_closes(early_closes, start, end)     
+    
+    
+def test_2021():
+    start = '2021-01-01'
+    end   = '2021-12-31'    
+    holidays = [
+        pd.Timestamp('2021-01-01', tz='UTC'),
+        pd.Timestamp('2021-01-18', tz='UTC'),
+        pd.Timestamp('2021-02-15', tz='UTC'),
+        pd.Timestamp('2021-04-02', tz='UTC'),
+        pd.Timestamp('2021-05-31', tz='UTC'),
+        pd.Timestamp('2021-07-05', tz='UTC'),
+        pd.Timestamp('2021-09-06', tz='UTC'),
+        pd.Timestamp('2021-11-25', tz='UTC'),
+        pd.Timestamp('2021-12-24', tz='UTC')
+    ]
+    _test_holidays(holidays, start, end)
+    _test_no_special_opens(start, end)
+
+    # early closes we expect:
+    early_closes = [     
+        pd.Timestamp('2021-11-26 1:00PM', tz='America/New_York'), # Day after Thanksgiving  
+    ]
+    _test_has_early_closes(early_closes, start, end)       
+    
+def test_2022():
+    start = '2022-01-01'
+    end   = '2022-12-31'    
+    holidays = [
+        pd.Timestamp('2022-01-17', tz='UTC'),
+        pd.Timestamp('2022-02-21', tz='UTC'),
+        pd.Timestamp('2022-04-15', tz='UTC'),
+        pd.Timestamp('2022-05-30', tz='UTC'),
+        pd.Timestamp('2022-07-04', tz='UTC'),
+        pd.Timestamp('2022-09-05', tz='UTC'),
+        pd.Timestamp('2022-11-24', tz='UTC'),
+        pd.Timestamp('2022-12-26', tz='UTC')
+    ]
+    _test_holidays(holidays, start, end)
+    _test_no_special_opens(start, end)
+
+    # early closes we expect:
+    early_closes = [     
+        pd.Timestamp('2022-11-25 1:00PM', tz='America/New_York'), # Day after Thanksgiving  
     ]
     _test_has_early_closes(early_closes, start, end)     
