@@ -1510,22 +1510,3 @@ BattleOfGettysburg = Holiday(
     end_date=Timestamp("1863-07-03")
 )
 
-# These Holidays are NOT correct for NYSE.
-# They are left in this file because exchange_calendar_cme.py imports them
-ChristmasEveBefore1993 = Holiday(
-    'Christmas Eve',
-    month=12,
-    day=24,
-    start_date=Timestamp('12-24-1974'),
-    end_date=Timestamp('1993-01-01'),
-    # When Christmas is a Saturday, the 24th is a full holiday.
-    days_of_week=(MONDAY, TUESDAY, WEDNESDAY, THURSDAY),
-)
-ChristmasEveInOrAfter1993 = Holiday(
-    'Christmas Eve',
-    month=12,
-    day=24,
-    start_date=Timestamp('1993-01-01'),
-    # When Christmas is a Saturday, the 24th is a full holiday.
-    days_of_week=(MONDAY, TUESDAY, WEDNESDAY, THURSDAY),
-)
