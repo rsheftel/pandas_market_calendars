@@ -52,7 +52,7 @@ USNewYearsDayNYSEpost1952 = Holiday(
     # When Jan 1 is a Sunday, US markets observe the subsequent Monday.
     # When Jan 1 is a Saturday (as in 2005 and 2011), no holiday is observed.
     observance=sunday_to_monday,
-    days_of_week=(0,1,2,3,4,)    
+    days_of_week=(MONDAY, TUESDAY, WEDNESDAY, THURSDAY, FRIDAY,)    
 )
 
 USNewYearsDayNYSEpre1952 = Holiday(
@@ -61,7 +61,7 @@ USNewYearsDayNYSEpre1952 = Holiday(
     day=1,
     end_date = Timestamp('1952-09-28'),
     observance=sunday_to_monday,
-    days_of_week=(0,1,2,3,4,5,)
+    days_of_week=(MONDAY, TUESDAY, WEDNESDAY, THURSDAY, FRIDAY, SATURDAY,)
 )
 
 NewYearsEve1pmCloseAdhoc = [
@@ -79,7 +79,7 @@ USMartinLutherKingJrAfter1998 = Holiday(
     day=1,
     # The US markets didn't observe MLK day as a holiday until 1998.
     start_date=Timestamp('1998-01-01'),
-    days_of_week=(0,1,2,3,4,),
+    days_of_week=(MONDAY, TUESDAY, WEDNESDAY, THURSDAY, FRIDAY,),
     offset=DateOffset(weekday=MO(3)),
 )
 #########################################################################
@@ -92,7 +92,7 @@ USMartinLutherKingJrAfter1998 = Holiday(
 USPresidentsDay = Holiday('President''s Day',
                           start_date=Timestamp('1971-01-01'),
                           month=2, day=1,
-                          days_of_week=(0,1,2,3,4,),
+                          days_of_week=(MONDAY, TUESDAY, WEDNESDAY, THURSDAY, FRIDAY,),
                           offset=DateOffset(weekday=MO(3)))
 
 USWashingtonsBirthDayBefore1952 = Holiday(
@@ -100,7 +100,7 @@ USWashingtonsBirthDayBefore1952 = Holiday(
     month=2,
     day=22,
     end_date=Timestamp('1952-09-28'),
-    days_of_week=(0,1,2,3,4,5,),
+    days_of_week=(MONDAY, TUESDAY, WEDNESDAY, THURSDAY, FRIDAY, SATURDAY,),
     observance=sunday_to_monday,
 )
 USWashingtonsBirthDay1952to1963 = Holiday(
@@ -109,7 +109,7 @@ USWashingtonsBirthDay1952to1963 = Holiday(
     day=22,
     start_date=Timestamp('1952-09-29'),
     end_date=Timestamp('1963-12-31'),
-    days_of_week=(0,1,2,3,4,),
+    days_of_week=(MONDAY, TUESDAY, WEDNESDAY, THURSDAY, FRIDAY,),
     observance=sunday_to_monday,
 )
 
@@ -181,20 +181,20 @@ GoodFriday1899to1905 = Holiday(
 )
 #Not every saturday after Good Friday is a holiday (e.g. 1904)
 SatAfterGoodFridayAdhoc = [
-    Timestamp("1900-04-14"),
-    Timestamp("1901-04-06"),
-    Timestamp("1902-03-29"),
-    Timestamp("1903-04-11"),
-    Timestamp("1905-04-22"),
-    Timestamp("1907-03-30"),
-    Timestamp("1908-04-18"),
-    Timestamp("1909-04-10"),
-    Timestamp("1910-03-26"),
-    Timestamp("1911-04-15"),
-    Timestamp("1913-03-22"),
-    Timestamp("1920-04-03"),
-    Timestamp("1929-03-30"),
-    Timestamp("1930-04-19")
+    Timestamp("1900-04-14", tz='UTC'),
+    Timestamp("1901-04-06", tz='UTC'),
+    Timestamp("1902-03-29", tz='UTC'),
+    Timestamp("1903-04-11", tz='UTC'),
+    Timestamp("1905-04-22", tz='UTC'),
+    Timestamp("1907-03-30", tz='UTC'),
+    Timestamp("1908-04-18", tz='UTC'),
+    Timestamp("1909-04-10", tz='UTC'),
+    Timestamp("1910-03-26", tz='UTC'),
+    Timestamp("1911-04-15", tz='UTC'),
+    Timestamp("1913-03-22", tz='UTC'),
+    Timestamp("1920-04-03", tz='UTC'),
+    Timestamp("1929-03-30", tz='UTC'),
+    Timestamp("1930-04-19", tz='UTC')
 ]
 
 
@@ -423,10 +423,10 @@ USElectionDay1848to1967 = Holiday(
 )
 
 USElectionDay1968to1980Adhoc = [
-    Timestamp('1968-11-05'),
-    Timestamp('1972-11-07'),
-    Timestamp('1976-11-02'),
-    Timestamp('1980-11-04')]
+    Timestamp('1968-11-05', tz="UTC"),
+    Timestamp('1972-11-07', tz="UTC"),
+    Timestamp('1976-11-02', tz="UTC"),
+    Timestamp('1980-11-04', tz="UTC")]
 
 # This rule creates duplicate entries. Opted for Adhoc
 # def following_tuesday_every_four_years_observance(dt):
@@ -1023,8 +1023,7 @@ RooseveltDayOfMourning1945 = [Timestamp('1945-04-14', tz='UTC'),]
 SatClosings1945 = date_range('1945-07-07', 
                              '1945-09-01', 
                              freq='W-SAT',
-                             tz='UTC'
-)
+                             tz='UTC')
 
 VJday1945 = [
     Timestamp('1945-08-15', tz='UTC'),
@@ -1333,11 +1332,8 @@ ConEdPowerFail328pmEarlyClose1981 = Holiday(
 )
 
 # http://en.wikipedia.org/wiki/Hurricane_Gloria
-HurricaneGloriaClosings1985 = date_range(
-    '1985-09-27',
-    '1985-09-27',
-    tz='UTC'
-)
+HurricaneGloriaClosings1985= [Timestamp('1985-09-27', tz='UTC')]
+
 
 # 1987
 Backlog2pmEarlyCloses1987   = date_range('1987-10-23', '1987-10-30', tz='UTC') 
@@ -1466,7 +1462,7 @@ ReaganMomentSilence932amLateOpen2004 =  Holiday(
     end_date=Timestamp('2004-06-07'),
 )
 
-ReaganMourning2004 =  [Timestamp('2004-06-11')]
+ReaganMourning2004 =  [Timestamp('2004-06-11', tz="UTC")]
 
 # 2005
 SystemProb356pmEarlyClose2005 =  Holiday(
@@ -1491,22 +1487,11 @@ FordMourning2007 = [Timestamp('2007-01-02', tz='UTC'),]
 
 # 2012
 # http://en.wikipedia.org/wiki/Hurricane_sandy
-HurricaneSandyClosings2012 = date_range(
-    '2012-10-29',
-    '2012-10-30',
-    tz='UTC'
-)
+HurricaneSandyClosings2012 = [Timestamp('2012-10-29', tz='UTC'),
+                              Timestamp('2012-10-30', tz='UTC')]
+
 
 # 2018
 GeorgeHWBushDeath2018 = [Timestamp('2018-12-05', tz='UTC'),]
 
-
-BattleOfGettysburg = Holiday(
-    # All of the floor traders in Chicago were sent to PA
-    'Markets were closed during the battle of Gettysburg',
-    month=7,
-    day=(1, 2, 3),
-    start_date=Timestamp("1863-07-01"),
-    end_date=Timestamp("1863-07-03")
-)
 
