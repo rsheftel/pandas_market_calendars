@@ -260,11 +260,13 @@ class NYSEExchangeCalendar(MarketCalendar):
     Exchange calendar for NYSE from 1885-01-01
         - Note: DJIA was first recorded 1885-02-16
 
+    REFERENCES:
     - https://web.archive.org/web/20141224054812/http://www.nyse.com/about/history/timeline_trading.html
     - https://www.marketwatch.com/story/a-brief-history-of-trading-hours-on-wall-street-2015-05-29
     - http://www.ltadvisors.net/Info/research/closings.pdf
     - https://github.com/rsheftel/pandas_market_calendars/files/6827110/Stocks.NYSE-Closings.pdf 
     
+    NYSE OVERVIEW:
     - 1792: 5 securities traded
     - 1871: Continuous trading begins
     - 1885 to 1887: trading hours Mon-Sat 10am to variable 2pm thru 4pm (coded as 3pm)
@@ -281,20 +283,15 @@ class NYSEExchangeCalendar(MarketCalendar):
     - New Years Day (observed on monday when Jan 1 is a Sunday)
     - Martin Luther King Jr. Day (3rd Monday in January, only after 1998)
     - Lincoln's Birthday (February 12th, only before 1954 starting in 1896)
-    - Washington's Birthday (February 22nd, before 1971 with rule change in
-      1964)
-    - Washington's Birthday (aka President's Day, 3rd Monday in February,
-      after 1970)
+    - Washington's Birthday (February 22nd, before 1971 with rule change in 1964)
+    - Washington's Birthday (aka President's Day, 3rd Monday in February, after 1970)
     - Good Friday (two days before Easter Sunday)
     - Memorial Day (May 30th, before 1970, with rule change in 1964)
     - Memorial Day (last Monday in May, after 1970)
     - Independence Day (July 4th Sunday to Monday, before 1954)
-    - Independence Day (observed on the nearest weekday to July 4th, after
-      1953)
-    - Election Day (First Tuesday starting on November 2nd, between 1848 and
-      1967)
-    - Election Day (Every four years, first Tuesday starting on November 2nd,
-      between 1968 and 1980)
+    - Independence Day (observed on the nearest weekday to July 4th, after 1953)
+    - Election Day (First Tuesday starting on November 2nd, between 1848 and 1967)
+    - Election Day (Every four years, first Tuesday starting on November 2nd, between 1968 and 1980)
     - Veterans Day (November 11th, between 1934 and 1953)
     - Columbus Day (October 12th, before 1954)
     - Labor Day (first Monday in September)
@@ -791,16 +788,16 @@ class NYSEExchangeCalendar(MarketCalendar):
             USMemorialDayBefore1952,
             USMemorialDay1952to1964,
             USMemorialDay1964to1969,
+            USIndependenceDay,
             USIndependenceDayPre1952,
             USIndependenceDay1952to1954,
-            USIndependenceDay,
             USLaborDayStarting1887,
-            USThanksgivingDayBefore1939,
-            USThanksgivingDay1939to1941,
-            USThanksgivingDay,
+            USColumbusDayBefore1954,
             USElectionDay1848to1967,
             USVeteransDay1934to1953,
-            USColumbusDayBefore1954,
+            USThanksgivingDay,
+            USThanksgivingDayBefore1939,
+            USThanksgivingDay1939to1941,
             ChristmasNYSE,
             Christmas54to98NYSE,
             ChristmasBefore1954,

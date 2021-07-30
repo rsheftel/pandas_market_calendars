@@ -1,4 +1,3 @@
-import os
 import pytz
 
 import pandas as pd
@@ -8,7 +7,6 @@ from pandas.tseries.offsets import CustomBusinessDay
 from pandas_market_calendars.exchange_calendar_nyse import NYSEExchangeCalendar
 
 nyse = NYSEExchangeCalendar()
-all_holidays = pd.DatetimeIndex(nyse.holidays().holidays)
 
 def test_time_zone():
     assert nyse.tz == pytz.timezone('America/New_York')
@@ -21,16 +19,21 @@ def test_open_time_tz():
 
 def test_close_time_tz():
     assert nyse.close_time.tzinfo == nyse.tz
+    
+def test_weekmask():
+    assert nyse.weekmask == "Mon Tue Wed Thu Fri Sat"    
 
 def _test_holidays(holidays, start, end):
     df = pd.DataFrame(nyse.holidays().holidays, columns=['holidays'])
-    mask = df['holidays'].isin(pd.date_range(start,end,freq='D'))   
+    mask = (df['holidays'] >= start) & (df['holidays'] <= end)
     df = df[mask]
-    assert len(holidays) == len(df) #Catches duplicate entries from overlapping rules    
+    assert len(holidays) == len(df)   
+    df = df.set_index(['holidays'])
+    df.index = df.index.tz_localize('UTC')
+    assert_index_equal(pd.DatetimeIndex(holidays), df.index, check_names=False)
     valid_days = nyse.valid_days(start, end)
     for h in holidays:
         assert h not in valid_days
-        assert h in all_holidays    
 
 def _test_no_special_opens(start, end):   
     assert len(nyse.late_opens(nyse.schedule(start, end))) == 0
@@ -71,7 +74,7 @@ def _test_has_early_closes(early_closes, start, end):
        assert _test_verify_early_close_time(schedule, ts) == True
                            
 #########################################################################
-# TESTS BEGIN
+# YEARLY TESTS BEGIN
 #########################################################################
 def test_1885():
     start = '1885-01-01'
@@ -1139,18 +1142,18 @@ def test_1925():
     start = '1925-01-01'
     end   = '1925-12-31'    
     holidays = [
-        pd.Timestamp('1924-01-01', tz='UTC'),
-        pd.Timestamp('1924-02-12', tz='UTC'),
-        pd.Timestamp('1924-02-22', tz='UTC'),
-        pd.Timestamp('1924-04-18', tz='UTC'),
-        pd.Timestamp('1924-05-30', tz='UTC'),
-        pd.Timestamp('1924-05-31', tz='UTC'),
-        pd.Timestamp('1924-07-04', tz='UTC'),
-        pd.Timestamp('1924-09-01', tz='UTC'),
-        pd.Timestamp('1924-10-13', tz='UTC'),
-        pd.Timestamp('1924-11-04', tz='UTC'),
-        pd.Timestamp('1924-11-27', tz='UTC'),
-        pd.Timestamp('1924-12-25', tz='UTC')
+        pd.Timestamp('1925-01-01', tz='UTC'),
+        pd.Timestamp('1925-02-12', tz='UTC'),
+        pd.Timestamp('1925-02-23', tz='UTC'),
+        pd.Timestamp('1925-04-10', tz='UTC'),
+        pd.Timestamp('1925-05-30', tz='UTC'),
+        pd.Timestamp('1925-07-04', tz='UTC'),
+        pd.Timestamp('1925-09-07', tz='UTC'),
+        pd.Timestamp('1925-10-12', tz='UTC'),
+        pd.Timestamp('1925-11-03', tz='UTC'),
+        pd.Timestamp('1925-11-26', tz='UTC'),
+        pd.Timestamp('1925-12-25', tz='UTC'),
+        pd.Timestamp('1925-12-26', tz='UTC')
     ]
     _test_holidays(holidays, start, end)
  
@@ -2048,14 +2051,14 @@ def test_1955():
     start = '1955-01-01'
     end   = '1955-12-31'    
     holidays = [
-        pd.Timestamp('1954-02-22', tz='UTC'),
-        pd.Timestamp('1954-04-16', tz='UTC'),
-        pd.Timestamp('1954-05-31', tz='UTC'),
-        pd.Timestamp('1954-07-05', tz='UTC'),
-        pd.Timestamp('1954-09-06', tz='UTC'),
-        pd.Timestamp('1954-11-02', tz='UTC'),
-        pd.Timestamp('1954-11-25', tz='UTC'),
-        pd.Timestamp('1954-12-24', tz='UTC')   
+        pd.Timestamp('1955-02-22', tz='UTC'),
+        pd.Timestamp('1955-04-08', tz='UTC'),
+        pd.Timestamp('1955-05-30', tz='UTC'),
+        pd.Timestamp('1955-07-04', tz='UTC'),
+        pd.Timestamp('1955-09-05', tz='UTC'),
+        pd.Timestamp('1955-11-08', tz='UTC'),
+        pd.Timestamp('1955-11-24', tz='UTC'),
+        pd.Timestamp('1955-12-26', tz='UTC')   
     ]        
     _test_holidays(holidays, start, end)
     _test_no_special_opens_closes(start, end)     

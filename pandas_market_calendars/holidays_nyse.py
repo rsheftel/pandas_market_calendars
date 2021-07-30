@@ -1,21 +1,27 @@
 from dateutil.relativedelta import (MO, TH, TU)
-from pandas import (DateOffset, Timestamp, date_range, bdate_range)
-from datetime import datetime, timedelta
+from pandas import (DateOffset, Timestamp, date_range)
+from datetime import  timedelta
 from pandas.tseries.holiday import (Holiday, nearest_workday, sunday_to_monday,  Easter)
 from pandas.tseries.offsets import Day, CustomBusinessDay
 
-from pandas_market_calendars.market_calendar import (FRIDAY, SATURDAY, SUNDAY, MONDAY, THURSDAY, TUESDAY, WEDNESDAY)
+from pandas_market_calendars.market_calendar import ( MONDAY, TUESDAY, WEDNESDAY, THURSDAY, FRIDAY, SATURDAY, SUNDAY)
 
-#Monday = 0, Sunday=6
+################################################################################################
+# main reference:     
+#    https://github.com/rsheftel/pandas_market_calendars/files/6827110/Stocks.NYSE-Closings.pdf 
+#
+# See exchange_calendar_nyse.py for details
+#################################################################################################
+
 def previous_saturday(dt):
     """
     If holiday falls on Sunday, Monday or Tuesday, Saturday there is no trading
     """
-    if dt.weekday() == 0:
+    if dt.weekday() == MONDAY:
         return dt - timedelta(2)
-    elif dt.weekday() == 1:
+    elif dt.weekday() == TUESDAY:
         return dt - timedelta(3)
-    elif dt.weekday() == 6:
+    elif dt.weekday() == SUNDAY:
         return dt - timedelta(1)
     return dt
 
@@ -23,27 +29,16 @@ def next_saturday(dt):
     """
     If holiday falls on Thursday or Friday, the next Saturday there is no trading
     """
-    if dt.weekday() == 3:
+    if dt.weekday() == THURSDAY:
         return dt + timedelta(2)
-    elif dt.weekday() == 4:
+    elif dt.weekday() == FRIDAY:
         return dt + timedelta(1)
     return dt
-
-
 
 ####################################################
 # US New Years Day Jan 1
 #    Closed every year since the stock market opened
 #####################################################
-USNewYearsDay = Holiday(
-    'New Years Day',
-    month=1,
-    day=1,
-    # When Jan 1 is a Sunday, US markets observe the subsequent Monday.
-    # When Jan 1 is a Saturday (as in 2005 and 2011), no holiday is observed.
-    observance=sunday_to_monday,
-)
-
 USNewYearsDayNYSEpost1952 = Holiday(
     'New Years Day',
     month=1,
@@ -88,7 +83,6 @@ USMartinLutherKingJrAfter1998 = Holiday(
 #    Washington's birthday closed every year. Observed Mondays since 1971
 #    Grant's birthday was celebrated once in 1897
 ##########################################################################
-# http://www.ltadvisors.net/Info/research/closings.pdf
 USPresidentsDay = Holiday('President''s Day',
                           start_date=Timestamp('1971-01-01'),
                           month=2, day=1,
@@ -197,13 +191,11 @@ SatAfterGoodFridayAdhoc = [
     Timestamp("1930-04-19", tz='UTC')
 ]
 
-
 ##################################################
 # US Memorial Day (Decoration Day) May 30 
 #    Closed every year since 1873
 #    Observed on Monday since 1971
 ##################################################
-# http://www.tradingtheodds.com/nyse-full-day-closings/
 USMemorialDay = Holiday(
     'Memorial Day',
     month=5,
@@ -261,7 +253,6 @@ DayBeforeDecorationAdhoc = [
     Timestamp('1961-05-29', tz='UTC')
 ]
 
-
 #######################################
 # US Independence Day July 4
 #######################################
@@ -304,18 +295,6 @@ MonTuesThursBeforeIndependenceDay = Holiday(
 def july_5th_holiday_observance(datetime_index):
     return datetime_index[datetime_index.year < 2013]
 
-# This is not NYSE. Earlier start date breaks other calendars
-FridayAfterIndependenceDayPre2013 = Holiday(
-    # When July 4th is a Thursday, the next day is a half day prior to 2013.
-    # Since 2013 the early close is on Wednesday and Friday is a full day
-    "Fridays after Independence Day prior to 2013",
-    month=7,
-    day=5,
-    days_of_week=(FRIDAY,),
-    observance=july_5th_holiday_observance,
-    #start_date=Timestamp("1970-01-01"),
-)
-
 FridayAfterIndependenceDayNYSEpre2013 = Holiday(
     # When July 4th is a Thursday, the next day is a half day prior to 2013.
     # Since 2013 the early close is on Wednesday and Friday is a full day
@@ -336,9 +315,11 @@ WednesdayBeforeIndependenceDayPost2013 = Holiday(
     days_of_week=(WEDNESDAY,),
     start_date=Timestamp("2013-01-01"),
 )
+
 MonBeforeIndependenceDayAdhoc = [
     Timestamp('1899-07-03', tz='UTC'),
     ]
+
 # Not all Saturdays before/after Independence day are observed
 SatBeforeIndependenceDayAdhoc = [
     Timestamp('1887-07-02', tz='UTC'),
@@ -375,7 +356,6 @@ DaysBeforeIndependenceDay1pmEarlyCloseAdhoc = [
 #################################################
 # US Labor Day Starting 1887
 #################################################
-# http://www.ltadvisors.net/Info/research/closings.pdf
 USLaborDayStarting1887 = Holiday(
     "Labor Day", 
     month=9, 
@@ -383,6 +363,7 @@ USLaborDayStarting1887 = Holiday(
     start_date=Timestamp("1887-01-01"),
     offset=DateOffset(weekday=MO(1))
 )
+
 # Not every Saturday before Labor Day is observed. 1894 is an example.
 SatBeforeLaborDayAdhoc = [
     Timestamp('1888-09-01', tz='UTC'),
@@ -412,7 +393,6 @@ SatBeforeLaborDayAdhoc = [
 ###################################################
 # US Election Day Nov 2
 ###################################################
-# http://www.tradingtheodds.com/nyse-full-day-closings/
 USElectionDay1848to1967 = Holiday(
     'Election Day',
     month=11,
@@ -428,38 +408,31 @@ USElectionDay1968to1980Adhoc = [
     Timestamp('1976-11-02', tz="UTC"),
     Timestamp('1980-11-04', tz="UTC")]
 
-# This rule creates duplicate entries. Opted for Adhoc
-# def following_tuesday_every_four_years_observance(dt):
-#     return dt + DateOffset(years=(4 - (dt.year % 4)) % 4, weekday=TU(1))
-
-# USElectionDay1968to1980 = Holiday( 
-#     'Election Day',
-#     month=11,
-#     day=2,
-#     start_date=Timestamp('1968-01-01'), 
-#     end_date=Timestamp('1980-12-31'),
-#     observance=following_tuesday_every_four_years_observance
-# )
 ################################################
 # US Thanksgiving Nov 30
 ################################################
-# http://www.tradingtheodds.com/nyse-full-day-closings/
-USThanksgivingDayBefore1939 = Holiday('Thanksgiving Before 1939',
-                                      start_date=Timestamp('1864-01-01'),
-                                      end_date=Timestamp('1938-12-31'),
-                                      month=11, day=30,
-                                      offset=DateOffset(weekday=TH(-1)))
-# http://www.tradingtheodds.com/nyse-full-day-closings/
-USThanksgivingDay1939to1941 = Holiday('Thanksgiving 1939 to 1941',
-                                      start_date=Timestamp('1939-01-01'),
-                                      end_date=Timestamp('1941-12-31'),
-                                      month=11, day=30,
-                                      offset=DateOffset(weekday=TH(-2)))
-USThanksgivingDay = Holiday('Thanksgiving',
-                            start_date=Timestamp('1942-01-01'),
-                            month=11, day=1,
-                            offset=DateOffset(weekday=TH(4)))
+USThanksgivingDay = Holiday(
+    'Thanksgiving',
+    start_date=Timestamp('1942-01-01'),
+    month=11, day=1,
+    offset=DateOffset(weekday=TH(4))
+)
 
+USThanksgivingDayBefore1939 = Holiday(
+    'Thanksgiving Before 1939',
+    start_date=Timestamp('1864-01-01'),
+    end_date=Timestamp('1938-12-31'),
+    month=11, day=30,
+    offset=DateOffset(weekday=TH(-1))
+)
+
+USThanksgivingDay1939to1941 = Holiday(
+    'Thanksgiving 1939 to 1941',
+    start_date=Timestamp('1939-01-01'),
+    end_date=Timestamp('1941-12-31'),
+    month=11, day=30,
+    offset=DateOffset(weekday=TH(-2))
+)
 
 DayAfterThanksgiving2pmEarlyCloseBefore1993 = Holiday(
     'Black Friday',
@@ -482,16 +455,10 @@ DayAfterThanksgiving1pmEarlyCloseInOrAfter1993 = Holiday(
 FridayAfterThanksgivingAdHoc = [
     Timestamp('1888-11-30', tz='UTC'),
 ]
+
 ################################
 # Christmas Dec 25
 ################################
-Christmas = Holiday(
-    'Christmas',
-    month=12,
-    day=25,
-    start_date=Timestamp('1954-01-01'),
-    observance=nearest_workday,
-)
 ChristmasNYSE = Holiday(
     'Christmas',
     month=12,
@@ -571,6 +538,7 @@ SatBeforeChristmasAdhoc = [
     Timestamp('1949-12-24', tz='UTC'),
     Timestamp('1950-12-23', tz='UTC'),
 ]
+
 SatAfterChristmasAdhoc = [
     Timestamp('1891-12-26', tz='UTC'),
     Timestamp('1896-12-26', tz='UTC'),
@@ -594,11 +562,12 @@ USVeteransDay1934to1953 = Holiday(
     end_date=Timestamp('1953-12-31'),
     observance=sunday_to_monday,
 )
+
 USVetransDayAdHoc = [
     Timestamp("1921-11-11", tz="UTC"),
     Timestamp("1968-11-11", tz="UTC")
 ]
-# http://www.tradingtheodds.com/nyse-full-day-closings/
+
 USColumbusDayBefore1954 = Holiday(
     'Columbus Day',
     month=10,
@@ -607,6 +576,7 @@ USColumbusDayBefore1954 = Holiday(
     end_date=Timestamp('1953-12-31'),
     observance=sunday_to_monday,
 )
+
 SatAfterColumbusDayAdHoc = [
     Timestamp("1917-10-13", tz="UTC"),
     Timestamp("1945-10-13", tz="UTC"),
@@ -1490,8 +1460,5 @@ FordMourning2007 = [Timestamp('2007-01-02', tz='UTC'),]
 HurricaneSandyClosings2012 = [Timestamp('2012-10-29', tz='UTC'),
                               Timestamp('2012-10-30', tz='UTC')]
 
-
 # 2018
 GeorgeHWBushDeath2018 = [Timestamp('2018-12-05', tz='UTC'),]
-
-
