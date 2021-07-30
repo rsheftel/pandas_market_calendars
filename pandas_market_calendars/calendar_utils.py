@@ -48,8 +48,133 @@ def convert_freq(index, frequency):
     """
     return pd.DataFrame(index=index).asfreq(frequency).index
 
+def _calc_time_series(schedule, frequency, closed, force_close):
+    """
+    Function used by date_range to calculate the trading index.
+    """
+    _open, _close = schedule
+
+    # Calculate number of bars for each day, drop any days with no required rows
+    num_bars = (schedule[_close] - schedule[_open]) / frequency
+    above_zero = num_bars.gt(0)
+    if not above_zero.all():
+        schedule = schedule[above_zero]; num_bars = num_bars[above_zero]
+
+    remains = num_bars % 1    # round up, np.ceil-style
+    num_bars = num_bars.where(remains == 0, num_bars + 1 - remains).round()
+
+    # ---> calculate the desired timeseries:
+    if closed == "left":
+        opens = schedule[_open].repeat(num_bars)   # keep as is
+        time_series = (opens.groupby(opens.index).cumcount()) * frequency + opens
+    elif closed == "right":
+        opens = schedule[_open].repeat(num_bars)   # dont add row but shift up
+        time_series = (opens.groupby(opens.index).cumcount()+ 1) * frequency + opens
+    elif closed in (None, "both"):
+        num_bars += 1
+        opens = schedule[_open].repeat(num_bars)   # add row but dont shift up
+        time_series = (opens.groupby(opens.index).cumcount()) * frequency + opens
+    else: # closed == "neither"
+        num_bars -= 1
+        opens = schedule[_open].repeat(num_bars)   # remove row and shift up
+        time_series = (opens.groupby(opens.index).cumcount()+ 1) * frequency + opens
+
+    if force_close:
+        time_series = time_series[time_series.lt(schedule[_close].repeat(num_bars))]
+        time_series = pd.concat([time_series, schedule[_close]]).sort_values()
+
+    return time_series
 
 def date_range(schedule, frequency, closed='right', force_close=True, **kwargs):
+    """
+    NEGATIVES: ??
+
+        Raise a warning
+        raise error  <<<
+        handle the same way as before
+
+        --> create a function that allows to shift the closing times?
+
+    closed =
+        * "left" - include left indice of first interval/bar, do not include right indice of last interval/bar.
+        * "right" - do not include left indice of first interval, include right indice of last interval.
+        * None/"both" - closed = "left" and force = True
+
+    force_close =
+        * True      will make sure close is last value of day
+        * False     will make sure that nothing larger than close exists
+        * None      will not force anything
+
+    sample
+        freq 1h
+        open 9
+        close 11.30
+        num_bars = 3
+
+    permutations
+
+        9 10 11        left False/ left None/ both False
+        9 10 11 11.30  left True/ both True
+        10 11          right False
+        10 11 11.30    right True
+        10 11 12       right None
+        9 10 11 12     both None
+
+        left True
+        left False
+        left None
+        right True
+        right False
+        right None
+        both True
+        both False
+        both None
+
+
+
+        9 10 11        left None
+        9 10 11 11.30  left True/  both True
+        10 11          neither False
+        10 11 11.30     neither True/  right True
+        10 11 12         right False
+        9 10 11 12     both False
+
+        left True
+        left False
+        right True
+        right False
+        both True
+        both False
+        neither True
+        neither False
+
+    """
+    frequency, daily = pd.Timedelta(frequency), pd.Timedelta("1D")
+    if frequency > daily:
+        raise ValueError('Frequency must be 1D or higher frequency.')
+
+    elif schedule.market_close.le(schedule.market_open).any():
+        raise ValueError("Schedule contains rows where market_close <= market_open,"
+                         " please correct the schedule")
+
+    isdaily = frequency == daily
+    if isdaily and not force_close:
+        if closed in ("neither", "right"): return pd.DatetimeIndex([], tz= "UTC")
+        if closed in (None, "both", "left"): time_series = schedule.market_open
+
+    elif "break_start" in schedule.columns and not isdaily:
+        time_series = pd.concat([
+                _calc_time_series(schedule[["market_open", "break_start"]], frequency, closed, force_close),
+                _calc_time_series(schedule[["break_end", "market_close"]], frequency, closed, force_close)
+        ]).sort_values()
+        # should probably add a check for overlapping indices that don't make any sense before concatenating
+    else:
+        time_series = _calc_time_series(schedule, frequency, closed, force_close)
+
+    time_series.name = None
+    return pd.DatetimeIndex(time_series, tz= "UTC")
+
+def old_date_range(schedule, frequency, closed='right', force_close=True, **kwargs):
     """
     Given a schedule will return a DatetimeIndex with all of the valid datetime at the frequency given.
     The schedule values are assumed to be in UTC.
