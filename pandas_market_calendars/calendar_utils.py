@@ -48,18 +48,12 @@ def convert_freq(index, frequency):
     """
     return pd.DataFrame(index=index).asfreq(frequency).index
 
-def _calc_num_bars(schedule, frequency, drop_zeros= False):
+def _calc_num_bars(schedule, frequency):
     """requires a schedule with the start times in the first column
      and end times in the second column."""
     num_bars = (schedule.iloc[:, 1] - schedule.iloc[:, 0]) / frequency
     remains = num_bars % 1    # round up, np.ceil-style
-    num_bars = num_bars.where(remains == 0, num_bars + 1 - remains).round()
-
-    if drop_zeros:
-        above_zero = num_bars.gt(0)
-        if not above_zero.all():
-            schedule = schedule[above_zero]; num_bars = num_bars[above_zero]
-    return schedule, num_bars
+    return num_bars.where(remains == 0, num_bars + 1 - remains).round()
 
 def _calc_time_series(schedule, frequency, closed, force_close):
     """
@@ -67,7 +61,11 @@ def _calc_time_series(schedule, frequency, closed, force_close):
     """
     _open, _close = schedule
     # Calculate number of bars for each day and drop any days with no required rows
-    schedule, num_bars = _calc_num_bars(schedule, frequency, drop_zeros= True)
+    num_bars = _calc_num_bars(schedule, frequency)
+    above_zero = num_bars.gt(0)
+    if not above_zero.all():
+        schedule = schedule[above_zero]; num_bars = num_bars[above_zero]
+
     # ---> calculate the desired timeseries:
     if closed == "left":
         opens = schedule[_open].repeat(num_bars)   # keep as is
@@ -90,7 +88,7 @@ def _calc_time_series(schedule, frequency, closed, force_close):
     return time_series
 
 def _check_overlap(interval, limit, frequency):
-    interval, num_bars = _calc_num_bars(interval, frequency, drop_zeros= True)
+    num_bars = _calc_num_bars(interval, frequency)
     end_times = interval.iloc[:, 0] + num_bars * frequency
     if end_times.gt(limit).any():
         raise ValueError(f"The chosen frequency will lead to overlaps in the calculated index. "
@@ -153,6 +151,9 @@ def date_range(schedule, frequency, closed='right', force_close=True, **kwargs):
     elif schedule.market_close.le(schedule.market_open).any():
         raise ValueError("Schedule contains rows where market_close <= market_open,"
                          " please correct the schedule")
+    # should probably add a similar check including break times. On Dec 23rd 2020 in XHKG
+    # break_start is after market_close and break_end before break_start ...
+
 
     _overlap_danger = force_close is None and closed != "left"
     if "break_start" in schedule.columns:
