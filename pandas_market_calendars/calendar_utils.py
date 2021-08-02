@@ -48,132 +48,143 @@ def convert_freq(index, frequency):
     """
     return pd.DataFrame(index=index).asfreq(frequency).index
 
-def _calc_num_bars(schedule, frequency):
-    """requires a schedule with the start times in the first column
-     and end times in the second column."""
-    num_bars = (schedule.iloc[:, 1] - schedule.iloc[:, 0]) / frequency
-    remains = num_bars % 1    # round up, np.ceil-style
-    return num_bars.where(remains == 0, num_bars + 1 - remains).round()
+class _date_range:
+    before, after = ["market_open", "break_start"], ["break_end", "market_close"]
 
-def _calc_time_series(schedule, frequency, closed, force_close):
-    """
-    Function used by date_range to calculate the trading index.
-    """
-    _open, _close = schedule
-    # Calculate number of bars for each day and drop any days with no required rows
-    num_bars = _calc_num_bars(schedule, frequency)
-    above_zero = num_bars.gt(0)
-    if not above_zero.all():
-        schedule = schedule[above_zero]; num_bars = num_bars[above_zero]
+    def __init__(self, schedule = None, frequency= None, closed='right', force_close=True):
+        if not closed in ("left", "right", "both", None):
+            raise ValueError("closed must be 'left', 'right', 'both' or None.")
+        elif not force_close in (True, False, None):
+            raise ValueError("force_close must be True, False or None.")
 
-    # ---> calculate the desired timeseries:
-    if closed == "left":
-        opens = schedule[_open].repeat(num_bars)   # keep as is
-        time_series = (opens.groupby(opens.index).cumcount()) * frequency + opens
-    elif closed == "right":
-        opens = schedule[_open].repeat(num_bars)   # dont add row but shift up
-        time_series = (opens.groupby(opens.index).cumcount()+ 1) * frequency + opens
-    elif closed in (None, "both"):
-        num_bars += 1
-        opens = schedule[_open].repeat(num_bars)   # add row but dont shift up
-        time_series = (opens.groupby(opens.index).cumcount()) * frequency + opens
-    else:
-        raise ValueError("closed must be one of: 'left', 'right', 'both' or None.")
+        self.closed = closed
+        self.force_close = force_close
+        self._overlap_danger = force_close is None and closed != "left"
+        if frequency is None:
+            self.frequency = None
+        else:
+            self.frequency = pd.Timedelta(frequency)
+            if self.frequency > pd.Timedelta("1D"):
+                raise ValueError('Frequency must be 1D or higher frequency.')
 
-    if not force_close is None:
-        time_series = time_series[time_series.le(schedule[_close].repeat(num_bars))]
-        if force_close:
-            time_series = pd.concat([time_series, schedule[_close]]
-                                    ).drop_duplicates().sort_values()
-    return time_series
+            elif schedule.market_close.le(schedule.market_open).any():
+                raise ValueError("Schedule contains rows where market_close <= market_open,"
+                                 " please correct the schedule")
+            # should probably add a similar check including break times. On Dec 23rd 2020 in XHKG
+            # break_start is after market_close and break_end before break_start ...
 
-def _check_overlap(interval, limit, frequency):
-    num_bars = _calc_num_bars(interval, frequency)
-    end_times = interval.iloc[:, 0] + num_bars * frequency
-    if end_times.gt(limit).any():
-        raise ValueError(f"The chosen frequency will lead to overlaps in the calculated index. "
-                         f"Either choose a higher frequency or avoid setting force_close to None "
-                         f"when setting closed to 'right', 'both' or None.")
+    def _check_overlap(self, schedule, limit):
+        num_bars = self._calc_num_bars(schedule)
+        end_times = schedule.iloc[:, 0] + num_bars * self.frequency
+        if end_times.gt(limit).any():
+            raise ValueError(f"The chosen frequency will lead to overlaps in the calculated index. "
+                             f"Either choose a higher frequency or avoid setting force_close to None "
+                             f"when setting closed to 'right', 'both' or None.")
 
-def date_range(schedule, frequency, closed='right', force_close=True, **kwargs):
-    """
-    NEGATIVES: ??
+    def _calc_num_bars(self, schedule):
+        """requires a schedule with the start times in the first column
+         and end times in the second column."""
+        num_bars = (schedule.iloc[:, 1] - schedule.iloc[:, 0]) / self.frequency
+        remains = num_bars % 1    # round up, np.ceil-style
+        return num_bars.where(remains == 0, num_bars + 1 - remains).round()
 
-        Raise a warning
-        raise error  <<<
-        handle the same way as before
+    def _calc_time_series(self, schedule):
+        """
+        Method used by date_range to calculate the trading index.
+        """
+        _open, _close = schedule
+        # Calculate number of bars for each day and drop any days with no required rows
+        num_bars = self._calc_num_bars(schedule)
+        above_zero = num_bars.gt(0)
+        if not above_zero.all():
+            schedule = schedule[above_zero]; num_bars = num_bars[above_zero]
 
-        --> create a function that allows to shift the closing times?
+        # ---> calculate the desired timeseries:
+        if self.closed == "left":
+            opens = schedule[_open].repeat(num_bars)   # keep as is
+            time_series = (opens.groupby(opens.index).cumcount()) * self.frequency + opens
+        elif self.closed == "right":
+            opens = schedule[_open].repeat(num_bars)   # dont add row but shift up
+            time_series = (opens.groupby(opens.index).cumcount()+ 1) * self.frequency + opens
+        else:
+            num_bars += 1
+            opens = schedule[_open].repeat(num_bars)   # add row but dont shift up
+            time_series = (opens.groupby(opens.index).cumcount()) * self.frequency + opens
 
-        --> See calendar 'XHKG':
-            Dec 23rd 2020 break_start is after market_close and break_end before break_start ...
+        if not self.force_close is None:
+            time_series = time_series[time_series.le(schedule[_close].repeat(num_bars))]
+            if self.force_close:
+                time_series = pd.concat([time_series, schedule[_close]]
+                                        ).drop_duplicates().sort_values()
+        return time_series
 
-    closed =
-        * "left" - include left indice of first interval/bar, do not include right indice of last interval/bar.
-        * "right" - do not include left indice of first interval, include right indice of last interval.
-        * None/"both" - closed = "left" and force = True
+    def __call__(self, schedule, frequency, closed='right', force_close=True, **kwargs):
+        """
+        NEGATIVES: ??
 
-    force_close =
-        * True      will make sure close is last value of day
-        * False     will make sure that nothing larger than close exists
-        * None      will not force anything
+            Raise a warning
+            raise error  <<<
+            handle the same way as before
 
-    sample
-        freq 1h
-        open 9
-        close 11.30
-        num_bars = 3
+            --> create a function that allows to shift the closing times?
 
-    permutations
+            --> See calendar 'XHKG':
+                Dec 23rd 2020 break_start is after market_close and break_end before break_start ...
 
-        9 10 11        left False/ left None/ both False
-        9 10 11 11.30  left True/ both True
-        10 11          right False
-        10 11 11.30    right True
-        10 11 12       right None
-        9 10 11 12     both None
+        closed =
+            * "left" - include left indice of first interval/bar, do not include right indice of last interval/bar.
+            * "right" - do not include left indice of first interval, include right indice of last interval.
+            * None/"both" - closed = "left" and force = True
 
-        left True
-        left False
-        left None
-        right True
-        right False
-        right None
-        both True
-        both False
-        both None
+        force_close =
+            * True      will make sure close is last value of day
+            * False     will make sure that nothing larger than close exists
+            * None      will not force anything
 
-    """
-    frequency = pd.Timedelta(frequency)
-    if frequency > pd.Timedelta("1D"):
-        raise ValueError('Frequency must be 1D or higher frequency.')
+        sample
+            freq 1h
+            open 9
+            close 11.30
+            num_bars = 3
 
-    elif schedule.market_close.le(schedule.market_open).any():
-        raise ValueError("Schedule contains rows where market_close <= market_open,"
-                         " please correct the schedule")
-    # should probably add a similar check including break times. On Dec 23rd 2020 in XHKG
-    # break_start is after market_close and break_end before break_start ...
+        permutations
 
+            9 10 11        left False/ left None/ both False
+            9 10 11 11.30  left True/ both True
+            10 11          right False
+            10 11 11.30    right True
+            10 11 12       right None
+            9 10 11 12     both None
 
-    _overlap_danger = force_close is None and closed != "left"
-    if "break_start" in schedule.columns:
-        before, after = ["market_open", "break_start"], ["break_end", "market_close"]
-        if _overlap_danger:
-            _check_overlap(schedule[before], schedule["break_end"], frequency)
-            _check_overlap(schedule[after][:-1], schedule["market_open"].shift(-1)[:-1], frequency)
+            left True
+            left False
+            left None
+            right True
+            right False
+            right None
+            both True
+            both False
+            both None
 
-        time_series = pd.concat([
-            _calc_time_series(schedule[before], frequency, closed, force_close),
-            _calc_time_series(schedule[after], frequency, closed, force_close) ]).sort_values()
-    else:
-        if _overlap_danger:
-            _check_overlap(schedule[:-1], schedule["market_open"].shift(-1)[:-1], frequency)
+        """
+        self.__init__(schedule, frequency, closed, force_close)
+        if "break_start" in schedule.columns:
+            if self._overlap_danger:
+                self._check_overlap(schedule[self.before], schedule["break_end"])
+                self._check_overlap(schedule[self.after][:-1], schedule["market_open"].shift(-1)[:-1])
 
-        time_series = _calc_time_series(schedule, frequency, closed, force_close)
+            time_series = pd.concat([ self._calc_time_series(schedule[self.before]),
+                                      self._calc_time_series(schedule[self.after]) ]).sort_values()
+        else:
+            if self._overlap_danger:
+                self._check_overlap(schedule[:-1], schedule["market_open"].shift(-1)[:-1])
+            time_series = self._calc_time_series(schedule)
 
-    if _overlap_danger: time_series = time_series.drop_duplicates()
-    time_series.name = None
-    return pd.DatetimeIndex(time_series, tz= "UTC")
+        if self._overlap_danger: time_series = time_series.drop_duplicates()
+        time_series.name = None
+        return pd.DatetimeIndex(time_series, tz= "UTC")
+    
+date_range = _date_range()
 
 def old_date_range(schedule, frequency, closed='right', force_close=True, **kwargs):
     """
