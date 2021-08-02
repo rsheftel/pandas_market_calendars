@@ -94,21 +94,22 @@ def test_date_range_exceptions():
     cal = FakeCalendar(open_time= datetime.time(9), close_time= datetime.time(11, 30))
     schedule = cal.schedule("2021-01-05", "2021-01-05")
 
-    # invalid closed argument
+    ### invalid closed argument
     with pytest.raises(ValueError):
         mcal.date_range(schedule, "15min", closed= "righ")
 
-    # invalid force_close argument
+    ### invalid force_close argument
     with pytest.raises(ValueError):
         mcal.date_range(schedule, "15min", force_close= "True")
 
-    # close_time is before open_time
+    ### close_time is before open_time
     cal = FakeCalendar(open_time= datetime.time(12), close_time= datetime.time(11, 30))
     schedule = cal.schedule("2021-01-05", "2021-01-05")
     with pytest.raises(ValueError):
         mcal.date_range(schedule, "15min", closed="right", force_close= True)
 
-    # the end of the last bar would go over the next start time
+    ### Overlap -
+    ### the end of the last bar goes over the next start time
     bcal = FakeBreakCalendar()
     bschedule = bcal.schedule("2021-01-05", "2021-01-05")
     with pytest.raises(ValueError):
@@ -138,9 +139,11 @@ def test_date_range_exceptions():
 
 
 def test_date_range_permutations():
+    # open_time = 9, close_time = 11.30, freq = "1H"
     cal = FakeCalendar(open_time= datetime.time(9), close_time= datetime.time(11, 30))
     schedule = cal.schedule("2021-01-05", "2021-01-05")
 
+    # result         matching values for:   closed force_close
     # 9 10 11        left False/ left None/ both False/ None False
     expected = pd.DatetimeIndex(
         ["2021-01-05 01:00:00+00:00", "2021-01-05 02:00:00+00:00",

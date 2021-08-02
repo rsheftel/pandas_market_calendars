@@ -60,6 +60,7 @@ class _date_range:
         self.closed = closed
         self.force_close = force_close
         self._overlap_danger = force_close is None and closed != "left"
+        self.has_breaks = False
         if frequency is None: self.frequency = None
         else:
             self.frequency = pd.Timedelta(frequency)
@@ -69,8 +70,18 @@ class _date_range:
             elif schedule.market_close.le(schedule.market_open).any():
                 raise ValueError("Schedule contains rows where market_close <= market_open,"
                                  " please correct the schedule")
-            # should probably add a similar check including break times. On Dec 23rd 2020 in XHKG
-            # break_start is after market_close and break_end before break_start ...
+
+            if "break_start" in schedule:
+                if not all([
+                    schedule.market_open.le(schedule.break_start).all(),
+                    schedule.break_start.le(schedule.break_end).all(),
+                    schedule.break_end.le(schedule.market_close).all()]):
+                    raise ValueError("Not all rows match the condition: "
+                                     "market_open <= break_start <= break_end <= market_close, "
+                                     "please correct the schedule")
+                # ---> Dec 23rd 2020 in XHKG break_start > market_close and break_end < break_start ...
+                self.has_breaks = True
+
 
     def _check_overlap(self, schedule, limit):
         num_bars = self._calc_num_bars(schedule)
@@ -114,6 +125,10 @@ class _date_range:
 
     def __call__(self, schedule, frequency, closed='right', force_close=True, **kwargs):
         """
+
+
+
+
         NEGATIVES: ??
 
             Raise a warning
@@ -162,7 +177,7 @@ class _date_range:
 
         """
         self.__init__(schedule, frequency, closed, force_close)
-        if "break_start" in schedule.columns:
+        if self.has_breaks:
             if self._overlap_danger:
                 self._check_overlap(schedule[self.before], schedule["break_end"])
                 self._check_overlap(schedule[self.after], schedule["market_open"].shift(-1))
