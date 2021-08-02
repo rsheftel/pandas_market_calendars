@@ -165,13 +165,13 @@ class _date_range:
         if "break_start" in schedule.columns:
             if self._overlap_danger:
                 self._check_overlap(schedule[self.before], schedule["break_end"])
-                self._check_overlap(schedule[self.after][:-1], schedule["market_open"].shift(-1)[:-1])
+                self._check_overlap(schedule[self.after], schedule["market_open"].shift(-1))
 
             time_series = pd.concat([ self._calc_time_series(schedule[self.before]),
                                       self._calc_time_series(schedule[self.after]) ]).sort_values()
         else:
             if self._overlap_danger:
-                self._check_overlap(schedule[:-1], schedule["market_open"].shift(-1)[:-1])
+                self._check_overlap(schedule, schedule["market_open"].shift(-1))
             time_series = self._calc_time_series(schedule)
 
         if self._overlap_danger: time_series = time_series.drop_duplicates()

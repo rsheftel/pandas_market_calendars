@@ -100,13 +100,41 @@ def test_date_range_exceptions():
 
     # invalid force_close argument
     with pytest.raises(ValueError):
-        mcal.date_range(schedule, "15min", closed="right", force_close= "True")
+        mcal.date_range(schedule, "15min", force_close= "True")
 
     # close_time is before open_time
     cal = FakeCalendar(open_time= datetime.time(12), close_time= datetime.time(11, 30))
     schedule = cal.schedule("2021-01-05", "2021-01-05")
     with pytest.raises(ValueError):
         mcal.date_range(schedule, "15min", closed="right", force_close= True)
+
+    # the end of the last bar would go over the next start time
+    bcal = FakeBreakCalendar()
+    bschedule = bcal.schedule("2021-01-05", "2021-01-05")
+    with pytest.raises(ValueError):
+        # this frequency overlaps
+        mcal.date_range(bschedule, "2H", closed= "right", force_close= None)
+    # this doesn't
+    mcal.date_range(bschedule, "1H", closed="right", force_close=None)
+
+    with pytest.raises(ValueError):
+        mcal.date_range(bschedule, "2H", closed= "both", force_close= None)
+    mcal.date_range(bschedule, "1H", closed="right", force_close=None)
+
+    with pytest.raises(ValueError):
+        mcal.date_range(bschedule, "2H", closed= None, force_close= None)
+    mcal.date_range(bschedule, "1H", closed="right", force_close=None)
+
+    # should all be fine, since force_close cuts the overlapping interval
+    mcal.date_range(bschedule, "2H", closed="right", force_close=True)
+    mcal.date_range(bschedule, "2H", closed="right", force_close=False)
+    mcal.date_range(bschedule, "2H", closed="both", force_close=True)
+    mcal.date_range(bschedule, "2H", closed="both", force_close=False)
+    # closed = "left" should never be a problem since it won't go outside market hours anyway
+    mcal.date_range(bschedule, "2H", closed="left", force_close=True)
+    mcal.date_range(bschedule, "2H", closed="left", force_close=False)
+    mcal.date_range(bschedule, "2H", closed="left", force_close=None)
+
 
 
 def test_date_range_permutations():
