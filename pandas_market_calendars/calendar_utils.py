@@ -60,8 +60,7 @@ class _date_range:
         self.closed = closed
         self.force_close = force_close
         self._overlap_danger = force_close is None and closed != "left"
-        if frequency is None:
-            self.frequency = None
+        if frequency is None: self.frequency = None
         else:
             self.frequency = pd.Timedelta(frequency)
             if self.frequency > pd.Timedelta("1D"):
@@ -89,15 +88,10 @@ class _date_range:
         return num_bars.where(remains == 0, num_bars + 1 - remains).round()
 
     def _calc_time_series(self, schedule):
-        """
-        Method used by date_range to calculate the trading index.
-        """
+        """ Method used by date_range to calculate the trading index. """
         _open, _close = schedule
-        # Calculate number of bars for each day and drop any days with no required rows
+        # Calculate number of bars for each day
         num_bars = self._calc_num_bars(schedule)
-        # above_zero = num_bars.gt(0)
-        # if not above_zero.all():
-        #     schedule = schedule[above_zero]; num_bars = num_bars[above_zero]
 
         # ---> calculate the desired timeseries:
         if self.closed == "left":

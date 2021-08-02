@@ -90,6 +90,81 @@ def test_get_calendar_names():
 #         with open("fails_test_new_date_range.txt", "w") as f: f.write(fails)
 #         raise error
 
+def test_date_range_exceptions():
+    cal = FakeCalendar(open_time= datetime.time(9), close_time= datetime.time(11, 30))
+    schedule = cal.schedule("2021-01-05", "2021-01-05")
+
+    # invalid closed argument
+    with pytest.raises(ValueError):
+        mcal.date_range(schedule, "15min", closed= "righ")
+
+    # invalid force_close argument
+    with pytest.raises(ValueError):
+        mcal.date_range(schedule, "15min", closed="right", force_close= "True")
+
+    # close_time is before open_time
+    cal = FakeCalendar(open_time= datetime.time(12), close_time= datetime.time(11, 30))
+    schedule = cal.schedule("2021-01-05", "2021-01-05")
+    with pytest.raises(ValueError):
+        mcal.date_range(schedule, "15min", closed="right", force_close= True)
+
+
+def test_date_range_permutations():
+    cal = FakeCalendar(open_time= datetime.time(9), close_time= datetime.time(11, 30))
+    schedule = cal.schedule("2021-01-05", "2021-01-05")
+
+    # 9 10 11        left False/ left None/ both False/ None False
+    expected = pd.DatetimeIndex(
+        ["2021-01-05 01:00:00+00:00", "2021-01-05 02:00:00+00:00",
+         "2021-01-05 03:00:00+00:00"], tz= "UTC")
+    actual = mcal.date_range(schedule, "1H", closed= "left", force_close= False)
+    assert_index_equal(actual, expected)
+    actual = mcal.date_range(schedule, "1H", closed= "left", force_close= None)
+    assert_index_equal(actual, expected)
+    actual = mcal.date_range(schedule, "1H", closed= "both", force_close= False)
+    assert_index_equal(actual, expected)
+    actual = mcal.date_range(schedule, "1H", closed= None, force_close= False)
+    assert_index_equal(actual, expected)
+
+    # 9 10 11 11.30  left True/ both True/ None True
+    expected = pd.DatetimeIndex(
+        ["2021-01-05 01:00:00+00:00", "2021-01-05 02:00:00+00:00",
+         "2021-01-05 03:00:00+00:00", "2021-01-05 03:30:00+00:00"], tz= "UTC")
+    actual = mcal.date_range(schedule, "1H", closed= "left", force_close= True)
+    assert_index_equal(actual, expected)
+    actual = mcal.date_range(schedule, "1H", closed= "both", force_close= True)
+    assert_index_equal(actual, expected)
+    actual = mcal.date_range(schedule, "1H", closed= None, force_close= True)
+    assert_index_equal(actual, expected)
+
+    # 10 11          right False
+    expected = pd.DatetimeIndex(
+        ["2021-01-05 02:00:00+00:00", "2021-01-05 03:00:00+00:00"], tz="UTC")
+    actual = mcal.date_range(schedule, "1H", closed="right", force_close=False)
+    assert_index_equal(actual, expected)
+
+    # 10 11 11.30    right True
+    expected = pd.DatetimeIndex(
+        ["2021-01-05 02:00:00+00:00", "2021-01-05 03:00:00+00:00",
+         "2021-01-05 03:30:00+00:00"], tz="UTC")
+    actual = mcal.date_range(schedule, "1H", closed="right", force_close=True)
+    assert_index_equal(actual, expected)
+
+    # 10 11 12       right None
+    expected = pd.DatetimeIndex(
+        ["2021-01-05 02:00:00+00:00", "2021-01-05 03:00:00+00:00",
+         "2021-01-05 04:00:00+00:00"], tz="UTC")
+    actual = mcal.date_range(schedule, "1H", closed="right", force_close=None)
+    assert_index_equal(actual, expected)
+
+    # 9 10 11 12     both None/ None None
+    expected = pd.DatetimeIndex(
+        ["2021-01-05 01:00:00+00:00", "2021-01-05 02:00:00+00:00",
+         "2021-01-05 03:00:00+00:00", "2021-01-05 04:00:00+00:00"], tz="UTC")
+    actual = mcal.date_range(schedule, "1H", closed="both", force_close=None)
+    assert_index_equal(actual, expected)
+    actual = mcal.date_range(schedule, "1H", closed=None, force_close=None)
+    assert_index_equal(actual, expected)
 
 
 def test_date_range_daily():
@@ -133,9 +208,6 @@ def test_date_range_daily():
     actual = mcal.date_range(schedule, '1D', force_close=False, closed=None)
 
     assert_index_equal(actual, expected)
-
-    #
-
 
     # Dec 13, 2016 is adhoc late open
     expected = pd.DatetimeIndex([pd.Timestamp(x, tz=cal.tz).tz_convert('UTC') for x in
