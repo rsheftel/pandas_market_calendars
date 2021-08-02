@@ -293,43 +293,44 @@ def test_date_range_w_breaks():
     for x in expected:
         assert pd.Timestamp(x) in actual
 
-    # expected = ['2016-12-28 14:30:00+00:00', '2016-12-28 16:00:00+00:00', '2016-12-28 16:30:00+00:00',
-    #             '2016-12-28 17:00:00+00:00']
-    # actual = mcal.date_range(schedule, '30min', closed='left', force_close=True)
-    # assert len(actual) == len(expected)
-    # for x in expected:
-    #     assert pd.Timestamp(x) in actual
+    expected = ['2016-12-28 14:30:00+00:00', '2016-12-28 15:00:00+00:00', '2016-12-28 16:00:00+00:00',
+                '2016-12-28 16:30:00+00:00', '2016-12-28 17:00:00+00:00']
+    actual = mcal.date_range(schedule, '30min', closed='left', force_close=True)
+    assert len(actual) == len(expected)
+    for x in expected:
+        assert pd.Timestamp(x) in actual
 
     # when the open is the break start
     schedule = cal.schedule('2016-12-29', '2016-12-29')
 
-    # expected = ['2016-12-29 15:20:00+00:00', '2016-12-29 16:05:00+00:00', '2016-12-29 16:20:00+00:00',
-    #             '2016-12-29 16:35:00+00:00', '2016-12-29 16:50:00+00:00', '2016-12-29 17:00:00+00:00']
-    # actual = mcal.date_range(schedule, '15min', closed=None)
-    # assert len(actual) == len(expected)
-    # for x in expected:
-    #     assert pd.Timestamp(x) in actual
+    expected = ['2016-12-29 15:20:00+00:00', '2016-12-29 16:00:00+00:00', '2016-12-29 16:15:00+00:00',
+                '2016-12-29 16:30:00+00:00', '2016-12-29 16:45:00+00:00', '2016-12-29 17:00:00+00:00']
+    actual = mcal.date_range(schedule, '15min', closed=None)
+    assert len(actual) == len(expected)
+    for x in expected:
+        assert pd.Timestamp(x) in actual
 
-    # expected = ['2016-12-29 16:05:00+00:00', '2016-12-29 16:20:00+00:00',
-    #             '2016-12-29 16:35:00+00:00', '2016-12-29 16:50:00+00:00', '2016-12-29 17:00:00+00:00']
-    # actual = mcal.date_range(schedule, '15min', closed='right')
-    # assert len(actual) == len(expected)
-    # for x in expected:
-    #     assert pd.Timestamp(x) in actual
+    expected = ['2016-12-29 15:20:00+00:00', '2016-12-29 16:15:00+00:00', '2016-12-29 16:30:00+00:00',
+                '2016-12-29 16:45:00+00:00', '2016-12-29 17:00:00+00:00']
+    actual = mcal.date_range(schedule, '15min', closed='right')
+    assert len(actual) == len(expected)
+    for x in expected:
+        assert pd.Timestamp(x) in actual
 
     # when the close is the break end
     schedule = cal.schedule('2016-12-30', '2016-12-30')
 
     # force close True
-    # expected = ['2016-12-30 14:30:00+00:00', '2016-12-30 14:45:00+00:00', '2016-12-30 15:00:00+00:00',
-    #             '2016-12-30 15:40:00+00:00']
-    # actual = mcal.date_range(schedule, '15min', closed=None, force_close=True)
-    # assert len(actual) == len(expected)
-    # for x in expected:
-    #     assert pd.Timestamp(x) in actual
+    expected = ['2016-12-30 14:30:00+00:00', '2016-12-30 14:45:00+00:00', '2016-12-30 15:00:00+00:00',
+                '2016-12-30 15:40:00+00:00']
+    actual = mcal.date_range(schedule, '15min', closed=None, force_close=True)
+    assert len(actual) == len(expected)
+    for x in expected:
+        assert pd.Timestamp(x) in actual
 
     # force close False
-    expected = ['2016-12-30 14:30:00+00:00', '2016-12-30 14:45:00+00:00', '2016-12-30 15:00:00+00:00']
+    expected = ['2016-12-30 14:30:00+00:00', '2016-12-30 14:45:00+00:00',
+                '2016-12-30 15:00:00+00:00', '2016-12-30 15:40:00+00:00']
     actual = mcal.date_range(schedule, '15min', closed=None, force_close=False)
     assert len(actual) == len(expected)
     for x in expected:

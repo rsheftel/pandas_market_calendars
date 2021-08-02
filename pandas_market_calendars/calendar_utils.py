@@ -95,9 +95,9 @@ class _date_range:
         _open, _close = schedule
         # Calculate number of bars for each day and drop any days with no required rows
         num_bars = self._calc_num_bars(schedule)
-        above_zero = num_bars.gt(0)
-        if not above_zero.all():
-            schedule = schedule[above_zero]; num_bars = num_bars[above_zero]
+        # above_zero = num_bars.gt(0)
+        # if not above_zero.all():
+        #     schedule = schedule[above_zero]; num_bars = num_bars[above_zero]
 
         # ---> calculate the desired timeseries:
         if self.closed == "left":
@@ -183,7 +183,7 @@ class _date_range:
         if self._overlap_danger: time_series = time_series.drop_duplicates()
         time_series.name = None
         return pd.DatetimeIndex(time_series, tz= "UTC")
-    
+
 date_range = _date_range()
 
 def old_date_range(schedule, frequency, closed='right', force_close=True, **kwargs):
