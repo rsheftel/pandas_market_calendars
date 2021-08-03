@@ -49,6 +49,40 @@ def convert_freq(index, frequency):
     return pd.DataFrame(index=index).asfreq(frequency).index
 
 class _date_range:
+    """
+    This is a callable class that should be used by calling the already initiated instance: `date_range`
+
+    Signature:
+    .__call__(self, schedule, frequency, closed='right', force_close=True, **kwargs)
+
+    :param schedule: schedule of a calendar, which may or may not include break_start and break_end columns
+    :param frequency: frequency string that is used by pd.Timedelta to calculate the timestamps
+        this must be "1D" or higher
+    :param closed: the way the intervals are labeled
+        'right': use the end of the interval
+        'left': use the start of the interval
+        None: (or 'both') use the end of the interval but include the start of the first interval
+    :param force_close: how the last value of a trading session is handled
+        True: guarantee that the close of the trading session is the last value
+        False: guarantee that there is no value greater than the close of the trading session
+        None: leave the last value as it is calculated based on the closed parameter
+    :param kwargs: unused. Solely for compatibility.
+
+    Caveats:
+    * A trading session is either from market_open to market_close, or, if break_start and break_end are provided,
+        from market_open to break_start and from break_end to market_close.
+      The calculation based on frequency, closed and force_close is made for each trading session, this means
+      that break_start is considered the close of the first session of a trading day and break_end is considered
+      the open of the second session of the trading day
+
+    * If the difference between start and end of a trading session is smaller than frequency
+        and closed= "right" and force_close = False, the whole session will just disappear
+
+
+
+
+    """
+
     before, after = ["market_open", "break_start"], ["break_end", "market_close"]
 
     def __init__(self, schedule = None, frequency= None, closed='right', force_close=True):
@@ -84,6 +118,10 @@ class _date_range:
 
 
     def _check_overlap(self, schedule, limit):
+        """checks if calculated end times would overlap with the next start times.
+        :param schedule: pd.DataFrame with start times in first column and end times in second column
+        :param limit: next start time
+        """
         num_bars = self._calc_num_bars(schedule)
         end_times = schedule.iloc[:, 0] + num_bars * self.frequency
         if end_times.gt(limit).any():
@@ -92,14 +130,16 @@ class _date_range:
                              f"when setting closed to 'right', 'both' or None.")
 
     def _calc_num_bars(self, schedule):
-        """requires a schedule with the start times in the first column
-         and end times in the second column."""
+        """
+        :param schedule: pd.DataFrame with start times in first column and end times in second column
+        :return: pd.Series of integers"""
         num_bars = (schedule.iloc[:, 1] - schedule.iloc[:, 0]) / self.frequency
         remains = num_bars % 1    # round up, np.ceil-style
         return num_bars.where(remains == 0, num_bars + 1 - remains).round()
 
     def _calc_time_series(self, schedule):
-        """ Method used by date_range to calculate the trading index. """
+        """ Method used by date_range to calculate the trading index.
+         :param schedule: pd.DataFrame with start times in first column and end times in second column"""
         _open, _close = schedule
         # Calculate number of bars for each day
         num_bars = self._calc_num_bars(schedule)
@@ -125,56 +165,20 @@ class _date_range:
 
     def __call__(self, schedule, frequency, closed='right', force_close=True, **kwargs):
         """
+        See class docstring for more information.
 
-
-
-
-        NEGATIVES: ??
-
-            Raise a warning
-            raise error  <<<
-            handle the same way as before
-
-            --> create a function that allows to shift the closing times?
-
-            --> See calendar 'XHKG':
-                Dec 23rd 2020 break_start is after market_close and break_end before break_start ...
-
-        closed =
-            * "left" - include left indice of first interval/bar, do not include right indice of last interval/bar.
-            * "right" - do not include left indice of first interval, include right indice of last interval.
-            * None/"both" - closed = "left" and force = True
-
-        force_close =
-            * True      will make sure close is last value of day
-            * False     will make sure that nothing larger than close exists
-            * None      will not force anything
-
-        sample
-            freq 1h
-            open 9
-            close 11.30
-            num_bars = 3
-
-        permutations
-
-            9 10 11        left False/ left None/ both False
-            9 10 11 11.30  left True/ both True
-            10 11          right False
-            10 11 11.30    right True
-            10 11 12       right None
-            9 10 11 12     both None
-
-            left True
-            left False
-            left None
-            right True
-            right False
-            right None
-            both True
-            both False
-            both None
-
+        :param schedule: schedule of a calendar, which may or may not include break_start and break_end columns
+        :param frequency: frequency string that is used by pd.Timedelta to calculate the timestamps
+            this must be "1D" or higher
+        :param closed: the way the intervals are labeled
+            'right': use the end of the interval
+            'left': use the start of the interval
+            None: (or 'both') use the end of the interval but include the start of the first interval
+        :param force_close: how the last value of a trading session is handled
+            True: guarantee that the close of the trading session is the last value
+            False: guarantee that there is no value greater than the close of the trading session
+            None: leave the last value as it is calculated based on the closed parameter
+        :param kwargs: unused. Solely for compatibility.
         """
         self.__init__(schedule, frequency, closed, force_close)
         if self.has_breaks:
