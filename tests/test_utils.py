@@ -23,118 +23,64 @@ def test_get_calendar():
 def test_get_calendar_names():
     assert 'ASX' in mcal.get_calendar_names()
 
-# def test_new_date_range():
-#     # copy pasted old version of date_range for comparison
-#     def _original_date_range(schedule, frequency, closed='right', force_close=True, **kwargs):
-#         if pd.Timedelta(frequency) > pd.Timedelta('1D'):
-#             raise ValueError('Frequency must be 1D or higher frequency.')
-#         kwargs['closed'] = closed
-#         ranges = list()
-#         breaks = 'break_start' in schedule.columns
-#         for row in schedule.itertuples():
-#             dates = pd.date_range(row.market_open, row.market_close, freq=frequency, tz='UTC', **kwargs)
-#             if force_close:
-#                 if row.market_close not in dates:
-#                     dates = dates.insert(len(dates), row.market_close)
-#             if breaks:
-#                 if closed == 'right':
-#                     dates = dates[(dates <= row.break_start) | (row.break_end < dates)]
-#                 elif closed == 'left':
-#                     dates = dates[(dates < row.break_start) | (row.break_end <= dates)]
-#                 else:
-#                     dates = dates[(dates <= row.break_start) | (row.break_end <= dates)]
-#
-#             ranges.append(dates)
-#
-#         index = pd.DatetimeIndex([], tz='UTC')
-#         return index.union_many(ranges)
-#
-#     possible_settings = [ {"closed": "right", "force_close": False},
-#                           {"closed": "left", "force_close": False},
-#                           {"closed": None, "force_close": False},
-#                           {"closed": "right", "force_close": True},
-#                           {"closed": "left", "force_close": True},
-#                           {"closed": None, "force_close": True}
-#     ]
-#     frequencies = ["1D", "4H", "30min", "12.375min", "1min"]
-#
-#     cal_without_breaks = FakeCalendar(open_time=datetime.time(9, 0), close_time=datetime.time(11, 15))
-#     cal_with_breaks = FakeBreakCalendar(open_time= datetime.time(9), close_time=datetime.time(11, 15))
-#
-#     _start, _end = "2016-12-15", "2017-01-05"
-#     fake_schedules = { "cal_without_breaks": cal_without_breaks.schedule(_start, _end),
-#                        "cal_with_breaks": cal_with_breaks.schedule(_start, _end)}
-#     all_schedules = {calendar: mcal.get_calendar(calendar).schedule(_start, _end)
-#                      for calendar in mcal.get_calendar_names()}
-#
-#     schedules = {**fake_schedules, **all_schedules}
-#     # compare the old version's result to the new version's
-#     # for each possible setting, each frequency and each calendar
-#     fails = ""
-#     nfails = 0
-#     for settings in possible_settings:
-#         for freq in frequencies:
-#             for calendar, sched in schedules.items():
-#                 try:
-#                     original = _original_date_range(sched, freq, **settings)
-#                     new = mcal.date_range(sched, freq, **settings)
-#                     assert_index_equal(new, original)
-#                 except Exception as e:
-#                     error = e
-#                     fails += f"test_new_date_range failed with:\n"\
-#                              f"settings:\n{settings}\nfrequency: {freq}\tcalendar: {calendar}\n"\
-#                              f"error: {error}\n"
-#                     nfails += 1
-#     if nfails:
-#         fails = f"Total Fails: {nfails}\n" + fails
-#         with open("fails_test_new_date_range.txt", "w") as f: f.write(fails)
-#         raise error
-
 def test_date_range_exceptions():
     cal = FakeCalendar(open_time= datetime.time(9), close_time= datetime.time(11, 30))
     schedule = cal.schedule("2021-01-05", "2021-01-05")
 
     ### invalid closed argument
-    with pytest.raises(ValueError):
+    with pytest.raises(ValueError) as e:
         mcal.date_range(schedule, "15min", closed= "righ")
+    assert e.exconly() == "ValueError: closed must be 'left', 'right', 'both' or None."
 
     ### invalid force_close argument
-    with pytest.raises(ValueError):
+    with pytest.raises(ValueError) as e:
         mcal.date_range(schedule, "15min", force_close= "True")
+    assert e.exconly() == "ValueError: force_close must be True, False or None."
 
     ### close_time is before open_time
     cal = FakeCalendar(open_time= datetime.time(12), close_time= datetime.time(11, 30))
     schedule = cal.schedule("2021-01-05", "2021-01-05")
-    with pytest.raises(ValueError):
+    with pytest.raises(ValueError) as e:
         mcal.date_range(schedule, "15min", closed="right", force_close= True)
+    assert e.exconly() == "ValueError: Schedule contains rows where market_close <= market_open,"\
+                                     " please correct the schedule"
 
     ### Overlap -
     ### the end of the last bar goes over the next start time
     bcal = FakeBreakCalendar()
     bschedule = bcal.schedule("2021-01-05", "2021-01-05")
-    with pytest.raises(ValueError):
+    with pytest.raises(ValueError) as e1:
         # this frequency overlaps
         mcal.date_range(bschedule, "2H", closed= "right", force_close= None)
     # this doesn't
     mcal.date_range(bschedule, "1H", closed="right", force_close=None)
 
-    with pytest.raises(ValueError):
+    with pytest.raises(ValueError) as e2:
         mcal.date_range(bschedule, "2H", closed= "both", force_close= None)
     mcal.date_range(bschedule, "1H", closed="right", force_close=None)
 
-    with pytest.raises(ValueError):
+    with pytest.raises(ValueError) as e3:
         mcal.date_range(bschedule, "2H", closed= None, force_close= None)
     mcal.date_range(bschedule, "1H", closed="right", force_close=None)
 
-    # should all be fine, since force_close cuts the overlapping interval
-    mcal.date_range(bschedule, "2H", closed="right", force_close=True)
-    mcal.date_range(bschedule, "2H", closed="right", force_close=False)
-    mcal.date_range(bschedule, "2H", closed="both", force_close=True)
-    mcal.date_range(bschedule, "2H", closed="both", force_close=False)
-    # closed = "left" should never be a problem since it won't go outside market hours anyway
-    mcal.date_range(bschedule, "2H", closed="left", force_close=True)
-    mcal.date_range(bschedule, "2H", closed="left", force_close=False)
-    mcal.date_range(bschedule, "2H", closed="left", force_close=None)
+    for e in (e1, e2, e3):
+        assert e.exconly() == "ValueError: The chosen frequency will lead to overlaps in the calculated index. "\
+                                          "Either choose a higher frequency or avoid setting force_close to None "\
+                                          "when setting closed to 'right', 'both' or None."
+
+    try:
+        # should all be fine, since force_close cuts the overlapping interval
+        mcal.date_range(bschedule, "2H", closed="right", force_close=True)
+        mcal.date_range(bschedule, "2H", closed="right", force_close=False)
+        mcal.date_range(bschedule, "2H", closed="both", force_close=True)
+        mcal.date_range(bschedule, "2H", closed="both", force_close=False)
+        # closed = "left" should never be a problem since it won't go outside market hours anyway
+        mcal.date_range(bschedule, "2H", closed="left", force_close=True)
+        mcal.date_range(bschedule, "2H", closed="left", force_close=False)
+        mcal.date_range(bschedule, "2H", closed="left", force_close=None)
+    except ValueError as e:
+        pytest.fail(f"Unexpected Error: \n{e}")
+
 
 
 
@@ -261,8 +207,9 @@ def test_date_range_lower_freq():
     schedule = cal.schedule(pd.Timestamp('2017-09-05 20:00', tz='UTC'), pd.Timestamp('2017-10-23 20:00', tz='UTC'))
 
     # cannot get date range of frequency lower than 1D
-    with pytest.raises(ValueError):
+    with pytest.raises(ValueError) as e:
         mcal.date_range(schedule, frequency='3D')
+    assert e.exconly() == "ValueError: Frequency must be 1D or higher frequency."
 
     # instead get for 1D and convert to lower frequency
     short = mcal.date_range(schedule, frequency='1D')
