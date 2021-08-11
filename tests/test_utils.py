@@ -71,7 +71,10 @@ def test_date_range_exceptions():
     try:
         # should all be fine, since force_close cuts the overlapping interval
         mcal.date_range(bschedule, "2H", closed="right", force_close=True)
-        mcal.date_range(bschedule, "2H", closed="right", force_close=False)
+
+        with pytest.warns(UserWarning): # should also warn about lost sessions
+            mcal.date_range(bschedule, "2H", closed="right", force_close=False)
+
         mcal.date_range(bschedule, "2H", closed="both", force_close=True)
         mcal.date_range(bschedule, "2H", closed="both", force_close=False)
         # closed = "left" should never be a problem since it won't go outside market hours anyway
@@ -150,7 +153,8 @@ def test_date_range_daily():
     # If closed='right' and force_close False for daily then the result is empty
     expected = pd.DatetimeIndex([], tz='UTC')
     schedule = cal.schedule('2015-12-31', '2016-01-06')
-    actual = mcal.date_range(schedule, '1D', force_close=False, closed='right')
+    with pytest.warns(UserWarning):
+        actual = mcal.date_range(schedule, '1D', force_close=False, closed='right')
 
     assert_index_equal(actual, expected)
 
@@ -352,15 +356,14 @@ def test_date_range_w_breaks():
 
     # when the open is the break start
     schedule = cal.schedule('2016-12-29', '2016-12-29')
-
-    expected = ['2016-12-29 15:20:00+00:00', '2016-12-29 16:00:00+00:00', '2016-12-29 16:15:00+00:00',
-                '2016-12-29 16:30:00+00:00', '2016-12-29 16:45:00+00:00', '2016-12-29 17:00:00+00:00']
+    expected = ['2016-12-29 16:00:00+00:00', '2016-12-29 16:15:00+00:00', '2016-12-29 16:30:00+00:00',
+                '2016-12-29 16:45:00+00:00', '2016-12-29 17:00:00+00:00']
     actual = mcal.date_range(schedule, '15min', closed=None)
     assert len(actual) == len(expected)
     for x in expected:
         assert pd.Timestamp(x) in actual
 
-    expected = ['2016-12-29 15:20:00+00:00', '2016-12-29 16:15:00+00:00', '2016-12-29 16:30:00+00:00',
+    expected = ['2016-12-29 16:15:00+00:00', '2016-12-29 16:30:00+00:00',
                 '2016-12-29 16:45:00+00:00', '2016-12-29 17:00:00+00:00']
     actual = mcal.date_range(schedule, '15min', closed='right')
     assert len(actual) == len(expected)
@@ -371,16 +374,14 @@ def test_date_range_w_breaks():
     schedule = cal.schedule('2016-12-30', '2016-12-30')
 
     # force close True
-    expected = ['2016-12-30 14:30:00+00:00', '2016-12-30 14:45:00+00:00', '2016-12-30 15:00:00+00:00',
-                '2016-12-30 15:40:00+00:00']
+    expected = ['2016-12-30 14:30:00+00:00', '2016-12-30 14:45:00+00:00', '2016-12-30 15:00:00+00:00']
     actual = mcal.date_range(schedule, '15min', closed=None, force_close=True)
     assert len(actual) == len(expected)
     for x in expected:
         assert pd.Timestamp(x) in actual
 
     # force close False
-    expected = ['2016-12-30 14:30:00+00:00', '2016-12-30 14:45:00+00:00',
-                '2016-12-30 15:00:00+00:00', '2016-12-30 15:40:00+00:00']
+    expected = ['2016-12-30 14:30:00+00:00', '2016-12-30 14:45:00+00:00', '2016-12-30 15:00:00+00:00']
     actual = mcal.date_range(schedule, '15min', closed=None, force_close=False)
     assert len(actual) == len(expected)
     for x in expected:
