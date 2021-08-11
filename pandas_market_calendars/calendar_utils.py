@@ -59,11 +59,11 @@ class _date_range:
 
     :param schedule: schedule of a calendar, which may or may not include break_start and break_end columns
     :param frequency: frequency string that is used by pd.Timedelta to calculate the timestamps
-        this must be "1D" or higher
+        this must be "1D" or higher frequency
     :param closed: the way the intervals are labeled
         'right': use the end of the interval
         'left': use the start of the interval
-        None: (or 'both') use the end of the interval but include the start of the first interval
+        None: (or 'both') use the end of the interval but include the start of the first interval (the open)
     :param force_close: how the last value of a trading session is handled
         True: guarantee that the close of the trading session is the last value
         False: guarantee that there is no value greater than the close of the trading session
@@ -111,7 +111,6 @@ class _date_range:
                     raise ValueError("Not all rows match the condition: "
                                      "market_open <= break_start <= break_end <= market_close, "
                                      "please correct the schedule")
-                # ---> Dec 23rd 2020 in XHKG break_start > market_close and break_end < break_start ...
                 self.has_breaks = True
 
 
@@ -155,8 +154,8 @@ class _date_range:
         if not self.force_close is None:
             time_series = time_series[time_series.le(schedule[_close].repeat(num_bars))]
             if self.force_close:
-                time_series = pd.concat([time_series, schedule[_close]]
-                                        ).drop_duplicates().sort_values()
+                time_series = pd.concat([time_series, schedule[_close]]).sort_values()
+
         return time_series
 
     def __call__(self, schedule, frequency, closed='right', force_close=True, **kwargs):
@@ -189,8 +188,7 @@ class _date_range:
                 self._check_overlap(schedule, schedule["market_open"].shift(-1))
             time_series = self._calc_time_series(schedule)
 
-        if self._overlap_danger: time_series = time_series.drop_duplicates()
         time_series.name = None
-        return pd.DatetimeIndex(time_series, tz= "UTC")
+        return pd.DatetimeIndex(time_series.drop_duplicates(), tz= "UTC")
 
 date_range = _date_range()
