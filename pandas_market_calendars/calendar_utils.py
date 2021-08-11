@@ -113,16 +113,15 @@ class _date_range:
                                      "please correct the schedule")
                 self.has_breaks = True
 
-    def _check_overlap(self, schedule, limit):
+    def _check_overlap(self, schedule):
         """checks if calculated end times would overlap with the next start times.
         :param schedule: pd.DataFrame with first column: 'start' and second column: 'end'
-        :param limit: next start time
         :raises: ValueError"""
         if self.force_close is None and self.closed != "left":
-
             num_bars = self._calc_num_bars(schedule)
             end_times = schedule.start + num_bars * self.frequency
-            if end_times.gt(limit).any():
+
+            if end_times.gt(schedule.start.shift(-1)).any():
                 raise ValueError(f"The chosen frequency will lead to overlaps in the calculated index. "
                                  f"Either choose a higher frequency or avoid setting force_close to None "
                                  f"when setting closed to 'right', 'both' or None.")
@@ -203,7 +202,7 @@ class _date_range:
             schedule = schedule.rename(columns= {"market_open": "start", "market_close": "end"})
 
         schedule = schedule[~schedule.start.eq(schedule.end)] # drop the 'no-trading sessions'
-        self._check_overlap(schedule, schedule.start.shift(-1))
+        self._check_overlap(schedule)
         self._check_disappearing_session(schedule)
 
         time_series = self._calc_time_series(schedule)
