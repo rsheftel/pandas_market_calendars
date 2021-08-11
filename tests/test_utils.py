@@ -328,6 +328,9 @@ def test_date_range_w_breaks():
     cal = FakeBreakCalendar()
     schedule = cal.schedule('2016-12-28', '2016-12-28')
 
+    with pytest.warns(UserWarning):
+        mcal.date_range(schedule, "1H", closed= "right", force_close= False)
+
     expected = ['2016-12-28 14:30:00+00:00', '2016-12-28 15:00:00+00:00',
                 '2016-12-28 16:00:00+00:00', '2016-12-28 16:30:00+00:00', '2016-12-28 17:00:00+00:00']
     actual = mcal.date_range(schedule, '30min', closed=None)
