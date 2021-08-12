@@ -51,7 +51,7 @@ def convert_freq(index, frequency):
 class _date_range:
     """
     This is a callable class that should be used by calling the already initiated instance: `date_range`.
-    Given a schedule, it will return a DatetimeIndex with all of the valid datetime at the frequency given.
+    Given a schedule, it will return a DatetimeIndex with all of the valid datetimes at the frequency given.
     The schedule values are assumed to be in UTC.
 
     The calculations will be made for each trading session. If the passed schedule-DataFrame doesn't have
@@ -81,8 +81,6 @@ class _date_range:
        frequency, and closed= "right" and force_close = False, the whole session will disappear.
        This will also raise a warning.
     """
-
-    before, after = ["market_open", "break_start"], ["break_end", "market_close"]
 
     def __init__(self, schedule = None, frequency= None, closed='right', force_close=True):
         if not closed in ("left", "right", "both", None):
@@ -115,8 +113,10 @@ class _date_range:
 
     def _check_overlap(self, schedule):
         """checks if calculated end times would overlap with the next start times.
+        Only an issue when force_close is None and closed != left.
+
         :param schedule: pd.DataFrame with first column: 'start' and second column: 'end'
-        :raises: ValueError"""
+        :raises ValueError:"""
         if self.force_close is None and self.closed != "left":
             num_bars = self._calc_num_bars(schedule)
             end_times = schedule.start + num_bars * self.frequency
@@ -128,9 +128,10 @@ class _date_range:
 
     def _check_disappearing_session(self, schedule):
         """checks if requested frequency and schedule would lead to lost trading sessions.
-        Only necessary when force_close = False and closed = "right"
+        Only necessary when force_close = False and closed = "right".
+
         :param schedule: pd.DataFrame with first column: 'start' and second column: 'end'
-        :raises: UserWarning"""
+        :raises UserWarning:"""
         if self.force_close is False and self.closed == "right":
 
             if (schedule.end- schedule.start).lt(self.frequency).any():
@@ -141,6 +142,7 @@ class _date_range:
 
     def _calc_num_bars(self, schedule):
         """calculate the number of timestamps needed for each trading session.
+
         :param schedule: pd.DataFrame with first column: 'start' and second column: 'end'
         :return: pd.Series of float64"""
         num_bars = (schedule.end - schedule.start) / self.frequency
@@ -149,6 +151,7 @@ class _date_range:
 
     def _calc_time_series(self, schedule):
         """Method used by date_range to calculate the trading index.
+
          :param schedule: pd.DataFrame with first column: 'start' and second column: 'end'
          :return: pd.Series of datetime64[ns, UTC]"""
         num_bars = self._calc_num_bars(schedule)
@@ -189,19 +192,20 @@ class _date_range:
             False: guarantee that there is no value greater than the close of the trading session
             None: leave the last value as it is calculated based on the closed parameter
         :param kwargs: unused. Solely for compatibility.
+        :return: pd.DatetimeIndex of datetime64[ns, UTC]
         """
         self.__init__(schedule, frequency, closed, force_close)
         if self.has_breaks:
             # rearrange the schedule, to make every row one session
-            before = schedule[self.before].set_index(schedule["market_open"])
-            after = schedule[self.after].set_index(schedule["break_end"])
+            before = schedule[["market_open", "break_start"]].set_index(schedule["market_open"])
+            after = schedule[["break_end", "market_close"]].set_index(schedule["break_end"])
             before.columns = after.columns = ["start", "end"]
             schedule = pd.concat([before, after]).sort_index()
 
         else:
             schedule = schedule.rename(columns= {"market_open": "start", "market_close": "end"})
 
-        schedule = schedule[~schedule.start.eq(schedule.end)] # drop the 'no-trading sessions'
+        schedule = schedule[schedule.start.ne(schedule.end)] # drop the 'no-trading sessions'
         self._check_overlap(schedule)
         self._check_disappearing_session(schedule)
 
