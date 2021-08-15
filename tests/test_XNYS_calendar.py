@@ -12,6 +12,9 @@ import pandas_market_calendars as mcal
 xnys_cal = mcal.get_calendar('XNYS')
 
 
+def test_weekmask():
+    assert xnys_cal.weekmask == "Mon Tue Wed Thu Fri"
+
 def test_time_zone():
     assert xnys_cal.tz == pytz.timezone('America/New_York')
     assert xnys_cal.name == 'XNYS'
@@ -245,32 +248,6 @@ def test_early_close_independence_day_thursday():
     assert nyse.open_at_time(schedule, wednesday_before) is False
     assert nyse.open_at_time(schedule, friday_after_open) is True
     assert nyse.open_at_time(schedule, friday_after) is True
-
-
-def test_all_full_day_holidays_since_1928(request):
-    """
-    Perform a full comparison of all known full day NYSE holidays since 1928/01/01 and
-    make sure that it matches.
-    """
-    # get the expected dates from the csv file
-    expected = pd.read_csv(os.path.join(request.fspath.dirname, 'data', 'nyse_all_full_day_holidays_since_1928.csv'),
-                           index_col=0, parse_dates=True, header=None).index
-    expected.name = None
-
-    # calculated expected going direct to the underlying regular and ad_hoc calendars
-    nyse = xnys_cal
-    actual = pd.DatetimeIndex(nyse.adhoc_holidays).tz_convert(None).sort_values()
-    slice_locs = actual.slice_locs(expected[0], expected[-1])
-    actual = actual[slice_locs[0]:slice_locs[1]]
-    actual = actual.append(nyse.regular_holidays.holidays(expected[0], expected[-1]))
-    actual = actual.sort_values().unique()
-    assert_index_equal(expected, actual)
-
-    # using the holidays method
-    actual = pd.DatetimeIndex(nyse.holidays().holidays).unique()
-    slice_locs = actual.slice_locs(expected[0], expected[-1])
-    actual = actual[slice_locs[0]:slice_locs[1]]
-    assert_index_equal(expected, actual)
 
 
 def test_special_early_close_is_not_trading_day():
