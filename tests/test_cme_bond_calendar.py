@@ -12,7 +12,7 @@ def test_time_zone():
 def test_sunday_opens():
     cme = CMEBondExchangeCalendar()
     schedule = cme.schedule('2020-01-01', '2020-01-31', tz='America/Chicago')
-    assert pd.Timestamp('2020-01-12 17:00:00', tz='America/Chicago') == schedule.at['2020-01-13', 'market_open']
+    assert pd.Timestamp('2020-01-12 17:00:00', tz='America/Chicago') == schedule.loc['2020-01-13', 'market_open']
 
 
 def test_2020_full_holidays():
@@ -34,7 +34,7 @@ def test_2020_noon_holidays():
     cme = CMEBondExchangeCalendar()
     schedule = cme.schedule('2020-01-01', '2020-12-31')
     for date in ['2020-01-20', '2020-02-17', '2020-05-25', '2020-09-07', '2020-11-26']:
-        assert schedule.at[date, 'market_close'] == \
+        assert schedule.loc[date, 'market_close'] == \
                pd.Timestamp(date, tz='America/Chicago').replace(hour=12).tz_convert('UTC')
 
 
@@ -44,7 +44,7 @@ def test_2020_noon_15_holidays():
     cme = CMEBondExchangeCalendar()
     schedule = cme.schedule('2020-11-27', '2020-12-24')
     for date in ['2020-11-27', '2020-12-24']:
-        assert schedule.at[date, 'market_close'] == \
+        assert schedule.loc[date, 'market_close'] == \
                pd.Timestamp(date, tz='America/Chicago').replace(hour=12, minute=15).tz_convert('UTC')
 
 
@@ -55,5 +55,5 @@ def test_good_fridays():
 
     # Good Friday when it is the first friday of the month, open with early close
     assert pd.Timestamp('2021-04-02') in schedule.index
-    assert schedule.at[pd.Timestamp('2021-04-02'), 'market_close'] == \
+    assert schedule.loc[pd.Timestamp('2021-04-02'), 'market_close'] == \
            pd.Timestamp('2021-04-02', tz='America/Chicago').replace(hour=10, minute=00).tz_convert('UTC')

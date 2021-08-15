@@ -3,17 +3,21 @@
 
 Updates
 -------
-2.0.1 (5/20/20)
+2.0.2 (8/16/21)
+~~~~~~~~~~~~~~~
+- Updated to work with pandas 1.3
+
+2.0.1 (5/20/21)
 ~~~~~~~~~~~~~~~
 - Fixed the TSE calendar for Christmas falling on a Saturday
 
-2.0 (5/8/20)
+2.0 (5/8/21)
 ~~~~~~~~~~~~
 This version replaces the trading_calendars integration with exchange_calendars, closing out #120. `exchange_calendars <https://github.com/gerrymanoim/exchange_calendars>`_
 if the fork of trading_calendars that is currently actively maintained. trading_calendars is now abandoned because
 it's corporate sponsor is out of business and gone.
 
-1.7 (5/6/20)
+1.7 (5/6/21)
 ~~~~~~~~~~~~
 This version eliminated the generic CMEExchangeCalendar. This calendar did not represent a specific market and thus
 was not appropriate for any use. With the addition of the specific calendars for product types this is no longer
@@ -23,7 +27,7 @@ For the CMEEquityExchangeCalendar, this no longer is a mirror of the NYSE calend
 are an open day with early close for CME. This calendar now has its own set of holiday assumptions. This may cause
 some holidays missing until this calendar is fully tested and vetted.
 
-1.6.2 (5/6/20)
+1.6.2 (5/6/21)
 ~~~~~~~~~~~~~~
 - Fix UK Holidays for #130
 - Fix CME Bond calendar for Good Friday #132

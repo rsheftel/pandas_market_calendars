@@ -9,10 +9,10 @@ from os import path
 from setuptools import find_packages, setup
 
 # version
-VERSION = '2.0.1'
+VERSION = '2.0.2'
 
 # requirements
-REQUIRED_PYTHON = '>=3.5.0'
+REQUIRED_PYTHON = '>=3.6.0'
 REQUIRED_PACKAGES = ['pandas>=0.18', 'pytz', 'python-dateutil', 'exchange_calendars']
 
 # Package meta-data
