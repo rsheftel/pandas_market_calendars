@@ -6,6 +6,7 @@ Updates
 2.0.2 (8/16/21)
 ~~~~~~~~~~~~~~~
 - Updated to work with pandas 1.3
+- Raise minimum python to 3.7
 
 2.0.1 (5/20/21)
 ~~~~~~~~~~~~~~~

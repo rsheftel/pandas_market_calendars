@@ -5,8 +5,8 @@ Market calendars to use with pandas for trading applications.
 .. image:: https://badge.fury.io/py/pandas-market-calendars.svg
     :target: https://badge.fury.io/py/pandas-market-calendars
 
-.. image:: https://travis-ci.org/rsheftel/pandas_market_calendars.svg?branch=master
-    :target: https://travis-ci.org/rsheftel/pandas_market_calendars
+.. image:: https://travis-ci.com/rsheftel/pandas_market_calendars.svg?branch=master
+    :target: https://travis-ci.com/rsheftel/pandas_market_calendars
 
 .. image:: https://coveralls.io/repos/github/rsheftel/pandas_market_calendars/badge.svg?branch=master
     :target: https://coveralls.io/github/rsheftel/pandas_market_calendars?branch=master

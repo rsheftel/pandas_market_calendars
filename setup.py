@@ -12,7 +12,7 @@ from setuptools import find_packages, setup
 VERSION = '2.0.2'
 
 # requirements
-REQUIRED_PYTHON = '>=3.6.0'
+REQUIRED_PYTHON = '>=3.7.0'
 REQUIRED_PACKAGES = ['pandas>=0.18', 'pytz', 'python-dateutil', 'exchange_calendars']
 
 # Package meta-data
@@ -62,7 +62,6 @@ setup(
         'License :: OSI Approved :: MIT License',
 
         # Specify the Python versions you support here.
-        'Programming Language :: Python :: 3.6',
         'Programming Language :: Python :: 3.7',
         'Programming Language :: Python :: 3.8',
         'Programming Language :: Python :: 3.9',
