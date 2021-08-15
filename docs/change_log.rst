@@ -3,10 +3,11 @@
 
 Updates
 -------
-2.0.2 (8/16/21)
-~~~~~~~~~~~~~~~
+2.1 (8/16/21)
+~~~~~~~~~~~~~
 - Updated to work with pandas 1.3
 - Raise minimum python to 3.7
+- NYSE calendar valid from 1885 to present. Includes all full day closes, early closes, and late opens. PR #141
 
 2.0.1 (5/20/21)
 ~~~~~~~~~~~~~~~
