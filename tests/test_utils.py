@@ -42,7 +42,7 @@ def test_date_range_exceptions():
     schedule = cal.schedule("2021-01-05", "2021-01-05")
     with pytest.raises(ValueError) as e:
         mcal.date_range(schedule, "15min", closed="right", force_close= True)
-    assert e.exconly() == "ValueError: Schedule contains rows where market_close <= market_open,"\
+    assert e.exconly() == "ValueError: Schedule contains rows where market_close < market_open,"\
                                      " please correct the schedule"
 
     ### Overlap -
@@ -199,7 +199,7 @@ def test_date_range_daily():
 
     assert_index_equal(actual, expected)
 
-    # closed == "left" and force_close = False, should return the same thing
+    # closed == "left" and force_close= True, should return the same thing
     actual = mcal.date_range(schedule, '1D', force_close=True, closed="left")
     assert_index_equal(actual, expected)
 

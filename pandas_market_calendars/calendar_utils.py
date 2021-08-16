@@ -97,8 +97,8 @@ class _date_range:
             if self.frequency > pd.Timedelta("1D"):
                 raise ValueError('Frequency must be 1D or higher frequency.')
 
-            elif schedule.market_close.le(schedule.market_open).any():
-                raise ValueError("Schedule contains rows where market_close <= market_open,"
+            elif schedule.market_close.lt(schedule.market_open).any():
+                raise ValueError("Schedule contains rows where market_close < market_open,"
                                  " please correct the schedule")
 
             if "break_start" in schedule:
