@@ -1105,31 +1105,57 @@ class NYSEExchangeCalendar(MarketCalendar):
     
         # Offset days without tz to avoid timezone issues.
         days = pd.DatetimeIndex(days).tz_localize(None)
-        
+        delta = pd.Timedelta(
+            days=day_offset,
+            hours=self.open_time.hour,
+            minutes=self.open_time.minute,
+            seconds=self.open_time.second)
+
+        days = days + delta  # standard market_open, either default or user-chosen
+
         # Prior to 1985 trading began at 10am
         # After 1985 trading begins at 9:30am
-        dti = []
-        for d in days:
-            if d >= pd.Timestamp('1985-01-01'):
-                t = time(9,30)
-            else:
-                t = time(10)
-            
-                           
-            delta =  pd.Timedelta(
-                        days=day_offset,
-                        hours=t.hour,
-                        minutes=t.minute,
-                        seconds=t.second)
+        before_cut_off = days < pd.Timestamp('1985-01-01')
 
-            # dates before 1901-12-14 have a 4 minute time shift. rounding removes it
-            # You also can't round when open/close is within the rounding period
-            if (d < pd.Timestamp('1901-12-14')):
-                dti.append( (d + delta).tz_localize(tz).tz_convert('UTC').round('15min') )
-            else:
-                dti.append( (d + delta).tz_localize(tz).tz_convert('UTC'))
-                
-        return pd.DatetimeIndex(dti)
+        # change the open_time:
+        # If there was no custom time requested, add 30min, otherwise keep the chosen time
+        if before_cut_off.any() and self.open_time == self.open_time_default:
+            days = days.where(~before_cut_off, days + pd.Timedelta("30min"))
+
+        # dates before 1901-12-14 have a 4 minute time shift. rounding removes it
+        # You also can't round when open/close is within the rounding period
+        before_cut_off = days < pd.Timestamp('1901-12-14')
+        days = days.tz_localize(tz).tz_convert('UTC')
+        # rounding:
+        if before_cut_off.any(): days = days.round("15min")
+
+        return days
+
+        #
+        #
+        #
+        # dti = []
+        # for d in days:
+        #     if d >= pd.Timestamp('1985-01-01'):
+        #         t = time(9,30)
+        #     else:
+        #         t = time(10)
+        #
+        #
+        #     delta =  pd.Timedelta(
+        #                 days=day_offset,
+        #                 hours=t.hour,
+        #                 minutes=t.minute,
+        #                 seconds=t.second)
+        #
+        #     # dates before 1901-12-14 have a 4 minute time shift. rounding removes it
+        #     # You also can't round when open/close is within the rounding period
+        #     if (d < pd.Timestamp('1901-12-14')):
+        #         dti.append( (d + delta).tz_localize(tz).tz_convert('UTC').round('15min') )
+        #     else:
+        #         dti.append( (d + delta).tz_localize(tz).tz_convert('UTC'))
+        #
+        # return pd.DatetimeIndex(dti)
     
 
     def days_at_time_close(self, days, tz, day_offset=0):
@@ -1150,7 +1176,7 @@ class NYSEExchangeCalendar(MarketCalendar):
     
         # Offset days without tz to avoid timezone issues.
         days = pd.DatetimeIndex(days).tz_localize(None)
-                
+
         dti = []
         for d in days:
             if d < pd.Timestamp('1952-09-29'):
