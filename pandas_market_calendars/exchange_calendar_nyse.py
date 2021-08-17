@@ -1065,7 +1065,7 @@ class NYSEExchangeCalendar(MarketCalendar):
                      + [t.strftime("%Y-%m-%d") for t in HeavyVolume12pmLateOpen1933]
             ),            
         ]
- 
+
     # Override market_calendar.py
     def valid_days(self, start_date, end_date, tz='UTC'):
         """
@@ -1076,23 +1076,15 @@ class NYSEExchangeCalendar(MarketCalendar):
         :param tz: time zone in either string or pytz.timezone
         :return: DatetimeIndex of valid business days
         """
-        # Starting Monday Sept. 29, 1952, no more saturday trading days
         trading_days = pd.date_range(start_date, end_date, freq=self.holidays(), normalize=True, tz=tz)
-        ts_start_date = pd.Timestamp(start_date, tz='UTC')
-        ts_end_date = pd.Timestamp(end_date, tz='UTC')
-        if ts_start_date < pd.Timestamp('1952-09-29', tz='UTC'):
-            if ts_end_date   <  pd.Timestamp('1952-09-29', tz='UTC'):
-                return trading_days
-            if ts_end_date   >=  pd.Timestamp('1952-09-29', tz='UTC'):
-                saturdays = pd.date_range('1952-09-29', end_date, freq='W-SAT', tz='UTC')
-        else: 
-            saturdays = pd.date_range(start_date, end_date, freq='W-SAT', tz='UTC')         
-                    
-        drop_days = []
-        for s in saturdays:
-            if s in trading_days:
-                drop_days.append(s)
-        return trading_days.drop(drop_days)
+
+        # Starting Monday Sept. 29, 1952, no more saturday trading days
+        above_cut_off = trading_days >= pd.Timestamp('1952-09-29', tz='UTC')
+        if above_cut_off.any():
+            above_and_saturday = (trading_days.weekday == 5) & above_cut_off
+            trading_days = trading_days[~above_and_saturday]
+
+        return trading_days
        
 
     def days_at_time_open(self, days, tz, day_offset=0):
