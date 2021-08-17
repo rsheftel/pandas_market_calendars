@@ -1,16 +1,22 @@
 import os
-
+import datetime as dt
 import pandas as pd
 import pytz
 from pandas.testing import assert_index_equal
 
 from pandas_market_calendars.exchange_calendar_nyse import NYSEExchangeCalendar
 
+def test_custom_open_close():
+    cal = NYSEExchangeCalendar(open_time= dt.time(9), close_time= dt.time(10))
+    sched = cal.schedule("2021-08-16", "2021-08-16")
+    assert (sched.market_close - sched.market_open).iat[0] == pd.Timedelta("1H")
+    assert sched.market_open.iat[0] == pd.Timestamp("2021-08-16 13:00:00+00:00")
+    assert sched.market_close.iat[0] == pd.Timestamp("2021-08-16 14:00:00+00:00")
+
 
 def test_time_zone():
     assert NYSEExchangeCalendar().tz == pytz.timezone('America/New_York')
     assert NYSEExchangeCalendar().name == 'NYSE'
-
 
 def test_open_time_tz():
     nyse = NYSEExchangeCalendar()
