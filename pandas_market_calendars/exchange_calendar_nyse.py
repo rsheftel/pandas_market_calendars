@@ -1065,7 +1065,7 @@ class NYSEExchangeCalendar(MarketCalendar):
                      + [t.strftime("%Y-%m-%d") for t in HeavyVolume12pmLateOpen1933]
             ),            
         ]
- 
+
     # Override market_calendar.py
     def valid_days(self, start_date, end_date, tz='UTC'):
         """
@@ -1076,23 +1076,15 @@ class NYSEExchangeCalendar(MarketCalendar):
         :param tz: time zone in either string or pytz.timezone
         :return: DatetimeIndex of valid business days
         """
-        # Starting Monday Sept. 29, 1952, no more saturday trading days
         trading_days = pd.date_range(start_date, end_date, freq=self.holidays(), normalize=True, tz=tz)
-        ts_start_date = pd.Timestamp(start_date, tz='UTC')
-        ts_end_date = pd.Timestamp(end_date, tz='UTC')
-        if ts_start_date < pd.Timestamp('1952-09-29', tz='UTC'):
-            if ts_end_date   <  pd.Timestamp('1952-09-29', tz='UTC'):
-                return trading_days
-            if ts_end_date   >=  pd.Timestamp('1952-09-29', tz='UTC'):
-                saturdays = pd.date_range('1952-09-29', end_date, freq='W-SAT', tz='UTC')
-        else: 
-            saturdays = pd.date_range(start_date, end_date, freq='W-SAT', tz='UTC')         
-                    
-        drop_days = []
-        for s in saturdays:
-            if s in trading_days:
-                drop_days.append(s)
-        return trading_days.drop(drop_days)
+
+        # Starting Monday Sept. 29, 1952, no more saturday trading days
+        above_cut_off = trading_days >= pd.Timestamp('1952-09-29', tz='UTC')
+        if above_cut_off.any():
+            above_and_saturday = (trading_days.weekday == 5) & above_cut_off
+            trading_days = trading_days[~above_and_saturday]
+
+        return trading_days
        
 
     def days_at_time_open(self, days, tz, day_offset=0):
@@ -1112,32 +1104,58 @@ class NYSEExchangeCalendar(MarketCalendar):
             return pd.DatetimeIndex(days).tz_localize(tz).tz_convert('UTC')
     
         # Offset days without tz to avoid timezone issues.
-        days = pd.DatetimeIndex(days).tz_localize(None)
-        
+        _days = pd.DatetimeIndex(days).tz_localize(None)
+        delta = pd.Timedelta(
+            days=day_offset,
+            hours=self.open_time.hour,
+            minutes=self.open_time.minute,
+            seconds=self.open_time.second)
+
+        days = _days + delta  # standard market_open, either default or user-chosen
+
         # Prior to 1985 trading began at 10am
         # After 1985 trading begins at 9:30am
-        dti = []
-        for d in days:
-            if d >= pd.Timestamp('1985-01-01'):
-                t = time(9,30)
-            else:
-                t = time(10)
-            
-                           
-            delta =  pd.Timedelta(
-                        days=day_offset,
-                        hours=t.hour,
-                        minutes=t.minute,
-                        seconds=t.second)
+        before_cut_off = _days < pd.Timestamp('1985-01-01')
 
-            # dates before 1901-12-14 have a 4 minute time shift. rounding removes it
-            # You also can't round when open/close is within the rounding period
-            if (d < pd.Timestamp('1901-12-14')):
-                dti.append( (d + delta).tz_localize(tz).tz_convert('UTC').round('15min') )
-            else:
-                dti.append( (d + delta).tz_localize(tz).tz_convert('UTC'))
-                
-        return pd.DatetimeIndex(dti)
+        # change the open_time:
+        # If there was no custom time requested, add 30min, otherwise keep the chosen time
+        if before_cut_off.any() and self.open_time == self.open_time_default:
+            days = days.where(~before_cut_off, days + pd.Timedelta("30min"))
+
+        # dates before 1901-12-14 have a 4 minute time shift. rounding removes it
+        # You also can't round when open/close is within the rounding period
+        before_cut_off = _days < pd.Timestamp('1901-12-14')
+        days = days.tz_localize(tz).tz_convert('UTC')
+        # rounding:
+        if before_cut_off.any(): days = days.round("15min")
+
+        return days
+
+        #
+        #
+        #
+        # dti = []
+        # for d in days:
+        #     if d >= pd.Timestamp('1985-01-01'):
+        #         t = time(9,30)
+        #     else:
+        #         t = time(10)
+        #
+        #
+        #     delta =  pd.Timedelta(
+        #                 days=day_offset,
+        #                 hours=t.hour,
+        #                 minutes=t.minute,
+        #                 seconds=t.second)
+        #
+        #     # dates before 1901-12-14 have a 4 minute time shift. rounding removes it
+        #     # You also can't round when open/close is within the rounding period
+        #     if (d < pd.Timestamp('1901-12-14')):
+        #         dti.append( (d + delta).tz_localize(tz).tz_convert('UTC').round('15min') )
+        #     else:
+        #         dti.append( (d + delta).tz_localize(tz).tz_convert('UTC'))
+        #
+        # return pd.DatetimeIndex(dti)
     
 
     def days_at_time_close(self, days, tz, day_offset=0):
@@ -1157,37 +1175,66 @@ class NYSEExchangeCalendar(MarketCalendar):
             return pd.DatetimeIndex(days).tz_localize(tz).tz_convert('UTC')
     
         # Offset days without tz to avoid timezone issues.
-        days = pd.DatetimeIndex(days).tz_localize(None)
-                
-        dti = []
-        for d in days:
-            if d < pd.Timestamp('1952-09-29'):
-                t = time(15)
-            elif ( d >= pd.Timestamp('1952-09-29') and d < pd.Timestamp('1974-01-01')):
-                t = time(15,30)
-            else:
-                t = time(16)
-                           
-            # Saturday close    
-            if d.dayofweek == 5:
-                t = time(12)
-            
-            
-            delta =  pd.Timedelta(
-                        days=day_offset,
-                        hours=t.hour,
-                        minutes=t.minute,
-                        seconds=t.second)
+        _days = pd.DatetimeIndex(days).tz_localize(None)
+        delta = pd.Timedelta(
+            days=day_offset,
+            hours=self.close_time.hour,
+            minutes=self.close_time.minute,
+            seconds=self.close_time.second)
+        days = _days + delta  # standard market_close, either default or user-chosen
 
-            # dates before 1901-12-14 have a 4 minute time shift. rounding removes it
-            # You also can't round when open/close is within the rounding period
-            if (d < pd.Timestamp('1901-12-14')):
-                dti.append( (d + delta).tz_localize(tz).tz_convert('UTC').round('15min') )
-            else:
-                dti.append( (d + delta).tz_localize(tz).tz_convert('UTC'))
+        if self.close_time == self.close_time_default:
+            # before 1952-09-29, close was at 16 instead of 15
+            before_cut_off = _days < pd.Timestamp('1952-09-29')
+            if before_cut_off.any():
+               days = days.where(~before_cut_off, days - pd.Timedelta("1H"))
 
-                
-        return pd.DatetimeIndex(dti)
+            # between 1952-09-29 and 1974-01-01, close is at 15:30
+            between = ~before_cut_off & (_days < pd.Timestamp('1974-01-01'))
+            if between.any():
+               days = days.where(~between, days - pd.Timedelta("30min"))
+
+            # Saturday close is at 12
+            days = days.where(_days.weekday != 5, days.normalize() + pd.Timedelta("12H"))
+
+
+        # dates before 1901-12-14 have a 4 minute time shift. rounding removes it
+        # You also can't round when open/close is within the rounding period
+        before_cut_off = _days < pd.Timestamp('1901-12-14')
+        days = days.tz_localize(tz).tz_convert('UTC')
+        # rounding:
+        if before_cut_off.any(): days = days.round("15min")
+        return days
+
+
+        # dti = []
+        # for d in days:
+        #     if d < pd.Timestamp('1952-09-29'):
+        #         t = time(15)
+        #     elif ( d >= pd.Timestamp('1952-09-29') and d < pd.Timestamp('1974-01-01')):
+        #         t = time(15,30)
+        #     else:
+        #         t = time(16)
+        #
+        #     # Saturday close
+        #     if d.dayofweek == 5:
+        #         t = time(12)
+        #
+        #
+        #     delta =  pd.Timedelta(
+        #                 days=day_offset,
+        #                 hours=t.hour,
+        #                 minutes=t.minute,
+        #                 seconds=t.second)
+        #
+        #     # dates before 1901-12-14 have a 4 minute time shift. rounding removes it
+        #     # You also can't round when open/close is within the rounding period
+        #     if (d < pd.Timestamp('1901-12-14')):
+        #         dti.append( (d + delta).tz_localize(tz).tz_convert('UTC').round('15min') )
+        #     else:
+        #         dti.append( (d + delta).tz_localize(tz).tz_convert('UTC'))
+
+        # return pd.DatetimeIndex(dti)
     
     # Override parent method so that derived valid_days is called            
     def schedule(self, start_date, end_date, tz='UTC'):
