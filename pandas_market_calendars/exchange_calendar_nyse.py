@@ -1123,7 +1123,8 @@ class NYSEExchangeCalendar(MarketCalendar):
             # Prior to 1985 trading began at 10am
             # After 1985 trading begins at 9:30am
             days = days.where(_days >= pd.Timestamp('1985-01-01'),
-                              _days + pd.Timedelta(hours= 10))
+                              _days + pd.Timedelta( days= day_offset,
+                                                    hours= 10))
 
         days = days.tz_localize(tz).tz_convert('UTC')
         # dates before 1901-12-14 have a 4 minute time shift. rounding removes it
@@ -1169,16 +1170,18 @@ class NYSEExchangeCalendar(MarketCalendar):
             # before 1952-09-29, close was at 15 instead of 16
             after_first = _days >= pd.Timestamp('1952-09-29')
             days = days.where(after_first,
-                              _days + pd.Timedelta(hours= 15))
-
+                              _days + pd.Timedelta(days= day_offset,
+                                                   hours= 15))
             # between 1952-09-29 and 1974-01-01, close is at 15:30
             after_second = _days >= pd.Timestamp("1974-01-01")
             days = days.where(~after_first | after_second,
-                              _days + pd.Timedelta(hours= 15, minutes= 30))
-
+                              _days + pd.Timedelta(days= day_offset,
+                                                   hours= 15,
+                                                   minutes= 30))
             # Saturday close is at 12
             days = days.where(_days.weekday != 5,
-                              _days + pd.Timedelta(hours= 12))
+                              _days + pd.Timedelta(days= day_offset,
+                                                   hours= 12))
 
 
         days = days.tz_localize(tz).tz_convert('UTC')
