@@ -1089,16 +1089,21 @@ class NYSEExchangeCalendar(MarketCalendar):
 
     def days_at_time_open(self, days, tz, day_offset=0):
         """
-        Create an index of days at time ``t``, interpreted in timezone ``tz``. 
+        Create an index of days at time ``self.open_time``, interpreted in timezone ``tz``.
         The returned index is localized to UTC.
+
+        If self.open_time == self.open_time_default, the times are adjusted according to
+        the real default time of NYSE:
+            before 1985: 10am
+            after: 9.30am
+        Otherwise, the user-chosen open_time is used for all days
         
         Rewritten from market_calendar.py due to variable open times    
         
         :param days: DatetimeIndex An index of dates (represented as midnight).
-        :param t: datetime.time The time to apply as an offset to each day in ``days``.
         :param tz: pytz.timezone The timezone to use to interpret ``t``.
         :param day_offset: int The number of days we want to offset @days by
-        :return: DatetimeIndex of date with the time t
+        :return: DatetimeIndex
         """
         if len(days) == 0:
             return pd.DatetimeIndex(days).tz_localize(tz).tz_convert('UTC')
@@ -1128,16 +1133,23 @@ class NYSEExchangeCalendar(MarketCalendar):
 
     def days_at_time_close(self, days, tz, day_offset=0):
         """
-        Create an index of days at time ``t``, interpreted in timezone ``tz``. 
+        Create an index of days at time ``self.close_time``, interpreted in timezone ``tz``.
         The returned index is localized to UTC.
-        
+
+        If self.close_time == self.close_time_default, the times are adjusted according to
+        the real default time of NYSE:
+            before 1952-09-29: 15pm
+            before 1974: 15.30pm
+            after: 16pm
+            (Saturdays: 12pm)
+        Otherwise, the user-chosen close_time is used for all days
+
         Rewritten from market_calendar.py due to variable close times    
         
         :param days: DatetimeIndex An index of dates (represented as midnight).
-        :param t: datetime.time The time to apply as an offset to each day in ``days``.
         :param tz: pytz.timezone The timezone to use to interpret ``t``.
         :param day_offset: int The number of days we want to offset @days by
-        :return: DatetimeIndex of date with the time t
+        :return: DatetimeIndex
         """
         if len(days) == 0:
             return pd.DatetimeIndex(days).tz_localize(tz).tz_convert('UTC')
