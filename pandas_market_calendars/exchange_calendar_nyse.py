@@ -1113,10 +1113,10 @@ class NYSEExchangeCalendar(MarketCalendar):
 
         days = _days + delta  # standard market_open, either default or user-chosen
 
-        # Prior to 1985 trading began at 10am
-        # After 1985 trading begins at 9:30am
         # If no custom time requested, change open, otherwise keep the chosen time
         if self.open_time == self.open_time_default:
+            # Prior to 1985 trading began at 10am
+            # After 1985 trading begins at 9:30am
             days = days.where(_days >= pd.Timestamp('1985-01-01'),
                               _days + pd.Timedelta(hours= 10))
 
@@ -1124,33 +1124,6 @@ class NYSEExchangeCalendar(MarketCalendar):
         # dates before 1901-12-14 have a 4 minute time shift. rounding removes it
         # You also can't round when open/close is within the rounding period
         return days.where(_days >= pd.Timestamp('1901-12-14'), days.round("15min"))
-
-
-        #
-        #
-        #
-        # dti = []
-        # for d in days:
-        #     if d >= pd.Timestamp('1985-01-01'):
-        #         t = time(9,30)
-        #     else:
-        #         t = time(10)
-        #
-        #
-        #     delta =  pd.Timedelta(
-        #                 days=day_offset,
-        #                 hours=t.hour,
-        #                 minutes=t.minute,
-        #                 seconds=t.second)
-        #
-        #     # dates before 1901-12-14 have a 4 minute time shift. rounding removes it
-        #     # You also can't round when open/close is within the rounding period
-        #     if (d < pd.Timestamp('1901-12-14')):
-        #         dti.append( (d + delta).tz_localize(tz).tz_convert('UTC').round('15min') )
-        #     else:
-        #         dti.append( (d + delta).tz_localize(tz).tz_convert('UTC'))
-        #
-        # return pd.DatetimeIndex(dti)
 
 
     def days_at_time_close(self, days, tz, day_offset=0):
@@ -1180,6 +1153,7 @@ class NYSEExchangeCalendar(MarketCalendar):
 
         # If no custom time requested, change close, otherwise keep the chosen time
         if self.close_time == self.close_time_default:
+
             # before 1952-09-29, close was at 15 instead of 16
             after_first = _days >= pd.Timestamp('1952-09-29')
             days = days.where(after_first,
@@ -1187,7 +1161,7 @@ class NYSEExchangeCalendar(MarketCalendar):
 
             # between 1952-09-29 and 1974-01-01, close is at 15:30
             after_second = _days >= pd.Timestamp("1974-01-01")
-            days = days.where(after_first & after_second,
+            days = days.where(~after_first | after_second,
                               _days + pd.Timedelta(hours= 15, minutes= 30))
 
             # Saturday close is at 12
@@ -1200,35 +1174,6 @@ class NYSEExchangeCalendar(MarketCalendar):
         # You also can't round when open/close is within the rounding period
         return days.where(_days >= pd.Timestamp('1901-12-14'), days.round("15min"))
 
-
-        # dti = []
-        # for d in days:
-        #     if d < pd.Timestamp('1952-09-29'):
-        #         t = time(15)
-        #     elif ( d >= pd.Timestamp('1952-09-29') and d < pd.Timestamp('1974-01-01')):
-        #         t = time(15,30)
-        #     else:
-        #         t = time(16)
-        #
-        #     # Saturday close
-        #     if d.dayofweek == 5:
-        #         t = time(12)
-        #
-        #
-        #     delta =  pd.Timedelta(
-        #                 days=day_offset,
-        #                 hours=t.hour,
-        #                 minutes=t.minute,
-        #                 seconds=t.second)
-        #
-        #     # dates before 1901-12-14 have a 4 minute time shift. rounding removes it
-        #     # You also can't round when open/close is within the rounding period
-        #     if (d < pd.Timestamp('1901-12-14')):
-        #         dti.append( (d + delta).tz_localize(tz).tz_convert('UTC').round('15min') )
-        #     else:
-        #         dti.append( (d + delta).tz_localize(tz).tz_convert('UTC'))
-
-        # return pd.DatetimeIndex(dti)
 
     # Override parent method so that derived valid_days is called            
     def schedule(self, start_date, end_date, tz='UTC'):
