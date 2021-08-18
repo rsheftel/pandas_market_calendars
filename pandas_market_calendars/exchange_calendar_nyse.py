@@ -1108,16 +1108,16 @@ class NYSEExchangeCalendar(MarketCalendar):
         if len(days) == 0:
             return pd.DatetimeIndex(days).tz_localize(tz).tz_convert('UTC')
 
-        # Offset days without tz to avoid timezone issues.
-        _days = pd.DatetimeIndex(days).tz_localize(None)
+        # standard market_open, either default or user-chosen
         delta = pd.Timedelta(
             days=day_offset,
             hours=self.open_time.hour,
             minutes=self.open_time.minute,
             seconds=self.open_time.second)
 
-        days = _days + delta  # standard market_open, either default or user-chosen
-
+        # Offset days without tz to avoid timezone issues.
+        days = pd.DatetimeIndex(days).tz_localize(None) + delta
+        _days = days.normalize()
         # If no custom time requested, change open, otherwise keep the chosen time
         if self.open_time == self.open_time_default:
             # Prior to 1985 trading began at 10am
@@ -1154,15 +1154,16 @@ class NYSEExchangeCalendar(MarketCalendar):
         if len(days) == 0:
             return pd.DatetimeIndex(days).tz_localize(tz).tz_convert('UTC')
 
-        # Offset days without tz to avoid timezone issues.
-        _days = pd.DatetimeIndex(days).tz_localize(None)
+        # standard market_close, either default or user-chosen
         delta = pd.Timedelta(
             days=day_offset,
             hours=self.close_time.hour,
             minutes=self.close_time.minute,
             seconds=self.close_time.second)
-        days = _days + delta  # standard market_close, either default or user-chosen
 
+        # Offset days without tz to avoid timezone issues.
+        days = pd.DatetimeIndex(days).tz_localize(None) + delta
+        _days = days.normalize()
         # If no custom time requested, change close, otherwise keep the chosen time
         if self.close_time == self.close_time_default:
 
