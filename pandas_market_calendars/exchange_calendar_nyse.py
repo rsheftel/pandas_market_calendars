@@ -1120,7 +1120,7 @@ class NYSEExchangeCalendar(MarketCalendar):
         # change the open_time:
         # If there was no custom time requested, add 30min, otherwise keep the chosen time
         if before_cut_off.any() and self.open_time == self.open_time_default:
-            days = days.where(~before_cut_off, days + pd.Timedelta("30min"))
+            days = days.where(~before_cut_off, _days + pd.Timedelta(hours= 10))
 
         # dates before 1901-12-14 have a 4 minute time shift. rounding removes it
         # You also can't round when open/close is within the rounding period
@@ -1184,25 +1184,24 @@ class NYSEExchangeCalendar(MarketCalendar):
         days = _days + delta  # standard market_close, either default or user-chosen
 
         if self.close_time == self.close_time_default:
-            # before 1952-09-29, close was at 16 instead of 15
+            # before 1952-09-29, close was at 15 instead of 16
             before_cut_off = _days < pd.Timestamp('1952-09-29')
             if before_cut_off.any():
-               days = days.where(~before_cut_off, days - pd.Timedelta("1H"))
+               days = days.where(~before_cut_off, _days + pd.Timedelta(hours= 15))
 
             # between 1952-09-29 and 1974-01-01, close is at 15:30
             between = ~before_cut_off & (_days < pd.Timestamp('1974-01-01'))
             if between.any():
-               days = days.where(~between, days - pd.Timedelta("30min"))
+               days = days.where(~between, _days + pd.Timedelta(hours= 15, minutes= 30))
 
             # Saturday close is at 12
-            days = days.where(_days.weekday != 5, days.normalize() + pd.Timedelta("12H"))
+            days = days.where(_days.weekday != 5, _days + pd.Timedelta(hours= 12))
 
 
         # dates before 1901-12-14 have a 4 minute time shift. rounding removes it
         # You also can't round when open/close is within the rounding period
         before_cut_off = _days < pd.Timestamp('1901-12-14')
         days = days.tz_localize(tz).tz_convert('UTC')
-        # rounding:
         if before_cut_off.any(): days = days.round("15min")
         return days
 
