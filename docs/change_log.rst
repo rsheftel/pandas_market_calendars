@@ -3,6 +3,13 @@
 
 Updates
 -------
+3.0 (8/17/21)
+~~~~~~~~~~~~~
+- Major update to the date_range() functionality. This new behavior is more complete and consistent, but changes
+  behavior in some cases, so a new major version is warranted. For more discussion on the topic refer to
+  `PR #142 <https://github.com/rsheftel/pandas_market_calendars/pull/142>`_ and
+  `Issue #138 <https://github.com/rsheftel/pandas_market_calendars/issues/138>`_
+
 2.1 (8/16/21)
 ~~~~~~~~~~~~~
 - Updated to work with pandas 1.3
