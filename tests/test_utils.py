@@ -23,6 +23,129 @@ def test_get_calendar():
 def test_get_calendar_names():
     assert 'ASX' in mcal.get_calendar_names()
 
+def test_date_range_exceptions():
+    cal = FakeCalendar(open_time= datetime.time(9), close_time= datetime.time(11, 30))
+    schedule = cal.schedule("2021-01-05", "2021-01-05")
+
+    ### invalid closed argument
+    with pytest.raises(ValueError) as e:
+        mcal.date_range(schedule, "15min", closed= "righ")
+    assert e.exconly() == "ValueError: closed must be 'left', 'right', 'both' or None."
+
+    ### invalid force_close argument
+    with pytest.raises(ValueError) as e:
+        mcal.date_range(schedule, "15min", force_close= "True")
+    assert e.exconly() == "ValueError: force_close must be True, False or None."
+
+    ### close_time is before open_time
+    cal = FakeCalendar(open_time= datetime.time(12), close_time= datetime.time(11, 30))
+    schedule = cal.schedule("2021-01-05", "2021-01-05")
+    with pytest.raises(ValueError) as e:
+        mcal.date_range(schedule, "15min", closed="right", force_close= True)
+    assert e.exconly() == "ValueError: Schedule contains rows where market_close < market_open,"\
+                                     " please correct the schedule"
+
+    ### Overlap -
+    ### the end of the last bar goes over the next start time
+    bcal = FakeBreakCalendar()
+    bschedule = bcal.schedule("2021-01-05", "2021-01-05")
+    with pytest.raises(ValueError) as e1:
+        # this frequency overlaps
+        mcal.date_range(bschedule, "2H", closed= "right", force_close= None)
+    # this doesn't
+    mcal.date_range(bschedule, "1H", closed="right", force_close=None)
+
+    with pytest.raises(ValueError) as e2:
+        mcal.date_range(bschedule, "2H", closed= "both", force_close= None)
+    mcal.date_range(bschedule, "1H", closed="right", force_close=None)
+
+    with pytest.raises(ValueError) as e3:
+        mcal.date_range(bschedule, "2H", closed= None, force_close= None)
+    mcal.date_range(bschedule, "1H", closed="right", force_close=None)
+
+    for e in (e1, e2, e3):
+        assert e.exconly() == "ValueError: The chosen frequency will lead to overlaps in the calculated index. "\
+                                          "Either choose a higher frequency or avoid setting force_close to None "\
+                                          "when setting closed to 'right', 'both' or None."
+
+    try:
+        # should all be fine, since force_close cuts the overlapping interval
+        mcal.date_range(bschedule, "2H", closed="right", force_close=True)
+
+        with pytest.warns(UserWarning): # should also warn about lost sessions
+            mcal.date_range(bschedule, "2H", closed="right", force_close=False)
+
+        mcal.date_range(bschedule, "2H", closed="both", force_close=True)
+        mcal.date_range(bschedule, "2H", closed="both", force_close=False)
+        # closed = "left" should never be a problem since it won't go outside market hours anyway
+        mcal.date_range(bschedule, "2H", closed="left", force_close=True)
+        mcal.date_range(bschedule, "2H", closed="left", force_close=False)
+        mcal.date_range(bschedule, "2H", closed="left", force_close=None)
+    except ValueError as e:
+        pytest.fail(f"Unexpected Error: \n{e}")
+
+
+
+
+def test_date_range_permutations():
+    # open_time = 9, close_time = 11.30, freq = "1H"
+    cal = FakeCalendar(open_time= datetime.time(9), close_time= datetime.time(11, 30))
+    schedule = cal.schedule("2021-01-05", "2021-01-05")
+
+    # result         matching values for:   closed force_close
+    # 9 10 11        left False/ left None/ both False/ None False
+    expected = pd.DatetimeIndex(
+        ["2021-01-05 01:00:00+00:00", "2021-01-05 02:00:00+00:00",
+         "2021-01-05 03:00:00+00:00"], tz= "UTC")
+    actual = mcal.date_range(schedule, "1H", closed= "left", force_close= False)
+    assert_index_equal(actual, expected)
+    actual = mcal.date_range(schedule, "1H", closed= "left", force_close= None)
+    assert_index_equal(actual, expected)
+    actual = mcal.date_range(schedule, "1H", closed= "both", force_close= False)
+    assert_index_equal(actual, expected)
+    actual = mcal.date_range(schedule, "1H", closed= None, force_close= False)
+    assert_index_equal(actual, expected)
+
+    # 9 10 11 11.30  left True/ both True/ None True
+    expected = pd.DatetimeIndex(
+        ["2021-01-05 01:00:00+00:00", "2021-01-05 02:00:00+00:00",
+         "2021-01-05 03:00:00+00:00", "2021-01-05 03:30:00+00:00"], tz= "UTC")
+    actual = mcal.date_range(schedule, "1H", closed= "left", force_close= True)
+    assert_index_equal(actual, expected)
+    actual = mcal.date_range(schedule, "1H", closed= "both", force_close= True)
+    assert_index_equal(actual, expected)
+    actual = mcal.date_range(schedule, "1H", closed= None, force_close= True)
+    assert_index_equal(actual, expected)
+
+    # 10 11          right False
+    expected = pd.DatetimeIndex(
+        ["2021-01-05 02:00:00+00:00", "2021-01-05 03:00:00+00:00"], tz="UTC")
+    actual = mcal.date_range(schedule, "1H", closed="right", force_close=False)
+    assert_index_equal(actual, expected)
+
+    # 10 11 11.30    right True
+    expected = pd.DatetimeIndex(
+        ["2021-01-05 02:00:00+00:00", "2021-01-05 03:00:00+00:00",
+         "2021-01-05 03:30:00+00:00"], tz="UTC")
+    actual = mcal.date_range(schedule, "1H", closed="right", force_close=True)
+    assert_index_equal(actual, expected)
+
+    # 10 11 12       right None
+    expected = pd.DatetimeIndex(
+        ["2021-01-05 02:00:00+00:00", "2021-01-05 03:00:00+00:00",
+         "2021-01-05 04:00:00+00:00"], tz="UTC")
+    actual = mcal.date_range(schedule, "1H", closed="right", force_close=None)
+    assert_index_equal(actual, expected)
+
+    # 9 10 11 12     both None/ None None
+    expected = pd.DatetimeIndex(
+        ["2021-01-05 01:00:00+00:00", "2021-01-05 02:00:00+00:00",
+         "2021-01-05 03:00:00+00:00", "2021-01-05 04:00:00+00:00"], tz="UTC")
+    actual = mcal.date_range(schedule, "1H", closed="both", force_close=None)
+    assert_index_equal(actual, expected)
+    actual = mcal.date_range(schedule, "1H", closed=None, force_close=None)
+    assert_index_equal(actual, expected)
+
 
 def test_date_range_daily():
     cal = FakeCalendar(open_time=datetime.time(9, 0), close_time=datetime.time(12, 0))
@@ -30,7 +153,8 @@ def test_date_range_daily():
     # If closed='right' and force_close False for daily then the result is empty
     expected = pd.DatetimeIndex([], tz='UTC')
     schedule = cal.schedule('2015-12-31', '2016-01-06')
-    actual = mcal.date_range(schedule, '1D', force_close=False, closed='right')
+    with pytest.warns(UserWarning):
+        actual = mcal.date_range(schedule, '1D', force_close=False, closed='right')
 
     assert_index_equal(actual, expected)
 
@@ -75,14 +199,21 @@ def test_date_range_daily():
 
     assert_index_equal(actual, expected)
 
+    # closed == "left" and force_close= True, should return the same thing
+    actual = mcal.date_range(schedule, '1D', force_close=True, closed="left")
+    assert_index_equal(actual, expected)
+
+
+
 
 def test_date_range_lower_freq():
     cal = mcal.get_calendar("NYSE")
     schedule = cal.schedule(pd.Timestamp('2017-09-05 20:00', tz='UTC'), pd.Timestamp('2017-10-23 20:00', tz='UTC'))
 
     # cannot get date range of frequency lower than 1D
-    with pytest.raises(ValueError):
+    with pytest.raises(ValueError) as e:
         mcal.date_range(schedule, frequency='3D')
+    assert e.exconly() == "ValueError: Frequency must be 1D or higher frequency."
 
     # instead get for 1D and convert to lower frequency
     short = mcal.date_range(schedule, frequency='1D')
@@ -197,6 +328,9 @@ def test_date_range_w_breaks():
     cal = FakeBreakCalendar()
     schedule = cal.schedule('2016-12-28', '2016-12-28')
 
+    with pytest.warns(UserWarning):
+        mcal.date_range(schedule, "1H", closed= "right", force_close= False)
+
     expected = ['2016-12-28 14:30:00+00:00', '2016-12-28 15:00:00+00:00',
                 '2016-12-28 16:00:00+00:00', '2016-12-28 16:30:00+00:00', '2016-12-28 17:00:00+00:00']
     actual = mcal.date_range(schedule, '30min', closed=None)
@@ -216,8 +350,8 @@ def test_date_range_w_breaks():
     for x in expected:
         assert pd.Timestamp(x) in actual
 
-    expected = ['2016-12-28 14:30:00+00:00', '2016-12-28 16:00:00+00:00', '2016-12-28 16:30:00+00:00',
-                '2016-12-28 17:00:00+00:00']
+    expected = ['2016-12-28 14:30:00+00:00', '2016-12-28 15:00:00+00:00', '2016-12-28 16:00:00+00:00',
+                '2016-12-28 16:30:00+00:00', '2016-12-28 17:00:00+00:00']
     actual = mcal.date_range(schedule, '30min', closed='left', force_close=True)
     assert len(actual) == len(expected)
     for x in expected:
@@ -225,16 +359,15 @@ def test_date_range_w_breaks():
 
     # when the open is the break start
     schedule = cal.schedule('2016-12-29', '2016-12-29')
-
-    expected = ['2016-12-29 15:20:00+00:00', '2016-12-29 16:05:00+00:00', '2016-12-29 16:20:00+00:00',
-                '2016-12-29 16:35:00+00:00', '2016-12-29 16:50:00+00:00', '2016-12-29 17:00:00+00:00']
+    expected = ['2016-12-29 16:00:00+00:00', '2016-12-29 16:15:00+00:00', '2016-12-29 16:30:00+00:00',
+                '2016-12-29 16:45:00+00:00', '2016-12-29 17:00:00+00:00']
     actual = mcal.date_range(schedule, '15min', closed=None)
     assert len(actual) == len(expected)
     for x in expected:
         assert pd.Timestamp(x) in actual
 
-    expected = ['2016-12-29 16:05:00+00:00', '2016-12-29 16:20:00+00:00',
-                '2016-12-29 16:35:00+00:00', '2016-12-29 16:50:00+00:00', '2016-12-29 17:00:00+00:00']
+    expected = ['2016-12-29 16:15:00+00:00', '2016-12-29 16:30:00+00:00',
+                '2016-12-29 16:45:00+00:00', '2016-12-29 17:00:00+00:00']
     actual = mcal.date_range(schedule, '15min', closed='right')
     assert len(actual) == len(expected)
     for x in expected:
@@ -244,8 +377,7 @@ def test_date_range_w_breaks():
     schedule = cal.schedule('2016-12-30', '2016-12-30')
 
     # force close True
-    expected = ['2016-12-30 14:30:00+00:00', '2016-12-30 14:45:00+00:00', '2016-12-30 15:00:00+00:00',
-                '2016-12-30 15:40:00+00:00']
+    expected = ['2016-12-30 14:30:00+00:00', '2016-12-30 14:45:00+00:00', '2016-12-30 15:00:00+00:00']
     actual = mcal.date_range(schedule, '15min', closed=None, force_close=True)
     assert len(actual) == len(expected)
     for x in expected:
