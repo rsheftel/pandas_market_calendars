@@ -753,7 +753,7 @@ class NYSEExchangeCalendar(MarketCalendar):
     @property
     def name(self):
         return "NYSE"
-    
+
     @property
     def weekmask(self):
         return "Mon Tue Wed Thu Fri Sat"    #Market open on Saturdays thru 5/24/1952
@@ -783,7 +783,7 @@ class NYSEExchangeCalendar(MarketCalendar):
             USLincolnsBirthDayBefore1954,
             GoodFriday,
             GoodFridayPre1898,
-            GoodFriday1899to1905, 
+            GoodFriday1899to1905,
             USMemorialDay,
             USMemorialDayBefore1952,
             USMemorialDay1952to1964,
@@ -821,9 +821,9 @@ class NYSEExchangeCalendar(MarketCalendar):
             DayAfterChristmasAdhoc,
             # Retired
             USVetransDayAdHoc,
-            SatAfterColumbusDayAdHoc,            
+            SatAfterColumbusDayAdHoc,
             LincolnsBirthDayAdhoc,
-            GrantsBirthDayAdhoc,            
+            GrantsBirthDayAdhoc,
             SatBeforeNewYearsAdhoc,
             SatBeforeWashingtonsBirthdayAdhoc,
             SatAfterWashingtonsBirthdayAdhoc,
@@ -893,12 +893,12 @@ class NYSEExchangeCalendar(MarketCalendar):
             HurricaneGloriaClosings1985,
             NixonFuneral1994,
             ReaganMourning2004,
-            FordMourning2007,        
-            September11Closings2001,            
-            HurricaneSandyClosings2012, 
-            GeorgeHWBushDeath2018,                                   
+            FordMourning2007,
+            September11Closings2001,
+            HurricaneSandyClosings2012,
+            GeorgeHWBushDeath2018,
         ))
-# 
+#
     @property
     def special_closes(self):
         return [
@@ -918,15 +918,15 @@ class NYSEExchangeCalendar(MarketCalendar):
                 TaftFuneral1230EarlyClose1930,
                 GasFumesOnTradingFloor1230EarlyClose1933,
             ])),
-            (time(13, tzinfo=timezone('America/New_York')), AbstractHolidayCalendar(rules=[               
+            (time(13, tzinfo=timezone('America/New_York')), AbstractHolidayCalendar(rules=[
                 FridayAfterIndependenceDayNYSEpre2013,
                 MonTuesThursBeforeIndependenceDay,
                 WednesdayBeforeIndependenceDayPost2013,
                 DayAfterThanksgiving1pmEarlyCloseInOrAfter1993,
                 ChristmasEvePost1999Early1pmClose,
-                GroverClevelandFuneral1pmClose1908,                
+                GroverClevelandFuneral1pmClose1908,
             ])),
-            (time(14, tzinfo=timezone('America/New_York')), AbstractHolidayCalendar(rules=[                
+            (time(14, tzinfo=timezone('America/New_York')), AbstractHolidayCalendar(rules=[
                 DayAfterThanksgiving2pmEarlyCloseBefore1993,
                 HooverFuneral1400EarlyClose1964,
                 Snow2pmEarlyClose1967,
@@ -935,7 +935,7 @@ class NYSEExchangeCalendar(MarketCalendar):
             ])),
             (time(14, 7, tzinfo=timezone('America/New_York')), AbstractHolidayCalendar(rules=[
                 KennedyAssassination1407EarlyClose,
-            ])),            
+            ])),
             (time(hour=14, minute=30, tzinfo=timezone('America/New_York')), AbstractHolidayCalendar(rules=[
                 FalseArmisticeReport1430EarlyClose1918,
                 CromwellFuneral1430EarlyClose1925,
@@ -944,71 +944,71 @@ class NYSEExchangeCalendar(MarketCalendar):
             ])),
             (time(15, tzinfo=timezone('America/New_York')), AbstractHolidayCalendar(rules=[
                 HurricaneWatch3pmEarlyClose1976,
-            ])),             
+            ])),
             (time(15, 17, tzinfo=timezone('America/New_York')), AbstractHolidayCalendar(rules=[
-                ReaganAssassAttempt317pmEarlyClose1981,   
-            ])),             
+                ReaganAssassAttempt317pmEarlyClose1981,
+            ])),
             (time(15, 28, tzinfo=timezone('America/New_York')), AbstractHolidayCalendar(rules=[
                ConEdPowerFail328pmEarlyClose1981,
-            ])),                 
+            ])),
             (time(15, 30, tzinfo=timezone('America/New_York')), AbstractHolidayCalendar(rules=[
                CircuitBreakerTriggered330pmEarlyClose1997,
-            ])),                                     
+            ])),
             (time(15, 56, tzinfo=timezone('America/New_York')), AbstractHolidayCalendar(rules=[
                SystemProb356pmEarlyClose2005,
-            ])),                                     
+            ])),
         ]
-# 
+#
     @property
     def special_closes_adhoc(self):
-        return [            
-            (time(13, tzinfo=timezone('America/New_York')), 
-              [t.strftime("%Y-%m-%d") for t in DaysBeforeIndependenceDay1pmEarlyCloseAdhoc] 
-            + [t.strftime("%Y-%m-%d") for t in ChristmasEve1pmEarlyCloseAdhoc] 
-            + [t.strftime("%Y-%m-%d") for t in DayAfterChristmas1pmEarlyCloseAdhoc]   
+        return [
+            (time(13, tzinfo=timezone('America/New_York')),
+              [t.strftime("%Y-%m-%d") for t in DaysBeforeIndependenceDay1pmEarlyCloseAdhoc]
+            + [t.strftime("%Y-%m-%d") for t in ChristmasEve1pmEarlyCloseAdhoc]
+            + [t.strftime("%Y-%m-%d") for t in DayAfterChristmas1pmEarlyCloseAdhoc]
             + [t.strftime("%Y-%m-%d") for t in BacklogRelief1pmEarlyClose1929]
             ),
-            (time(14, tzinfo=timezone('America/New_York')), 
+            (time(14, tzinfo=timezone('America/New_York')),
              [t.strftime("%Y-%m-%d") for t in ChristmasEve2pmEarlyCloseAdhoc]
-             + BacklogRelief2pmEarlyClose1928.strftime("%Y-%m-%d").tolist()             
+             + BacklogRelief2pmEarlyClose1928.strftime("%Y-%m-%d").tolist()
              + [t.strftime("%Y-%m-%d") for t in HeavyVolume2pmEarlyClose1933]
              + [t.strftime("%Y-%m-%d") for t in TransitStrike2pmEarlyClose1966]
              + [t.strftime("%Y-%m-%d") for t in Backlog2pmEarlyCloses1967]
-             + [t.strftime("%Y-%m-%d") for t in Backlog2pmEarlyCloses1968]             
-             + [t.strftime("%Y-%m-%d") for t in PaperworkCrisis2pmEarlyCloses1969] 
-             + [t.strftime("%Y-%m-%d") for t in Backlog2pmEarlyCloses1987] 
+             + [t.strftime("%Y-%m-%d") for t in Backlog2pmEarlyCloses1968]
+             + [t.strftime("%Y-%m-%d") for t in PaperworkCrisis2pmEarlyCloses1969]
+             + [t.strftime("%Y-%m-%d") for t in Backlog2pmEarlyCloses1987]
             ),
-            (time(14, 30, tzinfo=timezone('America/New_York')), 
+            (time(14, 30, tzinfo=timezone('America/New_York')),
                [t.strftime("%Y-%m-%d") for t in PaperworkCrisis230pmEarlyCloses1969]
-             + [t.strftime("%Y-%m-%d") for t in Backlog230pmEarlyCloses1987]  
-            ),      
-            (time(15, tzinfo=timezone('America/New_York')), 
-               [t.strftime("%Y-%m-%d") for t in PaperworkCrisis3pmEarlyCloses1969to1970]
-             + [t.strftime("%Y-%m-%d") for t in Backlog3pmEarlyCloses1987]  
+             + [t.strftime("%Y-%m-%d") for t in Backlog230pmEarlyCloses1987]
             ),
-            (time(15, 30, tzinfo=timezone('America/New_York')), 
-               [t.strftime("%Y-%m-%d") for t in Backlog330pmEarlyCloses1987]        
-            ),                            
+            (time(15, tzinfo=timezone('America/New_York')),
+               [t.strftime("%Y-%m-%d") for t in PaperworkCrisis3pmEarlyCloses1969to1970]
+             + [t.strftime("%Y-%m-%d") for t in Backlog3pmEarlyCloses1987]
+            ),
+            (time(15, 30, tzinfo=timezone('America/New_York')),
+               [t.strftime("%Y-%m-%d") for t in Backlog330pmEarlyCloses1987]
+            ),
         ]
 
-# 
+#
     @property
     def special_opens(self):
         return [
             (time(hour=9, minute=31, tzinfo=timezone('America/New_York')), AbstractHolidayCalendar(rules=[
-                ConEdXformer931amLateOpen1990,  
-                EnduringFreedomMomentSilence931amLateOpen2001,                              
+                ConEdXformer931amLateOpen1990,
+                EnduringFreedomMomentSilence931amLateOpen2001,
             ])),
             (time(hour=9, minute=32, tzinfo=timezone('America/New_York')), AbstractHolidayCalendar(rules=[
-                IraqiFreedom932amLateOpen2003,  
-                ReaganMomentSilence932amLateOpen2004, 
-                FordMomentSilence932amLateOpen2006,                     
+                IraqiFreedom932amLateOpen2003,
+                ReaganMomentSilence932amLateOpen2004,
+                FordMomentSilence932amLateOpen2006,
             ])),
             (time(hour=9, minute=33, tzinfo=timezone('America/New_York')), AbstractHolidayCalendar(rules=[
-                Sept11MomentSilence933amLateOpen2001,                     
+                Sept11MomentSilence933amLateOpen2001,
             ])),
             (time(hour=10, minute=15, tzinfo=timezone('America/New_York')), AbstractHolidayCalendar(rules=[
-                Snow1015LateOpen1967,     
+                Snow1015LateOpen1967,
                 MerrillLynchComputer1015LateOpen1974,
                 FireDrill1015LateOpen1974,
                 FireDrill1015LateOpen1976,
@@ -1027,17 +1027,17 @@ class NYSEExchangeCalendar(MarketCalendar):
                 KingGeorgeVFuneral11amLateOpen1936,
                 Snow11amLateOpening1960,
                 Snow11amLateOpen1969,
-                Ice11amLateOpen1973,                    
+                Ice11amLateOpen1973,
                 Snow11amLateOpen1978,
                 Fire11amLateOpen1989,
                 Snow11amLateOpen1996,
             ])),
             (time(11, 5, tzinfo=timezone('America/New_York')), AbstractHolidayCalendar(rules=[
                 PowerFail1105LateOpen,
-            ])),    
+            ])),
             (time(11, 15, tzinfo=timezone('America/New_York')), AbstractHolidayCalendar(rules=[
                 Storm1115LateOpen1976,
-            ])),                        
+            ])),
             (time(12, tzinfo=timezone('America/New_York')), AbstractHolidayCalendar(rules=[
                 KingEdwardFuneral12pmOpen1910,
                 JPMorganFuneral12pmOpen1913,
@@ -1050,22 +1050,22 @@ class NYSEExchangeCalendar(MarketCalendar):
             ])),
             ]
 
-# 
+#
     @property
     def special_opens_adhoc(self):
-        return [                       
-            (time(9, 31, tzinfo=timezone('America/New_York')), 
-             [t.strftime("%Y-%m-%d") for t in TroopsInGulf931LateOpens1991]                     
-            ),     
-            (time(11, tzinfo=timezone('America/New_York')), 
-             [t.strftime("%Y-%m-%d") for t in HeavyVolume11amLateOpen1933]                     
-            ),     
-            (time(12, tzinfo=timezone('America/New_York')), 
+        return [
+            (time(9, 31, tzinfo=timezone('America/New_York')),
+             [t.strftime("%Y-%m-%d") for t in TroopsInGulf931LateOpens1991]
+            ),
+            (time(11, tzinfo=timezone('America/New_York')),
+             [t.strftime("%Y-%m-%d") for t in HeavyVolume11amLateOpen1933]
+            ),
+            (time(12, tzinfo=timezone('America/New_York')),
                        [t.strftime("%Y-%m-%d") for t in BacklogRelief12pmLateOpen1929]
                      + [t.strftime("%Y-%m-%d") for t in HeavyVolume12pmLateOpen1933]
-            ),            
+            ),
         ]
- 
+
     # Override market_calendar.py
     def valid_days(self, start_date, end_date, tz='UTC'):
         """
@@ -1076,119 +1076,120 @@ class NYSEExchangeCalendar(MarketCalendar):
         :param tz: time zone in either string or pytz.timezone
         :return: DatetimeIndex of valid business days
         """
-        # Starting Monday Sept. 29, 1952, no more saturday trading days
         trading_days = pd.date_range(start_date, end_date, freq=self.holidays(), normalize=True, tz=tz)
-        ts_start_date = pd.Timestamp(start_date, tz='UTC')
-        ts_end_date = pd.Timestamp(end_date, tz='UTC')
-        if ts_start_date < pd.Timestamp('1952-09-29', tz='UTC'):
-            if ts_end_date   <  pd.Timestamp('1952-09-29', tz='UTC'):
-                return trading_days
-            if ts_end_date   >=  pd.Timestamp('1952-09-29', tz='UTC'):
-                saturdays = pd.date_range('1952-09-29', end_date, freq='W-SAT', tz='UTC')
-        else: 
-            saturdays = pd.date_range(start_date, end_date, freq='W-SAT', tz='UTC')         
-                    
-        drop_days = []
-        for s in saturdays:
-            if s in trading_days:
-                drop_days.append(s)
-        return trading_days.drop(drop_days)
-       
+
+        # Starting Monday Sept. 29, 1952, no more saturday trading days
+        above_cut_off = trading_days >= pd.Timestamp('1952-09-29', tz='UTC')
+        if above_cut_off.any():
+            above_and_saturday = (trading_days.weekday == 5) & above_cut_off
+            trading_days = trading_days[~above_and_saturday]
+
+        return trading_days
+
 
     def days_at_time_open(self, days, tz, day_offset=0):
         """
-        Create an index of days at time ``t``, interpreted in timezone ``tz``. 
+        Create an index of days at time ``self.open_time``, interpreted in timezone ``tz``.
         The returned index is localized to UTC.
+
+        If self.open_time == self.open_time_default, the times are adjusted according to
+        the real default time of NYSE:
+            before 1985: 10am
+            after: 9.30am
+        Otherwise, the user-chosen open_time is used for all days
         
         Rewritten from market_calendar.py due to variable open times    
         
         :param days: DatetimeIndex An index of dates (represented as midnight).
-        :param t: datetime.time The time to apply as an offset to each day in ``days``.
         :param tz: pytz.timezone The timezone to use to interpret ``t``.
         :param day_offset: int The number of days we want to offset @days by
-        :return: DatetimeIndex of date with the time t
+        :return: DatetimeIndex
         """
         if len(days) == 0:
             return pd.DatetimeIndex(days).tz_localize(tz).tz_convert('UTC')
-    
-        # Offset days without tz to avoid timezone issues.
-        days = pd.DatetimeIndex(days).tz_localize(None)
-        
-        # Prior to 1985 trading began at 10am
-        # After 1985 trading begins at 9:30am
-        dti = []
-        for d in days:
-            if d >= pd.Timestamp('1985-01-01'):
-                t = time(9,30)
-            else:
-                t = time(10)
-            
-                           
-            delta =  pd.Timedelta(
-                        days=day_offset,
-                        hours=t.hour,
-                        minutes=t.minute,
-                        seconds=t.second)
 
-            # dates before 1901-12-14 have a 4 minute time shift. rounding removes it
-            # You also can't round when open/close is within the rounding period
-            if (d < pd.Timestamp('1901-12-14')):
-                dti.append( (d + delta).tz_localize(tz).tz_convert('UTC').round('15min') )
-            else:
-                dti.append( (d + delta).tz_localize(tz).tz_convert('UTC'))
-                
-        return pd.DatetimeIndex(dti)
-    
+        # Offset days without tz to avoid timezone issues.
+        _days = pd.DatetimeIndex(days).tz_localize(None)
+        delta = pd.Timedelta(
+            days=day_offset,
+            hours=self.open_time.hour,
+            minutes=self.open_time.minute,
+            seconds=self.open_time.second)
+
+        days = _days + delta  # standard market_open, either default or user-chosen
+
+        # If no custom time requested, change open, otherwise keep the chosen time
+        if self.open_time == self.open_time_default:
+            # Prior to 1985 trading began at 10am
+            # After 1985 trading begins at 9:30am
+            days = days.where(_days >= pd.Timestamp('1985-01-01'),
+                              _days + pd.Timedelta( days= day_offset,
+                                                    hours= 10))
+
+        days = days.tz_localize(tz).tz_convert('UTC')
+        # dates before 1901-12-14 have a 4 minute time shift. rounding removes it
+        # You also can't round when open/close is within the rounding period
+        return days.where(_days >= pd.Timestamp('1901-12-14'), days.round("15min"))
+
 
     def days_at_time_close(self, days, tz, day_offset=0):
         """
-        Create an index of days at time ``t``, interpreted in timezone ``tz``. 
+        Create an index of days at time ``self.close_time``, interpreted in timezone ``tz``.
         The returned index is localized to UTC.
-        
+
+        If self.close_time == self.close_time_default, the times are adjusted according to
+        the real default time of NYSE:
+            before 1952-09-29: 15pm
+            before 1974: 15.30pm
+            after: 16pm
+            (Saturdays: 12pm)
+        Otherwise, the user-chosen close_time is used for all days
+
         Rewritten from market_calendar.py due to variable close times    
         
         :param days: DatetimeIndex An index of dates (represented as midnight).
-        :param t: datetime.time The time to apply as an offset to each day in ``days``.
         :param tz: pytz.timezone The timezone to use to interpret ``t``.
         :param day_offset: int The number of days we want to offset @days by
-        :return: DatetimeIndex of date with the time t
+        :return: DatetimeIndex
         """
         if len(days) == 0:
             return pd.DatetimeIndex(days).tz_localize(tz).tz_convert('UTC')
-    
+
         # Offset days without tz to avoid timezone issues.
-        days = pd.DatetimeIndex(days).tz_localize(None)
-                
-        dti = []
-        for d in days:
-            if d < pd.Timestamp('1952-09-29'):
-                t = time(15)
-            elif ( d >= pd.Timestamp('1952-09-29') and d < pd.Timestamp('1974-01-01')):
-                t = time(15,30)
-            else:
-                t = time(16)
-                           
-            # Saturday close    
-            if d.dayofweek == 5:
-                t = time(12)
-            
-            
-            delta =  pd.Timedelta(
-                        days=day_offset,
-                        hours=t.hour,
-                        minutes=t.minute,
-                        seconds=t.second)
+        _days = pd.DatetimeIndex(days).tz_localize(None)
+        delta = pd.Timedelta(
+            days=day_offset,
+            hours=self.close_time.hour,
+            minutes=self.close_time.minute,
+            seconds=self.close_time.second)
+        days = _days + delta  # standard market_close, either default or user-chosen
 
-            # dates before 1901-12-14 have a 4 minute time shift. rounding removes it
-            # You also can't round when open/close is within the rounding period
-            if (d < pd.Timestamp('1901-12-14')):
-                dti.append( (d + delta).tz_localize(tz).tz_convert('UTC').round('15min') )
-            else:
-                dti.append( (d + delta).tz_localize(tz).tz_convert('UTC'))
+        # If no custom time requested, change close, otherwise keep the chosen time
+        if self.close_time == self.close_time_default:
 
-                
-        return pd.DatetimeIndex(dti)
-    
+            # before 1952-09-29, close was at 15 instead of 16
+            after_first = _days >= pd.Timestamp('1952-09-29')
+            days = days.where(after_first,
+                              _days + pd.Timedelta(days= day_offset,
+                                                   hours= 15))
+            # between 1952-09-29 and 1974-01-01, close is at 15:30
+            after_second = _days >= pd.Timestamp("1974-01-01")
+            days = days.where(~after_first | after_second,
+                              _days + pd.Timedelta(days= day_offset,
+                                                   hours= 15,
+                                                   minutes= 30))
+            # Saturday close is at 12
+            days = days.where(_days.weekday != 5,
+                              _days + pd.Timedelta(days= day_offset,
+                                                   hours= 12))
+
+
+        days = days.tz_localize(tz).tz_convert('UTC')
+        # dates before 1901-12-14 have a 4 minute time shift. rounding removes it
+        # You also can't round when open/close is within the rounding period
+        return days.where(_days >= pd.Timestamp('1901-12-14'), days.round("15min"))
+
+
     # Override parent method so that derived valid_days is called            
     def schedule(self, start_date, end_date, tz='UTC'):
         """
@@ -1208,18 +1209,18 @@ class NYSEExchangeCalendar(MarketCalendar):
 
         # Setup all valid trading days
         _all_days = self.valid_days(start_date, end_date)
-        
+
         # If no valid days return an empty DataFrame
         if len(_all_days) == 0:
             return pd.DataFrame(columns=['market_open', 'market_close'], index=pd.DatetimeIndex([], freq='C'))
 
-        opens =  self.days_at_time_open(_all_days, self.tz, self.open_offset).tz_convert(tz)        
+        opens =  self.days_at_time_open(_all_days, self.tz, self.open_offset).tz_convert(tz)
         closes = self.days_at_time_close(_all_days, self.tz, self.close_offset).tz_convert(tz)
 
         # `DatetimeIndex`s of nonstandard opens/closes
         _special_opens = self._calculate_special_opens(start_date, end_date)
         _special_closes = self._calculate_special_closes(start_date, end_date)
-        
+
         # Overwrite the special opens and closes on top of the standard ones.
         _overwrite_special_dates(_all_days, opens, _special_opens)
         _overwrite_special_dates(_all_days, closes, _special_closes)
@@ -1236,7 +1237,7 @@ class NYSEExchangeCalendar(MarketCalendar):
             result['break_end'] = temp
 
         return result
-    
+
     def early_closes(self, schedule):
         """
         Get a DataFrame of the dates that are an early close.
@@ -1251,18 +1252,18 @@ class NYSEExchangeCalendar(MarketCalendar):
         # 1952-1973 close was Mon-Fri 3:30pm (no saturday trades)
         # 1974+ close is 4pm 
         # dates before 1901-12-14 have a 4 minute time shift. rounding removes it
-              
+
         close3pmPre1901 = schedule['market_close'].apply(lambda x: (x.tz_convert(self.tz).round('15min').time() != time(15)) &
                                                             (x < pd.Timestamp('1901-12-14', tz='UTC')) &
                                                             (x < pd.Timestamp('1952-09-29', tz='UTC')) &
-                                                            (x.dayofweek != 5)) 
-        
+                                                            (x.dayofweek != 5))
+
         close3pm = schedule['market_close'].apply(lambda x: (x.tz_convert(self.tz).time() != time(15)) &
                                                             (x >= pd.Timestamp('1901-12-14', tz='UTC')) &
                                                             (x < pd.Timestamp('1952-09-29', tz='UTC')) &
-                                                            (x.dayofweek != 5)) 
-        
-        
+                                                            (x.dayofweek != 5))
+
+
         close12SatPre1901  = schedule['market_close'].apply(lambda x: (x.tz_convert(self.tz).round('15min').time() != time(12)) &
                                                                 (x < pd.Timestamp('1901-12-14', tz='UTC')) &
                                                                 (x.dayofweek == 5))
@@ -1270,21 +1271,21 @@ class NYSEExchangeCalendar(MarketCalendar):
         close12Sat  = schedule['market_close'].apply(lambda x: (x.tz_convert(self.tz).time() != time(12)) &
                                                                (x >= pd.Timestamp('1901-12-14', tz='UTC')) &
                                                                (x.dayofweek == 5))
-        
+
         close330pm = schedule['market_close'].apply(lambda x: (x.tz_convert(self.tz).time() != time(15,30)) &
                                                               (x >= pd.Timestamp('1952-09-29', tz='UTC')) &
-                                                              (x < pd.Timestamp('1974-01-01', tz='UTC')) 
+                                                              (x < pd.Timestamp('1974-01-01', tz='UTC'))
                                                     )
-        
-        close4pm = schedule['market_close'].apply(lambda x: (x.tz_convert(self.tz).time() != time(16)) &                                                              
+
+        close4pm = schedule['market_close'].apply(lambda x: (x.tz_convert(self.tz).time() != time(16)) &
                                                               (x >= pd.Timestamp('1974-01-01', tz='UTC'))
                                                     )
-        
+
         mask = close3pm | close3pmPre1901 | close330pm | close4pm | close12Sat | close12SatPre1901
 
         return schedule[mask]
- 
- 
+
+
 
     def late_opens(self, schedule):
         """
@@ -1299,14 +1300,14 @@ class NYSEExchangeCalendar(MarketCalendar):
         open10amPre1901 = schedule['market_open'].apply(lambda x: (x.tz_convert(self.tz).round('15min').time() != time(10)) &
                                                             (x < pd.Timestamp('1985-01-01', tz='UTC')) &
                                                             (x < pd.Timestamp('1901-12-14', tz='UTC')))
-        
+
         open10am        = schedule['market_open'].apply(lambda x: (x.tz_convert(self.tz).time() != time(10)) &
                                                             (x < pd.Timestamp('1985-01-01', tz='UTC')) &
                                                             (x >= pd.Timestamp('1901-12-14', tz='UTC')))
-                                                           
+
         open930am = schedule['market_open'].apply(lambda x: (x.tz_convert(self.tz).time() != time(9,30)) &
                                                             (x >= pd.Timestamp('1985-01-01', tz='UTC')) )
-        
+
         mask = open10am | open10amPre1901 | open930am
 
         return schedule[mask]

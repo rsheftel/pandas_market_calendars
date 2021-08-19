@@ -1,16 +1,107 @@
 import os
-
+import datetime as dt
 import pandas as pd
 import pytz
 from pandas.testing import assert_index_equal
 
 from pandas_market_calendars.exchange_calendar_nyse import NYSEExchangeCalendar
 
+def test_custom_open_close():
+    cal = NYSEExchangeCalendar(open_time= dt.time(9), close_time= dt.time(10))
+    sched = cal.schedule("2021-08-16", "2021-08-16")
+    assert sched.market_open.iat[0] == pd.Timestamp("2021-08-16 13:00:00+00:00")
+    assert sched.market_close.iat[0] == pd.Timestamp("2021-08-16 14:00:00+00:00")
+
+def test_days_at_time_open():
+    cal = NYSEExchangeCalendar()
+
+    # check if market_open before/after 1985 is correct
+    valid = cal.valid_days("1984-12-30", "1985-01-03")
+    at_open = cal.days_at_time_open(valid, "UTC")
+
+    assert_index_equal(at_open, pd.DatetimeIndex(
+        ['1984-12-31 10:00:00+00:00', '1985-01-02 09:30:00+00:00',
+        '1985-01-03 09:30:00+00:00'], dtype='datetime64[ns, UTC]', freq=None
+    ))
+
+    # check if it is rounded
+    valid = cal.valid_days("1901-12-13", "1901-12-16")
+    at_open = cal.days_at_time_open(valid, "UTC")
+
+    assert_index_equal(at_open, pd.DatetimeIndex(
+        ['1901-12-13 10:00:00+00:00', '1901-12-14 10:00:00+00:00',
+        '1901-12-16 10:00:00+00:00'], dtype='datetime64[ns, UTC]', freq=None
+    ))
+
+    # check if chosen time is kept
+    cal = NYSEExchangeCalendar(open_time= dt.time(9))
+    at_open = cal.days_at_time_open(valid, "UTC")
+
+    assert_index_equal(at_open, pd.DatetimeIndex(
+        ['1901-12-13 09:00:00+00:00', '1901-12-14 09:00:00+00:00',
+         '1901-12-16 09:00:00+00:00'], dtype='datetime64[ns, UTC]', freq=None
+    ))
+
+def test_days_at_time_close():
+    cal = NYSEExchangeCalendar()
+
+    # test market_close before/after 1952-09-29
+    valid = cal.valid_days("1952-09-26", "1952-09-30")
+    at_close = cal.days_at_time_close(valid, "UTC")
+
+    assert_index_equal(at_close, pd.DatetimeIndex(
+        ['1952-09-26 15:00:00+00:00', '1952-09-29 15:30:00+00:00',
+         '1952-09-30 15:30:00+00:00'], dtype='datetime64[ns, UTC]', freq=None
+    ))
+
+    # market_close before/after 1974-01-01
+    valid = cal.valid_days("1973-12-28", "1974-01-02")
+    at_close = cal.days_at_time_close(valid, "UTC")
+
+    assert_index_equal(at_close, pd.DatetimeIndex(
+        ['1973-12-28 15:30:00+00:00', '1973-12-31 15:30:00+00:00',
+        '1974-01-02 16:00:00+00:00'], dtype='datetime64[ns, UTC]', freq=None
+    ))
+
+    # test all three market_closes
+    valid = cal.valid_days("1952-09-26", "1974-01-02")
+    at_close = cal.days_at_time_close(valid, "UTC")
+
+    assert at_close[0] == pd.Timestamp('1952-09-26 15:00:00+00:00')
+    assert at_close[1] == pd.Timestamp('1952-09-29 15:30:00+00:00')
+    assert at_close[-2] == pd.Timestamp('1973-12-31 15:30:00+00:00')
+    assert at_close[-1] == pd.Timestamp('1974-01-02 16:00:00+00:00')
+
+    # test Saturday closes
+    valid = cal.valid_days("1952-05-23", "1952-05-26")
+    at_close = cal.days_at_time_close(valid, "UTC")
+
+    assert_index_equal(at_close, pd.DatetimeIndex(
+        ['1952-05-23 15:00:00+00:00', '1952-05-24 12:00:00+00:00',
+        '1952-05-26 15:00:00+00:00'], dtype='datetime64[ns, UTC]', freq=None
+    ))
+
+    # check if it is rounded
+    valid = cal.valid_days("1901-12-13", "1901-12-16")
+    at_close = cal.days_at_time_close(valid, "UTC")
+
+    assert_index_equal(at_close, pd.DatetimeIndex(
+        ['1901-12-13 15:00:00+00:00', '1901-12-14 12:00:00+00:00',
+        '1901-12-16 15:00:00+00:00'], dtype='datetime64[ns, UTC]', freq=None))
+
+    # check if chosen time is kept
+    cal = NYSEExchangeCalendar(close_time= dt.time(10))
+    at_close = cal.days_at_time_close(valid, "UTC")
+
+    assert_index_equal(at_close, pd.DatetimeIndex(
+        ['1901-12-13 10:00:00+00:00', '1901-12-14 10:00:00+00:00',
+         '1901-12-16 10:00:00+00:00'], dtype='datetime64[ns, UTC]', freq=None
+    ))
+
 
 def test_time_zone():
     assert NYSEExchangeCalendar().tz == pytz.timezone('America/New_York')
     assert NYSEExchangeCalendar().name == 'NYSE'
-
 
 def test_open_time_tz():
     nyse = NYSEExchangeCalendar()
