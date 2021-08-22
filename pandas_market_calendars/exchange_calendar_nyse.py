@@ -18,10 +18,8 @@ from itertools import chain
 
 import pandas as pd
 from pandas.tseries.holiday import AbstractHolidayCalendar
-import datetime as dt
 from pytz import timezone
 
-import pandas_market_calendars.market_calendar as mc
 from pandas_market_calendars.market_calendar import clean_dates, _overwrite_special_dates
 
 from pandas_market_calendars.holidays_nyse import (    

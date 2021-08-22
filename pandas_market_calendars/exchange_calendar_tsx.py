@@ -3,6 +3,7 @@ from datetime import time
 import pandas as pd
 from pandas.tseries.holiday import AbstractHolidayCalendar, DateOffset, GoodFriday, Holiday, MO, weekend_to_monday
 from pytz import timezone
+from itertools import chain
 
 from .holidays_uk import BoxingDay, WeekendBoxingDay, WeekendChristmas
 from .market_calendar import MarketCalendar, MONDAY, TUESDAY, WEDNESDAY, THURSDAY, FRIDAY
@@ -73,6 +74,11 @@ ChristmasEveEarlyClose2010Onwards = Holiday(
     start_date=pd.Timestamp("2010-01-01"),
 )
 
+September11Closings2001 = [
+    pd.Timestamp("2001-09-11", tz='UTC'),
+    pd.Timestamp("2001-09-12", tz='UTC'),
+]
+
 
 class TSXExchangeCalendar(MarketCalendar):
     """
@@ -138,6 +144,12 @@ class TSXExchangeCalendar(MarketCalendar):
             BoxingDay,
             WeekendBoxingDay
         ])
+
+    @property
+    def adhoc_holidays(self):
+        return list(chain(
+            September11Closings2001,
+        ))
 
     @property
     def special_closes(self):

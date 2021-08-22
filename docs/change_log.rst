@@ -3,6 +3,10 @@
 
 Updates
 -------
+3.1 (XX/XX/21)
+~~~~~~~~~~~~~
+- Added September 11 holidays to TSX calendar
+
 3.0 (8/17/21)
 ~~~~~~~~~~~~~
 - Major update to the date_range() functionality. This new behavior is more complete and consistent, but changes
