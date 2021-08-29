@@ -13,7 +13,7 @@ VERSION = '3.1'
 
 # requirements
 REQUIRED_PYTHON = '>=3.7.0'
-REQUIRED_PACKAGES = ['pandas>=0.18', 'pytz', 'python-dateutil', 'exchange_calendars']
+REQUIRED_PACKAGES = ['pandas>=0.18', 'pytz', 'python-dateutil', 'exchange_calendars>=3.3']
 
 # Package meta-data
 NAME = 'pandas_market_calendars'

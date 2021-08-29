@@ -3,9 +3,10 @@
 
 Updates
 -------
-3.1 (XX/XX/21)
+3.1 (08/29/21)
 ~~~~~~~~~~~~~
 - Added September 11 holidays to TSX calendar
+- Made the minimum version for exchange_calendars >= 3.3 to resolve problem with newer versions of pandas
 
 3.0 (8/17/21)
 ~~~~~~~~~~~~~
