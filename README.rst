@@ -36,6 +36,8 @@ This package provides access to over 50+ unique exchange calendars for global eq
 This package is a fork of the Zipline package from Quantopian and extracts just the relevant parts. All credit for
 their excellent work to Quantopian.
 
+Major Releases
+~~~~~~~~~~~~~~
 As of v1.0 this package only works with Python3. This is consistent with Pandas dropping support for Python2.
 
 As of v1.4 this package now has the concept of a break during the trading day. For example this can accommodate Asian
