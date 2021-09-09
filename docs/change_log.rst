@@ -3,6 +3,10 @@
 
 Updates
 -------
+3.2 (XX/XX/XX)
+~~~~~~~~~~~~~
+- Fixed 12/24/1999 early close on NYSE
+
 3.1 (08/29/21)
 ~~~~~~~~~~~~~
 - Added September 11 holidays to TSX calendar
