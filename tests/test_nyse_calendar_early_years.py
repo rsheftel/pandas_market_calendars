@@ -3106,6 +3106,7 @@ def test_1999():
         pd.Timestamp('1999-07-05', tz='UTC'),
         pd.Timestamp('1999-09-06', tz='UTC'),
         pd.Timestamp('1999-11-25', tz='UTC'),
+        pd.Timestamp('1999-12-24', tz='UTC'),
     ]
     _test_holidays(holidays, start, end)
     _test_no_special_opens(start, end)  
@@ -3113,7 +3114,6 @@ def test_1999():
     # early closes we expect:
     early_closes = [
         pd.Timestamp('1999-11-26 1:00PM', tz='America/New_York'), # Day after Thanksgiving
-        pd.Timestamp('1999-12-24 1:00PM', tz='America/New_York'), # Christmas eve
         ]        
     _test_has_early_closes(early_closes, start, end)     
     

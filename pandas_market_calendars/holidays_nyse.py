@@ -463,7 +463,7 @@ ChristmasNYSE = Holiday(
     'Christmas',
     month=12,
     day=25,
-    start_date=Timestamp('2000-01-01'),
+    start_date=Timestamp('1999-01-01'),
     observance=nearest_workday, 
 )
 
