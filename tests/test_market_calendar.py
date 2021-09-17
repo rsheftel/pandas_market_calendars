@@ -218,8 +218,8 @@ def test_schedule():
     results = cal.schedule('2016-12-01', '2016-12-31')
     assert len(results) == 21
 
-    expected = pd.Series({'market_open': pd.Timestamp('2016-12-01 03:13:00+0000', tz='UTC', freq='B'),
-                          'market_close': pd.Timestamp('2016-12-01 03:49:00+0000', tz='UTC', freq='B')},
+    expected = pd.Series({'market_open': pd.Timestamp('2016-12-01 03:13:00+0000', tz='UTC'),
+                          'market_close': pd.Timestamp('2016-12-01 03:49:00+0000', tz='UTC')},
                          name=pd.Timestamp('2016-12-01'), index=['market_open', 'market_close'])
     # because of change in pandas in v0.24, pre-0.24 versions need object dtype
     if pd.__version__ < '0.24':
@@ -227,8 +227,8 @@ def test_schedule():
 
     assert_series_equal(results.iloc[0], expected)
 
-    expected = pd.Series({'market_open': pd.Timestamp('2016-12-30 03:13:00+0000', tz='UTC', freq='B'),
-                          'market_close': pd.Timestamp('2016-12-30 03:49:00+0000', tz='UTC', freq='B')},
+    expected = pd.Series({'market_open': pd.Timestamp('2016-12-30 03:13:00+0000', tz='UTC'),
+                          'market_close': pd.Timestamp('2016-12-30 03:49:00+0000', tz='UTC')},
                          name=pd.Timestamp('2016-12-30'), index=['market_open', 'market_close'])
     # because of change in pandas in v0.24, pre-0.24 versions need object dtype
     if pd.__version__ < '0.24':
@@ -237,9 +237,9 @@ def test_schedule():
     assert_series_equal(results.iloc[-1], expected)
 
     # one day schedule
-    expected = pd.DataFrame({'market_open': pd.Timestamp('2016-12-01 03:13:00+0000', tz='UTC', freq='B'),
-                             'market_close': pd.Timestamp('2016-12-01 03:49:00+0000', tz='UTC', freq='B')},
-                            index=pd.DatetimeIndex([pd.Timestamp('2016-12-01')], freq='C'),
+    expected = pd.DataFrame({'market_open': pd.Timestamp('2016-12-01 03:13:00+0000', tz='UTC'),
+                             'market_close': pd.Timestamp('2016-12-01 03:49:00+0000', tz='UTC')},
+                            index=pd.DatetimeIndex([pd.Timestamp('2016-12-01')]),
                             columns=['market_open', 'market_close'])
     actual = cal.schedule('2016-12-01', '2016-12-01')
     if pd.__version__ < '1.1.0':
@@ -252,8 +252,8 @@ def test_schedule():
         cal.schedule('2016-02-02', '2016-01-01')
     
     # using a different time zone
-    expected = pd.DataFrame({'market_open': pd.Timestamp('2016-11-30 22:13:00-05:00', tz='US/Eastern', freq='B'),
-                             'market_close': pd.Timestamp('2016-11-30 22:49:00-05:00', tz='US/Eastern', freq='B')},
+    expected = pd.DataFrame({'market_open': pd.Timestamp('2016-11-30 22:13:00-05:00', tz='US/Eastern'),
+                             'market_close': pd.Timestamp('2016-11-30 22:49:00-05:00', tz='US/Eastern')},
                             index=pd.DatetimeIndex([pd.Timestamp('2016-12-01')]),
                             columns=['market_open', 'market_close'])
 
@@ -288,10 +288,10 @@ def test_schedule_w_breaks():
     results = cal.schedule('2016-12-01', '2016-12-31')
     assert len(results) == 21
 
-    expected = pd.Series({'market_open': pd.Timestamp('2016-12-01 14:30:00+0000', tz='UTC', freq='B'),
-                          'market_close': pd.Timestamp('2016-12-01 17:00:00+0000', tz='UTC', freq='B'),
-                          'break_start': pd.Timestamp('2016-12-01 15:00:00+0000', tz='UTC', freq='B'),
-                          'break_end': pd.Timestamp('2016-12-01 16:00:00+0000', tz='UTC', freq='B')
+    expected = pd.Series({'market_open': pd.Timestamp('2016-12-01 14:30:00+0000', tz='UTC'),
+                          'market_close': pd.Timestamp('2016-12-01 17:00:00+0000', tz='UTC'),
+                          'break_start': pd.Timestamp('2016-12-01 15:00:00+0000', tz='UTC'),
+                          'break_end': pd.Timestamp('2016-12-01 16:00:00+0000', tz='UTC')
     },
                          name=pd.Timestamp('2016-12-01'), index=['market_open', 'market_close', 'break_start', 
                          'break_end'])
@@ -299,31 +299,31 @@ def test_schedule_w_breaks():
     assert_series_equal(results.iloc[0], expected)
 
     # special open is after break start
-    expected = pd.Series({'market_open': pd.Timestamp('2016-12-29 15:20:00+0000', tz='UTC', freq='B'),
-                          'market_close': pd.Timestamp('2016-12-29 17:00:00+0000', tz='UTC', freq='B'),
-                          'break_start': pd.Timestamp('2016-12-29 15:20:00+0000', tz='UTC', freq='B'),
-                          'break_end': pd.Timestamp('2016-12-29 16:00:00+0000', tz='UTC', freq='B')},
+    expected = pd.Series({'market_open': pd.Timestamp('2016-12-29 15:20:00+0000', tz='UTC'),
+                          'market_close': pd.Timestamp('2016-12-29 17:00:00+0000', tz='UTC'),
+                          'break_start': pd.Timestamp('2016-12-29 15:20:00+0000', tz='UTC'),
+                          'break_end': pd.Timestamp('2016-12-29 16:00:00+0000', tz='UTC')},
                          name=pd.Timestamp('2016-12-29'), index=['market_open', 'market_close', 'break_start',
                          'break_end'])
 
     assert_series_equal(results.iloc[-2], expected)
 
     # special close is before break end
-    expected = pd.Series({'market_open': pd.Timestamp('2016-12-30 14:30:00+0000', tz='UTC', freq='B'),
-                          'market_close': pd.Timestamp('2016-12-30 15:40:00+0000', tz='UTC', freq='B'),
-                          'break_start': pd.Timestamp('2016-12-30 15:00:00+0000', tz='UTC', freq='B'),
-                          'break_end': pd.Timestamp('2016-12-30 15:40:00+0000', tz='UTC', freq='B')},
+    expected = pd.Series({'market_open': pd.Timestamp('2016-12-30 14:30:00+0000', tz='UTC'),
+                          'market_close': pd.Timestamp('2016-12-30 15:40:00+0000', tz='UTC'),
+                          'break_start': pd.Timestamp('2016-12-30 15:00:00+0000', tz='UTC'),
+                          'break_end': pd.Timestamp('2016-12-30 15:40:00+0000', tz='UTC')},
                          name=pd.Timestamp('2016-12-30'), index=['market_open', 'market_close', 'break_start',
                          'break_end'])
 
     assert_series_equal(results.iloc[-1], expected)
 
     # using a different time zone
-    expected = pd.DataFrame({'market_open': pd.Timestamp('2016-12-28 09:30:00-05:00', tz='America/New_York', freq='B'),
-                             'market_close': pd.Timestamp('2016-12-28 12:00:00-05:00', tz='America/New_York', freq='B'),
-                             'break_start': pd.Timestamp('2016-12-28 10:00:00-05:00', tz='America/New_York', freq='B'),
-                             'break_end': pd.Timestamp('2016-12-28 11:00:00-05:00', tz='America/New_York', freq='B')},
-                            index=pd.DatetimeIndex([pd.Timestamp('2016-12-28')], freq='C'),
+    expected = pd.DataFrame({'market_open': pd.Timestamp('2016-12-28 09:30:00-05:00', tz='America/New_York'),
+                             'market_close': pd.Timestamp('2016-12-28 12:00:00-05:00', tz='America/New_York'),
+                             'break_start': pd.Timestamp('2016-12-28 10:00:00-05:00', tz='America/New_York'),
+                             'break_end': pd.Timestamp('2016-12-28 11:00:00-05:00', tz='America/New_York')},
+                            index=pd.DatetimeIndex([pd.Timestamp('2016-12-28')]),
                             columns=['market_open', 'market_close', 'break_start', 'break_end'])
 
     actual = cal.schedule('2016-12-28', '2016-12-28', tz='America/New_York')
@@ -342,8 +342,8 @@ def test_schedule_w_times():
     results = cal.schedule('2016-12-01', '2016-12-31')
     assert len(results) == 21
 
-    expected = pd.Series({'market_open': pd.Timestamp('2016-12-01 04:12:00+0000', tz='UTC', freq='B'),
-                          'market_close': pd.Timestamp('2016-12-01 05:13:00+0000', tz='UTC', freq='B')},
+    expected = pd.Series({'market_open': pd.Timestamp('2016-12-01 04:12:00+0000', tz='UTC'),
+                          'market_close': pd.Timestamp('2016-12-01 05:13:00+0000', tz='UTC')},
                          name=pd.Timestamp('2016-12-01'), index=['market_open', 'market_close'])
     # because of change in pandas in v0.24, pre-0.24 versions need object dtype
     if pd.__version__ < '0.24':
@@ -351,8 +351,8 @@ def test_schedule_w_times():
 
     assert_series_equal(results.iloc[0], expected)
 
-    expected = pd.Series({'market_open': pd.Timestamp('2016-12-30 04:12:00+0000', tz='UTC', freq='B'),
-                          'market_close': pd.Timestamp('2016-12-30 05:13:00+0000', tz='UTC', freq='B')},
+    expected = pd.Series({'market_open': pd.Timestamp('2016-12-30 04:12:00+0000', tz='UTC'),
+                          'market_close': pd.Timestamp('2016-12-30 05:13:00+0000', tz='UTC')},
                          name=pd.Timestamp('2016-12-30'), index=['market_open', 'market_close'])
     # because of change in pandas in v0.24, pre-0.24 versions need object dtype
     if pd.__version__ < '0.24':
@@ -519,7 +519,8 @@ def test_is_open_now(patch_get_current_time):
 def test_bad_dates():
     cal = FakeCalendar()
 
-    empty = pd.DataFrame(columns=['market_open', 'market_close'], index=pd.DatetimeIndex([], freq='C'))
+    empty = pd.DataFrame(columns=['market_open', 'market_close'], index=pd.DatetimeIndex([]))
+    empty.index.freq = "C"
 
     # single weekend date
     schedule = cal.schedule('2018-06-30', '2018-06-30')
