@@ -137,9 +137,9 @@ def test_2012():
 
     # early closes we expect:
     early_closes_2012 = [
-        pd.Timestamp("2012-07-03"),
-        pd.Timestamp("2012-11-23"),
-        pd.Timestamp("2012-12-24")
+        pd.Timestamp("2012-07-03", tz='UTC'),
+        pd.Timestamp("2012-11-23", tz='UTC'),
+        pd.Timestamp("2012-12-24", tz='UTC')
     ]
 
     expected = nyse.early_closes(nyse.schedule('2012-01-01', '2012-12-31'))
@@ -152,7 +152,7 @@ def test_special_holidays():
     # 9/11
     # Sept 11, 12, 13, 14 2001
     nyse = NYSEExchangeCalendar()
-    good_dates = nyse.valid_days('1985-01-01', '2016-12-31').tz_localize(None)
+    good_dates = nyse.valid_days('1985-01-01', '2016-12-31')
     assert pd.Timestamp("9/11/2001") not in good_dates
     assert pd.Timestamp("9/12/2001") not in good_dates
     assert pd.Timestamp("9/13/2001") not in good_dates
