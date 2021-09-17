@@ -1117,7 +1117,7 @@ class NYSEExchangeCalendar(MarketCalendar):
         days = _days + delta  # standard market_open, either default or user-chosen
 
         # If no custom time requested, change open, otherwise keep the chosen time
-        if self._open_time is False:
+        if self.open_time == self.open_time_default:
             # Prior to 1985 trading began at 10am
             # After 1985 trading begins at 9:30am
             days = days.where(_days >= pd.Timestamp('1985-01-01'),
@@ -1163,7 +1163,7 @@ class NYSEExchangeCalendar(MarketCalendar):
         days = _days + delta  # standard market_close, either default or user-chosen
 
         # If no custom time requested, change close, otherwise keep the chosen time
-        if self._close_time is False:
+        if self.close_time == self.close_time_default:
 
             # before 1952-09-29, close was at 15 instead of 16
             after_first = _days >= pd.Timestamp('1952-09-29')

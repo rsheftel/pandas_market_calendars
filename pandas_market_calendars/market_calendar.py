@@ -41,8 +41,8 @@ class MarketCalendar(metaclass=MarketCalendarMeta):
         :param open_time: Market open time override as datetime.time object. If None then default is used.
         :param close_time: Market close time override as datetime.time object. If None then default is used.
         """
-        self._open_time = False if open_time is None else open_time
-        self._close_time = False if close_time is None else close_time
+        self._open_time = self.open_time_default if open_time is None else open_time
+        self._close_time = self.close_time_default if close_time is None else close_time
         self._holidays = None
 
     @classmethod
@@ -180,7 +180,7 @@ class MarketCalendar(metaclass=MarketCalendarMeta):
 
         :return: open time
         """
-        return self._open_time or self.open_time_default
+        return self._open_time
 
     @property
     def close_time(self):
@@ -188,7 +188,7 @@ class MarketCalendar(metaclass=MarketCalendarMeta):
 
         :return: close time
         """
-        return self._close_time or self.close_time_default
+        return self._close_time
 
     @property
     def open_offset(self):
