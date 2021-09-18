@@ -122,7 +122,9 @@ class MarketCalendar(metaclass=MarketCalendarMeta):
 
         :return: time or None
         """
-        return None
+        try: return self._all_market_times["break_start"][None]
+        except KeyError: return None
+
 
     @property
     def break_end(self):
@@ -131,7 +133,8 @@ class MarketCalendar(metaclass=MarketCalendarMeta):
 
         :return: time or None
         """
-        return None
+        try: return self._all_market_times["break_end"][None]
+        except KeyError: return None
 
     @property
     def regular_holidays(self):
@@ -280,7 +283,7 @@ class MarketCalendar(metaclass=MarketCalendarMeta):
             times = self._all_market_times[market_time]
             _temp_days = days + self._tdelta(times[None])
 
-            for cut_off in self._all_cut_offs[market_time][1:]:
+            for cut_off in self._all_cut_offs[market_time][1:]: # _all_cut_offs is set by Meta
                 _temp_days.where(days >= pd.Timestamp(cut_off), days + times[cut_off])
 
             return _temp_days
