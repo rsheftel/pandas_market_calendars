@@ -1,3 +1,6 @@
+import pandas as pd
+
+
 def _regmeta_class_factory(cls, name):
     """
     :param cls(RegisteryMeta): registration meta class
@@ -64,3 +67,17 @@ class RegisteryMeta(type):
             if hasattr(b, '_regmeta_class_registry'):
                 _regmeta_register_class(b, cls, name)
         super(RegisteryMeta, cls).__init__(name, bases, attr)
+
+        if not all((None in times for times in cls._all_market_times.values())):
+            raise NotImplementedError("You need to set market times")
+
+        cls._all_cut_offs = {}
+        for market_time, times in cls._all_market_times.items():
+            lst = list(times.keys())
+            lst.remove(None)
+            cls._all_cut_offs[market_time] = [None]
+            cls._all_cut_offs[market_time].extend(sorted(lst, key= lambda x: pd.Timestamp(x), reverse= True))
+
+
+
+

@@ -35,7 +35,22 @@ class MarketCalendar(metaclass=MarketCalendarMeta):
     An MarketCalendar represents the timing information of a single market or exchange.
     Unless otherwise noted all times are in UTC and use Pandas data structures.
     """
+    """
+    There needs to be some kind of mapping of names of parts to their start and end times
+    
+    
+    Stop worrying about parts ending in the middle of the day.
+    
+    make .schedule be able to take keywords that indicate which parts to start and which to end with 
+       
+    
+    """
 
+    # tz = None
+    _all_market_times = {
+        "market_open": {None: None},
+        "market_close": {None: None}
+    }
     def __init__(self, open_time=None, close_time=None):
         """
         :param open_time: Market open time override as datetime.time object. If None then default is used.
@@ -83,24 +98,22 @@ class MarketCalendar(metaclass=MarketCalendarMeta):
         raise NotImplementedError()
 
     @property
-    @abstractmethod
     def open_time_default(self):
         """
         Default open time for the market
 
         :return: time
         """
-        raise NotImplementedError()
+        return self._all_market_times["market_open"][None]
 
     @property
-    @abstractmethod
     def close_time_default(self):
         """
         Default close time for the market
 
         :return: time
         """
-        raise NotImplementedError()
+        return self._all_market_times["market_close"][None]
 
     @property
     def break_start(self):
@@ -232,6 +245,49 @@ class MarketCalendar(metaclass=MarketCalendarMeta):
         """
         return pd.date_range(start_date, end_date, freq=self.holidays(), normalize=True, tz=tz)
 
+    def _tdelta(self, t, day_offset= 0):
+        return pd.Timedelta(days=day_offset, hours=t.hour, minutes=t.minute, seconds=t.second)
+
+
+    def days_at_time(self, days, market_time, day_offset=0):
+        """
+        Create an index of days at time ``t``, interpreted in timezone ``tz``. The returned index is localized to UTC.
+
+        In the example below, the times switch from 13:45 to 12:45 UTC because
+        March 13th is the daylight savings transition for US/Eastern.  All the
+        times are still 8:45 when interpreted in US/Eastern.
+
+        >>> import pandas as pd; import datetime; import pprint
+        >>> dts = pd.date_range('2016-03-12', '2016-03-14')
+        >>> dts_at_845 = days_at_time(dts, datetime.time(8, 45), 'US/Eastern')
+        >>> pprint.pprint([str(dt) for dt in dts_at_845])
+        ['2016-03-12 13:45:00+00:00',
+         '2016-03-13 12:45:00+00:00',
+         '2016-03-14 12:45:00+00:00']
+
+        :param days: DatetimeIndex An index of dates (represented as midnight).
+        :param market_time: datetime.time The time to apply as an offset to each day in ``days``.
+        :param day_offset: int The number of days we want to offset @days by
+        :return: DatetimeIndex of date with the time t
+        """
+        if len(days) == 0:
+            return pd.DatetimeIndex(days).tz_localize(self.tz).tz_convert('UTC')
+
+        # Offset days without tz to avoid timezone issues.
+        days = DatetimeIndex(days).tz_localize(None)
+
+        if isinstance(market_time, str):
+            times = self._all_market_times[market_time]
+            _temp_days = days + self._tdelta(times[None])
+
+            for cut_off in self._all_cut_offs[market_time][1:]:
+                _temp_days.where(days >= pd.Timestamp(cut_off), days + times[cut_off])
+
+            return _temp_days
+
+        else:
+           return (days + self._tdelta(market_time)).tz_localize(self.tz).tz_convert('UTC')
+
     def schedule(self, start_date, end_date, tz='UTC'):
         """
         Generates the schedule DataFrame. The resulting DataFrame will have all the valid business days as the index
@@ -255,9 +311,10 @@ class MarketCalendar(metaclass=MarketCalendarMeta):
         if len(_all_days) == 0:
             return pd.DataFrame(columns=['market_open', 'market_close'], index=pd.DatetimeIndex([], freq='C'))
 
+
         # `DatetimeIndex`s of standard opens/closes for each day.
-        opens = days_at_time(_all_days, self.open_time, self.tz, self.open_offset).tz_convert(tz)
-        closes = days_at_time(_all_days, self.close_time, self.tz, self.close_offset).tz_convert(tz)
+        opens = self.days_at_time(_all_days, "market_open", self.open_offset).tz_convert(tz)
+        closes = self.days_at_time(_all_days, "market_close", self.close_offset).tz_convert(tz)
 
         # `DatetimeIndex`s of nonstandard opens/closes
         _special_opens = self._calculate_special_opens(start_date, end_date)
@@ -270,11 +327,15 @@ class MarketCalendar(metaclass=MarketCalendarMeta):
         result = DataFrame(index=_all_days.tz_localize(None), columns=['market_open', 'market_close'],
                            data={'market_open': opens, 'market_close': closes})
 
-        if self.break_start:
-            result['break_start'] = days_at_time(_all_days, self.break_start, self.tz).tz_convert(tz)
+        try:
+            break_start = self._all_market_times["break_start"][None]
+            break_end = self._all_market_times["break_end"][None]
+        except KeyError: pass
+        else:
+            result['break_start'] = self.days_at_time(_all_days, break_start).tz_convert(tz)
             temp = result[['market_open', 'break_start']].max(axis=1)
             result['break_start'] = temp
-            result['break_end'] = days_at_time(_all_days, self.break_end, self.tz).tz_convert(tz)
+            result['break_end'] = self.days_at_time(_all_days, break_end).tz_convert(tz)
             temp = result[['market_close', 'break_end']].min(axis=1)
             result['break_end'] = temp
 
@@ -362,8 +423,7 @@ class MarketCalendar(metaclass=MarketCalendarMeta):
                                  self.tz)
                 for time_, calendar in calendars
             ] + [
-                days_at_time(datetimes, time_, self.tz)
-                for time_, datetimes in ad_hoc_dates
+                self.days_at_time(datetimes, time_) for time_, datetimes in ad_hoc_dates
             ]
         )
         # make the start_date and end_dates UTC and covert the entire day
@@ -388,58 +448,22 @@ class MarketCalendar(metaclass=MarketCalendarMeta):
         )
 
 
-def days_at_time(days, t, tz, day_offset=0):
-    """
-    Create an index of days at time ``t``, interpreted in timezone ``tz``. The returned index is localized to UTC.
 
-    In the example below, the times switch from 13:45 to 12:45 UTC because
-    March 13th is the daylight savings transition for US/Eastern.  All the
-    times are still 8:45 when interpreted in US/Eastern.
+    def holidays_at_time(self, calendar, start, end, time, tz):
+        # Not sure why this fails, but this should trap it until resolved
+        try:
+            holidays = calendar.holidays(
+                # Workaround for https://github.com/pydata/pandas/issues/9825.
+                start.tz_localize(None),
+                end.tz_localize(None),
+            )
+        except ValueError:
+            holidays = pd.DatetimeIndex([])
 
-    >>> import pandas as pd; import datetime; import pprint
-    >>> dts = pd.date_range('2016-03-12', '2016-03-14')
-    >>> dts_at_845 = days_at_time(dts, datetime.time(8, 45), 'US/Eastern')
-    >>> pprint.pprint([str(dt) for dt in dts_at_845])
-    ['2016-03-12 13:45:00+00:00',
-     '2016-03-13 12:45:00+00:00',
-     '2016-03-14 12:45:00+00:00']
-
-    :param days: DatetimeIndex An index of dates (represented as midnight).
-    :param t: datetime.time The time to apply as an offset to each day in ``days``.
-    :param tz: pytz.timezone The timezone to use to interpret ``t``.
-    :param day_offset: int The number of days we want to offset @days by
-    :return: DatetimeIndex of date with the time t
-    """
-    if len(days) == 0:
-        return pd.DatetimeIndex(days).tz_localize(tz).tz_convert('UTC')
-
-    # Offset days without tz to avoid timezone issues.
-    days = DatetimeIndex(days).tz_localize(None)
-    delta = pd.Timedelta(
-        days=day_offset,
-        hours=t.hour,
-        minutes=t.minute,
-        seconds=t.second,
-    )
-    return (days + delta).tz_localize(tz).tz_convert('UTC')
-
-
-def holidays_at_time(calendar, start, end, time, tz):
-    # Not sure why this fails, but this should trap it until resolved
-    try:
-        holidays = calendar.holidays(
-            # Workaround for https://github.com/pydata/pandas/issues/9825.
-            start.tz_localize(None),
-            end.tz_localize(None),
+        return days_at_time(
+            holidays,
+            time,
         )
-    except ValueError:
-        holidays = pd.DatetimeIndex([])
-
-    return days_at_time(
-        holidays,
-        time,
-        tz=tz,
-    )
 
 
 def _overwrite_special_dates(midnight_utcs,
