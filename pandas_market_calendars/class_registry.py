@@ -4,9 +4,9 @@ def _regmeta_class_factory(cls, name):
     :param name(str): name of class
     :return: class
     """
-    if name in cls._regmeta_class_registry:
+    try:
         return cls._regmeta_class_registry[name]
-    else:
+    except KeyError:
         raise RuntimeError(
             'Class {} is not one of the registered classes: {}'.format(name, cls._regmeta_class_registry.keys()))
 

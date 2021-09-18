@@ -292,7 +292,7 @@ class MarketCalendar(metaclass=MarketCalendarMeta):
             if using bars and would like to include the last bar as a valid open date and time.
         :return: True if the timestamp is a valid open date and time, False if not
         """
-        date = pd.Timestamp(pd.Timestamp(timestamp).tz_convert('UTC').date())
+        date = pd.Timestamp(timestamp).tz_convert('UTC').normalize()
         if date in schedule.index:
             if 'break_start' in schedule.columns:
                 if include_close:
