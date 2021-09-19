@@ -746,7 +746,7 @@ class NYSEExchangeCalendar(MarketCalendar):
     """
     aliases = ['NYSE', 'stock', 'NASDAQ', 'BATS', 'DJIA', 'DOW']
 
-    # tz = "America/New_York"
+    tz = "America/New_York"
 
     _all_market_times = {
         "pre": ((None, time(4)),),
@@ -767,10 +767,6 @@ class NYSEExchangeCalendar(MarketCalendar):
     @property
     def weekmask(self):
         return "Mon Tue Wed Thu Fri Sat"    #Market open on Saturdays thru 5/24/1952
-
-    @property
-    def tz(self):
-        return timezone('America/New_York')
 
     @property
     def regular_holidays(self):

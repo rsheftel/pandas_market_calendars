@@ -1,5 +1,3 @@
-import pandas as pd
-
 
 def _regmeta_class_factory(cls, name):
     """
@@ -66,26 +64,9 @@ class RegisteryMeta(type):
         for b in bases:
             if hasattr(b, '_regmeta_class_registry'):
                 _regmeta_register_class(b, cls, name)
+
         super(RegisteryMeta, cls).__init__(name, bases, attr)
-
-        for market_time, times in cls._all_market_times.items():
-            # create the property for the market time, to be able to include special cases
-            if market_time in ("market_open", "market_close"):
-                _prop = market_time.replace("market_", "") + "s"
-
-                old = "special_" + _prop
-                prop = "special_" + market_time
-                setattr(cls, prop, getattr(cls, old))
-                setattr(cls, prop + "_adhoc", getattr(cls, old + "_adhoc"))
-
-            else:
-                prop = "special_" + market_time
-                if not hasattr(cls, prop): setattr(cls, prop, _special_times_placeholder)
-                prop += "_adhoc"
-                if not hasattr(cls, prop): setattr(cls, prop, _special_times_placeholder)
+        cls._prepare_all_market_times()
 
 
-
-@property
-def _special_times_placeholder(self): return []
 

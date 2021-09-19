@@ -31,6 +31,10 @@ class MarketCalendarMeta(ABCMeta, RegisteryMeta):
     pass
 
 
+
+@property
+def _special_times_placeholder(self): return []
+
 class MarketCalendar(metaclass=MarketCalendarMeta):
     """
     An MarketCalendar represents the timing information of a single market or exchange.
@@ -47,17 +51,42 @@ class MarketCalendar(metaclass=MarketCalendarMeta):
     
     """
 
-    # tz = None
-    _all_market_times = {
-        "market_open": ((None, time(0)),),
-        "market_close": ((None, time(23)),)
-    }
+    tz = None
+
+    _all_market_times = {}
 
     @classmethod
-    @cached_property
-    def _market_times(cls):
-        # create a list of market_times e.g.: ["market_open", "market_close"] for easy selection in .schedule
-        return sorted(cls._all_market_times.keys(), key= lambda x: cls._all_market_times[x][-1][1])
+    def _prepare_all_market_times(cls):
+        if not cls._all_market_times: return
+
+        cls.discontinued_market_times = {}
+        for market_time, times in cls._all_market_times.items():
+            # create the property for the market time, to be able to include special cases
+            if market_time in ("market_open", "market_close"):
+                _prop = market_time.replace("market_", "") + "s"
+
+                old = "special_" + _prop
+                prop = "special_" + market_time
+                setattr(cls, prop, getattr(cls, old))
+                setattr(cls, prop + "_adhoc", getattr(cls, old + "_adhoc"))
+
+            else:
+                prop = "special_" + market_time
+                if not hasattr(cls, prop): setattr(cls, prop, _special_times_placeholder)
+                prop += "_adhoc"
+                if not hasattr(cls, prop): setattr(cls, prop, _special_times_placeholder)
+
+            if times[-1][1] is None:
+                last = list(times[-1])
+                last[1] = times[-2][1]
+                cls.discontinued_market_times[market_time] = last[0]
+                cls._all_market_times[market_time] = (*times[:-1], tuple(last))
+
+
+        cls._market_times = sorted(cls._all_market_times.keys(),
+                                   key=lambda x: cls._all_market_times[x][-1][1])
+
+
 
     def __init__(self, open_time=None, close_time=None):
         """
@@ -112,7 +141,8 @@ class MarketCalendar(metaclass=MarketCalendarMeta):
 
         :return: time
         """
-        return self._all_market_times["market_open"][-1][1]
+        try: return self._all_market_times["market_open"][-1][1]
+        except KeyError: raise NotImplementedError("You need to set market_times")
 
     @property
     def close_time_default(self):
@@ -121,7 +151,8 @@ class MarketCalendar(metaclass=MarketCalendarMeta):
 
         :return: time
         """
-        return self._all_market_times["market_close"][-1][1]
+        try: return self._all_market_times["market_close"][-1][1]
+        except KeyError: raise NotImplementedError("You need to set market_times")
 
     @property
     def break_start(self):
@@ -263,7 +294,7 @@ class MarketCalendar(metaclass=MarketCalendarMeta):
         return pd.date_range(start_date, end_date, freq=self.holidays(), normalize=True, tz=tz)
 
     def _get_market_times(self, start, end):
-        start = self._market_times.index(start)  # _sorted_market_times_ is created by Meta
+        start = self._market_times.index(start)  # _market_times is created in Meta.__init__
         end = self._market_times.index(end)
         return self._market_times[start: end+1]
 
@@ -299,9 +330,9 @@ class MarketCalendar(metaclass=MarketCalendarMeta):
             times = self._all_market_times[market_time]
             datetimes = days + self._tdelta(times[0][1])
 
-            for cut_off, time in times[1:]: # _cut_offs_ is set by Meta
+            for cut_off, time_ in times[1:]:
                 datetimes = datetimes.where(days < pd.Timestamp(cut_off),
-                                            days + self._tdelta(times[cut_off]))
+                                            days + self._tdelta(time_))
 
         else: # otherwise, assume it is a datetime.time object
            datetimes = days + self._tdelta(market_time)
@@ -334,8 +365,8 @@ class MarketCalendar(metaclass=MarketCalendarMeta):
         return dates[(dates >= s) & (dates <= e.replace(hour=23, minute=59, second=59))]
 
 
-    def schedule(self, start_date, end_date, tz='UTC',
-                 start= "market_open", end= "market_close", ignore_special_times= False):
+    def schedule(self, start_date, end_date, tz='UTC', start= "market_open", end= "market_close",
+                 ignore_special_times= False, market_times= None):
         """
         Generates the schedule DataFrame. The resulting DataFrame will have all the valid business days as the index
         and columns for the market opening datetime (market_open) and closing datetime (market_close). All time zones
@@ -348,6 +379,7 @@ class MarketCalendar(metaclass=MarketCalendarMeta):
         :param start:
         :param end:
         :param ignore_special_times:
+        :param market_times:
         :return: schedule DataFrame
         """
         start_date, end_date = self.clean_dates(start_date, end_date)
@@ -356,9 +388,9 @@ class MarketCalendar(metaclass=MarketCalendarMeta):
 
         # Setup all valid trading days and the requested market_times
         _all_days = self.valid_days(start_date, end_date)
-        market_times = self._get_market_times(start, end)
+        market_times = self._get_market_times(start, end) if market_times is None else market_times
         # If no valid days return an empty DataFrame
-        if len(_all_days) == 0:
+        if not len(_all_days):
             return pd.DataFrame(columns=market_times, index=pd.DatetimeIndex([], freq='C'))
 
         columns = {}
@@ -370,6 +402,7 @@ class MarketCalendar(metaclass=MarketCalendarMeta):
                 calendars = self.get_special_times(market_time)
                 ad_hoc = self.get_special_times_adhoc(market_time)
                 special = self._special_dates(calendars, ad_hoc, start_date, end_date)
+
                 # overwrite standard times
                 temp = temp.to_series(index= _all_days)
                 temp.loc[special.normalize()] = special
