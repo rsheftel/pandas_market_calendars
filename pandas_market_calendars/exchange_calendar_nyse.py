@@ -20,8 +20,6 @@ import pandas as pd
 from pandas.tseries.holiday import AbstractHolidayCalendar
 from pytz import timezone
 
-from pandas_market_calendars.market_calendar import clean_dates, _overwrite_special_dates
-
 from pandas_market_calendars.holidays_nyse import (    
     # Always Celebrated Holidays
     USNewYearsDayNYSEpost1952, USNewYearsDayNYSEpre1952, SatBeforeNewYearsAdhoc,
@@ -751,12 +749,15 @@ class NYSEExchangeCalendar(MarketCalendar):
     # tz = "America/New_York"
 
     _all_market_times = {
+        "pre": {None: time(4)},
+
         "market_open": {None: time(9, 30),
                         "1985-01-01": time(10)},
 
         "market_close":{None: time(16),
                         "1974-01-01": time(15, 30),
-                        "1952-09-29": time(15)}
+                        "1952-09-29": time(15)},
+        "post": {None: time(20)}
     }
 
     @property

@@ -257,12 +257,10 @@ class MarketCalendar(metaclass=MarketCalendarMeta):
     def _get_market_times(self, start, end):
         start = self._sorted_market_times.index(start)  # _sorted_market_times is created by Meta
         end = self._sorted_market_times.index(end)
-
         return self._sorted_market_times[start: end+1]
 
     def _tdelta(self, t, day_offset= 0):
         return pd.Timedelta(days=day_offset, hours=t.hour, minutes=t.minute, seconds=t.second)
-
 
     def days_at_time(self, days, market_time, day_offset=0):
         """
@@ -285,8 +283,7 @@ class MarketCalendar(metaclass=MarketCalendarMeta):
         :param day_offset: int The number of days we want to offset @days by
         :return: DatetimeIndex of date with the time t
         """
-        if len(days) == 0:
-            return pd.DatetimeIndex(days).tz_localize(self.tz).tz_convert('UTC')
+
         # Offset days without tz to avoid timezone issues.
         days = DatetimeIndex(days).tz_localize(None)
 
@@ -298,10 +295,10 @@ class MarketCalendar(metaclass=MarketCalendarMeta):
                 datetimes = datetimes.where(days >= pd.Timestamp(cut_off),
                                             days + times[cut_off])
 
-            return datetimes.tz_localize(self.tz).tz_convert("UTC")
-
         else: # otherwise, assume it is a datetime.time object
-           return (days + self._tdelta(market_time)).tz_localize(self.tz).tz_convert('UTC')
+           datetimes = days + self._tdelta(market_time)
+
+        return datetimes.tz_localize(self.tz).tz_convert('UTC')
 
     def schedule(self, start_date, end_date, tz='UTC',
                  start= "market_open", end= "market_close", ignore_special_times= False):
@@ -323,15 +320,15 @@ class MarketCalendar(metaclass=MarketCalendarMeta):
         if not (start_date <= end_date):
             raise ValueError('start_date must be before or equal to end_date.')
 
-        # Setup all valid trading days
+        # Setup all valid trading days and the requested market_times
         _all_days = self.valid_days(start_date, end_date)
-
+        market_times = self._get_market_times(start, end)
         # If no valid days return an empty DataFrame
         if len(_all_days) == 0:
-            return pd.DataFrame(columns=['market_open', 'market_close'], index=pd.DatetimeIndex([], freq='C'))
+            return pd.DataFrame(columns=market_times, index=pd.DatetimeIndex([], freq='C'))
 
         columns = {}
-        for market_time in self._get_market_times(start, end):
+        for market_time in market_times:
             temp = self.days_at_time(_all_days, market_time) # standard times
 
             if not ignore_special_times:
@@ -346,12 +343,21 @@ class MarketCalendar(metaclass=MarketCalendarMeta):
 
             columns[market_time] = temp
 
-        schedule = pd.DataFrame(columns, index= _all_days.tz_localize(None))
-
-        # removes any times that are the same like pre_end and market_open
-        schedule = schedule.T.drop_duplicates().T
+        schedule = pd.DataFrame(columns, index= _all_days.tz_localize(None), columns= market_times)
 
         # now adjust any quirks that come through odd times
+        """
+        What is the problem?
+        
+        there may be time
+        
+        
+        
+        
+        """
+
+
+
         return schedule
 
     def _tryholidays(self, cal, s, e):
@@ -365,21 +371,19 @@ class MarketCalendar(metaclass=MarketCalendarMeta):
 
         (This is shared logic for computing special opens and special closes.)
         """
-        s = start_date.tz_localize(None)
-        e = end_date.tz_localize(None)
-
-        _dates = pd.DatetimeIndex([], tz= "UTC").union_many(
+        s = start_date.tz_localize("UTC")
+        e = end_date.tz_localize("UTC")
+        dates = pd.DatetimeIndex([], tz= "UTC").union_many(
             [
-                self.days_at_time(self._tryholidays(calendar, s, e), time_)
+                self.days_at_time(
+                    self._tryholidays(calendar, s.tz_localize(None), e.tz_localize(None)), time_)
                       for time_, calendar in calendars
              ] + [
                 self.days_at_time(dates, time_)
                   for time_, dates in ad_hoc_dates
             ])
 
-        start_date = start_date.tz_localize('UTC')
-        end_date = end_date.tz_localize('UTC').replace(hour=23, minute=59, second=59)
-        return _dates[(_dates >= start_date) & (_dates <= end_date)]
+        return dates[dates.ge(s) & dates.le(e.replace(hour=23, minute=59, second=59))]
 
 
     @staticmethod
