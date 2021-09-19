@@ -55,11 +55,11 @@ time_props = dict(open_times= "market_open",
                   close_times= "market_close",
                   break_start_times= "break_start",
                   break_end_times= "break_end")
-print()
-print("STARTING ")
+
 for exchange in calendars:
     cal = calendars[exchange]
 
+    # this loop will set up the newly required _regular_market_times dictionary
     _regular_market_times = {}
     for prop, new in time_props.items():
         times = getattr(cal, prop)
