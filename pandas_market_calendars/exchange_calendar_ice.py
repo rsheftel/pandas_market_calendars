@@ -21,7 +21,7 @@ class ICEExchangeCalendar(MarketCalendar):
     """
     aliases = ['ICE', 'ICEUS', 'NYFE']
     _regular_market_times = {
-        "market_open": ((None, time(20, 1)),),
+        "market_open": ((None, time(20, 1), -1),), # offset by -1 day
         "market_close": ((None, time(18)),)
     }
 
@@ -32,10 +32,6 @@ class ICEExchangeCalendar(MarketCalendar):
     @property
     def tz(self):
         return timezone("US/Eastern")
-
-    @property
-    def open_offset(self):
-        return -1
 
     @property
     def special_closes(self):

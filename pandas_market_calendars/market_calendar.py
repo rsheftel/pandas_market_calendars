@@ -64,16 +64,25 @@ class MarketCalendar(metaclass=MarketCalendarMeta):
 
     _regular_market_times = {}
 
+    @staticmethod
+    def _tdelta(t, day_offset= 0):
+        return pd.Timedelta(days=day_offset, hours=t.hour, minutes=t.minute, seconds=t.second)
+
+    @staticmethod
+    def __off(tple):
+        try: return tple[2]
+        except IndexError: return 0
+
     @classmethod
     def _prepare_regular_market_times(cls):
         if not cls._regular_market_times: return
 
         cls.discontinued_market_times = {}
+        cls._regular_market_timedeltas = {}
         for market_time, times in cls._regular_market_times.items():
             # create the property for the market time, to be able to include special cases
             if market_time in ("market_open", "market_close"):
                 _prop = market_time.replace("market_", "") + "s"
-
                 old = "special_" + _prop
                 prop = "special_" + market_time
                 setattr(cls, prop, getattr(cls, old))
@@ -89,10 +98,14 @@ class MarketCalendar(metaclass=MarketCalendarMeta):
                 last = list(times[-1])
                 last[1] = times[-2][1]
                 cls.discontinued_market_times[market_time] = last[0]
-                cls._regular_market_times[market_time] = (*times[:-1], tuple(last))
+                times = (*times[:-1], tuple(last))
+                cls._regular_market_times[market_time] = times
+
+            cls._regular_market_timedeltas[market_time] = tuple((t[0], cls._tdelta(t[1], cls.__off(t)))
+                                                                for t in times)
 
         cls._market_times = sorted(cls._regular_market_times.keys(),
-                                   key=lambda x: cls._regular_market_times[x][-1][1])
+                                   key=lambda x: cls._regular_market_timedeltas[x][-1][1])
 
 
 
@@ -106,9 +119,11 @@ class MarketCalendar(metaclass=MarketCalendarMeta):
 
             if not open_time is None:
                 self._regular_market_times["market_open"] = ((None, open_time),)
+                self._regular_market_timedeltas["market_open"] = ((None, self._tdelta(open_time)),)
 
             if not close_time is None:
                 self._regular_market_times["market_close"] = ((None, close_time),)
+                self._regular_market_timedeltas["market_close"] = ((None, self._tdelta(close_time)),)
 
         self._holidays = None
 
@@ -271,7 +286,7 @@ class MarketCalendar(metaclass=MarketCalendarMeta):
 
         :return: open offset
         """
-        return 0
+        return self.__off(self._regular_market_times["market_open"][-1])
 
     @property
     def close_offset(self):
@@ -279,7 +294,7 @@ class MarketCalendar(metaclass=MarketCalendarMeta):
 
         :return: close offset
         """
-        return 0
+        return self.__off(self._regular_market_times["market_close"][-1])
 
     def holidays(self):
         """
@@ -312,9 +327,6 @@ class MarketCalendar(metaclass=MarketCalendarMeta):
         end = self._market_times.index(end)
         return self._market_times[start: end+1]
 
-    def _tdelta(self, t, day_offset= 0):
-        return pd.Timedelta(days=day_offset, hours=t.hour, minutes=t.minute, seconds=t.second)
-
     def days_at_time(self, days, market_time, day_offset=0):
         """
         Create an index of days at time ``t``, interpreted in timezone ``tz``. The returned index is localized to UTC.
@@ -340,14 +352,10 @@ class MarketCalendar(metaclass=MarketCalendarMeta):
         days = DatetimeIndex(days).tz_localize(None)
 
         if isinstance(market_time, str):  # if string, assume its a reference to saved market times
-            if market_time == "market_open": day_offset = self.open_offset
-            elif market_time == "market_close": day_offset = self.close_offset
-
-            times = self._regular_market_times[market_time]
-            datetimes = days + self._tdelta(times[0][1])
-            for cut_off, time_ in times[1:]:
-                datetimes = datetimes.where(days < pd.Timestamp(cut_off),
-                                            days + self._tdelta(time_, day_offset))
+            timedeltas = self._regular_market_timedeltas[market_time]
+            datetimes = days + timedeltas[0][1]
+            for cut_off, timedelta in timedeltas[1:]:
+                datetimes = datetimes.where(days < pd.Timestamp(cut_off), days + timedelta)
         else: # otherwise, assume it is a datetime.time object
            datetimes = days + self._tdelta(market_time, day_offset)
 

@@ -44,7 +44,7 @@ class CMEEquityExchangeCalendar(MarketCalendar):
     """
     aliases = ['CME_Equity', 'CBOT_Equity']
     _regular_market_times = {
-        "market_open": ((None, time(17)),),
+        "market_open": ((None, time(17), -1),), # offset by -1 day
         "market_close": ((None, time(16)),),
         "break_start": ((None, time(15,15)),),
         "break_end": ((None, time(15,30)),)
@@ -57,10 +57,6 @@ class CMEEquityExchangeCalendar(MarketCalendar):
     @property
     def tz(self):
         return timezone('America/Chicago')
-
-    @property
-    def open_offset(self):
-        return -1
 
     @property
     def regular_holidays(self):
@@ -108,7 +104,7 @@ class CMEAgricultureExchangeCalendar(MarketCalendar):
     """
     aliases = ['CME_Agriculture', 'CBOT_Agriculture', 'COMEX_Agriculture', 'NYMEX_Agriculture']
     _regular_market_times = {
-        "market_open": ((None, time(17, 1)),),
+        "market_open": ((None, time(17, 1), -1),), # offset by -1 day
         "market_close": ((None, time(17)),)
     }
 
@@ -119,10 +115,6 @@ class CMEAgricultureExchangeCalendar(MarketCalendar):
     @property
     def tz(self):
         return timezone('America/Chicago')
-
-    @property
-    def open_offset(self):
-        return -1
 
     @property
     def regular_holidays(self):
@@ -199,7 +191,7 @@ class CMEBondExchangeCalendar(MarketCalendar):
     """
     aliases = ['CME_Rate', 'CBOT_Rate', 'CME_InterestRate', 'CBOT_InterestRate', 'CME_Bond', 'CBOT_Bond']
     _regular_market_times = {
-        "market_open": ((None, time(17)),),
+        "market_open": ((None, time(17), -1),), # offset by -1 day
         "market_close": ((None, time(16)),)
     }
 
@@ -210,10 +202,6 @@ class CMEBondExchangeCalendar(MarketCalendar):
     @property
     def tz(self):
         return timezone('America/Chicago')
-
-    @property
-    def open_offset(self):
-        return -1
 
     @property
     def regular_holidays(self):
