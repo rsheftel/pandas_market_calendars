@@ -15,7 +15,7 @@
 # limitations under the License.
 
 from abc import ABCMeta, abstractmethod
-from itertools import compress
+from datetime import time
 
 import pandas as pd
 from pandas import DataFrame, DatetimeIndex
@@ -48,8 +48,8 @@ class MarketCalendar(metaclass=MarketCalendarMeta):
 
     # tz = None
     _all_market_times = {
-        "market_open": {None: None},
-        "market_close": {None: None}
+        "market_open": {None: time(0)},
+        "market_close": {None: time(23)}
     }
     def __init__(self, open_time=None, close_time=None):
         """
@@ -330,13 +330,11 @@ class MarketCalendar(metaclass=MarketCalendarMeta):
         columns = {}
         for market_time in market_times:
             temp = self.days_at_time(_all_days, market_time) # standard times
-
             if not ignore_special_times:
                 # create an array of special times
                 calendars = self.get_special_times(market_time)
                 ad_hoc = self.get_special_times_adhoc(market_time)
                 special = self._special_dates(calendars, ad_hoc, start_date, end_date)
-
                 # overwrite standard times
                 temp = temp.to_series(index= _all_days)
                 temp.loc[special.normalize()] = special

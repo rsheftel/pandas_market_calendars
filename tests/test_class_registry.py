@@ -1,14 +1,22 @@
 from abc import ABCMeta, abstractmethod
+from datetime import time
 
 from pandas_market_calendars.class_registry import RegisteryMeta
 
 
 def test_inheritance():
     class Base(object):
+        _all_market_times = {
+            "market_open": {None: time(0)},
+            "market_close": {None: time(23)}
+        }
         def __init__(self, arg0, kw0=None):
             self.arg0 = arg0
             self.kw0 = kw0
             super(Base, self).__init__()
+
+        def special_opens(self): return []
+        special_closes = special_closes_adhoc = special_opens_adhoc = special_opens
 
     class Class1(Base, metaclass=RegisteryMeta):
         def __init__(self, arg0, arg1, kw1=None, **kwargs):
@@ -79,6 +87,13 @@ def test_metamixing():
     BaseMeta = type('BaseMeta', (ABCMeta, RegisteryMeta), {})
 
     class Base(metaclass=BaseMeta):
+        _all_market_times = {
+            "market_open": {None: time(0)},
+            "market_close": {None: time(23)}
+        }
+        def special_opens(self): return []
+        special_closes = special_closes_adhoc = special_opens_adhoc = special_opens
+
         @abstractmethod
         def test(self):
             pass
