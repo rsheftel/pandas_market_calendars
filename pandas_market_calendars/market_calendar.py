@@ -293,12 +293,38 @@ class MarketCalendar(metaclass=MarketCalendarMeta):
 
             for cut_off in self._all_cut_offs[market_time]: # _all_cut_offs is set by Meta
                 datetimes = datetimes.where(days >= pd.Timestamp(cut_off),
-                                            days + times[cut_off])
+                                            days + self._tdelta(times[cut_off]))
 
         else: # otherwise, assume it is a datetime.time object
            datetimes = days + self._tdelta(market_time)
 
         return datetimes.tz_localize(self.tz).tz_convert('UTC')
+
+    def _tryholidays(self, cal, s, e):
+        try: return cal.holidays(s, e)
+        except ValueError: return pd.DatetimeIndex([])
+
+    def _special_dates(self, calendars, ad_hoc_dates, start_date, end_date):
+        """
+        Union an iterable of pairs of the form (time, calendar)
+        and an iterable of pairs of the form (time, [dates])
+
+        (This is shared logic for computing special opens and special closes.)
+        """
+        s = start_date.tz_localize("UTC")
+        e = end_date.tz_localize("UTC")
+        dates = pd.DatetimeIndex([], tz= "UTC").union_many(
+            [
+                self.days_at_time(
+                    self._tryholidays(calendar, s.tz_localize(None), e.tz_localize(None)), time_)
+                      for time_, calendar in calendars
+             ] + [
+                self.days_at_time(dates, time_)
+                  for time_, dates in ad_hoc_dates
+            ])
+
+        return dates[(dates >= s) & (dates <= e.replace(hour=23, minute=59, second=59))]
+
 
     def schedule(self, start_date, end_date, tz='UTC',
                  start= "market_open", end= "market_close", ignore_special_times= False):
@@ -330,6 +356,7 @@ class MarketCalendar(metaclass=MarketCalendarMeta):
         columns = {}
         for market_time in market_times:
             temp = self.days_at_time(_all_days, market_time) # standard times
+
             if not ignore_special_times:
                 # create an array of special times
                 calendars = self.get_special_times(market_time)
@@ -338,6 +365,7 @@ class MarketCalendar(metaclass=MarketCalendarMeta):
                 # overwrite standard times
                 temp = temp.to_series(index= _all_days)
                 temp.loc[special.normalize()] = special
+                temp = pd.DatetimeIndex(temp)
 
             columns[market_time] = temp
 
@@ -357,32 +385,6 @@ class MarketCalendar(metaclass=MarketCalendarMeta):
 
 
         return schedule
-
-    def _tryholidays(self, cal, s, e):
-        try: return cal.holidays(s, e)
-        except ValueError: return pd.DatetimeIndex([])
-
-    def _special_dates(self, calendars, ad_hoc_dates, start_date, end_date):
-        """
-        Union an iterable of pairs of the form (time, calendar)
-        and an iterable of pairs of the form (time, [dates])
-
-        (This is shared logic for computing special opens and special closes.)
-        """
-        s = start_date.tz_localize("UTC")
-        e = end_date.tz_localize("UTC")
-        dates = pd.DatetimeIndex([], tz= "UTC").union_many(
-            [
-                self.days_at_time(
-                    self._tryholidays(calendar, s.tz_localize(None), e.tz_localize(None)), time_)
-                      for time_, calendar in calendars
-             ] + [
-                self.days_at_time(dates, time_)
-                  for time_, dates in ad_hoc_dates
-            ])
-
-        return dates[dates.ge(s) & dates.le(e.replace(hour=23, minute=59, second=59))]
-
 
     @staticmethod
     def open_at_time(schedule, timestamp, include_close=False):
