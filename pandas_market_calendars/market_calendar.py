@@ -16,6 +16,7 @@
 
 from abc import ABCMeta, abstractmethod
 from datetime import time
+from pytz import timezone
 from functools import cached_property
 
 import pandas as pd
@@ -145,7 +146,7 @@ class MarketCalendar(metaclass=MarketCalendarMeta):
         date = pd.Timestamp(date)
         for d, t in times[::-1]:
             if d is None or pd.Timestamp(d) < date:
-                return t
+                return t.replace(tzinfo= timezone(self.tz))
 
     def open_time_at(self, date): return self._get_time("market_open", date)
     def close_time_at(self, date): return self._get_time("market_close", date)
@@ -159,9 +160,9 @@ class MarketCalendar(metaclass=MarketCalendarMeta):
 
         :return: time
         """
-        try: return self._regular_market_times["market_open"][-1][1]
+        try: t = self._regular_market_times["market_open"][-1][1]
         except KeyError: raise NotImplementedError("You need to set market_times")
-
+        return t.replace(tzinfo= timezone(self.tz))
     @property
     def close_time(self):
         """
@@ -169,9 +170,9 @@ class MarketCalendar(metaclass=MarketCalendarMeta):
 
         :return: time
         """
-        try: return self._regular_market_times["market_close"][-1][1]
+        try: t = self._regular_market_times["market_close"][-1][1]
         except KeyError: raise NotImplementedError("You need to set market_times")
-
+        return t.replace(tzinfo= timezone(self.tz))
     @property
     def break_start(self):
         """
@@ -179,9 +180,9 @@ class MarketCalendar(metaclass=MarketCalendarMeta):
 
         :return: time or None
         """
-        try: return self._regular_market_times["break_start"][-1][1]
+        try: t = self._regular_market_times["break_start"][-1][1]
         except KeyError: return None
-
+        return t.replace(tzinfo= timezone(self.tz))
 
     @property
     def break_end(self):
@@ -190,8 +191,9 @@ class MarketCalendar(metaclass=MarketCalendarMeta):
 
         :return: time or None
         """
-        try: return self._regular_market_times["break_end"][-1][1]
+        try: t = self._regular_market_times["break_end"][-1][1]
         except KeyError: return None
+        return t.replace(tzinfo= timezone(self.tz))
 
     @property
     def regular_holidays(self):
