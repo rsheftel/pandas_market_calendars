@@ -20,6 +20,10 @@ class ICEExchangeCalendar(MarketCalendar):
     https://www.theice.com/publicdocs/futures_us/ICE_Futures_US_Regular_Trading_Hours.pdf # noqa
     """
     aliases = ['ICE', 'ICEUS', 'NYFE']
+    _regular_market_times = {
+        "market_open": ((None, time(20, 1)),),
+        "market_close": ((None, time(18)),)
+    }
 
     @property
     def name(self):
@@ -28,14 +32,6 @@ class ICEExchangeCalendar(MarketCalendar):
     @property
     def tz(self):
         return timezone("US/Eastern")
-
-    @property
-    def open_time_default(self):
-        return time(20, 1, tzinfo=self.tz)
-
-    @property
-    def close_time_default(self):
-        return time(18, tzinfo=self.tz)
 
     @property
     def open_offset(self):

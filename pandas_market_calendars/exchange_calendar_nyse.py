@@ -746,7 +746,7 @@ class NYSEExchangeCalendar(MarketCalendar):
     """
     aliases = ['NYSE', 'stock', 'NASDAQ', 'BATS', 'DJIA', 'DOW']
 
-    tz = "America/New_York"
+    tz = timezone("America/New_York")
 
     _regular_market_times = {
         "pre": ((None, time(4)),),

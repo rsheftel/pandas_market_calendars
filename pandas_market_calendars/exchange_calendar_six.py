@@ -84,7 +84,10 @@ class SIXExchangeCalendar(MarketCalendar):
 
     """
     aliases = ['SIX']
-
+    _regular_market_times = {
+        "market_open": ((None, time(9)),),
+        "market_close": ((None, time(17,30)),),
+    }
     @property
     def name(self):
         return "SIX"
@@ -92,14 +95,6 @@ class SIXExchangeCalendar(MarketCalendar):
     @property
     def tz(self):
         return timezone('Europe/Zurich')
-
-    @property
-    def open_time_default(self):
-        return time(9, 0, tzinfo=self.tz)
-
-    @property
-    def close_time_default(self):
-        return time(17, 30, tzinfo=self.tz)
 
     @property
     def regular_holidays(self):
