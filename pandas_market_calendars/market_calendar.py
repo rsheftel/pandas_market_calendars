@@ -428,15 +428,21 @@ class MarketCalendar(metaclass=MarketCalendarMeta):
 
         schedule = pd.DataFrame(columns, index= _all_days.tz_localize(None), columns= market_times)
 
-        # now adjust any quirks that come through special opens/closes
         if not _open_adj is False:
-            """
-            for all columns 
-            
-            
-            
-            """
+            adjusted = schedule.loc[_open_adj].apply(
+                lambda x: x.where(x.ge(x["market_open"]), x["market_open"]), axis= 1)
+            schedule.loc[_open_adj] = adjusted
 
+        if not _close_adj is False:
+            adjusted = schedule.loc[_close_adj].apply(
+                lambda x: x.where(x.le(x["market_close"]), x["market_close"]), axis= 1)
+            schedule.loc[_close_adj] = adjusted
+
+        """
+        breaks
+        
+        
+        """
 
 
         return schedule
