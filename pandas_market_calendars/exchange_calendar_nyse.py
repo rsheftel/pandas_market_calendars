@@ -751,14 +751,12 @@ class NYSEExchangeCalendar(MarketCalendar):
     # tz = "America/New_York"
 
     _all_market_times = {
-        "market_open": {
-            None: time(9, 30),
-            "1985-01-01": time(10)},
+        "market_open": {None: time(9, 30),
+                        "1985-01-01": time(10)},
 
-        "market_close":{
-            None: time(16),
-            "1974-01-01": time(15, 30),
-            "1952-09-29": time(15)}
+        "market_close":{None: time(16),
+                        "1974-01-01": time(15, 30),
+                        "1952-09-29": time(15)}
     }
 
     @property
