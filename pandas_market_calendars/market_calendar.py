@@ -16,6 +16,7 @@
 
 from abc import ABCMeta, abstractmethod
 from datetime import time
+from functools import cached_property
 
 import pandas as pd
 from pandas import DataFrame, DatetimeIndex
@@ -51,6 +52,30 @@ class MarketCalendar(metaclass=MarketCalendarMeta):
         "market_open": {None: time(0)},
         "market_close": {None: time(23)}
     }
+
+    @classmethod
+    @cached_property
+    def _cut_offs(cls):
+        cutoffs = {}
+        for market_time, times in cls._all_market_times.items():
+            lst = list(times.keys())
+            try: lst.remove(None)
+            except ValueError:
+                raise NotImplementedError("When setting market_times, exactly one entry should have None as key "
+                                          "to represent the first time.")
+            cutoffs[market_time] = sorted(lst)
+
+        return cutoffs
+
+    @classmethod
+    @cached_property
+    def _market_times(cls):
+        # create a list of market_times e.g.: ["market_open", "market_close"] for easy selection in .schedule
+        return sorted(cls._all_market_times.keys(),
+                      key= lambda x: cls._all_market_times[x][cls._cut_offs[x][-1]])
+
+
+
     def __init__(self, open_time=None, close_time=None):
         """
         :param open_time: Market open time override as datetime.time object. If None then default is used.
@@ -255,9 +280,9 @@ class MarketCalendar(metaclass=MarketCalendarMeta):
         return pd.date_range(start_date, end_date, freq=self.holidays(), normalize=True, tz=tz)
 
     def _get_market_times(self, start, end):
-        start = self._sorted_market_times.index(start)  # _sorted_market_times is created by Meta
-        end = self._sorted_market_times.index(end)
-        return self._sorted_market_times[start: end+1]
+        start = self._market_times_.index(start)  # _sorted_market_times_ is created by Meta
+        end = self._market_times_.index(end)
+        return self._market_times_[start: end+1]
 
     def _tdelta(self, t, day_offset= 0):
         return pd.Timedelta(days=day_offset, hours=t.hour, minutes=t.minute, seconds=t.second)
@@ -291,7 +316,7 @@ class MarketCalendar(metaclass=MarketCalendarMeta):
             times = self._all_market_times[market_time]
             datetimes = days + self._tdelta(times[None])
 
-            for cut_off in self._all_cut_offs[market_time]: # _all_cut_offs is set by Meta
+            for cut_off in self._cut_offs[market_time]: # _cut_offs_ is set by Meta
                 datetimes = datetimes.where(days >= pd.Timestamp(cut_off),
                                             days + self._tdelta(times[cut_off]))
 

@@ -68,18 +68,7 @@ class RegisteryMeta(type):
                 _regmeta_register_class(b, cls, name)
         super(RegisteryMeta, cls).__init__(name, bases, attr)
 
-        # create a dictionary with a list of all cutoffs sorted descending for each market_time
-        # for easy adjusting of datetimes according to historical variation
-        cls._all_cut_offs = {}
         for market_time, times in cls._all_market_times.items():
-            lst = list(times.keys())
-            try: lst.remove(None)
-            except ValueError:
-                raise NotImplementedError("When setting market_times, exactly one entry should have None as key "
-                                          "to represent the current/default time.")
-
-            cls._all_cut_offs[market_time] = sorted(lst, reverse= True)
-
             # create the property for the market time, to be able to include special cases
             if market_time in ("market_open", "market_close"):
                 _prop = market_time.replace("market_", "") + "s"
@@ -95,9 +84,6 @@ class RegisteryMeta(type):
                 prop += "_adhoc"
                 if not hasattr(cls, prop): setattr(cls, prop, _special_times_placeholder)
 
-        # create a list of market_times e.g.: ["market_open", "market_close"] for easy selection in .schedule
-        cls._sorted_market_times = sorted(cls._all_market_times.keys(),
-                                          key= lambda x: cls._all_market_times[x][None])
 
 
 @property
