@@ -10,6 +10,8 @@ import exchange_calendars
 
 
 class TradingCalendar(MarketCalendar):
+
+
     def __init__(self, open_time=None, close_time=None):
         self._tc = self._tc_class()  # noqa: _tc.class is defined in the class generator below
         super().__init__(open_time, close_time)
@@ -65,8 +67,45 @@ class TradingCalendar(MarketCalendar):
         return self._tc.special_closes_adhoc
 
 
+
+
+# Convert the lists of tuples in exchange calendars to the new MarketCalendar format
+def _exchange_calendars_times_to_market_calendars(times):
+    times = dict(times)
+
+    cut_offs = list(times.keys())
+    cut_offs.remove(None)
+    cut_offs.sort()
+    cut_offs.insert(0, None)
+
+    all_times = {None: times[cut_offs[-1]]}
+    all_times.update({
+        cut_offs[i + 1]: times[cut_off] for i, cut_off in enumerate(cut_offs[:-1])})
+    return all_times
+
+
+
 calendars = exchange_calendars.calendar_utils._default_calendar_factories  # noqa
+time_props = dict(open_times= "market_open",
+                  close_times= "market_close",
+                  break_start_times= "break_start",
+                  break_end_times= "break_end")
 
 for exchange in calendars:
-    locals()[exchange + 'ExchangeCalendar'] = type(exchange, (TradingCalendar, ),
-                                                   {'_tc_class': calendars[exchange], 'alias': [exchange]})
+    cal = type(exchange, (TradingCalendar, ), {'_tc_class': calendars[exchange], 'alias': [exchange]})
+
+    locals()[exchange + 'ExchangeCalendar'] = cal
+
+    for prop, new in time_props.items():
+        times = getattr(cal._tc_class, prop)
+        if times is None: continue
+        print(cal)
+        print(times)
+        cal._all_market_times[new] = _exchange_calendars_times_to_market_calendars(times)
+
+
+
+
+
+
+
