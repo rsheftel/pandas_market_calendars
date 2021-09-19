@@ -748,7 +748,7 @@ class NYSEExchangeCalendar(MarketCalendar):
 
     tz = "America/New_York"
 
-    _all_market_times = {
+    _regular_market_times = {
         "pre": ((None, time(4)),),
 
         "market_open": ((None, time(10)),

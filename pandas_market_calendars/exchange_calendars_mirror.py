@@ -60,16 +60,16 @@ print("STARTING ")
 for exchange in calendars:
     cal = calendars[exchange]
 
-    _all_market_times = {}
+    _regular_market_times = {}
     for prop, new in time_props.items():
         times = getattr(cal, prop)
         if times is None or isinstance(times, property): continue
-        _all_market_times[new] = times
+        _regular_market_times[new] = times
 
     cal = type(exchange, (TradingCalendar,), {'_tc_class': calendars[exchange],
                                               'alias': [exchange],
-                                              '_all_market_times': _all_market_times})
-    cal._prepare_all_market_times()
+                                              '_regular_market_times': _regular_market_times})
+    cal._prepare_regular_market_times()
 
     locals()[exchange + 'ExchangeCalendar'] = cal
 

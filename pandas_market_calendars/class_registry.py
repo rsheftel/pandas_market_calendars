@@ -66,7 +66,7 @@ class RegisteryMeta(type):
                 _regmeta_register_class(b, cls, name)
 
         super(RegisteryMeta, cls).__init__(name, bases, attr)
-        cls._prepare_all_market_times()
+        cls._prepare_regular_market_times()
 
 
 

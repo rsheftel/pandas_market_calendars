@@ -51,16 +51,14 @@ class MarketCalendar(metaclass=MarketCalendarMeta):
     
     """
 
-    tz = None
-
-    _all_market_times = {}
+    _regular_market_times = {}
 
     @classmethod
-    def _prepare_all_market_times(cls):
-        if not cls._all_market_times: return
+    def _prepare_regular_market_times(cls):
+        if not cls._regular_market_times: return
 
         cls.discontinued_market_times = {}
-        for market_time, times in cls._all_market_times.items():
+        for market_time, times in cls._regular_market_times.items():
             # create the property for the market time, to be able to include special cases
             if market_time in ("market_open", "market_close"):
                 _prop = market_time.replace("market_", "") + "s"
@@ -80,11 +78,10 @@ class MarketCalendar(metaclass=MarketCalendarMeta):
                 last = list(times[-1])
                 last[1] = times[-2][1]
                 cls.discontinued_market_times[market_time] = last[0]
-                cls._all_market_times[market_time] = (*times[:-1], tuple(last))
+                cls._regular_market_times[market_time] = (*times[:-1], tuple(last))
 
-
-        cls._market_times = sorted(cls._all_market_times.keys(),
-                                   key=lambda x: cls._all_market_times[x][-1][1])
+        cls._market_times = sorted(cls._regular_market_times.keys(),
+                                   key=lambda x: cls._regular_market_times[x][-1][1])
 
 
 
@@ -93,8 +90,15 @@ class MarketCalendar(metaclass=MarketCalendarMeta):
         :param open_time: Market open time override as datetime.time object. If None then default is used.
         :param close_time: Market close time override as datetime.time object. If None then default is used.
         """
-        self._open_time = False if open_time is None else open_time
-        self._close_time = False if close_time is None else close_time
+        if not open_time is None or not close_time is None:
+            self._regular_market_times = self._regular_market_times.copy()
+
+            if not open_time is None:
+                self._regular_market_times["market_open"] = ((None, open_time),)
+
+            if not close_time is None:
+                self._regular_market_times["market_close"] = ((None, close_time),)
+
         self._holidays = None
 
     @classmethod
@@ -134,24 +138,38 @@ class MarketCalendar(metaclass=MarketCalendarMeta):
         """
         raise NotImplementedError()
 
+    def _get_time(self, market_time, date):
+        try: times = self._regular_market_times[market_time]
+        except KeyError:return None # in case of no breaks
+
+        date = pd.Timestamp(date)
+        for d, t in times[::-1]:
+            if d is None or pd.Timestamp(d) < date:
+                return t
+
+    def open_time_at(self, date): return self._get_time("market_open", date)
+    def close_time_at(self, date): return self._get_time("market_close", date)
+    def break_start_at(self, date): return self._get_time("break_start", date)
+    def break_end_at(self, date): return self._get_time("break_end", date)
+
     @property
-    def open_time_default(self):
+    def open_time(self):
         """
         Default open time for the market
 
         :return: time
         """
-        try: return self._all_market_times["market_open"][-1][1]
+        try: return self._regular_market_times["market_open"][-1][1]
         except KeyError: raise NotImplementedError("You need to set market_times")
 
     @property
-    def close_time_default(self):
+    def close_time(self):
         """
         Default close time for the market
 
         :return: time
         """
-        try: return self._all_market_times["market_close"][-1][1]
+        try: return self._regular_market_times["market_close"][-1][1]
         except KeyError: raise NotImplementedError("You need to set market_times")
 
     @property
@@ -161,7 +179,7 @@ class MarketCalendar(metaclass=MarketCalendarMeta):
 
         :return: time or None
         """
-        try: return self._all_market_times["break_start"][-1][1]
+        try: return self._regular_market_times["break_start"][-1][1]
         except KeyError: return None
 
 
@@ -172,7 +190,7 @@ class MarketCalendar(metaclass=MarketCalendarMeta):
 
         :return: time or None
         """
-        try: return self._all_market_times["break_end"][-1][1]
+        try: return self._regular_market_times["break_end"][-1][1]
         except KeyError: return None
 
     @property
@@ -234,22 +252,6 @@ class MarketCalendar(metaclass=MarketCalendarMeta):
 
     def get_special_times_adhoc(self, market_time):
         return getattr(self, "special_" + market_time + "_adhoc")
-
-    @property
-    def open_time(self):
-        """
-
-        :return: open time
-        """
-        return self._open_time or self.open_time_default
-
-    @property
-    def close_time(self):
-        """
-
-        :return: close time
-        """
-        return self._close_time or self.close_time_default
 
     @property
     def open_offset(self):
@@ -327,7 +329,7 @@ class MarketCalendar(metaclass=MarketCalendarMeta):
         days = DatetimeIndex(days).tz_localize(None)
 
         if isinstance(market_time, str):  # if string, assume its a reference to saved market times
-            times = self._all_market_times[market_time]
+            times = self._regular_market_times[market_time]
             datetimes = days + self._tdelta(times[0][1])
 
             for cut_off, time_ in times[1:]:
@@ -408,7 +410,7 @@ class MarketCalendar(metaclass=MarketCalendarMeta):
                 temp.loc[special.normalize()] = special
                 temp = pd.DatetimeIndex(temp)
 
-            columns[market_time] = temp
+            columns[market_time] = temp.tz_convert(tz)
 
         schedule = pd.DataFrame(columns, index= _all_days.tz_localize(None), columns= market_times)
 
@@ -417,6 +419,8 @@ class MarketCalendar(metaclass=MarketCalendarMeta):
         What is the problem?
         
         there may be time
+        
+        
         
         
         
