@@ -10,6 +10,9 @@ def test_inheritance():
             "market_open": {None: time(0)},
             "market_close": {None: time(23)}
         }
+        @classmethod
+        def _prepare_regular_market_times(cls): return
+
         def __init__(self, arg0, kw0=None):
             self.arg0 = arg0
             self.kw0 = kw0
@@ -91,6 +94,8 @@ def test_metamixing():
             "market_open": {None: time(0)},
             "market_close": {None: time(23)}
         }
+        @classmethod
+        def _prepare_regular_market_times(cls): return
         def special_opens(self): return []
         special_closes = special_closes_adhoc = special_opens_adhoc = special_opens
 

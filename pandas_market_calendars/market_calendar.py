@@ -156,7 +156,7 @@ class MarketCalendar(metaclass=MarketCalendarMeta):
         date = pd.Timestamp(date)
         for d, t in times[::-1]:
             if d is None or pd.Timestamp(d) < date:
-                return t.replace(tzinfo= timezone(self.tz))
+                return t.replace(tzinfo= self.tz)
 
     def open_time_at(self, date): return self._get_time("market_open", date)
     def close_time_at(self, date): return self._get_time("market_close", date)
@@ -172,7 +172,7 @@ class MarketCalendar(metaclass=MarketCalendarMeta):
         """
         try: t = self._regular_market_times["market_open"][-1][1]
         except KeyError: raise NotImplementedError("You need to set market_times")
-        return t.replace(tzinfo= timezone(self.tz))
+        return t.replace(tzinfo= self.tz)
     @property
     def close_time(self):
         """
@@ -182,7 +182,7 @@ class MarketCalendar(metaclass=MarketCalendarMeta):
         """
         try: t = self._regular_market_times["market_close"][-1][1]
         except KeyError: raise NotImplementedError("You need to set market_times")
-        return t.replace(tzinfo= timezone(self.tz))
+        return t.replace(tzinfo= self.tz)
     @property
     def break_start(self):
         """
@@ -192,7 +192,7 @@ class MarketCalendar(metaclass=MarketCalendarMeta):
         """
         try: t = self._regular_market_times["break_start"][-1][1]
         except KeyError: return None
-        return t.replace(tzinfo= timezone(self.tz))
+        return t.replace(tzinfo= self.tz)
 
     @property
     def break_end(self):
@@ -203,7 +203,7 @@ class MarketCalendar(metaclass=MarketCalendarMeta):
         """
         try: t = self._regular_market_times["break_end"][-1][1]
         except KeyError: return None
-        return t.replace(tzinfo= timezone(self.tz))
+        return t.replace(tzinfo= self.tz)
 
     @property
     def regular_holidays(self):
@@ -340,13 +340,16 @@ class MarketCalendar(metaclass=MarketCalendarMeta):
         days = DatetimeIndex(days).tz_localize(None)
 
         if isinstance(market_time, str):  # if string, assume its a reference to saved market times
+            if market_time == "market_open": day_offset = self.open_offset
+            elif market_time == "market_close": day_offset = self.close_offset
+
             times = self._regular_market_times[market_time]
             datetimes = days + self._tdelta(times[0][1])
             for cut_off, time_ in times[1:]:
                 datetimes = datetimes.where(days < pd.Timestamp(cut_off),
-                                            days + self._tdelta(time_))
+                                            days + self._tdelta(time_, day_offset))
         else: # otherwise, assume it is a datetime.time object
-           datetimes = days + self._tdelta(market_time)
+           datetimes = days + self._tdelta(market_time, day_offset)
 
         return datetimes.tz_localize(self.tz).tz_convert('UTC')
 
@@ -414,15 +417,15 @@ class MarketCalendar(metaclass=MarketCalendarMeta):
                 calendars = self.get_special_times(market_time)
                 ad_hoc = self.get_special_times_adhoc(market_time)
                 special = self._special_dates(calendars, ad_hoc, start_date, end_date)
-                _special = special.normalize()
 
                 # overwrite standard times
                 temp = temp.to_series(index= _all_days)
+                _special = temp.index.isin(special.normalize())
                 temp.loc[_special] = special
                 temp = pd.DatetimeIndex(temp)
 
-                if market_time == "market_open": _open_adj = _special.tz_localize(None)
-                elif market_time == "market_close": _close_adj = _special.tz_localize(None)
+                if market_time == "market_open": _open_adj = _special
+                elif market_time == "market_close": _close_adj = _special
 
             columns[market_time] = temp.tz_convert(tz)
 

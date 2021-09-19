@@ -15,6 +15,7 @@
 
 from datetime import time
 from itertools import chain
+from pytz import timezone
 
 import pandas as pd
 import pytest
@@ -33,14 +34,13 @@ class FakeCalendar(MarketCalendar):
         "market_close": ((None, time(11, 49)),)
     }
 
-
     @property
     def name(self):
         return "DMY"
 
     @property
     def tz(self):
-        return "Asia/Ulaanbaatar"
+        return timezone("Asia/Ulaanbaatar")
 
     @property
     def regular_holidays(self):
@@ -82,7 +82,7 @@ class FakeBreakCalendar(MarketCalendar):
 
     @property
     def tz(self):
-        return "America/New_York"
+        return timezone("America/New_York")
 
     @property
     def regular_holidays(self):
