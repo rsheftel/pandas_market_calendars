@@ -425,10 +425,12 @@ class MarketCalendar(metaclass=MarketCalendarMeta):
                 calendars = self.get_special_times(market_time)
                 ad_hoc = self.get_special_times_adhoc(market_time)
                 special = self._special_dates(calendars, ad_hoc, start_date, end_date)
-
+                _special = special.normalize()
+                special = special[_special.isin(_all_days)]  # SEE: 1968-02-12, 1968-02-22 holidays and early ad_hoc closes from Backlog2pmEarlyCloses1968
+                                                            # 1990-12-24 has *two* special closes
                 # overwrite standard times
                 temp = temp.to_series(index= _all_days)
-                _special = temp.index.isin(special.normalize())
+                _special = temp.index.isin(_special)
                 temp.loc[_special] = special
                 temp = pd.DatetimeIndex(temp)
 

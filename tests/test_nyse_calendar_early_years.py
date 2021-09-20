@@ -36,7 +36,6 @@ def _test_holidays(holidays, start, end):
         assert h not in valid_days
 
 def _test_no_special_opens(start, end):
-    print(nyse.schedule(start, end))
     assert len(nyse.late_opens(nyse.schedule(start, end))) == 0
     
 def _test_no_special_closes(start, end):
@@ -96,8 +95,6 @@ def test_1885():
         
     #ensure labor day is a valid trading day
     assert pd.Timestamp('1885-09-07' , tz='UTC') in nyse.valid_days(start,end)
-
-test_1885()
 
 def test_1886():
     start = '1886-01-01'
@@ -3726,4 +3723,10 @@ def test_2022():
     early_closes = [     
         pd.Timestamp('2022-11-25 1:00PM', tz='America/New_York'), # Day after Thanksgiving  
     ]
-    _test_has_early_closes(early_closes, start, end)     
+    _test_has_early_closes(early_closes, start, end)
+
+if __name__ == '__main__':
+    for ref, obj in locals().copy().items():
+        if ref.startswith("test_"):
+            print("running ", ref)
+            obj()
