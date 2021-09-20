@@ -19,6 +19,7 @@ from datetime import time
 from pytz import timezone
 from functools import cached_property
 
+
 import pandas as pd
 from pandas import DataFrame, DatetimeIndex
 from pandas.tseries.offsets import CustomBusinessDay
@@ -106,7 +107,6 @@ class MarketCalendar(metaclass=MarketCalendarMeta):
 
         cls._market_times = sorted(cls._regular_market_times.keys(),
                                    key=lambda x: cls._regular_market_timedeltas[x][-1][1])
-
 
 
     def __init__(self, open_time=None, close_time=None):
@@ -448,13 +448,6 @@ class MarketCalendar(metaclass=MarketCalendarMeta):
             adjusted = schedule.loc[_close_adj].apply(
                 lambda x: x.where(x.le(x["market_close"]), x["market_close"]), axis= 1)
             schedule.loc[_close_adj] = adjusted
-
-        """
-        breaks
-        
-        
-        """
-
 
         return schedule
 
