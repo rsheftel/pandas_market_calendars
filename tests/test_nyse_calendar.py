@@ -375,3 +375,11 @@ def test_special_early_close_is_not_trading_day():
     dates = [pd.Timestamp('1956-12-' + x) for x in ['20', '21', '26', '27', '28']]
     expected = pd.DatetimeIndex(dates)
     assert_index_equal(actual.index, expected)
+
+
+if __name__ == '__main__':
+
+    for ref, obj in locals().copy().items():
+        if ref.startswith("test_"):
+            print("running: ", ref)
+            obj()

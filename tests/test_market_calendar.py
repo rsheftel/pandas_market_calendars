@@ -545,8 +545,8 @@ def test_bad_dates():
 if __name__ == '__main__':
     # test_special_opens()
 
-    # test_open_at_time()
-
+    # test_open_at_time_breaks()
+    #
     for ref, obj in locals().copy().items():
         if ref.startswith("test_"):
             print("running: ", ref)

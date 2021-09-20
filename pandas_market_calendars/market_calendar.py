@@ -519,7 +519,7 @@ class MarketCalendar(metaclass=MarketCalendarMeta):
 
         cond = diff(col, self._regular_market_timedeltas[col.name][0][1])
         for cut_off, timedelta in self._regular_market_timedeltas[col.name][1:]:
-            cond = cond | (diff(col, timedelta) & (col.index >= pd.Timestamp(cut_off)))
+            cond = cond & (diff(col, timedelta) & (col.index >= pd.Timestamp(cut_off)))
 
         return cond
 

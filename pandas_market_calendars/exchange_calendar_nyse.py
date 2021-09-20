@@ -760,7 +760,6 @@ class NYSEExchangeCalendar(MarketCalendar):
         "post": ((None, time(20)),)
     }
 
-    _round = pd.Timestamp('1901-12-14', tz='UTC')
 
     @property
     def name(self):
@@ -1076,7 +1075,7 @@ class NYSEExchangeCalendar(MarketCalendar):
         :param tz: time zone in either string or pytz.timezone
         :return: DatetimeIndex of valid business days
         """
-        trading_days = pd.date_range(start_date, end_date, freq=self.holidays(), normalize=True, tz=tz)
+        trading_days = super().valid_days(start_date, end_date, tz=tz)
 
         # Starting Monday Sept. 29, 1952, no more saturday trading days
         above_cut_off = trading_days >= pd.Timestamp('1952-09-29', tz='UTC')
@@ -1086,7 +1085,6 @@ class NYSEExchangeCalendar(MarketCalendar):
 
         return trading_days
 
-
     def days_at_time(self, days, market_time, day_offset=0):
         days = super().days_at_time(days, market_time, day_offset= day_offset)
 
@@ -1095,9 +1093,18 @@ class NYSEExchangeCalendar(MarketCalendar):
             days = days.where(days.weekday != 5,
                               days.normalize() + pd.Timedelta(days= day_offset, hours= 12))
             days = days.tz_convert("UTC")
+        return self._round(days)
 
-        return days.where(days.normalize() >= self._round, days.round("15min"))
+    def _round(self, col):
+        d = pd.Timestamp('1901-12-14', tz='UTC')
+        try:
+            cond = col.dt.normalize().ge(d)
+            rounded = col.dt.tz_convert(self.tz).round("15min").dt.tz_convert("UTC")
+        except AttributeError:
+            cond = col.normalize() >= d
+            rounded = col.tz_convert(self.tz).round("15min").tz_convert("UTC")
 
+        return col.where(cond, rounded)
 
     def early_closes(self, schedule):
         """
@@ -1113,13 +1120,14 @@ class NYSEExchangeCalendar(MarketCalendar):
         # 1952-1973 close was Mon-Fri 3:30pm (no saturday trades)
         # 1974+ close is 4pm 
         # dates before 1901-12-14 have a 4 minute time shift. rounding removes it
-        schedule = schedule.copy()
-        schedule.loc[schedule.market_open.normalize().lt(self._round),
-                     "market_close"] = schedule.market_close.dt.tz_convert(self.tz).round("15min").dt.tz_convert("UTC")
+        _schedule = schedule.assign(market_close= self._round(schedule["market_close"]))
+        early = super().early_closes(_schedule)
 
-        return super().early_closes(schedule)
+        mc = early.market_close.dt.tz_convert(self.tz)
+        after_noon = (mc - mc.dt.normalize()).ge(pd.Timedelta(hours= 12))
 
-
+        early = early[~(mc.dt.weekday.eq(5) & after_noon)]
+        return schedule.loc[early.index]
 
     def late_opens(self, schedule):
         """
@@ -1131,8 +1139,6 @@ class NYSEExchangeCalendar(MarketCalendar):
         # Prior to 1985 trading began at 10am
         # After 1985 trading begins at 9:30am 
         # dates before 1901-12-14 have a 4 minute time shift. rounding removes it
-        schedule = schedule.copy()
-        schedule.loc[schedule.market_open.normalize().lt(self._round),
-                     "market_open"] = schedule.market_open.dt.tz_convert(self.tz).round("15min").dt.tz_convert("UTC")
-
-        return super().late_opens(schedule)
+        _schedule = schedule.assign(market_close= self._round(schedule["market_open"]))
+        late = super().late_opens(_schedule)
+        return schedule.loc[late.index]
