@@ -35,7 +35,8 @@ def _test_holidays(holidays, start, end):
     for h in holidays:
         assert h not in valid_days
 
-def _test_no_special_opens(start, end):   
+def _test_no_special_opens(start, end):
+    print(nyse.schedule(start, end))
     assert len(nyse.late_opens(nyse.schedule(start, end))) == 0
     
 def _test_no_special_closes(start, end):
@@ -95,6 +96,8 @@ def test_1885():
         
     #ensure labor day is a valid trading day
     assert pd.Timestamp('1885-09-07' , tz='UTC') in nyse.valid_days(start,end)
+
+test_1885()
 
 def test_1886():
     start = '1886-01-01'

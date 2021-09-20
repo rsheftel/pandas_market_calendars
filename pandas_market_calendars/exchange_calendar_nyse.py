@@ -1092,10 +1092,10 @@ class NYSEExchangeCalendar(MarketCalendar):
             days = days.tz_convert(self.tz)
             days = days.where(days.weekday != 5,
                               days.normalize() + pd.Timedelta(days= day_offset, hours= 12))
-            return days.tz_convert("UTC")
+            days = days.tz_convert("UTC")
 
-        else:
-            return days
+        return days.where(days.normalize() >= pd.Timestamp('1901-12-14', tz="UTC"),
+                          days.round("15min"))
 
 
     # def days_at_time_open(self, days, tz, day_offset=0):
