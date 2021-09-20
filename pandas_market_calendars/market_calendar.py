@@ -32,8 +32,6 @@ MONDAY, TUESDAY, WEDNESDAY, THURSDAY, FRIDAY, SATURDAY, SUNDAY = range(7)
 class MarketCalendarMeta(ABCMeta, RegisteryMeta):
     pass
 
-
-
 @property
 def _special_times_placeholder(self): return []
 
@@ -426,7 +424,8 @@ class MarketCalendar(metaclass=MarketCalendarMeta):
                 ad_hoc = self.get_special_times_adhoc(market_time)
                 special = self._special_dates(calendars, ad_hoc, start_date, end_date)
                 _special = special.normalize()
-                special = special[_special.isin(_all_days)]  # SEE: 1968-02-12, 1968-02-22 holidays and early ad_hoc closes from Backlog2pmEarlyCloses1968
+                special = special[_special.isin(_all_days)] # SEE: 1968-02-12, 1968-02-22 holidays and
+                                                            # early ad_hoc closes from Backlog2pmEarlyCloses1968
                                                             # 1990-12-24 has *two* special closes
                 # overwrite standard times
                 temp = temp.to_series(index= _all_days)
@@ -465,7 +464,7 @@ class MarketCalendar(metaclass=MarketCalendarMeta):
             if using bars and would like to include the last bar as a valid open date and time.
         :return: True if the timestamp is a valid open date and time, False if not
         """
-        date = pd.Timestamp(timestamp).tz_convert('UTC').normalize()
+        date = pd.Timestamp(timestamp).tz_convert('UTC').normalize().tz_localize(None)
         if date in schedule.index:
             if 'break_start' in schedule.columns:
                 if include_close:
@@ -514,6 +513,16 @@ class MarketCalendar(metaclass=MarketCalendarMeta):
         end_date = pd.Timestamp(end_date).tz_localize(None).normalize()
         return start_date, end_date
 
+    def _find_diff(self, col, diff):
+        col = col.dt.tz_convert(self.tz)
+        col = col - col.dt.normalize() # timedeltas for vectorized comparison
+
+        cond = diff(col, self._regular_market_timedeltas[col.name][0][1])
+        for cut_off, timedelta in self._regular_market_timedeltas[col.name][1:]:
+            cond = cond | (diff(col, timedelta) & (col.index >= pd.Timestamp(cut_off)))
+
+        return cond
+
     def early_closes(self, schedule):
         """
         Get a DataFrame of the dates that are an early close.
@@ -521,8 +530,7 @@ class MarketCalendar(metaclass=MarketCalendarMeta):
         :param schedule: schedule DataFrame
         :return: schedule DataFrame with rows that are early closes
         """
-        match_dates = schedule['market_close'].apply(lambda x: x.tz_convert(self.tz).time() != self.close_time)
-        return schedule[match_dates]
+        return schedule[self._find_diff(schedule["market_close"], pd.Series.lt)]
 
     def late_opens(self, schedule):
         """
@@ -531,5 +539,5 @@ class MarketCalendar(metaclass=MarketCalendarMeta):
         :param schedule: schedule DataFrame
         :return: schedule DataFrame with rows that are late opens
         """
-        match_dates = schedule['market_open'].apply(lambda x: x.tz_convert(self.tz).time() != self.open_time)
-        return schedule[match_dates]
+        return schedule[self._find_diff(schedule["market_open"], pd.Series.gt)]
+

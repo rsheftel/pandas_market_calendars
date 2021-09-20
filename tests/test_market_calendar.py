@@ -30,8 +30,10 @@ from pandas_market_calendars.market_calendar import MarketCalendar #, clean_date
 
 class FakeCalendar(MarketCalendar):
     _regular_market_times = {
-        "market_open": ((None, time(11,13)),),
-        "market_close": ((None, time(11, 49)),)
+        "market_open": ((None, time(11,18)),
+                        ("1902-03-04", time(11,13))),
+        "market_close": ((None, time(11, 45)),
+                         ("1901-02-03", time(11,49)))
     }
 
     @property
@@ -380,7 +382,7 @@ def test_adhoc_holidays():
 
 def test_special_opens():
     cal = FakeCalendar()
-
+    print("-"*30)
     results = cal.schedule('2012-07-01', '2012-07-06')
     opens = results['market_open'].tolist()
 
@@ -460,6 +462,14 @@ def test_early_closes():
     assert pd.Timestamp('2014-07-03') in results.index
     assert pd.Timestamp('2016-12-14') in results.index
 
+    schedule = cal.schedule("1901-02-01", "1901-02-05")
+    assert cal.early_closes(schedule).empty
+
+def test_late_opens():
+    cal = FakeCalendar()
+    schedule = cal.schedule("1902-03-01", "1902-03-06")
+    assert cal.late_opens(schedule).empty
+
 
 def test_open_at_time():
     cal = FakeCalendar()
@@ -533,8 +543,10 @@ def test_bad_dates():
 
 
 if __name__ == '__main__':
-    # test_special_closes_adhoc()
-    #
+    # test_special_opens()
+
+    # test_open_at_time()
+
     for ref, obj in locals().copy().items():
         if ref.startswith("test_"):
             print("running: ", ref)

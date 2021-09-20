@@ -36,7 +36,15 @@ def _test_holidays(holidays, start, end):
         assert h not in valid_days
 
 def _test_no_special_opens(start, end):
-    assert len(nyse.late_opens(nyse.schedule(start, end))) == 0
+    sched = nyse.schedule(start, end)
+    late = nyse.late_opens(sched)
+    try:
+        assert len(late) == 0
+    except AssertionError as e:
+        print(sched)
+        print(late)
+        raise e
+
     
 def _test_no_special_closes(start, end):
     assert len(nyse.early_closes(nyse.schedule(start, end))) == 0
@@ -3726,6 +3734,8 @@ def test_2022():
     _test_has_early_closes(early_closes, start, end)
 
 if __name__ == '__main__':
+    test_1885()
+
     for ref, obj in locals().copy().items():
         if ref.startswith("test_"):
             print("running ", ref)
