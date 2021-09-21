@@ -81,6 +81,10 @@ class EUREXExchangeCalendar(MarketCalendar):
 
     """
     aliases = ['EUREX']
+    regular_market_times = {
+        "market_open": ((None, time(9)),),
+        "market_close": ((None, time(17,30)),)
+    }
 
     @property
     def name(self):
@@ -89,14 +93,6 @@ class EUREXExchangeCalendar(MarketCalendar):
     @property
     def tz(self):
         return timezone('Europe/Berlin')
-
-    @property
-    def open_time_default(self):
-        return time(9, 0, tzinfo=self.tz)
-
-    @property
-    def close_time_default(self):
-        return time(17, 30, tzinfo=self.tz)
 
     @property
     def regular_holidays(self):

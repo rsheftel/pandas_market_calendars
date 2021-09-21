@@ -32,6 +32,10 @@ class ASXExchangeCalendar(MarketCalendar):
 
 	"""
 	aliases = ['ASX']
+	regular_market_times = {
+		"market_open": ((None, time(10)),),
+		"market_close": ((None, time(16,10)),)
+	}
 
 	@property
 	def name(self):
@@ -40,14 +44,6 @@ class ASXExchangeCalendar(MarketCalendar):
 	@property
 	def tz(self):
 		return timezone("Australia/Sydney")
-
-	@property
-	def open_time_default(self):
-		return time(10, 0, tzinfo=self.tz)
-
-	@property
-	def close_time_default(self):
-		return time(16, 10, tzinfo=self.tz)
 
 	@property
 	def regular_holidays(self):

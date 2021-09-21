@@ -10,6 +10,8 @@ import exchange_calendars
 
 
 class TradingCalendar(MarketCalendar):
+
+
     def __init__(self, open_time=None, close_time=None):
         self._tc = self._tc_class()  # noqa: _tc.class is defined in the class generator below
         super().__init__(open_time, close_time)
@@ -21,24 +23,6 @@ class TradingCalendar(MarketCalendar):
     @property
     def tz(self):
         return self._tc.tz
-
-    @property
-    def open_time_default(self):
-        return self._tc.open_times[0][1].replace(tzinfo=self.tz)
-
-    @property
-    def close_time_default(self):
-        return self._tc.close_times[0][1].replace(tzinfo=self.tz)
-
-    @property
-    def break_start(self):
-        tc_time = self._tc.break_start_times
-        return tc_time[0][1] if tc_time else None
-
-    @property
-    def break_end(self):
-        tc_time = self._tc.break_end_times
-        return tc_time[0][1] if tc_time else None
 
     @property
     def regular_holidays(self):
@@ -67,6 +51,29 @@ class TradingCalendar(MarketCalendar):
 
 calendars = exchange_calendars.calendar_utils._default_calendar_factories  # noqa
 
+time_props = dict(open_times= "market_open",
+                  close_times= "market_close",
+                  break_start_times= "break_start",
+                  break_end_times= "break_end")
+
 for exchange in calendars:
-    locals()[exchange + 'ExchangeCalendar'] = type(exchange, (TradingCalendar, ),
-                                                   {'_tc_class': calendars[exchange], 'alias': [exchange]})
+    cal = calendars[exchange]
+
+    # this loop will set up the newly required _regular_market_times dictionary
+    regular_market_times = {}
+    for prop, new in time_props.items():
+        times = getattr(cal, prop)
+        if times is None or isinstance(times, property): continue
+        regular_market_times[new] = times
+
+    cal = type(exchange, (TradingCalendar,), {'_tc_class': calendars[exchange],
+                                              'alias': [exchange],
+                                              'regular_market_times': regular_market_times})
+    cal._prepare_regular_market_times()
+
+    locals()[exchange + 'ExchangeCalendar'] = cal
+
+
+
+
+

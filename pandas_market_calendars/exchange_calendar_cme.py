@@ -20,7 +20,6 @@ from pandas import Timestamp
 from pandas.tseries.holiday import AbstractHolidayCalendar, GoodFriday, USLaborDay, USPresidentsDay, USThanksgivingDay
 from pytz import timezone
 
-from .exchange_calendar_nyse import NYSEExchangeCalendar
 from .holidays_us import (Christmas, ChristmasEveBefore1993, ChristmasEveInOrAfter1993, USBlackFridayInOrAfter1993,
                           USIndependenceDay, USMartinLutherKingJrAfter1998, USMemorialDay, USNationalDaysofMourning,
                           USNewYearsDay)
@@ -43,6 +42,12 @@ class CMEEquityExchangeCalendar(MarketCalendar):
     Break: 4:15 - 4:30pm America/New_York / 3:15 - 3:30 PM Chicago
     """
     aliases = ['CME_Equity', 'CBOT_Equity']
+    regular_market_times = {
+        "market_open": ((None, time(17), -1),), # offset by -1 day
+        "market_close": ((None, time(16)),),
+        "break_start": ((None, time(15,15)),),
+        "break_end": ((None, time(15,30)),)
+    }
 
     @property
     def name(self):
@@ -51,26 +56,6 @@ class CMEEquityExchangeCalendar(MarketCalendar):
     @property
     def tz(self):
         return timezone('America/Chicago')
-
-    @property
-    def open_time_default(self):
-        return time(17, 0, tzinfo=self.tz)
-
-    @property
-    def close_time_default(self):
-        return time(16, 0, tzinfo=self.tz)
-
-    @property
-    def open_offset(self):
-        return -1
-
-    @property
-    def break_start(self):
-        return time(15, 15)
-
-    @property
-    def break_end(self):
-        return time(15, 30)
 
     @property
     def regular_holidays(self):
@@ -117,6 +102,10 @@ class CMEAgricultureExchangeCalendar(MarketCalendar):
     - Christmas
     """
     aliases = ['CME_Agriculture', 'CBOT_Agriculture', 'COMEX_Agriculture', 'NYMEX_Agriculture']
+    regular_market_times = {
+        "market_open": ((None, time(17, 1), -1),), # offset by -1 day
+        "market_close": ((None, time(17)),)
+    }
 
     @property
     def name(self):
@@ -125,18 +114,6 @@ class CMEAgricultureExchangeCalendar(MarketCalendar):
     @property
     def tz(self):
         return timezone('America/Chicago')
-
-    @property
-    def open_time_default(self):
-        return time(17, 1, tzinfo=self.tz)
-
-    @property
-    def close_time_default(self):
-        return time(17, tzinfo=self.tz)
-
-    @property
-    def open_offset(self):
-        return -1
 
     @property
     def regular_holidays(self):
@@ -212,6 +189,10 @@ class CMEBondExchangeCalendar(MarketCalendar):
     This calendar attempts to be accurate for the GLOBEX holidays and hours from approx 2010 onward.
     """
     aliases = ['CME_Rate', 'CBOT_Rate', 'CME_InterestRate', 'CBOT_InterestRate', 'CME_Bond', 'CBOT_Bond']
+    regular_market_times = {
+        "market_open": ((None, time(17), -1),), # offset by -1 day
+        "market_close": ((None, time(16)),)
+    }
 
     @property
     def name(self):
@@ -220,18 +201,6 @@ class CMEBondExchangeCalendar(MarketCalendar):
     @property
     def tz(self):
         return timezone('America/Chicago')
-
-    @property
-    def open_time_default(self):
-        return time(17, tzinfo=self.tz)
-
-    @property
-    def close_time_default(self):
-        return time(16, tzinfo=self.tz)
-
-    @property
-    def open_offset(self):
-        return -1
 
     @property
     def regular_holidays(self):

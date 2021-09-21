@@ -1,14 +1,3 @@
-def _regmeta_class_factory(cls, name):
-    """
-    :param cls(RegisteryMeta): registration meta class
-    :param name(str): name of class
-    :return: class
-    """
-    try:
-        return cls._regmeta_class_registry[name]
-    except KeyError:
-        raise RuntimeError(
-            'Class {} is not one of the registered classes: {}'.format(name, cls._regmeta_class_registry.keys()))
 
 
 def _regmeta_instance_factory(cls, name, *args, **kwargs):
