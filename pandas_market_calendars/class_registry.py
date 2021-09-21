@@ -8,7 +8,11 @@ def _regmeta_instance_factory(cls, name, *args, **kwargs):
     :param kwargs(Optional(dict)): instance named arguments
     :return: class instance
     """
-    return cls._regmeta_class_factory(name)(*args, **kwargs)
+    if name in cls._regmeta_class_registry:
+        return cls._regmeta_class_registry[name](*args, **kwargs)
+    else:
+        raise RuntimeError(
+            'Class {} is not one of the registered classes: {}'.format(name, cls._regmeta_class_registry.keys()))
 
 
 def _regmeta_register_class(cls, regcls, name):
@@ -27,10 +31,6 @@ def _regmeta_register_class(cls, regcls, name):
         cls._regmeta_class_registry[name] = regcls
 
 
-def _regmeta_classes(cls):
-    return list(cls._regmeta_class_registry.keys())
-
-
 class RegisteryMeta(type):
     """
     Metaclass used to register all classes inheriting from RegisteryMeta
@@ -38,12 +38,9 @@ class RegisteryMeta(type):
 
     def __new__(mcs, name, bases, attr):
         cls = super(RegisteryMeta, mcs).__new__(mcs, name, bases, attr)
-
         if not hasattr(cls, '_regmeta_class_registry'):
             cls._regmeta_class_registry = {}
-            cls._regmeta_class_factory = classmethod(_regmeta_class_factory)
-            cls._regmeta_instance_factory = classmethod(_regmeta_instance_factory)
-            cls._regmeta_classes = classmethod(_regmeta_classes)
+            cls.factory = classmethod(_regmeta_instance_factory)
 
         return cls
 
@@ -52,4 +49,9 @@ class RegisteryMeta(type):
         for b in bases:
             if hasattr(b, '_regmeta_class_registry'):
                 _regmeta_register_class(b, cls, name)
+
         super(RegisteryMeta, cls).__init__(name, bases, attr)
+        cls._prepare_regular_market_times()
+
+
+
