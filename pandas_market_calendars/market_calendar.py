@@ -105,6 +105,10 @@ class MarketCalendar(metaclass=MarketCalendarMeta):
                 times = (*times[:-1], tuple(last))
                 cls.regular_market_times[market_time] = times
 
+    @classmethod
+    def is_discontinued(cls, market_time): return market_time in cls.discontinued_market_times
+    @classmethod
+    def has_discontinued(cls): return len(cls.discontinued_market_times) > 0
 
     def __init__(self, open_time=None, close_time=None):
         """
@@ -112,6 +116,7 @@ class MarketCalendar(metaclass=MarketCalendarMeta):
         :param close_time: Market close time override as datetime.time object. If None then default is used.
         """
         self.__iscopied = False
+        self._customized_market_times = []
 
         if not open_time is None:
             self.change_time("market_open", open_time)
@@ -119,6 +124,8 @@ class MarketCalendar(metaclass=MarketCalendarMeta):
         if not close_time is None:
             self.change_time("market_close", close_time)
 
+    def has_custom(self, market_time):
+        return market_time in self._customized_market_times
 
     def change_time(self, market_time, times):
         if not self.__iscopied:
@@ -134,6 +141,9 @@ class MarketCalendar(metaclass=MarketCalendarMeta):
             try: del self.__market_times
             except AttributeError: pass
             self.__market_times = self._market_times
+
+            self._customized_market_times.append(market_time)
+            self._customized_market_times = list(set(self._customized_market_times))
 
         else:
             raise ValueError("You need to pass either a datetime.time object or tuple/list in standard format")

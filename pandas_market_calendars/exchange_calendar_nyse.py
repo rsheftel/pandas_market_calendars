@@ -746,24 +746,27 @@ class NYSEExchangeCalendar(MarketCalendar):
     """
     aliases = ['NYSE', 'stock', 'NASDAQ', 'BATS', 'DJIA', 'DOW']
 
-    tz = timezone("America/New_York")
-
     regular_market_times = {
         "pre": ((None, time(4)),),
-
         "market_open": ((None, time(10)),
                         ("1985-01-01", time(9, 30))),
-
         "market_close":((None, time(15)),
                         ("1952-09-29", time(15, 30)),
                         ("1974-01-01", time(16))),
         "post": ((None, time(20)),)
     }
 
+    _saturday_close = time(12)
+    _saturday_end = pd.Timestamp('1952-09-29', tz='UTC')
+    _round_before = pd.Timestamp('1901-12-14', tz='UTC')
 
     @property
     def name(self):
         return "NYSE"
+
+    @property
+    def tz(self):
+        return timezone("America/New_York")
 
     @property
     def weekmask(self):
@@ -1078,33 +1081,27 @@ class NYSEExchangeCalendar(MarketCalendar):
         trading_days = super().valid_days(start_date, end_date, tz=tz)
 
         # Starting Monday Sept. 29, 1952, no more saturday trading days
-        above_cut_off = trading_days >= pd.Timestamp('1952-09-29', tz='UTC')
+        above_cut_off = trading_days >= self._saturday_end
         if above_cut_off.any():
             above_and_saturday = (trading_days.weekday == 5) & above_cut_off
             trading_days = trading_days[~above_and_saturday]
 
         return trading_days
 
+    def _round(self, col):
+        try: cond = col.dt.normalize().ge(self._round_before)
+        except AttributeError: cond = col.normalize() >= self._round_before
+        return col.where(cond, col.round("15min"))
+
     def days_at_time(self, days, market_time, day_offset=0):
         days = super().days_at_time(days, market_time, day_offset= day_offset)
 
-        if market_time == "market_close":
+        if market_time == "market_close" and not self.has_custom(market_time):
             days = days.tz_convert(self.tz)
-            days = days.where(days.weekday != 5,
-                              days.normalize() + pd.Timedelta(days= day_offset, hours= 12))
+            days = days.where(days.weekday != 5, days.normalize()+ self._tdelta(self._saturday_close))
             days = days.tz_convert("UTC")
         return self._round(days)
 
-    def _round(self, col):
-        d = pd.Timestamp('1901-12-14', tz='UTC')
-        try:
-            cond = col.dt.normalize().ge(d)
-            rounded = col.dt.tz_convert(self.tz).round("15min").dt.tz_convert("UTC")
-        except AttributeError:
-            cond = col.normalize() >= d
-            rounded = col.tz_convert(self.tz).round("15min").tz_convert("UTC")
-
-        return col.where(cond, rounded)
 
     def early_closes(self, schedule):
         """
@@ -1116,17 +1113,15 @@ class NYSEExchangeCalendar(MarketCalendar):
         :param schedule: schedule DataFrame
         :return: schedule DataFrame with rows that are early closes
         """
-        # Prior to 1952-09-29 close was Mon-Fri 3pm and Sat noon
-        # 1952-1973 close was Mon-Fri 3:30pm (no saturday trades)
-        # 1974+ close is 4pm 
-        # dates before 1901-12-14 have a 4 minute time shift. rounding removes it
-        _schedule = schedule.assign(market_close= self._round(schedule["market_close"]))
-        early = super().early_closes(_schedule)
+        # when schedule comes from self.schedule(), it should already be rounded but just in case
+        # its created differently
+        # _schedule = schedule.assign(market_close= schedule["market_close"])
+        early = super().early_closes(schedule)
 
         mc = early.market_close.dt.tz_convert(self.tz)
-        after_noon = (mc - mc.dt.normalize()).ge(pd.Timedelta(hours= 12))
-
+        after_noon = (mc - mc.dt.normalize()).ge(self._tdelta(self._saturday_close))
         early = early[~(mc.dt.weekday.eq(5) & after_noon)]
+
         return schedule.loc[early.index]
 
     def late_opens(self, schedule):
@@ -1139,6 +1134,9 @@ class NYSEExchangeCalendar(MarketCalendar):
         # Prior to 1985 trading began at 10am
         # After 1985 trading begins at 9:30am 
         # dates before 1901-12-14 have a 4 minute time shift. rounding removes it
-        _schedule = schedule.assign(market_open= self._round(schedule["market_open"]))
-        late = super().late_opens(_schedule)
+
+        # when schedule comes from self.schedule(), it should already be rounded but just in case
+        # its created differently
+        # _schedule = schedule.assign(market_open= self._round(schedule["market_open"]))
+        late = super().late_opens(schedule)
         return schedule.loc[late.index]
