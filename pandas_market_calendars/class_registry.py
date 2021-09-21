@@ -8,9 +8,9 @@ def _regmeta_instance_factory(cls, name, *args, **kwargs):
     :param kwargs(Optional(dict)): instance named arguments
     :return: class instance
     """
-    if name in cls._regmeta_class_registry:
+    try:
         return cls._regmeta_class_registry[name](*args, **kwargs)
-    else:
+    except AttributeError:
         raise RuntimeError(
             'Class {} is not one of the registered classes: {}'.format(name, cls._regmeta_class_registry.keys()))
 
