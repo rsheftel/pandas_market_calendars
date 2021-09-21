@@ -114,6 +114,7 @@ class MarketCalendar(metaclass=MarketCalendarMeta):
         """
         if not open_time is None or not close_time is None:
             self._regular_market_times = self._regular_market_times.copy()
+            self._regular_market_timedeltas = self._regular_market_timedeltas.copy()
 
             if not open_time is None:
                 self._regular_market_times["market_open"] = ((None, open_time),)
