@@ -73,8 +73,7 @@ class MarketCalendar(metaclass=MarketCalendarMeta):
     def factory(cls, name, *args, **kwargs): # Will be set by Meta, keeping it there for tests
         """
         :param name: The name of the MarketCalendar to be retrieved.
-        :param open_time: Market open time override as datetime.time object. If None then default is used.
-        :param close_time: Market close time override as datetime.time object. If None then default is used.
+        :param *args/**kwargs: passed to requested MarketCalendar.__init__
         :return: MarketCalendar of the desired calendar.
         """
         return
