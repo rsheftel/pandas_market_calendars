@@ -81,7 +81,7 @@ class EUREXExchangeCalendar(MarketCalendar):
 
     """
     aliases = ['EUREX']
-    _regular_market_times = {
+    regular_market_times = {
         "market_open": ((None, time(9)),),
         "market_close": ((None, time(17,30)),)
     }

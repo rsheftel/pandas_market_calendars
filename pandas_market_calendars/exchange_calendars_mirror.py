@@ -60,15 +60,15 @@ for exchange in calendars:
     cal = calendars[exchange]
 
     # this loop will set up the newly required _regular_market_times dictionary
-    _regular_market_times = {}
+    regular_market_times = {}
     for prop, new in time_props.items():
         times = getattr(cal, prop)
         if times is None or isinstance(times, property): continue
-        _regular_market_times[new] = times
+        regular_market_times[new] = times
 
     cal = type(exchange, (TradingCalendar,), {'_tc_class': calendars[exchange],
                                               'alias': [exchange],
-                                              '_regular_market_times': _regular_market_times})
+                                              'regular_market_times': regular_market_times})
     cal._prepare_regular_market_times()
 
     locals()[exchange + 'ExchangeCalendar'] = cal

@@ -748,7 +748,7 @@ class NYSEExchangeCalendar(MarketCalendar):
 
     tz = timezone("America/New_York")
 
-    _regular_market_times = {
+    regular_market_times = {
         "pre": ((None, time(4)),),
 
         "market_open": ((None, time(10)),

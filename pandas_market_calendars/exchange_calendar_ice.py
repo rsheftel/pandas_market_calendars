@@ -20,7 +20,7 @@ class ICEExchangeCalendar(MarketCalendar):
     https://www.theice.com/publicdocs/futures_us/ICE_Futures_US_Regular_Trading_Hours.pdf # noqa
     """
     aliases = ['ICE', 'ICEUS', 'NYFE']
-    _regular_market_times = {
+    regular_market_times = {
         "market_open": ((None, time(20, 1), -1),), # offset by -1 day
         "market_close": ((None, time(18)),)
     }

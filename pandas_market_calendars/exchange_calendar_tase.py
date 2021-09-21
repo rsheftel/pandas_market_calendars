@@ -97,7 +97,7 @@ class TASEExchangeCalendar(MarketCalendar):
     """
 
     aliases = ['TASE']
-    _regular_market_times = {
+    regular_market_times = {
         "market_open": ((None, time(10)),),
         "market_close": ((None, time(15,59)),)
     }

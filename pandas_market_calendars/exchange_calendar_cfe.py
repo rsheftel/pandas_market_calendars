@@ -52,7 +52,7 @@ class CFEExchangeCalendar(MarketCalendar):
     (We are ignoring extended trading hours for now)
     """
     aliases = ['CFE']
-    _regular_market_times = {
+    regular_market_times = {
         "market_open": ((None, time(8, 31)),),
         "market_close": ((None, time(15, 15)),)
     }

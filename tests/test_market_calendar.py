@@ -29,7 +29,7 @@ from pandas_market_calendars.holidays_us import (Christmas, HurricaneSandyClosin
 from pandas_market_calendars.market_calendar import MarketCalendar #, clean_dates, days_at_time
 
 class FakeCalendar(MarketCalendar):
-    _regular_market_times = {
+    regular_market_times = {
         "market_open": ((None, time(11,18)),
                         ("1902-03-04", time(11,13))),
         "market_close": ((None, time(11, 45)),
@@ -71,7 +71,7 @@ class FakeCalendar(MarketCalendar):
 
 class FakeBreakCalendar(MarketCalendar):
 
-    _regular_market_times = {
+    regular_market_times = {
         "market_open": ((None, time(9, 30)),),
         "market_close": ((None, time(12)),),
         "break_start": ((None, time(10)),),

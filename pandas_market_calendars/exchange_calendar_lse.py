@@ -47,7 +47,7 @@ class LSEExchangeCalendar(MarketCalendar):
     - Dec. 28th (if Boxing Day is on a weekend)
     """
     aliases = ['LSE']
-    _regular_market_times = {
+    regular_market_times = {
         "market_open": ((None, time(8)),),
         "market_close": ((None, time(16,30)),),
 

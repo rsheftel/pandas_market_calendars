@@ -32,7 +32,7 @@ class ASXExchangeCalendar(MarketCalendar):
 
 	"""
 	aliases = ['ASX']
-	_regular_market_times = {
+	regular_market_times = {
 		"market_open": ((None, time(10)),),
 		"market_close": ((None, time(16,10)),)
 	}

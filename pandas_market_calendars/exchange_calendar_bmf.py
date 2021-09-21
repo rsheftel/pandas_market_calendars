@@ -166,7 +166,7 @@ class BMFExchangeCalendar(MarketCalendar):
     - New Year's Eve (December 31)
     """
     aliases = ['BMF']
-    _regular_market_times = {
+    regular_market_times = {
         "market_open": ((None, time(10,1)),),
         "market_close": ((None, time(16)),)
     }

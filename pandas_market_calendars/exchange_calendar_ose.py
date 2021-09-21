@@ -110,7 +110,7 @@ class OSEExchangeCalendar(MarketCalendar):
     """
 
     aliases = ['OSE']
-    _regular_market_times = {
+    regular_market_times = {
         "market_open": ((None, time(9)),),
         "market_close": ((None, time(16,20)),)
     }

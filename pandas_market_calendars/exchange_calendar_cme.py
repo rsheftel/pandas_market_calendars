@@ -42,7 +42,7 @@ class CMEEquityExchangeCalendar(MarketCalendar):
     Break: 4:15 - 4:30pm America/New_York / 3:15 - 3:30 PM Chicago
     """
     aliases = ['CME_Equity', 'CBOT_Equity']
-    _regular_market_times = {
+    regular_market_times = {
         "market_open": ((None, time(17), -1),), # offset by -1 day
         "market_close": ((None, time(16)),),
         "break_start": ((None, time(15,15)),),
@@ -102,7 +102,7 @@ class CMEAgricultureExchangeCalendar(MarketCalendar):
     - Christmas
     """
     aliases = ['CME_Agriculture', 'CBOT_Agriculture', 'COMEX_Agriculture', 'NYMEX_Agriculture']
-    _regular_market_times = {
+    regular_market_times = {
         "market_open": ((None, time(17, 1), -1),), # offset by -1 day
         "market_close": ((None, time(17)),)
     }
@@ -189,7 +189,7 @@ class CMEBondExchangeCalendar(MarketCalendar):
     This calendar attempts to be accurate for the GLOBEX holidays and hours from approx 2010 onward.
     """
     aliases = ['CME_Rate', 'CBOT_Rate', 'CME_InterestRate', 'CBOT_InterestRate', 'CME_Bond', 'CBOT_Bond']
-    _regular_market_times = {
+    regular_market_times = {
         "market_open": ((None, time(17), -1),), # offset by -1 day
         "market_close": ((None, time(16)),)
     }

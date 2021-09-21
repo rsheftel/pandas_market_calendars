@@ -350,7 +350,7 @@ class HKEXExchangeCalendar(MarketCalendar):
     Close Time: 4:00 PM, Asia/Shanghai
     """
     aliases = ['HKEX']
-    _regular_market_times = {
+    regular_market_times = {
         "market_open": ((None, time(9, 30)),),
         "market_close": ((None, time(16)),),
         "break_start": ((None, time(12)),),

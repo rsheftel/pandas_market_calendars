@@ -356,7 +356,7 @@ class BSEExchangeCalendar(MarketCalendar):
     early closes or late opens.
     """
     aliases = ['BSE']
-    _regular_market_times = {
+    regular_market_times = {
         "market_open": ((None, time(9, 15)),),
         "market_close": ((None, time(15, 30)),)
     }
