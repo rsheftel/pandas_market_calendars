@@ -518,7 +518,7 @@ class MarketCalendar(metaclass=MarketCalendarMeta):
         return start_date, end_date
 
     def _find_diff(self, col, diff):
-        col = col.dt.tz_convert(self.tz)
+        col = col.dt.tz_convert(self.tz).dt.tz_localize(None)
         col = col - col.dt.normalize() # timedeltas for vectorized comparison
 
         cond = diff(col, self._regular_market_timedeltas[col.name][0][1])
