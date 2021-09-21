@@ -73,6 +73,16 @@ class MarketCalendar(metaclass=MarketCalendarMeta):
         except IndexError: return 0
 
     @classmethod
+    def factory(cls, name, *args, **kwargs): # Will be set by Meta, keeping it there for tests
+        """
+        :param name: The name of the MarketCalendar to be retrieved.
+        :param open_time: Market open time override as datetime.time object. If None then default is used.
+        :param close_time: Market close time override as datetime.time object. If None then default is used.
+        :return: MarketCalendar of the desired calendar.
+        """
+        return
+
+    @classmethod
     def _prepare_regular_market_times(cls):
         if not cls._regular_market_times: return
 
@@ -126,22 +136,15 @@ class MarketCalendar(metaclass=MarketCalendarMeta):
 
         self._holidays = None
 
-    @classmethod
-    def factory(cls, name, open_time=None, close_time=None):
-        """
-        :param name: The name of the MarketCalendar to be retrieved.
-        :param open_time: Market open time override as datetime.time object. If None then default is used.
-        :param close_time: Market close time override as datetime.time object. If None then default is used.
-        :return: MarketCalendar of the desired calendar.
-        """
-        return cls._regmeta_instance_factory(name, open_time=open_time, close_time=close_time)
+
 
     @classmethod
     def calendar_names(cls):
         """All Market Calendar names and aliases that can be used in "factory"
         :return: list(str)
         """
-        return [cal for cal in cls._regmeta_classes() if cal not in ['MarketCalendar', 'TradingCalendar']]
+        return [cal for cal in cls._regmeta_class_registry.keys()
+                if cal not in ['MarketCalendar', 'TradingCalendar']]
 
     @property
     @abstractmethod
