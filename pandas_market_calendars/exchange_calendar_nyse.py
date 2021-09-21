@@ -1139,6 +1139,6 @@ class NYSEExchangeCalendar(MarketCalendar):
         # Prior to 1985 trading began at 10am
         # After 1985 trading begins at 9:30am 
         # dates before 1901-12-14 have a 4 minute time shift. rounding removes it
-        _schedule = schedule.assign(market_close= self._round(schedule["market_open"]))
+        _schedule = schedule.assign(market_open= self._round(schedule["market_open"]))
         late = super().late_opens(_schedule)
         return schedule.loc[late.index]
