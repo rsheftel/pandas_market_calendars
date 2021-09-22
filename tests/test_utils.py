@@ -38,8 +38,8 @@ def test_date_range_exceptions():
     assert e.exconly() == "ValueError: force_close must be True, False or None."
 
     ### close_time is before open_time
-    cal = FakeCalendar(open_time= datetime.time(12), close_time= datetime.time(11, 30))
-    schedule = cal.schedule("2021-01-05", "2021-01-05")
+    schedule = pd.DataFrame([["2020-01-01 12:00:00+00:00", "2020-01-01 11:00:00+00:00"]],
+                            index= ["2020-01-01"], columns= ["market_open", "market_close"])
     with pytest.raises(ValueError) as e:
         mcal.date_range(schedule, "15min", closed="right", force_close= True)
     assert e.exconly() == "ValueError: Schedule contains rows where market_close < market_open,"\
