@@ -964,31 +964,33 @@ class NYSEExchangeCalendar(MarketCalendar):
     def special_closes_adhoc(self):
         return [
             (time(13, tzinfo=timezone('America/New_York')),
-              [t.strftime("%Y-%m-%d") for t in DaysBeforeIndependenceDay1pmEarlyCloseAdhoc]
-            + [t.strftime("%Y-%m-%d") for t in ChristmasEve1pmEarlyCloseAdhoc]
-            + [t.strftime("%Y-%m-%d") for t in DayAfterChristmas1pmEarlyCloseAdhoc]
-            + [t.strftime("%Y-%m-%d") for t in BacklogRelief1pmEarlyClose1929]
+              DaysBeforeIndependenceDay1pmEarlyCloseAdhoc # list
+                + ChristmasEve1pmEarlyCloseAdhoc
+                + DayAfterChristmas1pmEarlyCloseAdhoc
+                + BacklogRelief1pmEarlyClose1929
             ),
-            (time(14, tzinfo=timezone('America/New_York')),
-             [t.strftime("%Y-%m-%d") for t in ChristmasEve2pmEarlyCloseAdhoc]
-             + BacklogRelief2pmEarlyClose1928.strftime("%Y-%m-%d").tolist()
-             + [t.strftime("%Y-%m-%d") for t in HeavyVolume2pmEarlyClose1933]
-             + [t.strftime("%Y-%m-%d") for t in TransitStrike2pmEarlyClose1966]
-             + [t.strftime("%Y-%m-%d") for t in Backlog2pmEarlyCloses1967]
-             + [t.strftime("%Y-%m-%d") for t in Backlog2pmEarlyCloses1968]
-             + [t.strftime("%Y-%m-%d") for t in PaperworkCrisis2pmEarlyCloses1969]
-             + [t.strftime("%Y-%m-%d") for t in Backlog2pmEarlyCloses1987]
+            (time(14, tzinfo=timezone('America/New_York')), pd.DatetimeIndex(
+                 ChristmasEve2pmEarlyCloseAdhoc
+                 + HeavyVolume2pmEarlyClose1933).union_many([
+                 BacklogRelief2pmEarlyClose1928,
+                 TransitStrike2pmEarlyClose1966, # index
+                 Backlog2pmEarlyCloses1967, # index
+                 Backlog2pmEarlyCloses1968, # index
+                 PaperworkCrisis2pmEarlyCloses1969, # index
+                 Backlog2pmEarlyCloses1987 ])# index
             ),
-            (time(14, 30, tzinfo=timezone('America/New_York')),
-               [t.strftime("%Y-%m-%d") for t in PaperworkCrisis230pmEarlyCloses1969]
-             + [t.strftime("%Y-%m-%d") for t in Backlog230pmEarlyCloses1987]
+            (time(14, 30, tzinfo=timezone('America/New_York')), pd.DatetimeIndex([], tz= "UTC"
+                        ).union_many([
+                PaperworkCrisis230pmEarlyCloses1969,
+                Backlog230pmEarlyCloses1987]) # index
             ),
-            (time(15, tzinfo=timezone('America/New_York')),
-               [t.strftime("%Y-%m-%d") for t in PaperworkCrisis3pmEarlyCloses1969to1970]
-             + [t.strftime("%Y-%m-%d") for t in Backlog3pmEarlyCloses1987]
+            (time(15, tzinfo=timezone('America/New_York')), pd.DatetimeIndex([], tz= "UTC"
+                        ).union_many([
+                PaperworkCrisis3pmEarlyCloses1969to1970,
+                Backlog3pmEarlyCloses1987]) # index
             ),
             (time(15, 30, tzinfo=timezone('America/New_York')),
-               [t.strftime("%Y-%m-%d") for t in Backlog330pmEarlyCloses1987]
+                Backlog330pmEarlyCloses1987 # idnex
             ),
         ]
 
