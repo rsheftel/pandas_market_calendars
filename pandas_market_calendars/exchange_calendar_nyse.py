@@ -1057,15 +1057,13 @@ class NYSEExchangeCalendar(MarketCalendar):
     @property
     def special_opens_adhoc(self):
         return [
-            (time(9, 31, tzinfo=timezone('America/New_York')),
-             [t.strftime("%Y-%m-%d") for t in TroopsInGulf931LateOpens1991]
+            (time(9, 31, tzinfo=timezone('America/New_York')), TroopsInGulf931LateOpens1991
             ),
-            (time(11, tzinfo=timezone('America/New_York')),
-             [t.strftime("%Y-%m-%d") for t in HeavyVolume11amLateOpen1933]
+            (time(11, tzinfo=timezone('America/New_York')), HeavyVolume11amLateOpen1933
             ),
             (time(12, tzinfo=timezone('America/New_York')),
-                       [t.strftime("%Y-%m-%d") for t in BacklogRelief12pmLateOpen1929]
-                     + [t.strftime("%Y-%m-%d") for t in HeavyVolume12pmLateOpen1933]
+                BacklogRelief12pmLateOpen1929
+                + HeavyVolume12pmLateOpen1933
             ),
         ]
 
