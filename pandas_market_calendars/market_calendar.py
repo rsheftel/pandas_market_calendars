@@ -441,12 +441,19 @@ class MarketCalendar(metaclass=MarketCalendarMeta):
         end = end.tz_localize("UTC").replace(hour=23, minute=59, second=59)
         return dates[(dates >= start) & (dates <= end)]
 
-    def special_dates(self, market_time, start_date, end_date, force_filter_holidays= False):
+    def special_dates(self, market_time, start_date, end_date, filter_holidays= True):
+        """
+        This method will return a DatetimeIndex with all the special times of `market_time`.
+        In some cases, calculations of special_times don't consider full day holidays correctly.
+        Those days will be dropped if filter_holidays is True, but they can be kept if filter_holidays is False,
+        which can be useful when debugging the data.
+        """
         start_date, end_date = self.clean_dates(start_date, end_date)
         calendars = self.get_special_times(market_time)
         ad_hoc = self.get_special_times_adhoc(market_time)
         special = self._special_dates(calendars, ad_hoc, start_date, end_date)
-        if force_filter_holidays:
+
+        if filter_holidays:
             valid = self.valid_days(start_date, end_date)
             special = special[special.normalize().isin(valid)]  # some sources of special times don't exclude holidays
         return special
@@ -532,6 +539,11 @@ class MarketCalendar(metaclass=MarketCalendarMeta):
             if using bars and would like to include the last bar as a valid open date and time.
         :return: True if the timestamp is a valid open date and time, False if not
         """
+        if (not schedule.columns.isin(["market_open", "break_start", "break_end", "market_close"]).all() or
+            schedule.columns.shape[0] % 2):
+            raise ValueError("You seem to be using a schedule that isn't based on standard market_times, "
+                             "which isn't yet supported by this method.")
+
         date = pd.Timestamp(timestamp).tz_convert('UTC').tz_localize(None).normalize()
         if date in schedule.index:
             if 'break_start' in schedule.columns:
