@@ -36,7 +36,7 @@ def test_days_at_time_open():
     assert_index_equal(at_open, pd.DatetimeIndex(
         ['1901-12-13 10:00:00', '1901-12-14 10:00:00',
          '1901-12-16 10:00:00'], dtype='datetime64[ns]', freq=None
-    ).tz_localize(cal.tz).tz_convert("UTC").round("15min"))
+    ).tz_localize(cal.tz).tz_convert("UTC"))
 
     # check if chosen time is kept
     cal = NYSEExchangeCalendar(open_time=dt.time(9))
@@ -45,7 +45,7 @@ def test_days_at_time_open():
     assert_index_equal(at_open, pd.DatetimeIndex(
         ['1901-12-13 09:00:00', '1901-12-14 09:00:00',
          '1901-12-16 09:00:00'], dtype='datetime64[ns]', freq=None
-    ).tz_localize(cal.tz).tz_convert("UTC").round("15min"))
+    ).tz_localize(cal.tz).tz_convert("UTC"))
 
 
 def test_days_at_time_close():
@@ -93,7 +93,7 @@ def test_days_at_time_close():
     assert_index_equal(at_close, pd.DatetimeIndex(
         ['1901-12-13 15:00:00', '1901-12-14 12:00:00',
          '1901-12-16 15:00:00'], dtype='datetime64[ns]', freq=None
-    ).tz_localize(cal.tz).tz_convert("UTC").round("15min"))
+    ).tz_localize(cal.tz).tz_convert("UTC"))
 
     # check if chosen time is kept
     cal = NYSEExchangeCalendar(close_time=dt.time(10))
@@ -102,7 +102,7 @@ def test_days_at_time_close():
     assert_index_equal(at_close, pd.DatetimeIndex(
         ['1901-12-13 10:00:00', '1901-12-14 10:00:00',
          '1901-12-16 10:00:00'], dtype='datetime64[ns]', freq=None
-    ).tz_localize(cal.tz).tz_convert("UTC").round("15min"))
+    ).tz_localize(cal.tz).tz_convert("UTC"))
 
 
 def test_time_zone():

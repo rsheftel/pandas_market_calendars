@@ -1088,10 +1088,6 @@ class NYSEExchangeCalendar(MarketCalendar):
 
         return trading_days
 
-    def _round(self, col):
-        try: cond = col.dt.normalize().ge(self._round_before)
-        except AttributeError: cond = col.normalize() >= self._round_before
-        return col.where(cond, col.round("15min"))
 
     def days_at_time(self, days, market_time, day_offset=0):
         days = super().days_at_time(days, market_time, day_offset= day_offset)
@@ -1100,8 +1096,7 @@ class NYSEExchangeCalendar(MarketCalendar):
             days = days.tz_convert(self.tz)
             days = days.where(days.weekday != 5, days.normalize()+ self._tdelta(self._saturday_close))
             days = days.tz_convert("UTC")
-        return self._round(days)
-
+        return days
 
     def early_closes(self, schedule):
         """
@@ -1113,35 +1108,10 @@ class NYSEExchangeCalendar(MarketCalendar):
         :param schedule: schedule DataFrame
         :return: schedule DataFrame with rows that are early closes
         """
-        # when schedule comes from self.schedule(), it should already be rounded but just in case
-        # its created differently
-
-        adj = schedule.market_close.where(schedule.market_close.ge(self._round_before),
-                                         schedule.market_close - pd.Timedelta("4min"))
-        _schedule = schedule.assign(market_close= adj)
-        early = super().early_closes(_schedule)
+        early = super().early_closes(schedule)
 
         mc = early.market_close.dt.tz_convert(self.tz)
         after_noon = (mc - mc.dt.normalize()).ge(self._tdelta(self._saturday_close))
         early = early[~(mc.dt.weekday.eq(5) & after_noon)]
 
         return schedule.loc[early.index]
-
-    def late_opens(self, schedule):
-        """
-        Get a DataFrame of the dates that are an late opens.
-
-        :param schedule: schedule DataFrame
-        :return: schedule DataFrame with rows that are late opens
-        """
-        # Prior to 1985 trading began at 10am
-        # After 1985 trading begins at 9:30am 
-        # dates before 1901-12-14 have a 4 minute time shift. rounding removes it
-
-        # when schedule comes from self.schedule(), it should already be rounded but just in case
-        # its created differently
-        adj = schedule.market_open.where(schedule.market_open.ge(self._round_before),
-                                         schedule.market_open - pd.Timedelta("4min"))
-        _schedule = schedule.assign(market_open= adj)
-        late = super().late_opens(_schedule)
-        return schedule.loc[late.index]
