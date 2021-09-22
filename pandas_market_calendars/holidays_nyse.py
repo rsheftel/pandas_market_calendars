@@ -1126,6 +1126,10 @@ Backlog2pmEarlyCloses1967 =  date_range('1967-08-09', '1967-08-18',
 Backlog2pmEarlyCloses1968 =  date_range('1968-01-22', '1968-03-01', 
                   freq=CustomBusinessDay(weekmask = 'Mon Tue Wed Thu Fri'),
                   tz='UTC')
+Backlog2pmEarlyCloses1968 = Backlog2pmEarlyCloses1968[
+    ~Backlog2pmEarlyCloses1968.isin([Timestamp("1968-02-12", tz= "UTC"),  # See LincolnsBirthdayAdhoc
+                                     Timestamp("1968-02-22", tz= "UTC")])] # See USWashingtonsBirthDay1964to1970
+
 
 
 MLKdayOfMourning1968 = [Timestamp('1968-04-09', tz='UTC'),]
