@@ -758,7 +758,6 @@ class NYSEExchangeCalendar(MarketCalendar):
 
     _saturday_close = time(12)
     _saturday_end = pd.Timestamp('1952-09-29', tz='UTC')
-    _round_before = pd.Timestamp('1901-12-14', tz='UTC')
 
     @property
     def name(self):
