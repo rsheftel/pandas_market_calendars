@@ -25,6 +25,26 @@ from .class_registry import RegisteryMeta
 
 MONDAY, TUESDAY, WEDNESDAY, THURSDAY, FRIDAY, SATURDAY, SUNDAY = range(7)
 
+class ProtectedDict(dict):
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self._ALLOW_SETTING_TIMES = False
+
+    def __setitem__(self, key, value):
+        if self._ALLOW_SETTING_TIMES:
+            self._ALLOW_SETTING_TIMES = False
+            return super().__setitem__(key, value)
+
+        raise TypeError("You cannot set a value directly, "
+                        "please use the instance methods: MarketCalendar.change_time or "
+                        "MarketCalendar.add_time to alter the regular_market_times information, "
+                        "or inherit from the closest MarketCalendar to create a new MarketCalendar Class.")
+    def __repr__(self):
+        return self.__class__.__name__+ "(" + super().__repr__() + ")"
+
+    def copy(self):
+        return self.__class__(super().copy())
 
 class MarketCalendarMeta(ABCMeta, RegisteryMeta):
     pass
@@ -70,6 +90,14 @@ class MarketCalendar(metaclass=MarketCalendarMeta):
         except IndexError: return 0
 
     @classmethod
+    def calendar_names(cls):
+        """All Market Calendar names and aliases that can be used in "factory"
+        :return: list(str)
+        """
+        return [cal for cal in cls._regmeta_class_registry.keys()
+                if cal not in ['MarketCalendar', 'TradingCalendar']]
+
+    @classmethod
     def factory(cls, name, *args, **kwargs): # Will be set by Meta, keeping it there for tests
         """
         :param name: The name of the MarketCalendar to be retrieved.
@@ -82,6 +110,7 @@ class MarketCalendar(metaclass=MarketCalendarMeta):
     def _prepare_regular_market_times(cls):
         if not cls.regular_market_times: return
 
+        cls.regular_market_times = ProtectedDict(cls.regular_market_times)
         cls.discontinued_market_times = {}
         for market_time, times in cls.regular_market_times.items():
             # create the property for the market time, to be able to include special cases
@@ -103,6 +132,7 @@ class MarketCalendar(metaclass=MarketCalendarMeta):
                 last[1] = times[-2][1]
                 cls.discontinued_market_times[market_time] = last[0]
                 times = (*times[:-1], tuple(last))
+                cls.regular_market_times._ALLOW_SETTING_TIMES = True
                 cls.regular_market_times[market_time] = times
 
     @classmethod
@@ -135,6 +165,7 @@ class MarketCalendar(metaclass=MarketCalendarMeta):
         if isinstance(times, time): times = ((None, times),)
 
         if isinstance(times, (tuple, list)):
+            self.regular_market_times._ALLOW_SETTING_TIMES = True
             self.regular_market_times[market_time] = times
             self._regular_market_timedeltas[market_time] = tuple((t[0], self._tdelta(t[1], self._off(t)))
                                                                    for t in times)
@@ -147,14 +178,6 @@ class MarketCalendar(metaclass=MarketCalendarMeta):
 
         else:
             raise ValueError("You need to pass either a datetime.time object or tuple/list in standard format")
-
-    @classmethod
-    def calendar_names(cls):
-        """All Market Calendar names and aliases that can be used in "factory"
-        :return: list(str)
-        """
-        return [cal for cal in cls._regmeta_class_registry.keys()
-                if cal not in ['MarketCalendar', 'TradingCalendar']]
 
     @property
     @abstractmethod
@@ -418,6 +441,16 @@ class MarketCalendar(metaclass=MarketCalendarMeta):
         end = end.tz_localize("UTC").replace(hour=23, minute=59, second=59)
         return dates[(dates >= start) & (dates <= end)]
 
+    def special_dates(self, market_time, start_date, end_date, force_filter_holidays= False):
+        start_date, end_date = self.clean_dates(start_date, end_date)
+        calendars = self.get_special_times(market_time)
+        ad_hoc = self.get_special_times_adhoc(market_time)
+        special = self._special_dates(calendars, ad_hoc, start_date, end_date)
+        if force_filter_holidays:
+            valid = self.valid_days(start_date, end_date)
+            special = special[special.normalize().isin(valid)]  # some sources of special times don't exclude holidays
+        return special
+
 
     def schedule(self, start_date, end_date, tz='UTC', start= "market_open", end= "market_close",
                  force_special_times= True, market_times= None):
@@ -454,17 +487,20 @@ class MarketCalendar(metaclass=MarketCalendarMeta):
             temp = self.days_at_time(_all_days, market_time) # standard times
             if force_special_times:
                 # create an array of special times
-                calendars = self.get_special_times(market_time)
-                ad_hoc = self.get_special_times_adhoc(market_time)
-                special = self._special_dates(calendars, ad_hoc, start_date, end_date)
-                _special = special.normalize()
+                special = self.special_dates(market_time, start_date, end_date)
 
                 # overwrite standard times
                 temp = temp.to_series(index= _all_days)
+                _special = special.normalize()
+                special = special[_special.isin(_all_days)] # some sources of special times don't exclude holidays
                 _special = temp.index.isin(_special)
-                temp.loc[_special] = special
-                temp = pd.DatetimeIndex(temp)
+                try: temp.loc[_special] = special
+                except ValueError as e:
+                    raise ValueError("There seems to be a mistake in the special_times/holidays data,"
+                                     "most likely this stems from duplicate entries. You can use the .special_dates "
+                                     "method to inspect the data.") from e
 
+                temp = pd.DatetimeIndex(temp)
                 if market_time == "market_open": _open_adj = _special
                 elif market_time == "market_close": _close_adj = _special
 
