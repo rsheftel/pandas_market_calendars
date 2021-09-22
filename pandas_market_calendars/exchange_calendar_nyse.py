@@ -1115,8 +1115,11 @@ class NYSEExchangeCalendar(MarketCalendar):
         """
         # when schedule comes from self.schedule(), it should already be rounded but just in case
         # its created differently
-        # _schedule = schedule.assign(market_close= schedule["market_close"])
-        early = super().early_closes(schedule)
+
+        adj = schedule.market_close.where(schedule.market_close.ge(self._round_before),
+                                         schedule.market_close - pd.Timedelta("4min"))
+        _schedule = schedule.assign(market_close= adj)
+        early = super().early_closes(_schedule)
 
         mc = early.market_close.dt.tz_convert(self.tz)
         after_noon = (mc - mc.dt.normalize()).ge(self._tdelta(self._saturday_close))
@@ -1137,6 +1140,8 @@ class NYSEExchangeCalendar(MarketCalendar):
 
         # when schedule comes from self.schedule(), it should already be rounded but just in case
         # its created differently
-        # _schedule = schedule.assign(market_open= self._round(schedule["market_open"]))
-        late = super().late_opens(schedule)
+        adj = schedule.market_open.where(schedule.market_open.ge(self._round_before),
+                                         schedule.market_open - pd.Timedelta("4min"))
+        _schedule = schedule.assign(market_open= adj)
+        late = super().late_opens(_schedule)
         return schedule.loc[late.index]
