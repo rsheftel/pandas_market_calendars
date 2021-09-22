@@ -158,6 +158,8 @@ class MarketCalendar(metaclass=MarketCalendarMeta):
         return market_time in self._customized_market_times
 
     def change_time(self, market_time, times):
+        assert market_time in self.regular_market_times, f"{market_time} is not in regular_market_times:" \
+                                                         f"\n{self._market_times}."
         if not self.__iscopied:
             self.regular_market_times = self.regular_market_times.copy()
             self.__iscopied = True
@@ -178,6 +180,17 @@ class MarketCalendar(metaclass=MarketCalendarMeta):
 
         else:
             raise ValueError("You need to pass either a datetime.time object or tuple/list in standard format")
+
+    def add_time(self, market_time, times):
+        assert not market_time in self.regular_market_times, f"{market_time} is already in regular_market_times:" \
+                                                             f"\n{self._market_times}"
+        if not self.__iscopied:
+            self.regular_market_times = self.regular_market_times.copy()
+            self.__iscopied = True
+
+        self.regular_market_times._ALLOW_SETTING_TIMES = True
+        self.regular_market_times[market_time] = ()
+        self.change_time(market_time, times)
 
     @property
     @abstractmethod
