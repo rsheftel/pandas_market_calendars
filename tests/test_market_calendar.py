@@ -15,8 +15,6 @@
 from datetime import time
 from itertools import chain
 from pytz import timezone
-import warnings
-warnings.filterwarnings("ignore")
 
 import pandas as pd
 import pytest
