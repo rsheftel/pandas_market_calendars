@@ -1,4 +1,4 @@
-
+from pprint import pformat
 
 def _regmeta_instance_factory(cls, name, *args, **kwargs):
     """
@@ -51,6 +51,41 @@ class RegisteryMeta(type):
                 _regmeta_register_class(b, cls, name)
 
         super(RegisteryMeta, cls).__init__(name, bases, attr)
+
+        cls.regular_market_times = ProtectedDict(cls.regular_market_times)
+
+        cls.special_market_open = cls.special_opens
+        cls.special_market_open_adhoc = cls.special_opens_adhoc
+
+        cls.special_market_close = cls.special_closes
+        cls.special_market_close_adhoc = cls.special_closes_adhoc
+
+
+class ProtectedDict(dict):
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self._ALLOW_SETTING_TIMES = False
+
+    def __setitem__(self, key, value):
+        if self._ALLOW_SETTING_TIMES:
+            self._ALLOW_SETTING_TIMES = False
+            return super().__setitem__(key, value)
+
+        raise TypeError("You cannot set a value directly, "
+                        "please use the instance methods MarketCalendar.change_time or "
+                        "MarketCalendar.add_time to alter the regular_market_times information, "
+                        "or inherit from MarketCalendar to create a new Class with custom times.")
+
+    def __repr__(self):
+        return self.__class__.__name__+ "(" + super().__repr__() + ")"
+
+    def __str__(self):
+        return self.__class__.__name__+ "(\n" + pformat(self, sort_dicts= False) + "\n)"
+
+    def copy(self):
+        return self.__class__(super().copy())
+
 
 
 

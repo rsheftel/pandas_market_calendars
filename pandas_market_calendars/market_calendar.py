@@ -25,27 +25,6 @@ from .class_registry import RegisteryMeta
 
 MONDAY, TUESDAY, WEDNESDAY, THURSDAY, FRIDAY, SATURDAY, SUNDAY = range(7)
 
-class ProtectedDict(dict):
-
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-        self._ALLOW_SETTING_TIMES = False
-
-    def __setitem__(self, key, value):
-        if self._ALLOW_SETTING_TIMES:
-            self._ALLOW_SETTING_TIMES = False
-            return super().__setitem__(key, value)
-
-        raise TypeError("You cannot set a value directly, "
-                        "please use the instance methods: MarketCalendar.change_time or "
-                        "MarketCalendar.add_time to alter the regular_market_times information, "
-                        "or inherit from the closest MarketCalendar to create a new MarketCalendar Class.")
-    def __repr__(self):
-        return self.__class__.__name__+ "(" + super().__repr__() + ")"
-
-    def copy(self):
-        return self.__class__(super().copy())
-
 class MarketCalendarMeta(ABCMeta, RegisteryMeta):
     pass
 
@@ -57,7 +36,9 @@ class MarketCalendar(metaclass=MarketCalendarMeta):
     An MarketCalendar represents the timing information of a single market or exchange.
     Unless otherwise noted all times are in UTC and use Pandas data structures.
     """
-    regular_market_times = {}
+    regular_market_times = {"market_open": ((None, time(0)),),
+                            "market_close": ((None, time(23)),)
+                            }
 
     @staticmethod
     def _tdelta(t, day_offset= 0):
@@ -85,46 +66,12 @@ class MarketCalendar(metaclass=MarketCalendarMeta):
         """
         return
 
-    @classmethod
-    def _prepare_regular_market_times(cls):
-
-        cls.regular_market_times = ProtectedDict(cls.regular_market_times)
-        cls.discontinued_market_times = {}
-        for market_time, times in cls.regular_market_times.items():
-            # create the property for the market time, to be able to include special cases
-            if market_time in ("market_open", "market_close"):
-                _prop = market_time.replace("market_", "") + "s"
-                old = "special_" + _prop
-                prop = "special_" + market_time
-                setattr(cls, prop, getattr(cls, old))
-                setattr(cls, prop + "_adhoc", getattr(cls, old + "_adhoc"))
-
-            else:
-                prop = "special_" + market_time
-                if not hasattr(cls, prop): setattr(cls, prop, _special_times_placeholder)
-                prop += "_adhoc"
-                if not hasattr(cls, prop): setattr(cls, prop, _special_times_placeholder)
-
-            if times[-1][1] is None:
-                last = list(times[-1])
-                last[1] = times[-2][1]
-                cls.discontinued_market_times[market_time] = last[0]
-                times = (*times[:-1], tuple(last))
-                cls.regular_market_times._ALLOW_SETTING_TIMES = True
-                cls.regular_market_times[market_time] = times
-
-    @classmethod
-    def is_discontinued(cls, market_time): return market_time in cls.discontinued_market_times
-    @classmethod
-    def has_discontinued(cls): return len(cls.discontinued_market_times) > 0
-
     def __init__(self, open_time=None, close_time=None):
         """
         :param open_time: Market open time override as datetime.time object. If None then default is used.
         :param close_time: Market close time override as datetime.time object. If None then default is used.
         """
-        self._prepare_regular_market_times()
-        self.__iscopied = False
+        self.regular_market_times = self.regular_market_times.copy()
         self._customized_market_times = []
 
         if not open_time is None:
@@ -133,55 +80,8 @@ class MarketCalendar(metaclass=MarketCalendarMeta):
         if not close_time is None:
             self.change_time("market_close", close_time)
 
-    def has_custom(self, market_time):
-        return market_time in self._customized_market_times
-
-    def change_time(self, market_time, times):
-        assert market_time in self.regular_market_times, f"{market_time} is not in regular_market_times:" \
-                                                         f"\n{self._market_times}."
-        if not self.__iscopied:
-            self.regular_market_times = self.regular_market_times.copy()
-            self.__iscopied = True
-
-        if isinstance(times, (tuple, list)):
-            if not isinstance(times[0], (tuple, list)):
-                if times[0] is None:
-                    times = (times,)
-                else:
-                    times = ((None, times[0], times[1]),)
-        else:
-            times = ((None, times),)
-
-        for t in times:
-            try:
-                assert t[0] is None or isinstance(t[0], str) or isinstance(t[0], pd.Timestamp)
-                assert isinstance(t[1], time)
-                assert isinstance(self._off(t), int)
-            except AssertionError:
-                raise AssertionError("The passed time information is not in the right format, "
-                                     "please consult the docs for how to set market times")
-
-        self.regular_market_times._ALLOW_SETTING_TIMES = True
-        self.regular_market_times[market_time] = times
-        self._regular_market_timedeltas[market_time] = tuple((t[0], self._tdelta(t[1], self._off(t)))
-                                                             for t in times)
-        try: del self.__market_times
-        except AttributeError: pass
-        self.__market_times = self._market_times
-
-        if not market_time in self._customized_market_times:
-            self._customized_market_times.append(market_time)
-
-    def add_time(self, market_time, times):
-        assert not market_time in self.regular_market_times, f"{market_time} is already in regular_market_times:" \
-                                                             f"\n{self._market_times}"
-        if not self.__iscopied:
-            self.regular_market_times = self.regular_market_times.copy()
-            self.__iscopied = True
-
-        self.regular_market_times._ALLOW_SETTING_TIMES = True
-        self.regular_market_times[market_time] = ()
-        self.change_time(market_time, times)
+        if not hasattr(self, "_market_times"):
+            self._prepare_regular_market_times()
 
     @property
     @abstractmethod
@@ -203,7 +103,76 @@ class MarketCalendar(metaclass=MarketCalendarMeta):
         """
         raise NotImplementedError()
 
-    def _get_time(self, market_time, date):
+    def _prepare_regular_market_times(self):
+
+        self.discontinued_market_times = {}
+        self._regular_market_timedeltas = {}
+        for market_time, times in self.regular_market_times.items():
+            # in case a market_time has been discontinued, extend the last time
+            # and add it to the discontinued_market_times dictionary
+            if times[-1][1] is None:
+                last = list(times[-1])
+                last[1] = times[-2][1]
+                self.discontinued_market_times[market_time] = last[0]
+
+                times = (*times[:-1], tuple(last))
+                self.regular_market_times._ALLOW_SETTING_TIMES = True
+                self.regular_market_times[market_time] = times
+
+            self._regular_market_timedeltas[market_time] = tuple((t[0], self._tdelta(t[1], self._off(t)))
+                                                                 for t in times)
+
+        self._market_times = sorted(self.regular_market_times.keys(),
+                                    key= lambda x: self._regular_market_timedeltas[x][-1][1])
+
+    def change_time(self, market_time, times):
+        assert market_time in self.regular_market_times, f"{market_time} is not in regular_market_times:" \
+                                                         f"\n{self._market_times}."
+
+        if isinstance(times, (tuple, list)): # passed a tuple
+            if not isinstance(times[0], (tuple, list)): # doesn't have a tuple inside
+                if times[0] is None:   # seems to be a tuple indicating starting time
+                    times = (times,)
+                else: # must be a tuple with: (time, offset)
+                    times = ((None, times[0], times[1]),)
+        else: # should be a datetime.time object
+            times = ((None, times),)
+
+        for t in times:
+            try:
+                assert t[0] is None or isinstance(t[0], str) or isinstance(t[0], pd.Timestamp)
+                assert isinstance(t[1], time)
+                assert isinstance(self._off(t), int)
+            except AssertionError:
+                raise AssertionError("The passed time information is not in the right format, "
+                                     "please consult the docs for how to set market times")
+
+        self.regular_market_times._ALLOW_SETTING_TIMES = True
+        self.regular_market_times[market_time] = times
+
+        if not market_time in self._customized_market_times:
+            self._customized_market_times.append(market_time)
+
+        self._prepare_regular_market_times()
+
+    def add_time(self, market_time, times):
+        assert not market_time in self.regular_market_times, f"{market_time} is already in regular_market_times:" \
+                                                             f"\n{self._market_times}"
+        self.regular_market_times._ALLOW_SETTING_TIMES = True
+        self.regular_market_times[market_time] = ()
+        self.change_time(market_time, times)
+
+    def has_custom(self, market_time):
+        return market_time in self._customized_market_times
+
+    def is_discontinued(self, market_time):
+        return market_time in self.discontinued_market_times
+
+    @property
+    def has_discontinued(self):
+        return len(self.discontinued_market_times) > 0
+
+    def get_time_on(self, market_time, date):
         try: times = self.regular_market_times[market_time]
         except KeyError as e:
             if "break" in market_time: return None # in case of no breaks
@@ -214,10 +183,10 @@ class MarketCalendar(metaclass=MarketCalendarMeta):
             if d is None or pd.Timestamp(d) < date:
                 return t.replace(tzinfo= self.tz)
 
-    def open_time_on(self, date): return self._get_time("market_open", date)
-    def close_time_on(self, date): return self._get_time("market_close", date)
-    def break_start_on(self, date): return self._get_time("break_start", date)
-    def break_end_on(self, date): return self._get_time("break_end", date)
+    def open_time_on(self, date): return self.get_time_on("market_open", date)
+    def close_time_on(self, date): return self.get_time_on("market_close", date)
+    def break_start_on(self, date): return self.get_time_on("break_start", date)
+    def break_end_on(self, date): return self.get_time_on("break_end", date)
 
     @property
     def open_time(self):
@@ -318,15 +287,14 @@ class MarketCalendar(metaclass=MarketCalendarMeta):
         return []
 
     def get_special_times(self, market_time):
-        return getattr(self, "special_" + market_time)
+        return getattr(self, "special_" + market_time, [])
 
     def get_special_times_adhoc(self, market_time):
-        return getattr(self, "special_" + market_time + "_adhoc")
+        return getattr(self, "special_" + market_time + "_adhoc", [])
 
     @property
     def open_offset(self):
         """
-
         :return: open offset
         """
         return self._off(self.regular_market_times["market_open"][-1])
@@ -334,29 +302,9 @@ class MarketCalendar(metaclass=MarketCalendarMeta):
     @property
     def close_offset(self):
         """
-
         :return: close offset
         """
         return self._off(self.regular_market_times["market_close"][-1])
-
-    @property
-    def _regular_market_timedeltas(self):
-        try: return self.__regular_market_timedeltas
-        except AttributeError:
-            self.__regular_market_timedeltas = {}
-            for market_time, times in self.regular_market_times.items():
-                self.__regular_market_timedeltas[market_time] = tuple(
-                    (t[0], self._tdelta(t[1], self._off(t))) for t in times)
-
-        return self.__regular_market_timedeltas
-
-    @property
-    def _market_times(self):
-        try: return self.__market_times
-        except AttributeError:
-            self.__market_times = sorted(self.regular_market_times.keys(),
-                                         key=lambda x: self._regular_market_timedeltas[x][-1][1])
-        return self.__market_times
 
     def holidays(self):
         """
@@ -419,6 +367,7 @@ class MarketCalendar(metaclass=MarketCalendarMeta):
             datetimes = days + timedeltas[0][1]
             for cut_off, timedelta in timedeltas[1:]:
                 datetimes = datetimes.where(days < pd.Timestamp(cut_off), days + timedelta)
+
         else: # otherwise, assume it is a datetime.time object
            datetimes = days + self._tdelta(market_time, day_offset)
 
@@ -449,8 +398,8 @@ class MarketCalendar(metaclass=MarketCalendarMeta):
 
     def special_dates(self, market_time, start_date, end_date, filter_holidays= True):
         """
-        This method will return a DatetimeIndex with all the special times of `market_time`.
-        In some cases, calculations of special_times don't consider full day holidays correctly.
+        This method will return a DatetimeIndex with all the special times of `market_time`, although
+        in some cases, calculations of special_times don't consider full day holidays correctly.
         Those days will be dropped if filter_holidays is True, but they can be kept if filter_holidays is False,
         which can be useful when debugging the data.
         """
@@ -599,7 +548,9 @@ class MarketCalendar(metaclass=MarketCalendarMeta):
         end_date = pd.Timestamp(end_date).tz_localize(None).normalize()
         return start_date, end_date
 
-    def _find_diff(self, col, diff):
+    def is_different(self, col, diff= None):
+        if diff is None: diff = pd.Series.ne
+
         col = col.dt.tz_convert(self.tz).dt.tz_localize(None)
         col = col - col.dt.normalize() # timedeltas for vectorized comparison
 
@@ -617,7 +568,7 @@ class MarketCalendar(metaclass=MarketCalendarMeta):
         :param schedule: schedule DataFrame
         :return: schedule DataFrame with rows that are early closes
         """
-        return schedule[self._find_diff(schedule["market_close"], pd.Series.lt)]
+        return schedule[self.is_different(schedule["market_close"], pd.Series.lt)]
 
     def late_opens(self, schedule):
         """
@@ -626,5 +577,5 @@ class MarketCalendar(metaclass=MarketCalendarMeta):
         :param schedule: schedule DataFrame
         :return: schedule DataFrame with rows that are late opens
         """
-        return schedule[self._find_diff(schedule["market_open"], pd.Series.gt)]
+        return schedule[self.is_different(schedule["market_open"], pd.Series.gt)]
 

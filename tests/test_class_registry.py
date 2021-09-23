@@ -6,7 +6,7 @@ from pandas_market_calendars.class_registry import RegisteryMeta
 
 def test_inheritance():
     class Base(object):
-        _all_market_times = {
+        regular_market_times = {
             "market_open": {None: time(0)},
             "market_close": {None: time(23)}
         }
@@ -90,7 +90,7 @@ def test_metamixing():
     BaseMeta = type('BaseMeta', (ABCMeta, RegisteryMeta), {})
 
     class Base(metaclass=BaseMeta):
-        _all_market_times = {
+        regular_market_times = {
             "market_open": {None: time(0)},
             "market_close": {None: time(23)}
         }
