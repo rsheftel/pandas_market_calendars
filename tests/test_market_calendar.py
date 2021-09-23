@@ -390,12 +390,8 @@ def test_adhoc_holidays():
 
 def test_special_opens():
     cal = FakeCalendar()
-    print("-"*30)
     results = cal.schedule('2012-07-01', '2012-07-06')
     opens = results['market_open'].tolist()
-
-    print(opens)
-    print(pd.Timestamp('2012-07-02 11:13', tz='Asia/Ulaanbaatar').tz_convert('UTC'))
 
     # confirm that the day before July 4th is an 11:15 open not 11:13
     assert pd.Timestamp('2012-07-02 11:13', tz='Asia/Ulaanbaatar').tz_convert('UTC') in opens
@@ -421,7 +417,6 @@ def test_special_closes():
     results = cal.schedule('2012-07-01', '2012-07-06')
     closes = results['market_close'].tolist()
 
-    print(closes)
     # confirm that the day before July 4th is an 11:30 close not 11:49
     assert pd.Timestamp('2012-07-02 11:49', tz='Asia/Ulaanbaatar').tz_convert('UTC') in closes
     assert pd.Timestamp('2012-07-03 11:30', tz='Asia/Ulaanbaatar').tz_convert('UTC') in closes
@@ -446,9 +441,7 @@ def test_special_closes_adhoc():
     cal = FakeCalendar()
 
     results = cal.schedule('2016-12-10', '2016-12-20')
-    print(results)
     closes = results['market_close'].tolist()
-    print(pd.Timestamp('2016-12-13 11:49', tz='Asia/Ulaanbaatar').tz_convert('UTC'))
 
     # confirm that 2016-12-14 is an 11:40 close not 11:49
     assert pd.Timestamp('2016-12-13 11:49', tz='Asia/Ulaanbaatar').tz_convert('UTC') in closes
