@@ -119,6 +119,67 @@ def test_protected_dictionary():
 def test_change_add_remove_time():
     cal = FakeCalendar()
 
+    assert not cal.has_discontinued
+    assert not cal.has_custom
+
+    # change/add using the different formats that are supported
+    cal.change_time("market_open", time(12))
+    cal.add_time("test_time", (None, time(12)))
+    cal.add_time("other_test", ((None, time(12)),))
+    assert cal.open_time == cal.get_time("test_time") == cal.get_time("other_test")
+
+    assert ("test_time" in cal.regular_market_times and
+            "test_time" in cal._regular_market_timedeltas and
+            "test_time" in cal._market_times)
+
+    assert cal.has_custom
+    assert cal.is_custom("market_open")
+    assert cal.is_custom("test_time")
+    assert cal.is_custom("other_test")
+
+    # with offset, which will not be returned by get_time
+    cal.change_time("market_open", (time(12), -1))
+    cal.change_time("test_time", (None, time(12), -1))
+    assert cal.open_time == cal.get_time("test_time") == cal.get_time("other_test")
+
+    assert cal.open_offset == -1
+    assert cal.get_offset("test_time") == -1
+    assert cal.get_offset("other_test") == 0
+
+    cal.change_time("other_test", ((None, time(12), -1),))
+    assert cal.open_time == cal.get_time("test_time") == cal.get_time("other_test")
+
+    with pytest.raises(AssertionError):
+        cal.add_time("test_time", time(12))   # can't add what is already there
+
+    with pytest.raises(AssertionError):
+        cal.change_time("nope", time(12))  # can't change what is not there
+
+    cal.remove_time("test_time")
+    assert ("test_time" not in cal.regular_market_times and
+            "test_time" not in cal._regular_market_timedeltas and
+            "test_time" not in cal._market_times)
+
+    # will be removed completely and therefore not found.
+    assert not cal.is_custom("test_time")
+    # The others should be untouched
+    assert cal.has_custom
+    assert cal.is_custom("market_open")
+    assert cal.is_custom("other_test")
+
+    # passing a date to discontinued will keep it in regular_market_times,
+    # but treat it as if it was discontinued at the provided date
+    assert not cal.has_discontinued
+    cal.remove_time("other_test", discontinued= "2000-01-01")
+    assert("other_test" in cal.regular_market_times and
+           "other_test" in cal._regular_market_timedeltas and
+           "other_test" in cal._market_times)
+
+    assert cal.has_discontinued
+    assert cal.is_discontinued("other_test")
+
+    # this will also still be considered a custom market_time
+    assert cal.is_custom("other_test")
 
 
 def test_default_calendars():
