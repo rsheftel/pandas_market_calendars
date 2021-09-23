@@ -172,8 +172,12 @@ class MarketCalendar(metaclass=MarketCalendarMeta):
                 self._customized_market_times.remove(market_time)
 
 
-    def has_custom(self, market_time):
+    def is_custom(self, market_time):
         return market_time in self._customized_market_times
+
+    @property
+    def has_custom(self):
+        return len(self._customized_market_times) > 0
 
     def is_discontinued(self, market_time):
         return market_time in self.discontinued_market_times
