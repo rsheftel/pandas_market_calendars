@@ -138,10 +138,11 @@ class MarketCalendar(metaclass=MarketCalendarMeta):
         else: # should be a datetime.time object
             times = ((None, times),)
 
-        for t in times:
+        ln = len(times)
+        for i, t in enumerate(times):
             try:
                 assert t[0] is None or isinstance(t[0], str) or isinstance(t[0], pd.Timestamp)
-                assert isinstance(t[1], time)
+                assert isinstance(t[1], time) or (ln > 1 and i == ln-1 and t[1] is None)
                 assert isinstance(self._off(t), int)
             except AssertionError:
                 raise AssertionError("The passed time information is not in the right format, "
@@ -150,7 +151,7 @@ class MarketCalendar(metaclass=MarketCalendarMeta):
         self.regular_market_times._ALLOW_SETTING_TIMES = True
         self.regular_market_times[market_time] = times
 
-        if not market_time in self._customized_market_times:
+        if not self.has_custom(market_time):
             self._customized_market_times.append(market_time)
 
         self._prepare_regular_market_times()
@@ -161,6 +162,19 @@ class MarketCalendar(metaclass=MarketCalendarMeta):
         self.regular_market_times._ALLOW_SETTING_TIMES = True
         self.regular_market_times[market_time] = ()
         self.change_time(market_time, times)
+
+    def remove_time(self, market_time, discontinued= None):
+        if not discontinued is None:
+            dis = (discontinued, None)
+            times = (*self.regular_market_times[market_time], dis)
+            self.change_time(market_time, times)
+        else:
+            self.regular_market_times._ALLOW_SETTING_TIMES = True
+            del self.regular_market_times[market_time]
+            self._prepare_regular_market_times()
+            if self.has_custom(market_time):
+                self._customized_market_times.remove(market_time)
+
 
     def has_custom(self, market_time):
         return market_time in self._customized_market_times

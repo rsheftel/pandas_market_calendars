@@ -77,6 +77,14 @@ class ProtectedDict(dict):
                         "MarketCalendar.add_time to alter the regular_market_times information, "
                         "or inherit from MarketCalendar to create a new Class with custom times.")
 
+    def __delitem__(self, key):
+        if self._ALLOW_SETTING_TIMES:
+            self._ALLOW_SETTING_TIMES = False
+            return super().__delitem__(key)
+
+        raise TypeError("You are not allowed to delete an item directly."
+                        "Pleas use the instance method MarketCalendar.remove_time.")
+
     def __repr__(self):
         return self.__class__.__name__+ "(" + super().__repr__() + ")"
 

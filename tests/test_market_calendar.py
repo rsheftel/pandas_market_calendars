@@ -98,12 +98,27 @@ class FakeBreakCalendar(MarketCalendar):
     def special_closes_adhoc(self):
         return [(time(10, 40), ['2016-12-30'])]
 
-
 @pytest.fixture
 def patch_get_current_time(monkeypatch):
     def get_fake_time():
         return pd.Timestamp('2014-07-02 03:40', tz='UTC')
     monkeypatch.setattr(MarketCalendar, '_get_current_time', get_fake_time)
+
+
+def test_protected_dictionary():
+    cal = FakeCalendar()
+    # shouldn't be able to add
+    with pytest.raises(TypeError) as e:
+        cal.regular_market_times["market_open"] = time(12)
+
+    # nor delete
+    with pytest.raises(TypeError) as e:
+        del cal.regular_market_times["market_open"]
+
+
+def test_change_add_remove_time():
+    cal = FakeCalendar()
+
 
 
 def test_default_calendars():
