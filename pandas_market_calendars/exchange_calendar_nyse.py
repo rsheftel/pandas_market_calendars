@@ -971,7 +971,8 @@ class NYSEExchangeCalendar(MarketCalendar):
             ),
             (time(14, tzinfo=timezone('America/New_York')), pd.DatetimeIndex(
                  ChristmasEve2pmEarlyCloseAdhoc
-                 + HeavyVolume2pmEarlyClose1933).union_many([
+                 + HeavyVolume2pmEarlyClose1933
+                        ).union_many([
                  BacklogRelief2pmEarlyClose1928,
                  TransitStrike2pmEarlyClose1966, # index
                  Backlog2pmEarlyCloses1967, # index
@@ -1100,17 +1101,13 @@ class NYSEExchangeCalendar(MarketCalendar):
     def early_closes(self, schedule):
         """
         Get a DataFrame of the dates that are an early close.
-        
-        NOTE: Dates before 1901-12-14 convert with 4 minute time shift. 
-              Rounding removes this
 
         :param schedule: schedule DataFrame
         :return: schedule DataFrame with rows that are early closes
         """
         early = super().early_closes(schedule)
 
+        # make sure saturdays are not considered early closes if they are >= 12pm
         mc = early.market_close.dt.tz_convert(self.tz)
         after_noon = (mc - mc.dt.normalize()).ge(self._tdelta(self._saturday_close))
-        early = early[~(mc.dt.weekday.eq(5) & after_noon)]
-
-        return schedule.loc[early.index]
+        return early[~(mc.dt.weekday.eq(5) & after_noon)]

@@ -18,7 +18,6 @@ from abc import ABCMeta, abstractmethod
 from datetime import time
 
 import pandas as pd
-from pandas import DataFrame, DatetimeIndex
 from pandas.tseries.offsets import CustomBusinessDay
 
 from .class_registry import RegisteryMeta
@@ -27,9 +26,6 @@ MONDAY, TUESDAY, WEDNESDAY, THURSDAY, FRIDAY, SATURDAY, SUNDAY = range(7)
 
 class MarketCalendarMeta(ABCMeta, RegisteryMeta):
     pass
-
-@property
-def _special_times_placeholder(self): return []
 
 class MarketCalendar(metaclass=MarketCalendarMeta):
     """
@@ -374,7 +370,7 @@ class MarketCalendar(metaclass=MarketCalendarMeta):
         :return: DatetimeIndex of date with the time t
         """
         # Offset days without tz to avoid timezone issues.
-        days = DatetimeIndex(days).tz_localize(None)
+        days = pd.DatetimeIndex(days).tz_localize(None)
 
         if isinstance(market_time, str):  # if string, assume its a reference to saved market times
             timedeltas = self._regular_market_timedeltas[market_time]
@@ -463,8 +459,8 @@ class MarketCalendar(metaclass=MarketCalendarMeta):
             temp = self.days_at_time(_all_days, market_time) # standard times
             if force_special_times:
                 # create an array of special times
-                special = self.special_dates(market_time, start_date, end_date)
-
+                special = self.special_dates(market_time, start_date, end_date,
+                                             filter_holidays= False)
                 # overwrite standard times
                 temp = temp.to_series(index= _all_days)
                 _special = special.normalize()
