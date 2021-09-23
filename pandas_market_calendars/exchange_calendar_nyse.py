@@ -746,24 +746,26 @@ class NYSEExchangeCalendar(MarketCalendar):
     """
     aliases = ['NYSE', 'stock', 'NASDAQ', 'BATS', 'DJIA', 'DOW']
 
-    tz = timezone("America/New_York")
-
     regular_market_times = {
         "pre": ((None, time(4)),),
-
         "market_open": ((None, time(10)),
                         ("1985-01-01", time(9, 30))),
-
         "market_close":((None, time(15)),
                         ("1952-09-29", time(15, 30)),
                         ("1974-01-01", time(16))),
         "post": ((None, time(20)),)
     }
 
+    _saturday_close = time(12)
+    _saturday_end = pd.Timestamp('1952-09-29', tz='UTC')
 
     @property
     def name(self):
         return "NYSE"
+
+    @property
+    def tz(self):
+        return timezone("America/New_York")
 
     @property
     def weekmask(self):
@@ -962,31 +964,34 @@ class NYSEExchangeCalendar(MarketCalendar):
     def special_closes_adhoc(self):
         return [
             (time(13, tzinfo=timezone('America/New_York')),
-              [t.strftime("%Y-%m-%d") for t in DaysBeforeIndependenceDay1pmEarlyCloseAdhoc]
-            + [t.strftime("%Y-%m-%d") for t in ChristmasEve1pmEarlyCloseAdhoc]
-            + [t.strftime("%Y-%m-%d") for t in DayAfterChristmas1pmEarlyCloseAdhoc]
-            + [t.strftime("%Y-%m-%d") for t in BacklogRelief1pmEarlyClose1929]
+              DaysBeforeIndependenceDay1pmEarlyCloseAdhoc # list
+                + ChristmasEve1pmEarlyCloseAdhoc
+                + DayAfterChristmas1pmEarlyCloseAdhoc
+                + BacklogRelief1pmEarlyClose1929
             ),
-            (time(14, tzinfo=timezone('America/New_York')),
-             [t.strftime("%Y-%m-%d") for t in ChristmasEve2pmEarlyCloseAdhoc]
-             + BacklogRelief2pmEarlyClose1928.strftime("%Y-%m-%d").tolist()
-             + [t.strftime("%Y-%m-%d") for t in HeavyVolume2pmEarlyClose1933]
-             + [t.strftime("%Y-%m-%d") for t in TransitStrike2pmEarlyClose1966]
-             + [t.strftime("%Y-%m-%d") for t in Backlog2pmEarlyCloses1967]
-             + [t.strftime("%Y-%m-%d") for t in Backlog2pmEarlyCloses1968]
-             + [t.strftime("%Y-%m-%d") for t in PaperworkCrisis2pmEarlyCloses1969]
-             + [t.strftime("%Y-%m-%d") for t in Backlog2pmEarlyCloses1987]
+            (time(14, tzinfo=timezone('America/New_York')), pd.DatetimeIndex(
+                 ChristmasEve2pmEarlyCloseAdhoc
+                 + HeavyVolume2pmEarlyClose1933
+                        ).union_many([
+                 BacklogRelief2pmEarlyClose1928,
+                 TransitStrike2pmEarlyClose1966, # index
+                 Backlog2pmEarlyCloses1967, # index
+                 Backlog2pmEarlyCloses1968, # index
+                 PaperworkCrisis2pmEarlyCloses1969, # index
+                 Backlog2pmEarlyCloses1987 ])# index
             ),
-            (time(14, 30, tzinfo=timezone('America/New_York')),
-               [t.strftime("%Y-%m-%d") for t in PaperworkCrisis230pmEarlyCloses1969]
-             + [t.strftime("%Y-%m-%d") for t in Backlog230pmEarlyCloses1987]
+            (time(14, 30, tzinfo=timezone('America/New_York')), pd.DatetimeIndex([], tz= "UTC"
+                        ).union_many([
+                PaperworkCrisis230pmEarlyCloses1969,
+                Backlog230pmEarlyCloses1987]) # index
             ),
-            (time(15, tzinfo=timezone('America/New_York')),
-               [t.strftime("%Y-%m-%d") for t in PaperworkCrisis3pmEarlyCloses1969to1970]
-             + [t.strftime("%Y-%m-%d") for t in Backlog3pmEarlyCloses1987]
+            (time(15, tzinfo=timezone('America/New_York')), pd.DatetimeIndex([], tz= "UTC"
+                        ).union_many([
+                PaperworkCrisis3pmEarlyCloses1969to1970,
+                Backlog3pmEarlyCloses1987]) # index
             ),
             (time(15, 30, tzinfo=timezone('America/New_York')),
-               [t.strftime("%Y-%m-%d") for t in Backlog330pmEarlyCloses1987]
+                Backlog330pmEarlyCloses1987 # idnex
             ),
         ]
 
@@ -1053,15 +1058,13 @@ class NYSEExchangeCalendar(MarketCalendar):
     @property
     def special_opens_adhoc(self):
         return [
-            (time(9, 31, tzinfo=timezone('America/New_York')),
-             [t.strftime("%Y-%m-%d") for t in TroopsInGulf931LateOpens1991]
+            (time(9, 31, tzinfo=timezone('America/New_York')), TroopsInGulf931LateOpens1991
             ),
-            (time(11, tzinfo=timezone('America/New_York')),
-             [t.strftime("%Y-%m-%d") for t in HeavyVolume11amLateOpen1933]
+            (time(11, tzinfo=timezone('America/New_York')), HeavyVolume11amLateOpen1933
             ),
             (time(12, tzinfo=timezone('America/New_York')),
-                       [t.strftime("%Y-%m-%d") for t in BacklogRelief12pmLateOpen1929]
-                     + [t.strftime("%Y-%m-%d") for t in HeavyVolume12pmLateOpen1933]
+                BacklogRelief12pmLateOpen1929
+                + HeavyVolume12pmLateOpen1933
             ),
         ]
 
@@ -1078,67 +1081,33 @@ class NYSEExchangeCalendar(MarketCalendar):
         trading_days = super().valid_days(start_date, end_date, tz=tz)
 
         # Starting Monday Sept. 29, 1952, no more saturday trading days
-        above_cut_off = trading_days >= pd.Timestamp('1952-09-29', tz='UTC')
+        above_cut_off = trading_days >= self._saturday_end
         if above_cut_off.any():
             above_and_saturday = (trading_days.weekday == 5) & above_cut_off
             trading_days = trading_days[~above_and_saturday]
 
         return trading_days
 
+
     def days_at_time(self, days, market_time, day_offset=0):
         days = super().days_at_time(days, market_time, day_offset= day_offset)
 
-        if market_time == "market_close":
+        if market_time == "market_close" and not self.is_custom(market_time):
             days = days.tz_convert(self.tz)
-            days = days.where(days.weekday != 5,
-                              days.normalize() + pd.Timedelta(days= day_offset, hours= 12))
+            days = days.where(days.weekday != 5, days.normalize()+ self._tdelta(self._saturday_close))
             days = days.tz_convert("UTC")
-        return self._round(days)
-
-    def _round(self, col):
-        d = pd.Timestamp('1901-12-14', tz='UTC')
-        try:
-            cond = col.dt.normalize().ge(d)
-            rounded = col.dt.tz_convert(self.tz).round("15min").dt.tz_convert("UTC")
-        except AttributeError:
-            cond = col.normalize() >= d
-            rounded = col.tz_convert(self.tz).round("15min").tz_convert("UTC")
-
-        return col.where(cond, rounded)
+        return days
 
     def early_closes(self, schedule):
         """
         Get a DataFrame of the dates that are an early close.
-        
-        NOTE: Dates before 1901-12-14 convert with 4 minute time shift. 
-              Rounding removes this
 
         :param schedule: schedule DataFrame
         :return: schedule DataFrame with rows that are early closes
         """
-        # Prior to 1952-09-29 close was Mon-Fri 3pm and Sat noon
-        # 1952-1973 close was Mon-Fri 3:30pm (no saturday trades)
-        # 1974+ close is 4pm 
-        # dates before 1901-12-14 have a 4 minute time shift. rounding removes it
-        _schedule = schedule.assign(market_close= self._round(schedule["market_close"]))
-        early = super().early_closes(_schedule)
+        early = super().early_closes(schedule)
 
+        # make sure saturdays are not considered early closes if they are >= 12pm
         mc = early.market_close.dt.tz_convert(self.tz)
-        after_noon = (mc - mc.dt.normalize()).ge(pd.Timedelta(hours= 12))
-
-        early = early[~(mc.dt.weekday.eq(5) & after_noon)]
-        return schedule.loc[early.index]
-
-    def late_opens(self, schedule):
-        """
-        Get a DataFrame of the dates that are an late opens.
-
-        :param schedule: schedule DataFrame
-        :return: schedule DataFrame with rows that are late opens
-        """
-        # Prior to 1985 trading began at 10am
-        # After 1985 trading begins at 9:30am 
-        # dates before 1901-12-14 have a 4 minute time shift. rounding removes it
-        _schedule = schedule.assign(market_open= self._round(schedule["market_open"]))
-        late = super().late_opens(_schedule)
-        return schedule.loc[late.index]
+        after_noon = (mc - mc.dt.normalize()).ge(self._tdelta(self._saturday_close))
+        return early[~(mc.dt.weekday.eq(5) & after_noon)]

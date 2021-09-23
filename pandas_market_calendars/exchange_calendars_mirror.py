@@ -4,14 +4,11 @@ Imported calendars from the exchange_calendars project
 GitHub: https://github.com/gerrymanoim/exchange_calendars
 """
 
-from datetime import time
 from .market_calendar import MarketCalendar
 import exchange_calendars
 
 
 class TradingCalendar(MarketCalendar):
-
-
     def __init__(self, open_time=None, close_time=None):
         self._tc = self._tc_class()  # noqa: _tc.class is defined in the class generator below
         super().__init__(open_time, close_time)
@@ -59,7 +56,7 @@ time_props = dict(open_times= "market_open",
 for exchange in calendars:
     cal = calendars[exchange]
 
-    # this loop will set up the newly required _regular_market_times dictionary
+    # this loop will set up the newly required regular_market_times dictionary
     regular_market_times = {}
     for prop, new in time_props.items():
         times = getattr(cal, prop)
@@ -69,8 +66,6 @@ for exchange in calendars:
     cal = type(exchange, (TradingCalendar,), {'_tc_class': calendars[exchange],
                                               'alias': [exchange],
                                               'regular_market_times': regular_market_times})
-    cal._prepare_regular_market_times()
-
     locals()[exchange + 'ExchangeCalendar'] = cal
 
 

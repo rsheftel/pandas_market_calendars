@@ -3734,9 +3734,12 @@ def test_2022():
     _test_has_early_closes(early_closes, start, end)
 
 if __name__ == '__main__':
-    test_1885()
+    test_1969()
 
-    for ref, obj in locals().copy().items():
-        if ref.startswith("test_"):
-            print("running ", ref)
-            obj()
+
+
+    # for ref, obj in locals().copy().items():
+    #     if ref.startswith("test_"):
+    #         print("running ", ref)
+    #         obj()
+

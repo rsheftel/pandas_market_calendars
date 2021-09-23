@@ -98,71 +98,195 @@ class FakeBreakCalendar(MarketCalendar):
     def special_closes_adhoc(self):
         return [(time(10, 40), ['2016-12-30'])]
 
-
 @pytest.fixture
 def patch_get_current_time(monkeypatch):
     def get_fake_time():
         return pd.Timestamp('2014-07-02 03:40', tz='UTC')
     monkeypatch.setattr(MarketCalendar, '_get_current_time', get_fake_time)
 
-#
-# def test_default_calendars():
-#     for name in get_calendar_names():
-#         assert get_calendar(name) is not None
 
-#
-# def test_days_at_time():
-#     def dat(day, day_offset, time_offset, tz, expected):
-#         days = pd.DatetimeIndex([pd.Timestamp(day, tz=tz)])
-#         result = days_at_time(days, time_offset, tz, day_offset)[0]
-#         expected = pd.Timestamp(expected, tz=tz).tz_convert('UTC')
-#         assert result == expected
-#
-#     args_list = [
-#         # NYSE standard day
-#         (
-#             '2016-07-19', 0, time(9, 31), timezone('America/New_York'),
-#             '2016-07-19 9:31',
-#         ),
-#         # CME standard day
-#         (
-#             '2016-07-19', -1, time(17, 1), timezone('America/Chicago'),
-#             '2016-07-18 17:01',
-#         ),
-#         # CME day after DST start
-#         (
-#             '2004-04-05', -1, time(17, 1), timezone('America/Chicago'),
-#             '2004-04-04 17:01'
-#         ),
-#         # ICE day after DST start
-#         (
-#             '1990-04-02', -1, time(19, 1), timezone('America/Chicago'),
-#             '1990-04-01 19:01',
-#         ),
-#     ]
-#
-#     for args in args_list:
-#         dat(args[0], args[1], args[2], args[3], args[4])
-#
-#
-# def test_clean_dates():
-#     start, end = clean_dates('2016-12-01', '2016-12-31')
-#     assert start == pd.Timestamp('2016-12-01')
-#     assert end == pd.Timestamp('2016-12-31')
-#
-#     start, end = clean_dates('2016-12-01 12:00', '2016-12-31 12:00')
-#     assert start == pd.Timestamp('2016-12-01')
-#     assert end == pd.Timestamp('2016-12-31')
-#
-#     start, end = clean_dates(pd.Timestamp('2016-12-01', tz='America/Chicago'),
-#                              pd.Timestamp('2016-12-31', tz='America/New_York'))
-#     assert start == pd.Timestamp('2016-12-01')
-#     assert end == pd.Timestamp('2016-12-31')
-#
-#     start, end = clean_dates(pd.Timestamp('2016-12-01 09:31', tz='America/Chicago'),
-#                              pd.Timestamp('2016-12-31 16:00', tz='America/New_York'))
-#     assert start == pd.Timestamp('2016-12-01')
-#     assert end == pd.Timestamp('2016-12-31')
+def test_protected_dictionary():
+    cal = FakeCalendar()
+    # shouldn't be able to add
+    with pytest.raises(TypeError) as e:
+        cal.regular_market_times["market_open"] = time(12)
+
+    # nor delete
+    with pytest.raises(TypeError) as e:
+        del cal.regular_market_times["market_open"]
+
+
+def test_change_add_remove_time():
+    cal = FakeCalendar()
+
+    assert not cal.has_discontinued
+    assert not cal.has_custom
+
+    # change/add using the different formats that are supported
+    cal.change_time("market_open", time(12))
+    cal.add_time("test_time", (None, time(12)))
+    cal.add_time("other_test", ((None, time(12)),))
+    assert cal.open_time == cal.get_time("test_time") == cal.get_time("other_test")
+
+    assert ("test_time" in cal.regular_market_times and
+            "test_time" in cal._regular_market_timedeltas and
+            "test_time" in cal._market_times)
+
+    assert cal.has_custom
+    assert cal.is_custom("market_open")
+    assert cal.is_custom("test_time")
+    assert cal.is_custom("other_test")
+
+    # with offset, which will not be returned by get_time
+    cal.change_time("market_open", (time(12), -1))
+    cal.change_time("test_time", (None, time(12), -1))
+    assert cal.open_time == cal.get_time("test_time") == cal.get_time("other_test")
+
+    assert cal.open_offset == -1
+    assert cal.get_offset("test_time") == -1
+    assert cal.get_offset("other_test") == 0
+
+    cal.change_time("other_test", ((None, time(12), -1),))
+    assert cal.open_time == cal.get_time("test_time") == cal.get_time("other_test")
+
+    with pytest.raises(AssertionError):
+        cal.add_time("test_time", time(12))   # can't add what is already there
+
+    with pytest.raises(AssertionError):
+        cal.change_time("nope", time(12))  # can't change what is not there
+
+    cal.remove_time("test_time")
+    assert ("test_time" not in cal.regular_market_times and
+            "test_time" not in cal._regular_market_timedeltas and
+            "test_time" not in cal._market_times)
+
+    # will be removed completely and therefore not found.
+    assert not cal.is_custom("test_time")
+    # The others should be untouched
+    assert cal.has_custom
+    assert cal.is_custom("market_open")
+    assert cal.is_custom("other_test")
+
+    # passing a date to discontinued will keep it in regular_market_times,
+    # but treat it as if it was discontinued at the provided date
+    assert not cal.has_discontinued
+    cal.remove_time("other_test", discontinued= "2000-01-01")
+    assert("other_test" in cal.regular_market_times and
+           "other_test" in cal._regular_market_timedeltas and
+           "other_test" in cal._market_times)
+
+    assert cal.has_discontinued
+    assert cal.is_discontinued("other_test")
+
+    # this will also still be considered a custom market_time
+    assert cal.is_custom("other_test")
+
+
+def test_default_calendars():
+    for name in get_calendar_names():
+        assert get_calendar(name) is not None
+
+
+def test_days_at_time():
+    class New_York(FakeCalendar):
+        @property
+        def tz(self): return timezone('America/New_York')
+    new_york = New_York()
+    new_york.change_time("market_open", time(12))
+    new_york.change_time("market_close", time(13))
+
+    class Chicago(FakeCalendar):
+        @property
+        def tz(self): return timezone('America/Chicago')
+    chicago = Chicago()
+    chicago.change_time("market_open", time(10))
+    chicago.change_time("market_close", time(11))
+    chicago.add_time("with_offset", (time(10, 30), -1))
+
+    def dat(day, day_offset, time_offset, cal, expected):
+        days = pd.DatetimeIndex([pd.Timestamp(day, tz=cal.tz)])
+        result = cal.days_at_time(days, time_offset, day_offset)[0]
+        expected = pd.Timestamp(expected, tz=cal.tz).tz_convert('UTC')
+        assert result == expected
+
+    args_list = [
+        # NYSE standard day
+        (
+            '2016-07-19', 0, time(9, 31), new_york, '2016-07-19 9:31',
+        ),
+        # CME standard day
+        (
+            '2016-07-19', -1, time(17, 1), chicago, '2016-07-18 17:01',
+        ),
+        # CME day after DST start
+        (
+            '2004-04-05', -1, time(17, 1), chicago, '2004-04-04 17:01'
+        ),
+        # ICE day after DST start
+        (
+            '1990-04-02', -1, time(19, 1), chicago, '1990-04-01 19:01',
+        ),
+
+
+        ## Built-in times  # day_offset kwarg should automatically be ignored
+        (
+            '2016-07-19', None, "market_open", new_york, '2016-07-19 12:00',
+        ),
+        # CME standard day
+        (
+            '2016-07-19', None, "market_open", chicago, '2016-07-19 10:00',
+        ),
+        # CME day after DST start
+        (
+            '2004-04-05', None, "with_offset", chicago, '2004-04-04 10:30'
+        ),
+        # ICE day after DST start
+        (
+            '1990-04-02', None, "market_open", chicago, '1990-04-02 10:00',
+        ),
+
+        (
+            '2016-07-19', None, "market_close", new_york, '2016-07-19 13:00',
+        ),
+        # CME standard day
+        (
+            '2016-07-19', None, "market_close", chicago, '2016-07-19 11:00',
+        ),
+        # CME day after DST start
+        (
+            '2004-04-05', None, "market_close", chicago, '2004-04-05 11:00'
+        ),
+        # ICE day after DST start
+        (
+            '1990-04-02', None, "with_offset", chicago, '1990-04-01 10:30',
+        ),
+    ]
+
+    for args in args_list:
+        dat(args[0], args[1], args[2], args[3], args[4])
+
+
+
+def test_clean_dates():
+    cal = FakeCalendar()
+
+    start, end = cal.clean_dates('2016-12-01', '2016-12-31')
+    assert start == pd.Timestamp('2016-12-01')
+    assert end == pd.Timestamp('2016-12-31')
+
+    start, end = cal.clean_dates('2016-12-01 12:00', '2016-12-31 12:00')
+    assert start == pd.Timestamp('2016-12-01')
+    assert end == pd.Timestamp('2016-12-31')
+
+    start, end = cal.clean_dates(pd.Timestamp('2016-12-01', tz='America/Chicago'),
+                             pd.Timestamp('2016-12-31', tz='America/New_York'))
+    assert start == pd.Timestamp('2016-12-01')
+    assert end == pd.Timestamp('2016-12-31')
+
+    start, end = cal.clean_dates(pd.Timestamp('2016-12-01 09:31', tz='America/Chicago'),
+                             pd.Timestamp('2016-12-31 16:00', tz='America/New_York'))
+    assert start == pd.Timestamp('2016-12-01')
+    assert end == pd.Timestamp('2016-12-31')
 
 
 def test_properties():
@@ -382,12 +506,8 @@ def test_adhoc_holidays():
 
 def test_special_opens():
     cal = FakeCalendar()
-    print("-"*30)
     results = cal.schedule('2012-07-01', '2012-07-06')
     opens = results['market_open'].tolist()
-
-    print(opens)
-    print(pd.Timestamp('2012-07-02 11:13', tz='Asia/Ulaanbaatar').tz_convert('UTC'))
 
     # confirm that the day before July 4th is an 11:15 open not 11:13
     assert pd.Timestamp('2012-07-02 11:13', tz='Asia/Ulaanbaatar').tz_convert('UTC') in opens
@@ -413,7 +533,6 @@ def test_special_closes():
     results = cal.schedule('2012-07-01', '2012-07-06')
     closes = results['market_close'].tolist()
 
-    print(closes)
     # confirm that the day before July 4th is an 11:30 close not 11:49
     assert pd.Timestamp('2012-07-02 11:49', tz='Asia/Ulaanbaatar').tz_convert('UTC') in closes
     assert pd.Timestamp('2012-07-03 11:30', tz='Asia/Ulaanbaatar').tz_convert('UTC') in closes
@@ -438,9 +557,7 @@ def test_special_closes_adhoc():
     cal = FakeCalendar()
 
     results = cal.schedule('2016-12-10', '2016-12-20')
-    print(results)
     closes = results['market_close'].tolist()
-    print(pd.Timestamp('2016-12-13 11:49', tz='Asia/Ulaanbaatar').tz_convert('UTC'))
 
     # confirm that 2016-12-14 is an 11:40 close not 11:49
     assert pd.Timestamp('2016-12-13 11:49', tz='Asia/Ulaanbaatar').tz_convert('UTC') in closes

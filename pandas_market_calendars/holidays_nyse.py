@@ -511,7 +511,7 @@ ChristmasEvePost1999Early1pmClose = Holiday(
 
 ChristmasEve1pmEarlyCloseAdhoc = [
     Timestamp('1951-12-24', tz='UTC'),
-    Timestamp('1996-12-24', tz='UTC'), 
+    Timestamp('1996-12-24', tz='UTC'),
     Timestamp('1997-12-24', tz='UTC'), 
     Timestamp('1998-12-24', tz='UTC'), 
     Timestamp('1999-12-24', tz='UTC'), 
