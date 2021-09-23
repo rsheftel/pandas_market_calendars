@@ -69,8 +69,6 @@ for exchange in calendars:
     cal = type(exchange, (TradingCalendar,), {'_tc_class': calendars[exchange],
                                               'alias': [exchange],
                                               'regular_market_times': regular_market_times})
-    cal._prepare_regular_market_times()
-
     locals()[exchange + 'ExchangeCalendar'] = cal
 
 

@@ -9,11 +9,11 @@ def _regmeta_instance_factory(cls, name, *args, **kwargs):
     :return: class instance
     """
     try:
-        return cls._regmeta_class_registry[name](*args, **kwargs)
-    except AttributeError:
+        class_ = cls._regmeta_class_registry[name]
+    except KeyError:
         raise RuntimeError(
             'Class {} is not one of the registered classes: {}'.format(name, cls._regmeta_class_registry.keys()))
-
+    return class_(*args, **kwargs)
 
 def _regmeta_register_class(cls, regcls, name):
     """
@@ -51,7 +51,6 @@ class RegisteryMeta(type):
                 _regmeta_register_class(b, cls, name)
 
         super(RegisteryMeta, cls).__init__(name, bases, attr)
-        cls._prepare_regular_market_times()
 
 
 

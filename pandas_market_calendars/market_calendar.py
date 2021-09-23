@@ -57,27 +57,6 @@ class MarketCalendar(metaclass=MarketCalendarMeta):
     An MarketCalendar represents the timing information of a single market or exchange.
     Unless otherwise noted all times are in UTC and use Pandas data structures.
     """
-    """
-    There needs to be some kind of mapping of names of parts to their start and end times
-    
-    
-    Stop worrying about parts ending in the middle of the day.
-    
-    make .schedule be able to take keywords that indicate which parts to start and which to end with 
-       
-    
-    """
-
-    # regular trading hours open MUST be "market_open"
-    # regular trading hours close MUST be "market_close"
-    # the strings "break_start" and "break_end" can be contained in any string, to mark it as a break
-    #  e.g. break_start: ...,
-    #       break_end: ...,
-    #       second_break_start: ...,
-    #       second_break_end: ...,
-    # .. this would mean that there are two breaks in a day, the start/end is matched
-    #  based on s.replace("break_start"/"break_end", "")
-
     regular_market_times = {}
 
     @staticmethod
@@ -108,7 +87,6 @@ class MarketCalendar(metaclass=MarketCalendarMeta):
 
     @classmethod
     def _prepare_regular_market_times(cls):
-        if not cls.regular_market_times: return
 
         cls.regular_market_times = ProtectedDict(cls.regular_market_times)
         cls.discontinued_market_times = {}
@@ -145,6 +123,7 @@ class MarketCalendar(metaclass=MarketCalendarMeta):
         :param open_time: Market open time override as datetime.time object. If None then default is used.
         :param close_time: Market close time override as datetime.time object. If None then default is used.
         """
+        self._prepare_regular_market_times()
         self.__iscopied = False
         self._customized_market_times = []
 
@@ -164,22 +143,34 @@ class MarketCalendar(metaclass=MarketCalendarMeta):
             self.regular_market_times = self.regular_market_times.copy()
             self.__iscopied = True
 
-        if isinstance(times, time): times = ((None, times),)
-
         if isinstance(times, (tuple, list)):
-            self.regular_market_times._ALLOW_SETTING_TIMES = True
-            self.regular_market_times[market_time] = times
-            self._regular_market_timedeltas[market_time] = tuple((t[0], self._tdelta(t[1], self._off(t)))
-                                                                   for t in times)
-            try: del self.__market_times
-            except AttributeError: pass
-            self.__market_times = self._market_times
-
-            self._customized_market_times.append(market_time)
-            self._customized_market_times = list(set(self._customized_market_times))
-
+            if not isinstance(times[0], (tuple, list)):
+                if times[0] is None:
+                    times = (times,)
+                else:
+                    times = ((None, times[0], times[1]),)
         else:
-            raise ValueError("You need to pass either a datetime.time object or tuple/list in standard format")
+            times = ((None, times),)
+
+        for t in times:
+            try:
+                assert t[0] is None or isinstance(t[0], str) or isinstance(t[0], pd.Timestamp)
+                assert isinstance(t[1], time)
+                assert isinstance(self._off(t), int)
+            except AssertionError:
+                raise AssertionError("The passed time information is not in the right format, "
+                                     "please consult the docs for how to set market times")
+
+        self.regular_market_times._ALLOW_SETTING_TIMES = True
+        self.regular_market_times[market_time] = times
+        self._regular_market_timedeltas[market_time] = tuple((t[0], self._tdelta(t[1], self._off(t)))
+                                                             for t in times)
+        try: del self.__market_times
+        except AttributeError: pass
+        self.__market_times = self._market_times
+
+        if not market_time in self._customized_market_times:
+            self._customized_market_times.append(market_time)
 
     def add_time(self, market_time, times):
         assert not market_time in self.regular_market_times, f"{market_time} is already in regular_market_times:" \
@@ -214,7 +205,9 @@ class MarketCalendar(metaclass=MarketCalendarMeta):
 
     def _get_time(self, market_time, date):
         try: times = self.regular_market_times[market_time]
-        except KeyError:return None # in case of no breaks
+        except KeyError as e:
+            if "break" in market_time: return None # in case of no breaks
+            else: raise e
 
         date = pd.Timestamp(date)
         for d, t in times[::-1]:
@@ -233,9 +226,9 @@ class MarketCalendar(metaclass=MarketCalendarMeta):
 
         :return: time
         """
-        try: t = self.regular_market_times["market_open"][-1][1]
+        try: t = self.regular_market_times["market_open"]
         except KeyError: raise NotImplementedError("You need to set market_times")
-        return t.replace(tzinfo= self.tz)
+        return t[-1][1].replace(tzinfo= self.tz)
 
     @property
     def close_time(self):
@@ -244,9 +237,9 @@ class MarketCalendar(metaclass=MarketCalendarMeta):
 
         :return: time
         """
-        try: t = self.regular_market_times["market_close"][-1][1]
+        try: t = self.regular_market_times["market_close"]
         except KeyError: raise NotImplementedError("You need to set market_times")
-        return t.replace(tzinfo= self.tz)
+        return t[-1][1].replace(tzinfo= self.tz)
 
     @property
     def break_start(self):
@@ -255,9 +248,9 @@ class MarketCalendar(metaclass=MarketCalendarMeta):
 
         :return: time or None
         """
-        try: t = self.regular_market_times["break_start"][-1][1]
+        try: t = self.regular_market_times["break_start"]
         except KeyError: return None
-        return t.replace(tzinfo= self.tz)
+        return t[-1][1].replace(tzinfo= self.tz)
 
     @property
     def break_end(self):
@@ -266,9 +259,9 @@ class MarketCalendar(metaclass=MarketCalendarMeta):
 
         :return: time or None
         """
-        try: t = self.regular_market_times["break_end"][-1][1]
+        try: t = self.regular_market_times["break_end"]
         except KeyError: return None
-        return t.replace(tzinfo= self.tz)
+        return t[-1][1].replace(tzinfo= self.tz)
 
     @property
     def regular_holidays(self):
