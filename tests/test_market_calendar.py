@@ -105,64 +105,72 @@ def patch_get_current_time(monkeypatch):
         return pd.Timestamp('2014-07-02 03:40', tz='UTC')
     monkeypatch.setattr(MarketCalendar, '_get_current_time', get_fake_time)
 
-#
-# def test_default_calendars():
-#     for name in get_calendar_names():
-#         assert get_calendar(name) is not None
 
-#
-# def test_days_at_time():
-#     def dat(day, day_offset, time_offset, tz, expected):
-#         days = pd.DatetimeIndex([pd.Timestamp(day, tz=tz)])
-#         result = days_at_time(days, time_offset, tz, day_offset)[0]
-#         expected = pd.Timestamp(expected, tz=tz).tz_convert('UTC')
-#         assert result == expected
-#
-#     args_list = [
-#         # NYSE standard day
-#         (
-#             '2016-07-19', 0, time(9, 31), timezone('America/New_York'),
-#             '2016-07-19 9:31',
-#         ),
-#         # CME standard day
-#         (
-#             '2016-07-19', -1, time(17, 1), timezone('America/Chicago'),
-#             '2016-07-18 17:01',
-#         ),
-#         # CME day after DST start
-#         (
-#             '2004-04-05', -1, time(17, 1), timezone('America/Chicago'),
-#             '2004-04-04 17:01'
-#         ),
-#         # ICE day after DST start
-#         (
-#             '1990-04-02', -1, time(19, 1), timezone('America/Chicago'),
-#             '1990-04-01 19:01',
-#         ),
-#     ]
-#
-#     for args in args_list:
-#         dat(args[0], args[1], args[2], args[3], args[4])
-#
-#
-# def test_clean_dates():
-#     start, end = clean_dates('2016-12-01', '2016-12-31')
-#     assert start == pd.Timestamp('2016-12-01')
-#     assert end == pd.Timestamp('2016-12-31')
-#
-#     start, end = clean_dates('2016-12-01 12:00', '2016-12-31 12:00')
-#     assert start == pd.Timestamp('2016-12-01')
-#     assert end == pd.Timestamp('2016-12-31')
-#
-#     start, end = clean_dates(pd.Timestamp('2016-12-01', tz='America/Chicago'),
-#                              pd.Timestamp('2016-12-31', tz='America/New_York'))
-#     assert start == pd.Timestamp('2016-12-01')
-#     assert end == pd.Timestamp('2016-12-31')
-#
-#     start, end = clean_dates(pd.Timestamp('2016-12-01 09:31', tz='America/Chicago'),
-#                              pd.Timestamp('2016-12-31 16:00', tz='America/New_York'))
-#     assert start == pd.Timestamp('2016-12-01')
-#     assert end == pd.Timestamp('2016-12-31')
+def test_default_calendars():
+    for name in get_calendar_names():
+        assert get_calendar(name) is not None
+
+
+def test_days_at_time():
+    class New_York(FakeCalendar):
+        @property
+        def tz(self): return timezone('America/New_York')
+    new_york = New_York()
+
+    class Chicago(FakeCalendar):
+        @property
+        def tz(self): return timezone('America/Chicago')
+    chicago = Chicago()
+
+    def dat(day, day_offset, time_offset, cal, expected):
+        days = pd.DatetimeIndex([pd.Timestamp(day, tz=cal.tz)])
+        result = cal.days_at_time(days, time_offset, day_offset)[0]
+        expected = pd.Timestamp(expected, tz=cal.tz).tz_convert('UTC')
+        assert result == expected
+
+    args_list = [
+        # NYSE standard day
+        (
+            '2016-07-19', 0, time(9, 31), new_york, '2016-07-19 9:31',
+        ),
+        # CME standard day
+        (
+            '2016-07-19', -1, time(17, 1), chicago, '2016-07-18 17:01',
+        ),
+        # CME day after DST start
+        (
+            '2004-04-05', -1, time(17, 1), chicago, '2004-04-04 17:01'
+        ),
+        # ICE day after DST start
+        (
+            '1990-04-02', -1, time(19, 1), chicago, '1990-04-01 19:01',
+        ),
+    ]
+
+    for args in args_list:
+        dat(args[0], args[1], args[2], args[3], args[4])
+
+
+def test_clean_dates():
+    cal = FakeCalendar()
+
+    start, end = cal.clean_dates('2016-12-01', '2016-12-31')
+    assert start == pd.Timestamp('2016-12-01')
+    assert end == pd.Timestamp('2016-12-31')
+
+    start, end = cal.clean_dates('2016-12-01 12:00', '2016-12-31 12:00')
+    assert start == pd.Timestamp('2016-12-01')
+    assert end == pd.Timestamp('2016-12-31')
+
+    start, end = cal.clean_dates(pd.Timestamp('2016-12-01', tz='America/Chicago'),
+                             pd.Timestamp('2016-12-31', tz='America/New_York'))
+    assert start == pd.Timestamp('2016-12-01')
+    assert end == pd.Timestamp('2016-12-31')
+
+    start, end = cal.clean_dates(pd.Timestamp('2016-12-01 09:31', tz='America/Chicago'),
+                             pd.Timestamp('2016-12-31 16:00', tz='America/New_York'))
+    assert start == pd.Timestamp('2016-12-01')
+    assert end == pd.Timestamp('2016-12-31')
 
 
 def test_properties():
