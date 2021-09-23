@@ -147,7 +147,7 @@ class MarketCalendar(metaclass=MarketCalendarMeta):
         self.regular_market_times._ALLOW_SETTING_TIMES = True
         self.regular_market_times[market_time] = times
 
-        if not self.has_custom(market_time):
+        if not self.is_custom(market_time):
             self._customized_market_times.append(market_time)
 
         self._prepare_regular_market_times()
@@ -168,7 +168,7 @@ class MarketCalendar(metaclass=MarketCalendarMeta):
             self.regular_market_times._ALLOW_SETTING_TIMES = True
             del self.regular_market_times[market_time]
             self._prepare_regular_market_times()
-            if self.has_custom(market_time):
+            if self.is_custom(market_time):
                 self._customized_market_times.remove(market_time)
 
 

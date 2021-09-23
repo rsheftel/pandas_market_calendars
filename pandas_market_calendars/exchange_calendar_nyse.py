@@ -1092,7 +1092,7 @@ class NYSEExchangeCalendar(MarketCalendar):
     def days_at_time(self, days, market_time, day_offset=0):
         days = super().days_at_time(days, market_time, day_offset= day_offset)
 
-        if market_time == "market_close" and not self.has_custom(market_time):
+        if market_time == "market_close" and not self.is_custom(market_time):
             days = days.tz_convert(self.tz)
             days = days.where(days.weekday != 5, days.normalize()+ self._tdelta(self._saturday_close))
             days = days.tz_convert("UTC")
