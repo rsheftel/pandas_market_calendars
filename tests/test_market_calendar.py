@@ -131,11 +131,16 @@ def test_days_at_time():
         @property
         def tz(self): return timezone('America/New_York')
     new_york = New_York()
+    new_york.change_time("market_open", time(12))
+    new_york.change_time("market_close", time(13))
 
     class Chicago(FakeCalendar):
         @property
         def tz(self): return timezone('America/Chicago')
     chicago = Chicago()
+    chicago.change_time("market_open", time(10))
+    chicago.change_time("market_close", time(11))
+    chicago.add_time("with_offset", (time(10, 30), -1))
 
     def dat(day, day_offset, time_offset, cal, expected):
         days = pd.DatetimeIndex([pd.Timestamp(day, tz=cal.tz)])
@@ -160,10 +165,45 @@ def test_days_at_time():
         (
             '1990-04-02', -1, time(19, 1), chicago, '1990-04-01 19:01',
         ),
+
+
+        ## Built-in times  # day_offset kwarg should automatically be ignored
+        (
+            '2016-07-19', None, "market_open", new_york, '2016-07-19 12:00',
+        ),
+        # CME standard day
+        (
+            '2016-07-19', None, "market_open", chicago, '2016-07-19 10:00',
+        ),
+        # CME day after DST start
+        (
+            '2004-04-05', None, "with_offset", chicago, '2004-04-04 10:30'
+        ),
+        # ICE day after DST start
+        (
+            '1990-04-02', None, "market_open", chicago, '1990-04-02 10:00',
+        ),
+
+        (
+            '2016-07-19', None, "market_close", new_york, '2016-07-19 13:00',
+        ),
+        # CME standard day
+        (
+            '2016-07-19', None, "market_close", chicago, '2016-07-19 11:00',
+        ),
+        # CME day after DST start
+        (
+            '2004-04-05', None, "market_close", chicago, '2004-04-05 11:00'
+        ),
+        # ICE day after DST start
+        (
+            '1990-04-02', None, "with_offset", chicago, '1990-04-01 10:30',
+        ),
     ]
 
     for args in args_list:
         dat(args[0], args[1], args[2], args[3], args[4])
+
 
 
 def test_clean_dates():
