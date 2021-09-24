@@ -32,6 +32,9 @@ class MarketCalendar(metaclass=MarketCalendarMeta):
     An MarketCalendar represents the timing information of a single market or exchange.
     Unless otherwise noted all times are in UTC and use Pandas data structures.
     """
+    _IS_UPDATED_TC = False
+
+
     regular_market_times = {"market_open": ((None, time(0)),),
                             "market_close": ((None, time(23)),)
                             }
@@ -67,6 +70,19 @@ class MarketCalendar(metaclass=MarketCalendarMeta):
         :param open_time: Market open time override as datetime.time object. If None then default is used.
         :param close_time: Market close time override as datetime.time object. If None then default is used.
         """
+        # offsets of exchange_calendar_mirrors are only available through the instance
+        if hasattr(self, "_tc") and not self._IS_UPDATED_TC:
+            # There is still the problem that
+            if self.open_offset:
+                self.regular_market_times["market_open"] = tuple(
+                    (t[0], t[1], self.open_offset) for t in self.regular_market_times["market_open"]
+                )
+            if self.close_offset:
+                self.regular_market_times["market_close"] = tuple(
+                    (t[0], t[1], self.close_offset) for t in self.regular_market_times["market_close"]
+                )
+            self.__class__._IS_UPDATED_TC = True
+
         self.regular_market_times = self.regular_market_times.copy()
         self._customized_market_times = []
 
