@@ -28,6 +28,8 @@ from pandas_market_calendars.holidays_us import (Christmas, HurricaneSandyClosin
                                                  USNationalDaysofMourning, USNewYearsDay)
 from pandas_market_calendars.market_calendar import MarketCalendar #, clean_dates, days_at_time
 
+import exchange_calendars as ecal
+
 class FakeCalendar(MarketCalendar):
     regular_market_times = {
         "market_open": ((None, time(11,18)),
@@ -657,6 +659,46 @@ def test_bad_dates():
     # weekend and holiday
     schedule = cal.schedule('2017-12-30', '2018-01-01')
     assert_frame_equal(schedule, empty)
+
+############################################
+# TESTS FOR EXCHANGE_CALENDAR INTEGRATION  #
+############################################
+
+
+mcal_iepa = get_calendar("IEPA")
+ecal_iepa = ecal.get_calendar("IEPA")
+
+def test_mirror():
+
+    assert not hasattr(mcal_iepa, "aliases")
+
+    assert not isinstance(ecal_iepa, mcal_iepa.__class__)
+
+    assert isinstance(ecal_iepa, mcal_iepa._ec.__class__)
+
+def test_basic_information():
+
+    assert mcal_iepa.tz == timezone("America/New_York")
+    assert mcal_iepa.open_offset == -1
+    assert mcal_iepa.open_time == time(20)
+    assert mcal_iepa.close_time == time(18)
+
+
+def test_closes_opens():
+    start, end = ecal_iepa._closes[[0, -1]]
+    sched = mcal_iepa.schedule(start, end)
+
+    assert (ecal_iepa._closes.values == sched.market_close.values).all()
+
+    assert (ecal_iepa._opens.values == sched.market_open.values).all()
+
+
+def test_ec_property():
+
+    assert mcal_iepa._EC_NOT_INITIALIZED
+    ec = mcal_iepa.ec
+    assert not mcal_iepa._EC_NOT_INITIALIZED
+
 
 
 if __name__ == '__main__':

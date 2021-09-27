@@ -13,20 +13,20 @@ class TradingCalendar(MarketCalendar):
 
     def __new__(cls, *args, **kwargs):
         self = super().__new__(cls)
-        self._tc = super().__new__(cls._tc_class)
-        self._TC_NOT_INITIALIZED = True
+        self._ec = super().__new__(cls._ec_class)
+        self._EC_NOT_INITIALIZED = True
 
         # offsets of exchange_calendar_mirrors are only available through the instance
         if cls._FINALIZE_TRADING_CALENDAR:
-            if self._tc.open_offset:
+            if self._ec.open_offset:
                 cls.regular_market_times._ALLOW_SETTING_TIMES = True
                 cls.regular_market_times["market_open"] = tuple(
-                    (t[0], t[1], self._tc.open_offset) for t in cls.regular_market_times["market_open"])
+                    (t[0], t[1], self._ec.open_offset) for t in cls.regular_market_times["market_open"])
 
-            if self._tc.close_offset:
+            if self._ec.close_offset:
                 cls.regular_market_times._ALLOW_SETTING_TIMES = True
                 cls.regular_market_times["market_close"] = tuple(
-                    (t[0], t[1], self._tc.close_offset) for t in cls.regular_market_times["market_close"])
+                    (t[0], t[1], self._ec.close_offset) for t in cls.regular_market_times["market_close"])
             cls._FINALIZE_TRADING_CALENDAR = False
 
         self.__init__(*args, **kwargs)
@@ -36,44 +36,44 @@ class TradingCalendar(MarketCalendar):
         super().__init__(open_time, close_time)
 
     @property
-    def tc(self):
-        if self._TC_NOT_INITIALIZED:
-            self._tc.__init__()
-            self._TC_NOT_INITIALIZED = False
+    def ec(self):
+        if self._EC_NOT_INITIALIZED:
+            self._ec.__init__()
+            self._EC_NOT_INITIALIZED = False
 
-        return self._tc
+        return self._ec
 
     @property
     def name(self):
-        return self._tc.name
+        return self._ec.name
 
     @property
     def tz(self):
-        return self._tc.tz
+        return self._ec.tz
 
     @property
     def regular_holidays(self):
-        return self._tc.regular_holidays
+        return self._ec.regular_holidays
 
     @property
     def adhoc_holidays(self):
-        return self._tc.adhoc_holidays
+        return self._ec.adhoc_holidays
 
     @property
     def special_opens(self):
-        return self._tc.special_opens
+        return self._ec.special_opens
 
     @property
     def special_opens_adhoc(self):
-        return self._tc.special_opens_adhoc
+        return self._ec.special_opens_adhoc
 
     @property
     def special_closes(self):
-        return self._tc.special_closes
+        return self._ec.special_closes
 
     @property
     def special_closes_adhoc(self):
-        return self._tc.special_closes_adhoc
+        return self._ec.special_closes_adhoc
 
 
 calendars = exchange_calendars.calendar_utils._default_calendar_factories  # noqa
@@ -93,7 +93,7 @@ for exchange in calendars:
         if times is None or isinstance(times, property): continue
         regular_market_times[new] = times
 
-    cal = type(exchange, (TradingCalendar,), {'_tc_class': calendars[exchange],
+    cal = type(exchange, (TradingCalendar,), {'_ec_class': calendars[exchange],
                                               'alias': [exchange],
                                               'regular_market_times': regular_market_times})
     locals()[exchange + 'ExchangeCalendar'] = cal
