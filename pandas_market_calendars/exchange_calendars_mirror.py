@@ -9,26 +9,28 @@ import exchange_calendars
 
 
 class TradingCalendar(MarketCalendar):
-    _IS_UPDATED_TC = False
+    _FINALIZE_TRADING_CALENDAR = True
 
     def __new__(cls, *args, **kwargs):
-        self = super().__new__(*args, **kwargs)
+        self = super().__new__(cls)
+        self._tc = super().__new__(cls._tc_class)
+
         # offsets of exchange_calendar_mirrors are only available through the instance
-        if not cls._IS_UPDATED_TC:
-            if self.open_offset:
+        if cls._FINALIZE_TRADING_CALENDAR:
+            if self._tc.open_offset:
                 cls.regular_market_times._ALLOW_SETTING_TIMES = True
                 cls.regular_market_times["market_open"] = tuple(
-                    (t[0], t[1], self.open_offset) for t in cls.regular_market_times["market_open"]
-                )
-            if self.close_offset:
+                    (t[0], t[1], self._tc.open_offset) for t in cls.regular_market_times["market_open"])
+            if self._tc.close_offset:
                 cls.regular_market_times._ALLOW_SETTING_TIMES = True
                 cls.regular_market_times["market_close"] = tuple(
-                    (t[0], t[1], self.close_offset) for t in cls.regular_market_times["market_close"]
-                )
-            cls._IS_UPDATED_TC = True
+                    (t[0], t[1], self._tc.close_offset) for t in cls.regular_market_times["market_close"])
+            cls._FINALIZE_TRADING_CALENDAR = False
+
+        self.__init__(*args, **kwargs)
+        return self
 
     def __init__(self, open_time=None, close_time=None):
-        self._tc = self._tc_class()  # noqa: _tc.class is defined in the class generator below
         super().__init__(open_time, close_time)
 
     @property
