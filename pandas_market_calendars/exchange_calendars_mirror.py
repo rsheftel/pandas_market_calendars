@@ -14,6 +14,7 @@ class TradingCalendar(MarketCalendar):
     def __new__(cls, *args, **kwargs):
         self = super().__new__(cls)
         self._tc = super().__new__(cls._tc_class)
+        self._TC_NOT_INITIALIZED = True
 
         # offsets of exchange_calendar_mirrors are only available through the instance
         if cls._FINALIZE_TRADING_CALENDAR:
@@ -21,6 +22,7 @@ class TradingCalendar(MarketCalendar):
                 cls.regular_market_times._ALLOW_SETTING_TIMES = True
                 cls.regular_market_times["market_open"] = tuple(
                     (t[0], t[1], self._tc.open_offset) for t in cls.regular_market_times["market_open"])
+
             if self._tc.close_offset:
                 cls.regular_market_times._ALLOW_SETTING_TIMES = True
                 cls.regular_market_times["market_close"] = tuple(
@@ -32,6 +34,14 @@ class TradingCalendar(MarketCalendar):
 
     def __init__(self, open_time=None, close_time=None):
         super().__init__(open_time, close_time)
+
+    @property
+    def tc(self):
+        if self._TC_NOT_INITIALIZED:
+            self._tc.__init__()
+            self._TC_NOT_INITIALIZED = False
+
+        return self._tc
 
     @property
     def name(self):

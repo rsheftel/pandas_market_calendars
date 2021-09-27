@@ -33,7 +33,6 @@ class MarketCalendar(metaclass=MarketCalendarMeta):
     Unless otherwise noted all times are in UTC and use Pandas data structures.
     """
 
-
     regular_market_times = {"market_open": ((None, time(0)),),
                             "market_close": ((None, time(23)),)
                             }

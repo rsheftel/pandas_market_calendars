@@ -1,4 +1,3 @@
-from pandas_market_calendars.exchange_calendars_mirror import TradingCalendar
 import pandas_market_calendars as mcal
 
 import exchange_calendars as ecal
@@ -25,6 +24,12 @@ def test_basic_information():
     assert mcal_iepa.open_time == time(20)
     assert mcal_iepa.close_time == time(18)
 
+
+def test_closes():
+    start, end = ecal_iepa._closes[[0, -1]]
+
+    m_closes = mcal_iepa.schedule(start, end, market_times= ["market_close"]).market_close
+    assert (ecal_iepa._closes.values == m_closes.values).all()
 
 
 
