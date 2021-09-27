@@ -178,7 +178,7 @@ def test_change_add_remove_time():
     assert cal.has_discontinued
     assert cal.is_discontinued("other_test")
 
-    # this will also still be considered a custom market_time
+    # this will still be considered a custom market_time
     assert cal.is_custom("other_test")
 
 
