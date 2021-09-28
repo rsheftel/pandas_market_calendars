@@ -668,6 +668,8 @@ def test_bad_dates():
 mcal_iepa = get_calendar("IEPA")
 ecal_iepa = ecal.get_calendar("IEPA")
 
+start, end = ecal.exchange_calendar.start_default, ecal.exchange_calendar.end_default
+
 def test_mirror():
 
     assert not hasattr(mcal_iepa, "aliases")
@@ -684,28 +686,43 @@ def test_basic_information():
     assert mcal_iepa.close_time == time(18)
 
 
+def assert_same(one, two):
+    assert one.shape[0] == two.shape[0], f"the shape is different {one.shape[0]} != {two.shape[0]}"
+    assert (one.values == two.values).all()
+
 def test_closes_opens():
     start, end = ecal_iepa._closes[[0, -1]]
     sched = mcal_iepa.schedule(start, end)
 
-    assert (ecal_iepa._closes.values == sched.market_close.values).all()
-
-    assert (ecal_iepa._opens.values == sched.market_open.values).all()
-
+    assert_same(ecal_iepa._closes, sched.market_close)
+    assert_same(ecal_iepa._opens, sched.market_open)
 
 def test_ec_property():
+    mcaliepa = get_calendar("IEPA")
 
-    assert mcal_iepa._EC_NOT_INITIALIZED
-    ec = mcal_iepa.ec
-    assert not mcal_iepa._EC_NOT_INITIALIZED
+    assert mcaliepa._EC_NOT_INITIALIZED
+    ec = mcaliepa.ec
+    assert not mcaliepa._EC_NOT_INITIALIZED
+
+
+def test_ec_schedule():
+
+    sched = mcal_iepa.ec.schedule[["market_open", "market_close"]]
+
+    sched = sched.tz_localize(None) # our indexes are tz-naive, theirs are in UTC
+    for col in sched: sched[col] = sched[col].dt.tz_localize("UTC") # and our columns are in UTC but theirs are naive
+    assert_frame_equal(mcal_iepa.schedule(start, end), sched)
 
 
 
 if __name__ == '__main__':
-    # test_special_opens()
 
-    # test_open_at_time_breaks()
-    #
+
+    # test_ec_property()
+    # # test_special_opens()
+    # #
+    # # test_open_at_time_breaks()
+    # exit()
     for ref, obj in locals().copy().items():
         if ref.startswith("test_"):
             print("running: ", ref)
