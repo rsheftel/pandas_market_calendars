@@ -666,7 +666,7 @@ def test_bad_dates():
 mcal_iepa = get_calendar("IEPA")
 ecal_iepa = ecal.get_calendar("IEPA")
 
-start, end = ecal_iepa.default_start, ecal_iepa.default_end
+start, end = ecal_iepa._closes[[0, -1]]
 
 def test_mirror():
 
@@ -690,7 +690,6 @@ def assert_same(one, two):
     assert (one.values == two.values).all()
 
 def test_closes_opens():
-    start, end = ecal_iepa._closes[[0, -1]]
     sched = mcal_iepa.schedule(start, end)
 
     assert_same(ecal_iepa._closes, sched.market_close)
