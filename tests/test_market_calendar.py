@@ -666,7 +666,7 @@ def test_bad_dates():
 mcal_iepa = get_calendar("IEPA")
 ecal_iepa = ecal.get_calendar("IEPA")
 
-start, end = ecal.exchange_calendar.start_default, ecal.exchange_calendar.end_default
+start, end = ecal_iepa.default_start, ecal_iepa.default_end
 
 def test_mirror():
 
