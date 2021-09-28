@@ -26,6 +26,8 @@ from pandas_market_calendars.holidays_us import (Christmas, HurricaneSandyClosin
                                                  USNationalDaysofMourning, USNewYearsDay)
 from pandas_market_calendars.market_calendar import MarketCalendar #, clean_dates, days_at_time
 
+import exchange_calendars as ecal
+
 class FakeCalendar(MarketCalendar):
     regular_market_times = {
         "market_open": ((None, time(11,18)),
@@ -176,7 +178,7 @@ def test_change_add_remove_time():
     assert cal.has_discontinued
     assert cal.is_discontinued("other_test")
 
-    # this will also still be considered a custom market_time
+    # this will still be considered a custom market_time
     assert cal.is_custom("other_test")
 
 
@@ -656,12 +658,75 @@ def test_bad_dates():
     schedule = cal.schedule('2017-12-30', '2018-01-01')
     assert_frame_equal(schedule, empty)
 
+############################################
+# TESTS FOR EXCHANGE_CALENDAR INTEGRATION  #
+############################################
+
+
+mcal_iepa = get_calendar("IEPA")
+ecal_iepa = ecal.get_calendar("IEPA")
+
+start, end = ecal.exchange_calendar.start_default, ecal.exchange_calendar.end_default
+
+def test_mirror():
+
+    assert not hasattr(mcal_iepa, "aliases")
+
+    assert not isinstance(ecal_iepa, mcal_iepa.__class__)
+
+    assert isinstance(ecal_iepa, mcal_iepa._ec.__class__)
+
+def test_basic_information():
+
+    assert mcal_iepa._EC_NOT_INITIALIZED
+    assert mcal_iepa.tz == timezone("America/New_York") == ecal_iepa.tz
+    assert mcal_iepa.open_offset == -1 == ecal_iepa.open_offset
+    assert mcal_iepa.open_time == time(20)
+    assert mcal_iepa.close_time == time(18)
+
+
+def assert_same(one, two):
+    assert one.shape[0] == two.shape[0], f"the shape is different {one.shape[0]} != {two.shape[0]}"
+    assert (one.values == two.values).all()
+
+def test_closes_opens():
+    start, end = ecal_iepa._closes[[0, -1]]
+    sched = mcal_iepa.schedule(start, end)
+
+    assert_same(ecal_iepa._closes, sched.market_close)
+    assert_same(ecal_iepa._opens, sched.market_open)
+
+def test_ec_property():
+    mcaliepa = get_calendar("IEPA")
+
+    assert mcaliepa._EC_NOT_INITIALIZED
+    ec = mcaliepa.ec
+    assert not mcaliepa._EC_NOT_INITIALIZED
+
+
+def test_ec_schedule():
+    mcaliepa = get_calendar("IEPA")
+
+    assert mcaliepa._EC_NOT_INITIALIZED  # might as well double check that initialization is bypassed
+    ours = mcaliepa.schedule(start, end)
+    assert mcaliepa._EC_NOT_INITIALIZED
+    theirs = mcaliepa.ec.schedule[["market_open", "market_close"]]
+    assert not mcaliepa._EC_NOT_INITIALIZED
+
+    theirs = theirs.tz_localize(None) # our indexes are tz-naive, theirs are in UTC
+    for col in theirs: theirs[col] = theirs[col].dt.tz_localize("UTC") # our columns are in UTC but theirs are naive
+    assert_frame_equal(ours, theirs)
+
+
 
 if __name__ == '__main__':
-    # test_special_opens()
 
-    # test_open_at_time_breaks()
-    #
+
+    # test_ec_property()
+    # # test_special_opens()
+    # #
+    # # test_open_at_time_breaks()
+    # exit()
     for ref, obj in locals().copy().items():
         if ref.startswith("test_"):
             print("running: ", ref)

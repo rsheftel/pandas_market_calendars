@@ -9,41 +9,79 @@ import exchange_calendars
 
 
 class TradingCalendar(MarketCalendar):
+    """
+    This class provides access to all the information on opens, breaks and closes that are available
+    in the exchange_calendars package, but it does so in a lightweight manner.
+
+    The initialization of calendars from exchange_calendars, which can be unnecessary and slow,
+    is bypassed until the `.ec` property is used, which returns the initialized exchange_calendar calendar,
+    which is only initialize the first time.
+    """
+    _FINALIZE_TRADING_CALENDAR = True
+
+    def __new__(cls, *args, **kwargs):
+        self = super().__new__(cls)
+        self._ec = super().__new__(cls._ec_class)
+        self._EC_NOT_INITIALIZED = True
+
+        # offsets of exchange_calendar_mirrors are only available through the instance
+        if cls._FINALIZE_TRADING_CALENDAR:
+            if self._ec.open_offset:
+                cls.regular_market_times._ALLOW_SETTING_TIMES = True
+                cls.regular_market_times["market_open"] = tuple(
+                    (t[0], t[1], self._ec.open_offset) for t in cls.regular_market_times["market_open"])
+
+            if self._ec.close_offset:
+                cls.regular_market_times._ALLOW_SETTING_TIMES = True
+                cls.regular_market_times["market_close"] = tuple(
+                    (t[0], t[1], self._ec.close_offset) for t in cls.regular_market_times["market_close"])
+            cls._FINALIZE_TRADING_CALENDAR = False
+
+        self.__init__(*args, **kwargs)
+        return self
+
     def __init__(self, open_time=None, close_time=None):
-        self._tc = self._tc_class()  # noqa: _tc.class is defined in the class generator below
         super().__init__(open_time, close_time)
 
     @property
+    def ec(self):
+        if self._EC_NOT_INITIALIZED:
+            self._ec.__init__()
+            self._EC_NOT_INITIALIZED = False
+
+        return self._ec
+
+    @property
     def name(self):
-        return self._tc.name
+        return self._ec.name
 
     @property
     def tz(self):
-        return self._tc.tz
+        return self._ec.tz
 
     @property
     def regular_holidays(self):
-        return self._tc.regular_holidays
+        return self._ec.regular_holidays
 
     @property
     def adhoc_holidays(self):
-        return self._tc.adhoc_holidays
+        return self._ec.adhoc_holidays
 
     @property
     def special_opens(self):
-        return self._tc.special_opens
+        return self._ec.special_opens
 
     @property
     def special_opens_adhoc(self):
-        return self._tc.special_opens_adhoc
+        return self._ec.special_opens_adhoc
 
     @property
     def special_closes(self):
-        return self._tc.special_closes
+        return self._ec.special_closes
 
     @property
     def special_closes_adhoc(self):
-        return self._tc.special_closes_adhoc
+        return self._ec.special_closes_adhoc
 
 
 calendars = exchange_calendars.calendar_utils._default_calendar_factories  # noqa
@@ -63,7 +101,7 @@ for exchange in calendars:
         if times is None or isinstance(times, property): continue
         regular_market_times[new] = times
 
-    cal = type(exchange, (TradingCalendar,), {'_tc_class': calendars[exchange],
+    cal = type(exchange, (TradingCalendar,), {'_ec_class': calendars[exchange],
                                               'alias': [exchange],
                                               'regular_market_times': regular_market_times})
     locals()[exchange + 'ExchangeCalendar'] = cal
