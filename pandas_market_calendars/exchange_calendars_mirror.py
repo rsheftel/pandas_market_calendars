@@ -9,6 +9,22 @@ import exchange_calendars
 
 
 class TradingCalendar(MarketCalendar):
+    """
+    This class provides access to all the information on open/closing times that are available
+    in the exchange_calendars package, but it does so in a lightweight manner.
+
+    The initialization of calendars from exchange_calendars is bypassed until the `.ec` property is used,
+    which returns the initialized exchange_calendar calendar.
+
+    E.g.
+
+    import pandas_market_calendars as mcal
+
+    iepa = mcal.get_calendar("IEPA") # this will get an instance of this class
+    iepa.name
+    >>>
+
+    """
     _FINALIZE_TRADING_CALENDAR = True
 
     def __new__(cls, *args, **kwargs):
