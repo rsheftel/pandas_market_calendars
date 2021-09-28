@@ -706,12 +706,17 @@ def test_ec_property():
 
 
 def test_ec_schedule():
+    mcaliepa = get_calendar("IEPA")
 
-    sched = mcal_iepa.ec.schedule[["market_open", "market_close"]]
+    assert mcaliepa._EC_NOT_INITIALIZED  # might as well double check that initialization is bypassed
+    ours = mcaliepa.schedule(start, end)
+    assert mcaliepa._EC_NOT_INITIALIZED
+    theirs = mcaliepa.ec.schedule[["market_open", "market_close"]]
+    assert not mcaliepa._EC_NOT_INITIALIZED
 
-    sched = sched.tz_localize(None) # our indexes are tz-naive, theirs are in UTC
-    for col in sched: sched[col] = sched[col].dt.tz_localize("UTC") # and our columns are in UTC but theirs are naive
-    assert_frame_equal(mcal_iepa.schedule(start, end), sched)
+    theirs = theirs.tz_localize(None) # our indexes are tz-naive, theirs are in UTC
+    for col in theirs: theirs[col] = theirs[col].dt.tz_localize("UTC") # our columns are in UTC but theirs are naive
+    assert_frame_equal(ours, theirs)
 
 
 
