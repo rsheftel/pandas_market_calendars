@@ -437,17 +437,22 @@ class MarketCalendar(metaclass=MarketCalendarMeta):
                  force_special_times= True, market_times= None):
         """
         Generates the schedule DataFrame. The resulting DataFrame will have all the valid business days as the index
-        and columns for the market opening datetime (market_open) and closing datetime (market_close). All time zones
-        are set to UTC by default. Setting the tz parameter will convert the columns to the desired timezone,
-        such as 'America/New_York'
+        and columns for the requested market times. The columns can be determined either by setting a range (inclusive
+        on both sides), using `start` and `end`, or by passing a list to `market_times'. A range of market_times is
+        derived from a list of market_times that are available to the instance, which are sorted based on the current
+        regular time. See the docs for examples.
 
-        :param start_date: start date
-        :param end_date: end date
-        :param tz: timezone that the returned schedule is in
-        :param start:
-        :param end:
-        :param force_special_times:
-        :param market_times:
+        All time zones are set to UTC by default. Setting the tz parameter will convert the columns to the desired
+        timezone, such as 'America/New_York'
+
+        :param start_date: first date of the schedule
+        :param end_date: last of the schedule
+        :param tz: timezone that the columns of the returned schedule are in, default: "UTC"
+        :param start: the first market_time to include as a column, default: "market_open"
+        :param end: the last market_time to include as a column, default: "market_close"
+        :param force_special_times: whether to replace regular times with special ones, which will also enforce
+            no earlier times than special market_opens or later times than special market_closes
+        :param market_times: alternative to start/end, list of market_times that are in self.regular_market_times
         :return: schedule DataFrame
         """
         start_date, end_date = self.clean_dates(start_date, end_date)
