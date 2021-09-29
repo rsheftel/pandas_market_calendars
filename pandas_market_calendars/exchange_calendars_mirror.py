@@ -17,11 +17,15 @@ class TradingCalendar(MarketCalendar):
     is bypassed until the `.ec` property is used, which returns the initialized exchange_calendar calendar,
     which is only initialize the first time.
     """
+    # flag indicating that offset still needs to be checked.
+    # A class attribute so we only do this once per class and not per instance
     _FINALIZE_TRADING_CALENDAR = True
 
     def __new__(cls, *args, **kwargs):
         self = super().__new__(cls)
         self._ec = super().__new__(cls._ec_class)
+        # flag indicating that mirrored class is not initialized yet, which we only want to do
+        # once per instance, if and only if the public `.ec` property is used.
         self._EC_NOT_INITIALIZED = True
 
         # offsets of exchange_calendar_mirrors are only available through the instance

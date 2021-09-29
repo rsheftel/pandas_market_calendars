@@ -461,17 +461,21 @@ class MarketCalendar(metaclass=MarketCalendarMeta):
 
         # Setup all valid trading days and the requested market_times
         _all_days = self.valid_days(start_date, end_date)
-        market_times = self._get_market_times(start, end) if market_times is None else market_times
+        if market_times is None: market_times = self._get_market_times(start, end)
+        elif market_times == "all": market_times = self._market_times
+
         # If no valid days return an empty DataFrame
         if not len(_all_days):
             return pd.DataFrame(columns=market_times, index=pd.DatetimeIndex([], freq='C'))
 
+        _adj_others = force_special_times is True
+        _adj_col = not force_special_times is None
+        _open_adj = _close_adj = []
+
         columns = {}
-        _open_adj = False
-        _close_adj = False
         for market_time in market_times:
             temp = self.days_at_time(_all_days, market_time) # standard times
-            if force_special_times:
+            if _adj_col:
                 # create an array of special times
                 special = self.special_dates(market_time, start_date, end_date, filter_holidays= False)
 
@@ -488,19 +492,19 @@ class MarketCalendar(metaclass=MarketCalendarMeta):
                                      "method to inspect the data.") from e
 
                 temp = pd.DatetimeIndex(temp)
-                if market_time == "market_open": _open_adj = _special
-                elif market_time == "market_close": _close_adj = _special
+                if _adj_others:
+                    if market_time == "market_open": _open_adj = _special
+                    elif market_time == "market_close": _close_adj = _special
 
             columns[market_time] = temp.tz_convert(tz)
 
         schedule = pd.DataFrame(columns, index= _all_days.tz_localize(None), columns= market_times)
 
-        if not _open_adj is False:
+        if _adj_others:
             adjusted = schedule.loc[_open_adj].apply(
                 lambda x: x.where(x.ge(x["market_open"]), x["market_open"]), axis= 1)
             schedule.loc[_open_adj] = adjusted
 
-        if not _close_adj is False:
             adjusted = schedule.loc[_close_adj].apply(
                 lambda x: x.where(x.le(x["market_close"]), x["market_close"]), axis= 1)
             schedule.loc[_close_adj] = adjusted

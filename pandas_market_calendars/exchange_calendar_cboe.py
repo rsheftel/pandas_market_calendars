@@ -51,11 +51,12 @@ class CFEExchangeCalendar(MarketCalendar):
 
     (We are ignoring extended trading hours for now)
     """
-    aliases = ['CFE']
+    aliases = ['CFE', "CBOE_Futures"]
     regular_market_times = {
         "market_open": ((None, time(8, 31)),),
         "market_close": ((None, time(15, 15)),)
     }
+
 
     @property
     def name(self):
@@ -94,3 +95,14 @@ class CFEExchangeCalendar(MarketCalendar):
             HurricaneSandyClosings,
             USNationalDaysofMourning,
         ))
+
+class CBOEEquityOptionsExchangeCalendar(CFEExchangeCalendar):
+    name = "CBOE_Equity_Options"
+    aliases = [name]
+    regular_market_times = {**CFEExchangeCalendar.regular_market_times,
+                            "market_close": ((None, time(15)),)}
+
+class CBOEIndexOptionsExchangeCalendar(CFEExchangeCalendar):
+    name = "CBOE_Index_Options"
+    aliases = [name]
+
