@@ -13,7 +13,7 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-
+import warnings
 from abc import ABCMeta, abstractmethod
 from datetime import time
 
@@ -122,6 +122,12 @@ class MarketCalendar(metaclass=MarketCalendarMeta):
 
         self._market_times = sorted(self.regular_market_times.keys(),
                                     key= lambda x: self._regular_market_timedeltas[x][-1][1])
+
+        if self.has_discontinued:
+            warnings.warn(f"{self.discontinued_market_times.keys()} have been discontinued, the dictionary"
+                          f" .discontinued_market_times contains the dates on which these have been discontinued."
+                          f" The times as of those dates are incorrect, you can use .remove_time(market_time)"
+                          f" to make this instance ignore a market_time.")
 
     def change_time(self, market_time, times):
         assert market_time in self.regular_market_times, f"{market_time} is not in regular_market_times:" \
