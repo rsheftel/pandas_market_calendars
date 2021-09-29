@@ -1,10 +1,9 @@
 import pandas as pd
 
 from pandas_market_calendars.exchange_calendar_cboe import (CFEExchangeCalendar,
-                                                           CBOEEquityOptionsExchangeCalendar,
-                                                           CBOEIndexOptionsExchangeCalendar)
+                                                           CBOEEquityOptionsExchangeCalendar)
 
-calendars = (CFEExchangeCalendar, CBOEEquityOptionsExchangeCalendar, CBOEIndexOptionsExchangeCalendar)
+calendars = (CFEExchangeCalendar, CBOEEquityOptionsExchangeCalendar)
 
 
 def test_open_time_tz():
