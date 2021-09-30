@@ -101,6 +101,10 @@ class MarketCalendar(metaclass=MarketCalendarMeta):
         """
         raise NotImplementedError()
 
+    @property
+    def market_times(self):
+        return self._market_times
+
     def _prepare_regular_market_times(self):
 
         self.discontinued_market_times = {}
@@ -361,7 +365,7 @@ class MarketCalendar(metaclass=MarketCalendarMeta):
     def _get_market_times(self, start, end):
         start = self._market_times.index(start)
         end = self._market_times.index(end)
-        return self._market_times[start: end+1]
+        return self._market_times[start: end + 1]
 
     def days_at_time(self, days, market_time, day_offset=0):
         """
@@ -519,8 +523,8 @@ class MarketCalendar(metaclass=MarketCalendarMeta):
 
         return schedule
 
-    @staticmethod
-    def open_at_time(schedule, timestamp, include_close=False):
+
+    def open_at_time(self, schedule, timestamp, include_close=False):
         """
         To determine if a given timestamp is during an open time for the market.
 
@@ -616,6 +620,12 @@ class MarketCalendar(metaclass=MarketCalendarMeta):
         """
         return schedule[self.is_different(schedule["market_open"], pd.Series.gt)]
 
+    def __getitem__(self, item):
+        if isinstance(item, (tuple, list)):
+            return self.get_time_on(item[0], item[1])
+        else:
+            return self.get_time(item)
+
     def __setitem__(self, key, value):
         return self.add_time(key, value)
 
@@ -627,6 +637,3 @@ class MarketCalendar(metaclass=MarketCalendarMeta):
 
     def __str__(self):
         return str(self.regular_market_times)
-
-    def copy(self):
-        return self.regular_market_times.copy()
