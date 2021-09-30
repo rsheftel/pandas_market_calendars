@@ -616,3 +616,17 @@ class MarketCalendar(metaclass=MarketCalendarMeta):
         """
         return schedule[self.is_different(schedule["market_open"], pd.Series.gt)]
 
+    def __setitem__(self, key, value):
+        return self.add_time(key, value)
+
+    def __delitem__(self, key):
+        return self.remove_time(key)
+
+    def __repr__(self):
+        return repr(self.regular_market_times)
+
+    def __str__(self):
+        return str(self.regular_market_times)
+
+    def copy(self):
+        return self.regular_market_times.copy()
