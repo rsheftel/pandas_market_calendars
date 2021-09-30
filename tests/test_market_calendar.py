@@ -377,6 +377,87 @@ def test_schedule():
     else:
         assert_frame_equal(actual, expected, check_freq=False)
 
+def test_custom_schedule():
+    cal = FakeBreakCalendar()
+    cal.add_time("pre", time(9))
+    cal.add_time("post", time(13))
+
+    # test default
+    schedule = cal.schedule("2016-12-23", "2016-12-31")
+    assert schedule.columns.tolist() == ["market_open", "break_start", "break_end", "market_close"]
+
+    # special market_open should take effect
+    assert schedule.loc["2016-12-29"].astype(str).to_list() == ["2016-12-29 15:20:00+00:00",
+                                                                "2016-12-29 15:20:00+00:00",
+                                                                "2016-12-29 16:00:00+00:00",
+                                                                "2016-12-29 17:00:00+00:00"]
+    # special market_close as well
+    assert schedule.loc["2016-12-30"].astype(str).to_list() == ["2016-12-30 14:30:00+00:00",
+                                                                "2016-12-30 15:00:00+00:00",
+                                                                "2016-12-30 15:40:00+00:00",
+                                                                "2016-12-30 15:40:00+00:00"]
+
+    # test custom start end
+    schedule = cal.schedule("2016-12-23", "2016-12-31", start= "pre", end= "break_end")
+    assert schedule.columns.tolist() == ["pre", "market_open", "break_start", "break_end"]
+
+    # market_open is present, so special times should take effect
+    assert schedule.loc["2016-12-29"].astype(str).to_list() == ["2016-12-29 15:20:00+00:00",
+                                                                "2016-12-29 15:20:00+00:00",
+                                                                "2016-12-29 15:20:00+00:00",
+                                                                "2016-12-29 16:00:00+00:00"]
+
+    # market_close is not present, so special times should NOT take effect
+    assert schedule.loc["2016-12-30"].astype(str).to_list() == ["2016-12-30 14:00:00+00:00",
+                                                                "2016-12-30 14:30:00+00:00",
+                                                                "2016-12-30 15:00:00+00:00",
+                                                                "2016-12-30 16:00:00+00:00"]
+
+    # test custom market times
+    schedule = cal.schedule("2016-12-23", "2016-12-31", market_times= ["post", "pre"])
+    assert schedule.columns.tolist() == ["post", "pre"]
+    # Neither market_open nor market_close are present, so no specials should take effect
+    assert schedule.loc["2016-12-29"].astype(str).to_list() == ["2016-12-29 18:00:00+00:00",
+                                                                "2016-12-29 14:00:00+00:00"]
+
+    assert schedule.loc["2016-12-30"].astype(str).to_list() == ["2016-12-30 18:00:00+00:00",
+                                                                "2016-12-30 14:00:00+00:00"]
+
+
+    # only adjust column itself
+    schedule = cal.schedule("2016-12-23", "2016-12-31", force_special_times= False)
+    assert schedule.columns.tolist() == ["market_open", "break_start", "break_end", "market_close"]
+
+    # special market_open should take effect
+    assert schedule.loc["2016-12-29"].astype(str).to_list() == ["2016-12-29 15:20:00+00:00",
+                                                                "2016-12-29 15:00:00+00:00",
+                                                                "2016-12-29 16:00:00+00:00",
+                                                                "2016-12-29 17:00:00+00:00"]
+    # special market_close as well
+    assert schedule.loc["2016-12-30"].astype(str).to_list() == ["2016-12-30 14:30:00+00:00",
+                                                                "2016-12-30 15:00:00+00:00",
+                                                                "2016-12-30 16:00:00+00:00",
+                                                                "2016-12-30 15:40:00+00:00"]
+
+
+
+    # ignore special times completely
+    schedule = cal.schedule("2016-12-23", "2016-12-31", force_special_times= None)
+    assert schedule.columns.tolist() == ["market_open", "break_start", "break_end", "market_close"]
+
+    # special market_open should take effect
+    assert schedule.loc["2016-12-29"].astype(str).to_list() == ["2016-12-29 14:30:00+00:00",
+                                                                "2016-12-29 15:00:00+00:00",
+                                                                "2016-12-29 16:00:00+00:00",
+                                                                "2016-12-29 17:00:00+00:00"]
+    # special market_close as well
+    assert schedule.loc["2016-12-30"].astype(str).to_list() == ["2016-12-30 14:30:00+00:00",
+                                                                "2016-12-30 15:00:00+00:00",
+                                                                "2016-12-30 16:00:00+00:00",
+                                                                "2016-12-30 17:00:00+00:00"]
+
+
+
 
 def test_schedule_w_breaks():
     cal = FakeBreakCalendar()
@@ -721,11 +802,11 @@ def test_ec_schedule():
 if __name__ == '__main__':
 
 
-    # test_ec_property()
-    # # test_special_opens()
-    # #
-    # # test_open_at_time_breaks()
-    # exit()
+    test_custom_schedule()
+    # test_special_opens()
+    #
+    # test_open_at_time_breaks()
+    exit()
     for ref, obj in locals().copy().items():
         if ref.startswith("test_"):
             print("running: ", ref)
