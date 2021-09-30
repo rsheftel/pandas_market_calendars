@@ -562,8 +562,7 @@ class MarketCalendar(metaclass=MarketCalendarMeta):
     def _get_current_time():
         return pd.Timestamp.now(tz='UTC')
 
-    @staticmethod
-    def is_open_now(schedule, include_close=False):
+    def is_open_now(self, schedule, include_close=False):
         """
         To determine if the current local system time (converted to UTC) is an open time for the market
 
@@ -575,7 +574,7 @@ class MarketCalendar(metaclass=MarketCalendarMeta):
         :return: True if the current local system time is a valid open date and time, False if not
         """
         current_time = MarketCalendar._get_current_time()
-        return MarketCalendar.open_at_time(schedule, current_time)
+        return self.open_at_time(schedule, current_time)
 
     def clean_dates(self, start_date, end_date):
         """

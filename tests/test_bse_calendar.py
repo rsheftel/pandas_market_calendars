@@ -28,12 +28,12 @@ def test_open_close_time():
         end_date=india_time_zone.localize(datetime.datetime(2015, 1, 16))
     )
 
-    assert BSEExchangeCalendar.open_at_time(
+    assert bse_calendar.open_at_time(
         schedule=bse_schedule,
         timestamp=india_time_zone.localize(datetime.datetime(2015, 1, 14, 11, 0))
     )
 
-    assert not BSEExchangeCalendar.open_at_time(
+    assert not bse_calendar.open_at_time(
         schedule=bse_schedule,
         timestamp=india_time_zone.localize(datetime.datetime(2015, 1, 9, 12, 0))
     )

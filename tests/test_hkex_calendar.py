@@ -32,12 +32,12 @@ def test_hkex_closes_at_lunch():
         end_date=datetime.datetime(2015, 1, 16, tzinfo=pytz.timezone('Asia/Shanghai'))
     )
 
-    assert HKEXExchangeCalendar.open_at_time(
+    assert hkex.open_at_time(
         schedule=schedule,
         timestamp=datetime.datetime(2015, 1, 14, 11, 0, tzinfo=pytz.timezone('Asia/Shanghai'))
     )
 
-    assert not HKEXExchangeCalendar.open_at_time(
+    assert not hkex.open_at_time(
         schedule=schedule,
         timestamp=datetime.datetime(2015, 1, 14, 12, 10, tzinfo=pytz.timezone('Asia/Shanghai'))
     )

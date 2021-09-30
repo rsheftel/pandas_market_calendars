@@ -27,12 +27,12 @@ def test_sse_closes_at_lunch():
         end_date=datetime.datetime(2015, 1, 16, tzinfo=pytz.timezone('Asia/Shanghai'))
     )
 
-    assert SSEExchangeCalendar.open_at_time(
+    assert sse_calendar.open_at_time(
         schedule=sse_schedule,
         timestamp=datetime.datetime(2015, 1, 14, 11, 0, tzinfo=pytz.timezone('Asia/Shanghai'))
     )
 
-    assert not SSEExchangeCalendar.open_at_time(
+    assert not sse_calendar.open_at_time(
         schedule=sse_schedule,
         timestamp=datetime.datetime(2015, 1, 14, 12, 0, tzinfo=pytz.timezone('Asia/Shanghai'))
     )
