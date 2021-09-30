@@ -633,7 +633,10 @@ class MarketCalendar(metaclass=MarketCalendarMeta):
 
     def __getitem__(self, item):
         if isinstance(item, (tuple, list)):
-            return self.get_time_on(item[0], item[1])
+            if item[1] == "all":
+                return self.get_time(item[0], all_times= True)
+            else:
+                return self.get_time_on(item[0], item[1])
         else:
             return self.get_time(item)
 

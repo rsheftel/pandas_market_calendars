@@ -230,6 +230,26 @@ def test_change_add_remove_time():
         cal.add_time("wrong_format", pd.Timedelta("5H"))
 
 
+def test_dunder_methods():
+    cal = FakeCalendar()
+
+    assert cal["market_open"] == time(11,13)
+    assert cal["market_open", "1900-01-01"] == time(11,18)
+    assert cal["market_open", "all"] == cal.regular_market_times["market_open"]
+
+
+    # __setitem__ is adding a time, which refuses to replace
+    with pytest.raises(AssertionError):
+        cal["market_open"] = time(10)
+
+    # but excplicitly deleting, makes it work
+    del cal["market_open"]
+    cal["market_open"] = time(9)
+    assert cal["market_open"] == time(9)
+
+    assert str(cal) == str(cal.regular_market_times)
+
+
 def test_default_calendars():
     for name in get_calendar_names():
         assert get_calendar(name) is not None
@@ -505,8 +525,6 @@ def test_custom_schedule():
                                                                 "2016-12-30 17:00:00+00:00"]
 
 
-
-
 def test_schedule_w_breaks():
     cal = FakeBreakCalendar()
     assert cal.open_time == time(9, 30)
@@ -739,6 +757,18 @@ def test_open_at_time():
     assert cal.open_at_time(schedule, pd.Timestamp('2014-07-01 23:40:00-0400', tz='America/New_York')) is True
 
 
+    cal["pre"] = time(11)
+    schedule = cal.schedule('2014-01-01', '2016-12-31', market_times= "all")
+    assert cal.open_at_time(schedule, "2014-07-02 02:55:00+00:00") is False
+    # only_rth = True makes it ignore anything before market_open or after market_close
+    assert cal.open_at_time(schedule, "2014-07-02 03:05:00+00:00", only_rth= True) is False
+    assert cal.open_at_time(schedule, "2014-07-02 03:05:00+00:00")
+
+    # should raise error if not all columns are in self.market_times
+    with pytest.raises(ValueError):
+        cal.open_at_time(schedule.rename(columns= {"pre": "other"}), "2014-07-02 02:55:00+00:00")
+
+
 def test_open_at_time_breaks():
     cal = FakeBreakCalendar()
 
@@ -849,7 +879,7 @@ def test_ec_schedule():
 
 if __name__ == '__main__':
 
-    test_special_dates()
+    test_dunder_methods()
     # test_custom_schedule()
     # test_special_opens()
     #
