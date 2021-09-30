@@ -89,7 +89,12 @@ class ProtectedDict(dict):
         return self.__class__.__name__+ "(" + super().__repr__() + ")"
 
     def __str__(self):
-        return self.__class__.__name__+ "(\n" + pformat(self, sort_dicts= False) + "\n)"
+        try:
+            formatted = pformat(self, sort_dicts= False) # sort_dicts apparently not available < python3.8
+        except TypeError:
+            formatted = pformat(self)
+
+        return self.__class__.__name__+ "(\n" + formatted + "\n)"
 
     def copy(self):
         return self.__class__(super().copy())
