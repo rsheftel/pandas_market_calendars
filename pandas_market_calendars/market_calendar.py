@@ -524,7 +524,7 @@ class MarketCalendar(metaclass=MarketCalendarMeta):
         return schedule
 
 
-    def open_at_time(self, schedule, timestamp, include_close=False):
+    def open_at_time(self, schedule, timestamp, include_close=False, only_rth= False):
         """
         To determine if a given timestamp is during an open time for the market.
 
@@ -533,27 +533,35 @@ class MarketCalendar(metaclass=MarketCalendarMeta):
         :param include_close: if False then the timestamp that equals the closing timestamp will return False and not be
             considered a valid open date and time. If True then it will be considered valid and return True. Use True
             if using bars and would like to include the last bar as a valid open date and time.
+        :param only_rth: whether to consider columns that are before market_open or after market_close
         :return: True if the timestamp is a valid open date and time, False if not
         """
-        if (not schedule.columns.isin(["market_open", "break_start", "break_end", "market_close"]).all() or
-            schedule.columns.shape[0] % 2):
-            raise ValueError("You seem to be using a schedule that isn't based on standard market_times, "
-                             "which isn't yet supported by this method.")
+        if not schedule.columns.isin(self._market_times).all():
+            raise ValueError("You seem to be using a schedule that isn't based on the market_times")
 
-        date = pd.Timestamp(timestamp).tz_convert('UTC').tz_localize(None).normalize()
+        timestamp = pd.Timestamp(timestamp)
+        date = timestamp.tz_convert('UTC').tz_localize(None).normalize()
+
+        if only_rth:
+            lowest, highest = "market_open", "market_close"
+        else:
+            ixs = schedule.columns.map(lambda x: self.market_times.index(x))
+            lowest = schedule.columns[ixs == ixs.min()][0]
+            highest = schedule.columns[ixs == ixs.max()][0]
+
         if date in schedule.index:
             if 'break_start' in schedule.columns:
                 if include_close:
-                    return (schedule.at[date, 'market_open'] <= timestamp <= schedule.at[date, 'break_start']) or \
-                           (schedule.at[date, 'break_end'] <= timestamp <= schedule.at[date, 'market_close'])
+                    return (schedule.at[date, lowest] <= timestamp <= schedule.at[date, 'break_start']) or \
+                           (schedule.at[date, 'break_end'] <= timestamp <= schedule.at[date, highest])
                 else:
-                    return (schedule.at[date, 'market_open'] <= timestamp < schedule.at[date, 'break_start']) or \
-                           (schedule.at[date, 'break_end'] <= timestamp < schedule.at[date, 'market_close'])
+                    return (schedule.at[date, lowest] <= timestamp < schedule.at[date, 'break_start']) or \
+                           (schedule.at[date, 'break_end'] <= timestamp < schedule.at[date, highest])
             else:
                 if include_close:
-                    return schedule.at[date, 'market_open'] <= timestamp <= schedule.at[date, 'market_close']
+                    return schedule.at[date, lowest] <= timestamp <= schedule.at[date, highest]
                 else:
-                    return schedule.at[date, 'market_open'] <= timestamp < schedule.at[date, 'market_close']
+                    return schedule.at[date, lowest] <= timestamp < schedule.at[date, highest]
         else:
             return False
 
@@ -562,7 +570,7 @@ class MarketCalendar(metaclass=MarketCalendarMeta):
     def _get_current_time():
         return pd.Timestamp.now(tz='UTC')
 
-    def is_open_now(self, schedule, include_close=False):
+    def is_open_now(self, schedule, include_close=False, only_rth=False):
         """
         To determine if the current local system time (converted to UTC) is an open time for the market
 
@@ -571,10 +579,12 @@ class MarketCalendar(metaclass=MarketCalendarMeta):
             the closing timestamp. If True then it will return True if the current local system time is equal to the
             closing timestamp. Use True if using bars and would like to include the last bar as a valid open date
             and time.
+        :param only_rth: whether to consider columns that are before market_open or after market_close
+
         :return: True if the current local system time is a valid open date and time, False if not
         """
         current_time = MarketCalendar._get_current_time()
-        return self.open_at_time(schedule, current_time)
+        return self.open_at_time(schedule, current_time, include_close=include_close, only_rth=only_rth)
 
     def clean_dates(self, start_date, end_date):
         """
