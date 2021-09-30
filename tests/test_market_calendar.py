@@ -115,6 +115,24 @@ def test_protected_dictionary():
     with pytest.raises(TypeError) as e:
         del cal.regular_market_times["market_open"]
 
+def test_get_time():
+    cal = FakeCalendar()
+
+    assert cal.get_time("market_open") == time(11, 13)
+    assert cal.get_time("break_start") is None
+    assert cal.get_time("break_end") is None
+
+    assert cal.get_time_on("market_close", "1900-01-01") == time(11, 45)
+    assert cal.get_time_on("break_start", "1900-01-01") is None
+
+    cal.remove_time("market_open")
+    with pytest.raises(NotImplementedError):
+        t = cal.open_time
+
+    with pytest.raises(KeyError):
+        t = cal.get_time_on("pre", "1900-01-01")
+
+
 
 def test_change_add_remove_time():
     cal = FakeCalendar()
@@ -810,7 +828,7 @@ def test_ec_schedule():
 
 if __name__ == '__main__':
 
-    test_change_add_remove_time()
+    test_get_time()
     # test_custom_schedule()
     # test_special_opens()
     #

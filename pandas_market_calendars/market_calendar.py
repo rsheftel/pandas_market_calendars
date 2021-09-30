@@ -212,6 +212,8 @@ class MarketCalendar(metaclass=MarketCalendarMeta):
 
     def get_time_on(self, market_time, date):
         times = self.get_time(market_time, all_times= True)
+        if times is None: return None
+
         date = pd.Timestamp(date)
         for d, t in times[::-1]:
             if d is None or pd.Timestamp(d) < date:
