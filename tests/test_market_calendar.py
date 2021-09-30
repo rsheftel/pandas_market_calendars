@@ -58,7 +58,7 @@ class FakeCalendar(MarketCalendar):
 
     @property
     def special_opens_adhoc(self):
-        return [(time(11, 20), ['2016-12-13'])]
+        return [(time(11, 20), ['2016-12-13', "2016-12-25"])]
 
     @property
     def special_closes(self):
@@ -131,6 +131,27 @@ def test_get_time():
 
     with pytest.raises(KeyError):
         t = cal.get_time_on("pre", "1900-01-01")
+
+def test_get_offset():
+    cal = FakeBreakCalendar()
+
+    assert cal.open_offset == 0
+    assert cal.close_offset == 0
+
+    cal.change_time("market_open", (time(10), -1))
+    cal.change_time("market_close", (time(10), 5))
+
+    assert cal.get_offset("market_open") == -1
+    assert cal.get_offset("market_close") == 5
+
+def test_special_dates():
+    cal = FakeCalendar()
+
+    special = cal.special_dates("market_open", "2016-12-10", "2016-12-31")
+    assert special.astype(str).tolist() == ["2016-12-13 03:20:00+00:00"]
+
+    special = cal.special_dates("market_open", "2016-12-10", "2016-12-31", filter_holidays= False)
+    assert special.astype(str).tolist() == ["2016-12-13 03:20:00+00:00", "2016-12-25 03:20:00+00:00"]
 
 
 
@@ -828,7 +849,7 @@ def test_ec_schedule():
 
 if __name__ == '__main__':
 
-    test_get_time()
+    test_special_dates()
     # test_custom_schedule()
     # test_special_opens()
     #
