@@ -423,10 +423,12 @@ class MarketCalendar(metaclass=MarketCalendarMeta):
 
     def special_dates(self, market_time, start_date, end_date, filter_holidays= True):
         """
-        This method will return a DatetimeIndex with all the special times of `market_time`, although
-        in some cases, calculations of special_times don't consider full day holidays correctly.
-        Those days will be dropped if filter_holidays is True, but they can be kept if filter_holidays is False,
-        which can be useful when debugging the data.
+        :param market_time: market_time reference
+        :param start_date: first of the index
+        :param end_date: last of the index
+        :param filter_holidays: will filter days by self.valid_days
+
+        :return: schedule DatetimeIndex
         """
         start_date, end_date = self.clean_dates(start_date, end_date)
         calendars = self.get_special_times(market_time)

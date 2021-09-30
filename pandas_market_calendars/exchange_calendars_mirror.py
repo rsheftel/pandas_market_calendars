@@ -11,11 +11,11 @@ import exchange_calendars
 class TradingCalendar(MarketCalendar):
     """
     This class provides access to all the information on opens, breaks and closes that are available
-    in the exchange_calendars package, but it does so in a lightweight manner.
+    in the exchange_calendars package, it will receive the correctly formatted regular_market_times
+    dictionary in the for-loop below.
 
-    The initialization of calendars from exchange_calendars, which can be unnecessary and slow,
-    is bypassed until the `.ec` property is used, which returns the initialized exchange_calendar calendar,
-    which is only initialize the first time.
+    The initialization of calendars from exchange_calendars, is bypassed until the `.ec` property is used,
+    which returns the initialized exchange_calendar calendar, which is only initialized the first time.
     """
     # flag indicating that offset still needs to be checked.
     # A class attribute so we only do this once per class and not per instance
