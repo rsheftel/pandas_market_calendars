@@ -1,6 +1,8 @@
 from abc import ABCMeta, abstractmethod
 from datetime import time
 
+import pytest
+
 from pandas_market_calendars.class_registry import RegisteryMeta
 
 
@@ -119,3 +121,20 @@ def test_metamixing():
     o1 = Base.factory('c1')
     o2 = Base.factory('c 1')
     assert o1.test() == o2.test()
+
+    with pytest.raises(RuntimeError):
+        Base.factory("error") # doesn't exist
+
+    class Class2(Base):  # no aliases
+        def test(self):
+            return "test"
+
+    assert Base.factory("Class2").test() == "test"
+
+
+# if __name__ == '__main__':
+#
+#     for ref, obj in locals().copy().items():
+#         if ref.startswith("test_"):
+#             print("running: ", ref)
+#             obj()
