@@ -25,6 +25,7 @@ from pandas_market_calendars import get_calendar, get_calendar_names
 from pandas_market_calendars.holidays_us import (Christmas, HurricaneSandyClosings, MonTuesThursBeforeIndependenceDay,
                                                  USNationalDaysofMourning, USNewYearsDay)
 from pandas_market_calendars.market_calendar import MarketCalendar #, clean_dates, days_at_time
+from pandas_market_calendars.exchange_calendars_mirror import TradingCalendar
 
 import exchange_calendars as ecal
 
@@ -827,6 +828,22 @@ ecal_iepa = ecal.get_calendar("IEPA")
 
 start, end = ecal_iepa._closes[[0, -1]]
 
+# No exchange_calendar has a close_offset so this class implements it for testing
+class _TestExchangeCalendar:
+    def __init__(self):
+        self.a_test_var = "initialized"
+    @property
+    def open_offset(self):
+        return -2
+    @property
+    def close_offset(self):
+        return 3
+
+
+TestExchangeCalendar = type("TestExchangeCalendar", (TradingCalendar,), {'_ec_class': _TestExchangeCalendar})
+
+test_cal = TestExchangeCalendar()
+
 def test_mirror():
 
     assert not hasattr(mcal_iepa, "aliases")
@@ -842,6 +859,12 @@ def test_basic_information():
     assert mcal_iepa.open_offset == -1 == ecal_iepa.open_offset
     assert mcal_iepa.open_time == time(20)
     assert mcal_iepa.close_time == time(18)
+
+    assert test_cal._EC_NOT_INITIALIZED
+    assert test_cal.open_offset == -2
+    assert test_cal.close_offset == 3
+    assert test_cal["market_close", "all"] == ((None, time(23), 3),)
+    assert test_cal._EC_NOT_INITIALIZED
 
 
 def assert_same(one, two):
@@ -861,6 +884,11 @@ def test_ec_property():
     ec = mcaliepa.ec
     assert not mcaliepa._EC_NOT_INITIALIZED
 
+    assert test_cal._EC_NOT_INITIALIZED
+    assert not hasattr(test_cal._ec, "a_test_var")
+    assert test_cal.ec.a_test_var == "initialized"
+    assert not test_cal._EC_NOT_INITIALIZED
+
 
 def test_ec_schedule():
     mcaliepa = get_calendar("IEPA")
@@ -879,7 +907,8 @@ def test_ec_schedule():
 
 if __name__ == '__main__':
 
-    test_dunder_methods()
+    test_basic_information()
+    test_ec_property()
     # test_custom_schedule()
     # test_special_opens()
     #
