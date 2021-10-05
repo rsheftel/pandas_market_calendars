@@ -102,3 +102,10 @@ class CBOEEquityOptionsExchangeCalendar(CFEExchangeCalendar):
     regular_market_times = {**CFEExchangeCalendar.regular_market_times,
                             "market_close": ((None, time(15)),)}
 
+class CBOEIndexOptionsExchangeCalendar(CFEExchangeCalendar):
+    name = "CBOE_Index_Options"
+    aliases = [name]
+    regular_market_times = {**CFEExchangeCalendar.regular_market_times,
+                            "market_close": ((None, time(15, 15)),)}
+
+
