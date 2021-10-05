@@ -6,18 +6,19 @@ import warnings
 
 import pandas as pd
 
-
 def merge_schedules(schedules, how='outer'):
     """
     Given a list of schedules will return a merged schedule. The merge method (how) will either return the superset
     of any datetime when any schedule is open (outer) or only the datetime where all markets are open (inner)
-     *NOTE* This does not work for schedules with breaks, the break information will be lost.
+
+    CAVEATS:
+        * This does not work for schedules with breaks, the break information will be lost.
+        * Onlu "market_open" and "market_close" are considered, other market times are not yet supported.
 
     :param schedules: list of schedules
     :param how: outer or inner
     :return: schedule DataFrame
     """
-
     all_cols = [x.columns for x in schedules]
     all_cols = list(itertools.chain(*all_cols))
     if ('break_start' in all_cols) or ('break_end' in all_cols):
@@ -60,6 +61,15 @@ class _date_range:
 
     *Any trading session where start == end is considered a 'no-trading session' and will always be dropped*
 
+    CAVEATS:
+        * Only "market_open", "market_close" (and, optionally, "breaak_start" and "break_end")
+            are considered, other market times are not yet supported by this class.
+
+        * If the difference between start and end of a trading session is smaller than an interval of the
+           frequency, and closed= "right" and force_close = False, the whole session will disappear.
+           This will also raise a warning.
+
+
     Signature:
     .__call__(self, schedule, frequency, closed='right', force_close=True, **kwargs)
 
@@ -76,10 +86,7 @@ class _date_range:
         None: leave the last value as it is calculated based on the closed parameter
     :param kwargs: unused. Solely for compatibility.
 
-    Caveat:
-     * If the difference between start and end of a trading session is smaller than an interval of the
-       frequency, and closed= "right" and force_close = False, the whole session will disappear.
-       This will also raise a warning.
+
     """
 
     def __init__(self, schedule = None, frequency= None, closed='right', force_close=True):

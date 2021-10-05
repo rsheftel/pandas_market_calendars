@@ -248,7 +248,6 @@ def test_dunder_methods():
     cal["market_open"] = time(9)
     assert cal["market_open"] == time(9)
 
-    assert str(cal) == str(cal.regular_market_times)
 
 
 def test_default_calendars():
