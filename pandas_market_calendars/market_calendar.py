@@ -534,8 +534,10 @@ class MarketCalendar(metaclass=MarketCalendarMeta):
         :param timestamp: the timestamp to check for
         :param include_close: if False then the timestamp that equals the closing timestamp will return False and not be
             considered a valid open date and time. If True then it will be considered valid and return True. Use True
-            if using bars and would like to include the last bar as a valid open date and time.
-        :param only_rth: whether to consider columns that are before market_open or after market_close
+            if using bars and would like to include the last bar as a valid open date and time. The close refers to the
+            latest market_time available, which could be after market_close (e.g. 'post').
+        :param only_rth: whether to ignore columns that are before market_open or after market_close. If true,
+            include_close will be referring to market_close.
         :return: True if the timestamp is a valid open date and time, False if not
         """
         if not schedule.columns.isin(self._market_times).all():
@@ -645,9 +647,3 @@ class MarketCalendar(metaclass=MarketCalendarMeta):
 
     def __delitem__(self, key):
         return self.remove_time(key)
-
-    def __repr__(self):
-        return repr(self.regular_market_times)
-
-    def __str__(self):
-        return str(self.regular_market_times)
