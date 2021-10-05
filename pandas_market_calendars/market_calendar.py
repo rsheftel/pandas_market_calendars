@@ -457,12 +457,16 @@ class MarketCalendar(metaclass=MarketCalendarMeta):
         timezone, such as 'America/New_York'
 
         :param start_date: first date of the schedule
-        :param end_date: last of the schedule
+        :param end_date: last date of the schedule
         :param tz: timezone that the columns of the returned schedule are in, default: "UTC"
         :param start: the first market_time to include as a column, default: "market_open"
         :param end: the last market_time to include as a column, default: "market_close"
-        :param force_special_times: whether to replace regular times with special ones, which will also enforce
-            no earlier times than special market_opens or later times than special market_closes
+        :param force_special_times: how to handle special times.
+            True: overwrite regular times of the column itself, conform other columns to special times of
+                market_open/market_close if those are requested.
+            False: only overwrite regular times of the column itself, leave others alone
+            None: completely ignore special times
+            -> See examples/usage.ipynb for demonstrations
         :param market_times: alternative to start/end, list of market_times that are in self.regular_market_times
         :return: schedule DataFrame
         """
@@ -476,7 +480,7 @@ class MarketCalendar(metaclass=MarketCalendarMeta):
         elif market_times == "all": market_times = self._market_times
 
         # If no valid days return an empty DataFrame
-        if not len(_all_days):
+        if not _all_days.size:
             return pd.DataFrame(columns=market_times, index=pd.DatetimeIndex([], freq='C'))
 
         _adj_others = force_special_times is True

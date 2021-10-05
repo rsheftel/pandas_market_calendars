@@ -334,7 +334,6 @@ def test_days_at_time():
         dat(args[0], args[1], args[2], args[3], args[4])
 
 
-
 def test_clean_dates():
     cal = FakeCalendar()
 
@@ -496,7 +495,7 @@ def test_custom_schedule():
     schedule = cal.schedule("2016-12-23", "2016-12-31", force_special_times= False)
     assert schedule.columns.tolist() == ["market_open", "break_start", "break_end", "market_close"]
 
-    # special market_open should take effect
+    # special market_open should only take effect on itself
     assert schedule.loc["2016-12-29"].astype(str).to_list() == ["2016-12-29 15:20:00+00:00",
                                                                 "2016-12-29 15:00:00+00:00",
                                                                 "2016-12-29 16:00:00+00:00",
@@ -513,12 +512,12 @@ def test_custom_schedule():
     schedule = cal.schedule("2016-12-23", "2016-12-31", force_special_times= None)
     assert schedule.columns.tolist() == ["market_open", "break_start", "break_end", "market_close"]
 
-    # special market_open should take effect
+    # special market_open should NOT take effect anywhere
     assert schedule.loc["2016-12-29"].astype(str).to_list() == ["2016-12-29 14:30:00+00:00",
                                                                 "2016-12-29 15:00:00+00:00",
                                                                 "2016-12-29 16:00:00+00:00",
                                                                 "2016-12-29 17:00:00+00:00"]
-    # special market_close as well
+    # special market_close neither
     assert schedule.loc["2016-12-30"].astype(str).to_list() == ["2016-12-30 14:30:00+00:00",
                                                                 "2016-12-30 15:00:00+00:00",
                                                                 "2016-12-30 16:00:00+00:00",
@@ -757,7 +756,7 @@ def test_open_at_time():
     assert cal.open_at_time(schedule, pd.Timestamp('2014-07-01 23:40:00-0400', tz='America/New_York')) is True
 
 
-    cal["pre"] = time(11)
+    cal["pre"] = time(11) # which is 3 am in Ulaanbaatar
     schedule = cal.schedule('2014-01-01', '2016-12-31', market_times= "all")
     assert cal.open_at_time(schedule, "2014-07-02 02:55:00+00:00") is False
     # only_rth = True makes it ignore anything before market_open or after market_close
@@ -892,7 +891,7 @@ def test_ec_property():
 def test_ec_schedule():
     mcaliepa = get_calendar("IEPA")
 
-    assert mcaliepa._EC_NOT_INITIALIZED  # might as well double check that initialization is bypassed
+    assert mcaliepa._EC_NOT_INITIALIZED
     ours = mcaliepa.schedule(start, end)
     assert mcaliepa._EC_NOT_INITIALIZED
     theirs = mcaliepa.ec.schedule[["market_open", "market_close"]]
