@@ -113,11 +113,8 @@ class MarketCalendar(metaclass=MarketCalendarMeta):
             # in case a market_time has been discontinued, extend the last time
             # and add it to the discontinued_market_times dictionary
             if times[-1][1] is None:
-                last = list(times[-1])
-                last[1] = times[-2][1]
-                self.discontinued_market_times[market_time] = last[0]
-
-                times = (*times[:-1], tuple(last))
+                self.discontinued_market_times[market_time] = times[-1][0]
+                times = times[:-1]
                 self.regular_market_times._ALLOW_SETTING_TIMES = True
                 self.regular_market_times[market_time] = times
 
