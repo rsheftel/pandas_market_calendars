@@ -443,10 +443,12 @@ class MarketCalendar(metaclass=MarketCalendarMeta):
 
     def special_dates(self, market_time, start_date, end_date, filter_holidays= True):
         """
+        Calculate a datetimeindex that only contains the specail times of the requested market time.
+
         :param market_time: market_time reference
-        :param start_date: first of the index
-        :param end_date: last of the index
-        :param filter_holidays: will filter days by self.valid_days
+        :param start_date: first possible date of the index
+        :param end_date: last possible date of the index
+        :param filter_holidays: will filter days by self.valid_days, which can be useful when debugging
 
         :return: schedule DatetimeIndex
         """
@@ -567,7 +569,7 @@ class MarketCalendar(metaclass=MarketCalendarMeta):
         if only_rth:
             lowest, highest = "market_open", "market_close"
         else:
-            ixs = schedule.columns.map(lambda x: self.market_times.index(x))
+            ixs = schedule.columns.map(self._market_times.index)
             lowest = schedule.columns[ixs == ixs.min()][0]
             highest = schedule.columns[ixs == ixs.max()][0]
 
