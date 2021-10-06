@@ -168,17 +168,12 @@ class MarketCalendar(metaclass=MarketCalendarMeta):
         self.regular_market_times[market_time] = ()
         self.change_time(market_time, times)
 
-    def remove_time(self, market_time, discontinued= None):
-        if discontinued is None:
-            self.regular_market_times._ALLOW_SETTING_TIMES = True
-            del self.regular_market_times[market_time]
-            self._prepare_regular_market_times()
-            if self.is_custom(market_time):
-                self._customized_market_times.remove(market_time)
-        else:
-            dis = (discontinued, None)
-            times = (*self.regular_market_times[market_time], dis)
-            self.change_time(market_time, times)
+    def remove_time(self, market_time):
+        self.regular_market_times._ALLOW_SETTING_TIMES = True
+        del self.regular_market_times[market_time]
+        self._prepare_regular_market_times()
+        if self.is_custom(market_time):
+            self._customized_market_times.remove(market_time)
 
     def is_custom(self, market_time):
         return market_time in self._customized_market_times

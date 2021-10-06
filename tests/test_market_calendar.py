@@ -207,23 +207,8 @@ def test_change_add_remove_time():
     assert cal.is_custom("market_open")
     assert cal.is_custom("other_test")
 
-    # passing a date to discontinued will keep it in regular_market_times,
-    # but treat it as if it was discontinued at the provided date
-    assert not cal.has_discontinued
 
-    with pytest.warns(UserWarning):
-        cal.remove_time("other_test", discontinued= "2000-01-01")
-
-    assert("other_test" in cal.regular_market_times and
-           "other_test" in cal._regular_market_timedeltas and
-           "other_test" in cal._market_times)
-
-    assert cal.has_discontinued
-    assert cal.is_discontinued("other_test")
-
-    # this will still be considered a custom market_time
-    assert cal.is_custom("other_test")
-
+    # wrong formats
     with pytest.raises(AssertionError):
         cal.add_time("wrong_format", (-1, time(10)))
 
