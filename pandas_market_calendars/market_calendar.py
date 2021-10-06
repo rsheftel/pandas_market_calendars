@@ -131,6 +131,15 @@ class MarketCalendar(metaclass=MarketCalendarMeta):
                           f" to ignore a market_time.")
 
     def change_time(self, market_time, times):
+        """
+        Changes the specified market time in regular_market_times and makes the necessary adjustments.
+
+        :param market_time: the market_time to change
+        :param times: new time information
+        :return: None
+        """
+
+
         assert market_time in self.regular_market_times, f"{market_time} is not in regular_market_times:" \
                                                          f"\n{self._market_times}."
 
@@ -162,6 +171,13 @@ class MarketCalendar(metaclass=MarketCalendarMeta):
         self._prepare_regular_market_times()
 
     def add_time(self, market_time, times):
+        """
+        Adds the specified market time to regular_market_times and makes the necessary adjustments.
+
+        :param market_time: the market_time to add
+        :param times: the time information
+        :return: None
+        """
         assert not market_time in self.regular_market_times, f"{market_time} is already in regular_market_times:" \
                                                              f"\n{self._market_times}"
         self.regular_market_times._ALLOW_SETTING_TIMES = True
@@ -169,6 +185,12 @@ class MarketCalendar(metaclass=MarketCalendarMeta):
         self.change_time(market_time, times)
 
     def remove_time(self, market_time):
+        """
+        Removes the specified market time from regular_market_times and makes the necessary adjustments.
+
+        :param market_time: the market_time to remove
+        :return: None
+        """
         self.regular_market_times._ALLOW_SETTING_TIMES = True
         del self.regular_market_times[market_time]
         self._prepare_regular_market_times()
