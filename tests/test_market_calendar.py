@@ -812,7 +812,7 @@ ecal_iepa = ecal.get_calendar("IEPA")
 start, end = ecal_iepa._closes[[0, -1]]
 
 # No exchange_calendar has a close_offset so this class implements it for testing
-class _TestExchangeCalendar:
+class _TstExchangeCalendar:
     def __init__(self):
         self.a_test_var = "initialized"
     @property
@@ -823,9 +823,9 @@ class _TestExchangeCalendar:
         return 3
 
 
-TestExchangeCalendar = type("TestExchangeCalendar", (TradingCalendar,), {'_ec_class': _TestExchangeCalendar})
+TstExchangeCalendar = type("TestExchangeCalendar", (TradingCalendar,), {'_ec_class': _TstExchangeCalendar})
 
-test_cal = TestExchangeCalendar()
+test_cal = TstExchangeCalendar()
 
 def test_mirror():
 
