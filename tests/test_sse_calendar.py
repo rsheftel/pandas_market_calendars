@@ -17,7 +17,7 @@ def test_all_holidays():
 
     trading_days = sse_calendar.valid_days(pd.Timestamp('2004-01-01'), pd.Timestamp('2020-12-31'))
     for session_label in all_holidays:
-        assert session_label not in trading_days
+        assert session_label.tz_localize("UTC") not in trading_days
 
 
 def test_sse_closes_at_lunch():
