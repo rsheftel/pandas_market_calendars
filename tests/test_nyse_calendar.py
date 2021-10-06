@@ -140,9 +140,9 @@ def test_2012():
 
     # early closes we expect:
     early_closes_2012 = [
-        pd.Timestamp("2012-07-03", tz='UTC'),
-        pd.Timestamp("2012-11-23", tz='UTC'),
-        pd.Timestamp("2012-12-24", tz='UTC')
+        pd.Timestamp("2012-07-03"),
+        pd.Timestamp("2012-11-23"),
+        pd.Timestamp("2012-12-24")
     ]
 
     expected = nyse.early_closes(nyse.schedule('2012-01-01', '2012-12-31'))
@@ -156,29 +156,29 @@ def test_special_holidays():
     # Sept 11, 12, 13, 14 2001
     nyse = NYSEExchangeCalendar()
     good_dates = nyse.valid_days('1985-01-01', '2016-12-31')
-    assert pd.Timestamp("9/11/2001") not in good_dates
-    assert pd.Timestamp("9/12/2001") not in good_dates
-    assert pd.Timestamp("9/13/2001") not in good_dates
-    assert pd.Timestamp("9/14/2001") not in good_dates
+    assert pd.Timestamp("9/11/2001", tz="UTC") not in good_dates
+    assert pd.Timestamp("9/12/2001", tz="UTC") not in good_dates
+    assert pd.Timestamp("9/13/2001", tz="UTC") not in good_dates
+    assert pd.Timestamp("9/14/2001", tz="UTC") not in good_dates
 
     # Hurricane Gloria
     # Sept 27, 1985
-    assert pd.Timestamp("9/27/1985") not in good_dates
+    assert pd.Timestamp("9/27/1985", tz="UTC") not in good_dates
 
     # Hurricane Sandy
     # Oct 29, 30 2012
-    assert pd.Timestamp("10/29/2012") not in good_dates
-    assert pd.Timestamp("10/30/2012") not in good_dates
+    assert pd.Timestamp("10/29/2012", tz="UTC") not in good_dates
+    assert pd.Timestamp("10/30/2012", tz="UTC") not in good_dates
 
     # various national days of mourning
     # Gerald Ford - 1/2/2007
-    assert pd.Timestamp("1/2/2007") not in good_dates
+    assert pd.Timestamp("1/2/2007", tz="UTC") not in good_dates
 
     # Ronald Reagan - 6/11/2004
-    assert pd.Timestamp("6/11/2004") not in good_dates
+    assert pd.Timestamp("6/11/2004", tz="UTC") not in good_dates
 
     # Richard Nixon - 4/27/1994
-    assert pd.Timestamp("4/27/1994") not in good_dates
+    assert pd.Timestamp("4/27/1994", tz="UTC") not in good_dates
 
 
 def test_new_years():
