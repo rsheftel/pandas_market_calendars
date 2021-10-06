@@ -43,7 +43,7 @@ def test_2016_early_closes():
     early_closes = ice.early_closes(schedule)
     for date in ["2016-01-18", "2016-02-15", "2016-05-30", "2016-07-04",
                  "2016-09-05", "2016-11-24"]:
-        dt = pd.Timestamp(date, tz='UTC')
+        dt = pd.Timestamp(date)
         assert dt in early_closes.index
 
         market_close = schedule.loc[dt].market_close
