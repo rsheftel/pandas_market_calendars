@@ -57,7 +57,7 @@ def test_2016_early_closes():
         cal = calendar()
         schedule = cal.schedule('2016-01-01', '2016-12-31')
 
-        dt = pd.Timestamp("2016-11-25", tz='UTC')
+        dt = pd.Timestamp("2016-11-25")
         assert dt in cal.early_closes(schedule).index
 
         market_close = schedule.loc[dt].market_close
