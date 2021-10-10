@@ -3,12 +3,14 @@
 
 Updates
 -------
-3.2 (XX/XX/XX)
-~~~~~~~~~~~~~
+3.2 (10/10/21)
+~~~~~~~~~~~~~~
+- Major refactoring of the underlying code from `PR #150 <https://github.com/rsheftel/pandas_market_calendars/pull/150>`_
+  thanks to https://github.com/Stryder-Git
 - Fixed 12/24/1999 early close on NYSE
 
 3.1 (08/29/21)
-~~~~~~~~~~~~~
+~~~~~~~~~~~~~~
 - Added September 11 holidays to TSX calendar
 - Made the minimum version for exchange_calendars >= 3.3 to resolve problem with newer versions of pandas
 
