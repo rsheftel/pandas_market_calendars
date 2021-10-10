@@ -511,8 +511,7 @@ ChristmasEvePost1999Early1pmClose = Holiday(
 
 ChristmasEve1pmEarlyCloseAdhoc = [
     Timestamp('1951-12-24', tz='UTC'),
-    Timestamp('1990-12-24', tz='UTC'),
-    Timestamp('1996-12-24', tz='UTC'), 
+    Timestamp('1996-12-24', tz='UTC'),
     Timestamp('1997-12-24', tz='UTC'), 
     Timestamp('1998-12-24', tz='UTC'), 
     Timestamp('1999-12-24', tz='UTC'), 
@@ -522,7 +521,7 @@ ChristmasEve1pmEarlyCloseAdhoc = [
 ChristmasEve2pmEarlyCloseAdhoc = [
     Timestamp('1974-12-24', tz='UTC'),
     Timestamp('1975-12-24', tz='UTC'),
-    Timestamp('1990-12-24', tz='UTC'),
+    Timestamp('1990-12-24', tz='UTC'),  #### This one was also in the 1pm list, in the tests you check for 2pm
     Timestamp('1991-12-24', tz='UTC'),
     Timestamp('1992-12-24', tz='UTC'),
 ]

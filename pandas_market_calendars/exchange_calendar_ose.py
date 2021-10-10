@@ -110,6 +110,10 @@ class OSEExchangeCalendar(MarketCalendar):
     """
 
     aliases = ['OSE']
+    regular_market_times = {
+        "market_open": ((None, time(9)),),
+        "market_close": ((None, time(16,20)),)
+    }
 
     @property
     def name(self):
@@ -118,14 +122,6 @@ class OSEExchangeCalendar(MarketCalendar):
     @property
     def tz(self):
         return timezone("Europe/Oslo")
-
-    @property
-    def open_time_default(self):
-        return time(9, 0, tzinfo=self.tz)
-
-    @property
-    def close_time_default(self):
-        return time(16, 20, tzinfo=self.tz)
 
     @property
     def regular_holidays(self):

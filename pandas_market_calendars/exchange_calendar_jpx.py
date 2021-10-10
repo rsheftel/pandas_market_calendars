@@ -23,7 +23,12 @@ class JPXExchangeCalendar(MarketCalendar):
     Close Time: 4:00 PM, Asia/Tokyo
     """
     aliases = ['JPX']
-
+    regular_market_times = {
+        "market_open": ((None, time(9)),),
+        "market_close": ((None, time(15)),),
+        "break_start": ((None, time(11, 30)),),
+        "break_end": ((None, time(12,30)),)
+    }
     regular_early_close = time(13)
 
     @property
@@ -33,22 +38,6 @@ class JPXExchangeCalendar(MarketCalendar):
     @property
     def tz(self):
         return timezone('Asia/Tokyo')
-
-    @property
-    def open_time_default(self):
-        return time(9, 0, tzinfo=self.tz)
-
-    @property
-    def close_time_default(self):
-        return time(15, tzinfo=self.tz)
-
-    @property
-    def break_start(self):
-        return time(11, 30)
-
-    @property
-    def break_end(self):
-        return time(12, 30)
 
     @property
     def adhoc_holidays(self):

@@ -44,7 +44,7 @@ def test_2016_early_closes():
     early_closes = lse.early_closes(schedule).index
 
     for date in ["2016-12-23", "2016-12-30", '2017-12-22', '2017-12-29']:
-        dt = pd.Timestamp(date, tz='UTC')
+        dt = pd.Timestamp(date)
         assert dt in early_closes
 
         market_close = schedule.loc[dt].market_close

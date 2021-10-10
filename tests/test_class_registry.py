@@ -1,14 +1,27 @@
 from abc import ABCMeta, abstractmethod
+from datetime import time
+
+import pytest
 
 from pandas_market_calendars.class_registry import RegisteryMeta
 
 
 def test_inheritance():
     class Base(object):
+        regular_market_times = {
+            "market_open": {None: time(0)},
+            "market_close": {None: time(23)}
+        }
+        @classmethod
+        def _prepare_regular_market_times(cls): return
+
         def __init__(self, arg0, kw0=None):
             self.arg0 = arg0
             self.kw0 = kw0
             super(Base, self).__init__()
+
+        def special_opens(self): return []
+        special_closes = special_closes_adhoc = special_opens_adhoc = special_opens
 
     class Class1(Base, metaclass=RegisteryMeta):
         def __init__(self, arg0, arg1, kw1=None, **kwargs):
@@ -16,7 +29,7 @@ def test_inheritance():
             self.kw1 = kw1
             super(Class1, self).__init__(arg0, **kwargs)
 
-    factory1 = Class1._regmeta_instance_factory
+    factory1 = Class1.factory
 
     class Class2(Base, metaclass=RegisteryMeta):
         aliases = ["class 2"]
@@ -26,7 +39,7 @@ def test_inheritance():
             self.kw2 = kw2
             super(Class2, self).__init__(arg0, **kwargs)
 
-    factory2 = Class2._regmeta_instance_factory
+    factory2 = Class2.factory
 
     class Class1a(Class1):
         aliases = ["class 1a"]
@@ -50,8 +63,8 @@ def test_inheritance():
             self.kw12a = kw12a
             super(Class12a, self).__init__(arg0=arg0, arg1=arg1, arg2=arg2, **kwargs)
 
-    assert set(Class1._regmeta_classes()) == {'Class1', 'class 1a', 'Class1b', 'class 12a'}
-    assert set(Class2._regmeta_classes()) == {'class 2', 'class 12a'}
+    assert set(Class1._regmeta_class_registry.keys()) == {'Class1', 'class 1a', 'Class1b', 'class 12a'}
+    assert set(Class2._regmeta_class_registry.keys()) == {'class 2', 'class 12a'}
 
     o = factory1("Class1", "0", "1", kw0="k0", kw1="k1")
     assert (o.arg0, o.arg1, o.kw0, o.kw1) == ("0", "1", "k0", "k1")
@@ -79,6 +92,15 @@ def test_metamixing():
     BaseMeta = type('BaseMeta', (ABCMeta, RegisteryMeta), {})
 
     class Base(metaclass=BaseMeta):
+        regular_market_times = {
+            "market_open": {None: time(0)},
+            "market_close": {None: time(23)}
+        }
+        @classmethod
+        def _prepare_regular_market_times(cls): return
+        def special_opens(self): return []
+        special_closes = special_closes_adhoc = special_opens_adhoc = special_opens
+
         @abstractmethod
         def test(self):
             pass
@@ -96,6 +118,23 @@ def test_metamixing():
     else:
         raise RuntimeError('Abstract class is instantiated')
 
-    o1 = Base._regmeta_instance_factory('c1')
-    o2 = Base._regmeta_instance_factory('c 1')
+    o1 = Base.factory('c1')
+    o2 = Base.factory('c 1')
     assert o1.test() == o2.test()
+
+    with pytest.raises(RuntimeError):
+        Base.factory("error") # doesn't exist
+
+    class Class2(Base):  # no aliases
+        def test(self):
+            return "test"
+
+    assert Base.factory("Class2").test() == "test"
+
+
+# if __name__ == '__main__':
+#
+#     for ref, obj in locals().copy().items():
+#         if ref.startswith("test_"):
+#             print("running: ", ref)
+#             obj()

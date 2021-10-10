@@ -12,30 +12,30 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-
 from datetime import time
 from itertools import chain
+from pytz import timezone
 
 import pandas as pd
 import pytest
 from pandas.testing import assert_frame_equal, assert_index_equal, assert_series_equal
 from pandas.tseries.holiday import AbstractHolidayCalendar
-from pytz import timezone
 
 from pandas_market_calendars import get_calendar, get_calendar_names
 from pandas_market_calendars.holidays_us import (Christmas, HurricaneSandyClosings, MonTuesThursBeforeIndependenceDay,
                                                  USNationalDaysofMourning, USNewYearsDay)
-from pandas_market_calendars.market_calendar import MarketCalendar, clean_dates, days_at_time
+from pandas_market_calendars.market_calendar import MarketCalendar #, clean_dates, days_at_time
+from pandas_market_calendars.exchange_calendars_mirror import TradingCalendar
 
+import exchange_calendars as ecal
 
 class FakeCalendar(MarketCalendar):
-    @property
-    def open_time_default(self):
-        return time(11, 13)
-
-    @property
-    def close_time_default(self):
-        return time(11, 49)
+    regular_market_times = {
+        "market_open": ((None, time(11,18)),
+                        ("1902-03-04", time(11,13))),
+        "market_close": ((None, time(11, 45)),
+                         ("1901-02-03", time(11,49)))
+    }
 
     @property
     def name(self):
@@ -59,7 +59,7 @@ class FakeCalendar(MarketCalendar):
 
     @property
     def special_opens_adhoc(self):
-        return [(time(11, 20), ['2016-12-13'])]
+        return [(time(11, 20), ['2016-12-13', "2016-12-25"])]
 
     @property
     def special_closes(self):
@@ -71,21 +71,13 @@ class FakeCalendar(MarketCalendar):
 
 
 class FakeBreakCalendar(MarketCalendar):
-    @property
-    def open_time_default(self):
-        return time(9, 30)
 
-    @property
-    def close_time_default(self):
-        return time(12, 00)
-
-    @property
-    def break_start(self):
-        return time(10, 00)
-        
-    @property
-    def break_end(self):
-        return time(11, 00)
+    regular_market_times = {
+        "market_open": ((None, time(9, 30)),),
+        "market_close": ((None, time(12)),),
+        "break_start": ((None, time(10)),),
+        "break_end": ((None, time(11)),)
+    }
 
     @property
     def name(self):
@@ -107,7 +99,6 @@ class FakeBreakCalendar(MarketCalendar):
     def special_closes_adhoc(self):
         return [(time(10, 40), ['2016-12-30'])]
 
-
 @pytest.fixture
 def patch_get_current_time(monkeypatch):
     def get_fake_time():
@@ -115,39 +106,216 @@ def patch_get_current_time(monkeypatch):
     monkeypatch.setattr(MarketCalendar, '_get_current_time', get_fake_time)
 
 
+def test_protected_dictionary():
+    cal = FakeCalendar()
+    # shouldn't be able to add
+    with pytest.raises(TypeError) as e:
+        cal.regular_market_times["market_open"] = time(12)
+
+    # nor delete
+    with pytest.raises(TypeError) as e:
+        del cal.regular_market_times["market_open"]
+
+def test_get_time():
+    cal = FakeCalendar()
+
+    assert cal.get_time("market_open") == time(11, 13)
+    assert cal.get_time("break_start") is None
+    assert cal.get_time("break_end") is None
+
+    assert cal.get_time_on("market_close", "1900-01-01") == time(11, 45)
+    assert cal.get_time_on("break_start", "1900-01-01") is None
+
+    cal.remove_time("market_open")
+    with pytest.raises(NotImplementedError):
+        t = cal.open_time
+
+    with pytest.raises(KeyError):
+        t = cal.get_time_on("pre", "1900-01-01")
+
+def test_get_offset():
+    cal = FakeBreakCalendar()
+
+    assert cal.open_offset == 0
+    assert cal.close_offset == 0
+
+    cal.change_time("market_open", (time(10), -1))
+    cal.change_time("market_close", (time(10), 5))
+
+    assert cal.get_offset("market_open") == -1
+    assert cal.get_offset("market_close") == 5
+
+def test_special_dates():
+    cal = FakeCalendar()
+
+    special = cal.special_dates("market_open", "2016-12-10", "2016-12-31")
+    assert special.astype(str).tolist() == ["2016-12-13 03:20:00+00:00"]
+
+    special = cal.special_dates("market_open", "2016-12-10", "2016-12-31", filter_holidays= False)
+    assert special.astype(str).tolist() == ["2016-12-13 03:20:00+00:00", "2016-12-25 03:20:00+00:00"]
+
+
+
+def test_change_add_remove_time():
+    cal = FakeCalendar()
+
+    assert not cal.has_discontinued
+    assert not cal.has_custom
+
+    # change/add using the different formats that are supported
+    cal.change_time("market_open", time(12))
+    cal.add_time("test_time", (None, time(12)))
+    cal.add_time("other_test", ((None, time(12)),))
+    assert cal.open_time == cal.get_time("test_time") == cal.get_time("other_test")
+
+    assert ("test_time" in cal.regular_market_times and
+            "test_time" in cal._regular_market_timedeltas and
+            "test_time" in cal._market_times)
+
+    assert cal.has_custom
+    assert cal.is_custom("market_open")
+    assert cal.is_custom("test_time")
+    assert cal.is_custom("other_test")
+
+    # with offset, which will not be returned by get_time
+    cal.change_time("market_open", (time(12), -1))
+    cal.change_time("test_time", (None, time(12), -1))
+    assert cal.open_time == cal.get_time("test_time") == cal.get_time("other_test")
+
+    assert cal.open_offset == -1
+    assert cal.get_offset("test_time") == -1
+    assert cal.get_offset("other_test") == 0
+
+    cal.change_time("other_test", ((None, time(12), -1),))
+    assert cal.open_time == cal.get_time("test_time") == cal.get_time("other_test")
+
+    with pytest.raises(AssertionError):
+        cal.add_time("test_time", time(12))   # can't add what is already there
+
+    with pytest.raises(AssertionError):
+        cal.change_time("nope", time(12))  # can't change what is not there
+
+    cal.remove_time("test_time")
+    assert ("test_time" not in cal.regular_market_times and
+            "test_time" not in cal._regular_market_timedeltas and
+            "test_time" not in cal._market_times)
+
+    # will be removed completely and therefore not found.
+    assert not cal.is_custom("test_time")
+    # The others should be untouched
+    assert cal.has_custom
+    assert cal.is_custom("market_open")
+    assert cal.is_custom("other_test")
+
+
+    # wrong formats
+    with pytest.raises(AssertionError):
+        cal.add_time("wrong_format", (-1, time(10)))
+
+    with pytest.raises(AssertionError):
+        cal.add_time("wrong_format", pd.Timedelta("5H"))
+
+
+def test_dunder_methods():
+    cal = FakeCalendar()
+
+    assert cal["market_open"] == time(11,13)
+    assert cal["market_open", "1900-01-01"] == time(11,18)
+    assert cal["market_open", "all"] == cal.regular_market_times["market_open"]
+
+
+    # __setitem__ is adding a time, which refuses to replace
+    with pytest.raises(AssertionError):
+        cal["market_open"] = time(10)
+
+    # but excplicitly deleting, makes it work
+    del cal["market_open"]
+    cal["market_open"] = time(9)
+    assert cal["market_open"] == time(9)
+
+
+
 def test_default_calendars():
     for name in get_calendar_names():
-        print(name)
-        assert get_calendar(name) is not None
+        if name == "XKRX":
+            with pytest.warns(UserWarning):
+                assert get_calendar(name) is not None
+        else:
+            assert get_calendar(name) is not None
 
 
 def test_days_at_time():
-    def dat(day, day_offset, time_offset, tz, expected):
-        days = pd.DatetimeIndex([pd.Timestamp(day, tz=tz)])
-        result = days_at_time(days, time_offset, tz, day_offset)[0]
-        expected = pd.Timestamp(expected, tz=tz).tz_convert('UTC')
+    class New_York(FakeCalendar):
+        @property
+        def tz(self): return timezone('America/New_York')
+    new_york = New_York()
+    new_york.change_time("market_open", time(12))
+    new_york.change_time("market_close", time(13))
+
+    class Chicago(FakeCalendar):
+        @property
+        def tz(self): return timezone('America/Chicago')
+    chicago = Chicago()
+    chicago.change_time("market_open", time(10))
+    chicago.change_time("market_close", time(11))
+    chicago.add_time("with_offset", (time(10, 30), -1))
+
+    def dat(day, day_offset, time_offset, cal, expected):
+        days = pd.DatetimeIndex([pd.Timestamp(day, tz=cal.tz)])
+        result = cal.days_at_time(days, time_offset, day_offset)[0]
+        expected = pd.Timestamp(expected, tz=cal.tz).tz_convert('UTC')
         assert result == expected
 
     args_list = [
         # NYSE standard day
         (
-            '2016-07-19', 0, time(9, 31), timezone('America/New_York'),
-            '2016-07-19 9:31',
+            '2016-07-19', 0, time(9, 31), new_york, '2016-07-19 9:31',
         ),
         # CME standard day
         (
-            '2016-07-19', -1, time(17, 1), timezone('America/Chicago'),
-            '2016-07-18 17:01',
+            '2016-07-19', -1, time(17, 1), chicago, '2016-07-18 17:01',
         ),
         # CME day after DST start
         (
-            '2004-04-05', -1, time(17, 1), timezone('America/Chicago'),
-            '2004-04-04 17:01'
+            '2004-04-05', -1, time(17, 1), chicago, '2004-04-04 17:01'
         ),
         # ICE day after DST start
         (
-            '1990-04-02', -1, time(19, 1), timezone('America/Chicago'),
-            '1990-04-01 19:01',
+            '1990-04-02', -1, time(19, 1), chicago, '1990-04-01 19:01',
+        ),
+
+
+        ## Built-in times  # day_offset kwarg should automatically be ignored
+        (
+            '2016-07-19', None, "market_open", new_york, '2016-07-19 12:00',
+        ),
+        # CME standard day
+        (
+            '2016-07-19', None, "market_open", chicago, '2016-07-19 10:00',
+        ),
+        # CME day after DST start
+        (
+            '2004-04-05', None, "with_offset", chicago, '2004-04-04 10:30'
+        ),
+        # ICE day after DST start
+        (
+            '1990-04-02', None, "market_open", chicago, '1990-04-02 10:00',
+        ),
+
+        (
+            '2016-07-19', None, "market_close", new_york, '2016-07-19 13:00',
+        ),
+        # CME standard day
+        (
+            '2016-07-19', None, "market_close", chicago, '2016-07-19 11:00',
+        ),
+        # CME day after DST start
+        (
+            '2004-04-05', None, "market_close", chicago, '2004-04-05 11:00'
+        ),
+        # ICE day after DST start
+        (
+            '1990-04-02', None, "with_offset", chicago, '1990-04-01 10:30',
         ),
     ]
 
@@ -156,20 +324,22 @@ def test_days_at_time():
 
 
 def test_clean_dates():
-    start, end = clean_dates('2016-12-01', '2016-12-31')
+    cal = FakeCalendar()
+
+    start, end = cal.clean_dates('2016-12-01', '2016-12-31')
     assert start == pd.Timestamp('2016-12-01')
     assert end == pd.Timestamp('2016-12-31')
 
-    start, end = clean_dates('2016-12-01 12:00', '2016-12-31 12:00')
+    start, end = cal.clean_dates('2016-12-01 12:00', '2016-12-31 12:00')
     assert start == pd.Timestamp('2016-12-01')
     assert end == pd.Timestamp('2016-12-31')
 
-    start, end = clean_dates(pd.Timestamp('2016-12-01', tz='America/Chicago'),
+    start, end = cal.clean_dates(pd.Timestamp('2016-12-01', tz='America/Chicago'),
                              pd.Timestamp('2016-12-31', tz='America/New_York'))
     assert start == pd.Timestamp('2016-12-01')
     assert end == pd.Timestamp('2016-12-31')
 
-    start, end = clean_dates(pd.Timestamp('2016-12-01 09:31', tz='America/Chicago'),
+    start, end = cal.clean_dates(pd.Timestamp('2016-12-01 09:31', tz='America/Chicago'),
                              pd.Timestamp('2016-12-31 16:00', tz='America/New_York'))
     assert start == pd.Timestamp('2016-12-01')
     assert end == pd.Timestamp('2016-12-31')
@@ -218,8 +388,8 @@ def test_schedule():
     results = cal.schedule('2016-12-01', '2016-12-31')
     assert len(results) == 21
 
-    expected = pd.Series({'market_open': pd.Timestamp('2016-12-01 03:13:00+0000', tz='UTC', freq='B'),
-                          'market_close': pd.Timestamp('2016-12-01 03:49:00+0000', tz='UTC', freq='B')},
+    expected = pd.Series({'market_open': pd.Timestamp('2016-12-01 03:13:00+0000', tz='UTC'),
+                          'market_close': pd.Timestamp('2016-12-01 03:49:00+0000', tz='UTC')},
                          name=pd.Timestamp('2016-12-01'), index=['market_open', 'market_close'])
     # because of change in pandas in v0.24, pre-0.24 versions need object dtype
     if pd.__version__ < '0.24':
@@ -227,8 +397,8 @@ def test_schedule():
 
     assert_series_equal(results.iloc[0], expected)
 
-    expected = pd.Series({'market_open': pd.Timestamp('2016-12-30 03:13:00+0000', tz='UTC', freq='B'),
-                          'market_close': pd.Timestamp('2016-12-30 03:49:00+0000', tz='UTC', freq='B')},
+    expected = pd.Series({'market_open': pd.Timestamp('2016-12-30 03:13:00+0000', tz='UTC'),
+                          'market_close': pd.Timestamp('2016-12-30 03:49:00+0000', tz='UTC')},
                          name=pd.Timestamp('2016-12-30'), index=['market_open', 'market_close'])
     # because of change in pandas in v0.24, pre-0.24 versions need object dtype
     if pd.__version__ < '0.24':
@@ -237,8 +407,8 @@ def test_schedule():
     assert_series_equal(results.iloc[-1], expected)
 
     # one day schedule
-    expected = pd.DataFrame({'market_open': pd.Timestamp('2016-12-01 03:13:00+0000', tz='UTC', freq='B'),
-                             'market_close': pd.Timestamp('2016-12-01 03:49:00+0000', tz='UTC', freq='B')},
+    expected = pd.DataFrame({'market_open': pd.Timestamp('2016-12-01 03:13:00+0000', tz='UTC'),
+                             'market_close': pd.Timestamp('2016-12-01 03:49:00+0000', tz='UTC')},
                             index=pd.DatetimeIndex([pd.Timestamp('2016-12-01')], freq='C'),
                             columns=['market_open', 'market_close'])
     actual = cal.schedule('2016-12-01', '2016-12-01')
@@ -252,8 +422,8 @@ def test_schedule():
         cal.schedule('2016-02-02', '2016-01-01')
     
     # using a different time zone
-    expected = pd.DataFrame({'market_open': pd.Timestamp('2016-11-30 22:13:00-05:00', tz='US/Eastern', freq='B'),
-                             'market_close': pd.Timestamp('2016-11-30 22:49:00-05:00', tz='US/Eastern', freq='B')},
+    expected = pd.DataFrame({'market_open': pd.Timestamp('2016-11-30 22:13:00-05:00', tz='US/Eastern'),
+                             'market_close': pd.Timestamp('2016-11-30 22:49:00-05:00', tz='US/Eastern')},
                             index=pd.DatetimeIndex([pd.Timestamp('2016-12-01')]),
                             columns=['market_open', 'market_close'])
 
@@ -262,6 +432,85 @@ def test_schedule():
         assert_frame_equal(actual, expected)
     else:
         assert_frame_equal(actual, expected, check_freq=False)
+
+def test_custom_schedule():
+    cal = FakeBreakCalendar()
+    cal.add_time("pre", time(9))
+    cal.add_time("post", time(13))
+
+    # test default
+    schedule = cal.schedule("2016-12-23", "2016-12-31")
+    assert schedule.columns.tolist() == ["market_open", "break_start", "break_end", "market_close"]
+
+    # special market_open should take effect
+    assert schedule.loc["2016-12-29"].astype(str).to_list() == ["2016-12-29 15:20:00+00:00",
+                                                                "2016-12-29 15:20:00+00:00",
+                                                                "2016-12-29 16:00:00+00:00",
+                                                                "2016-12-29 17:00:00+00:00"]
+    # special market_close as well
+    assert schedule.loc["2016-12-30"].astype(str).to_list() == ["2016-12-30 14:30:00+00:00",
+                                                                "2016-12-30 15:00:00+00:00",
+                                                                "2016-12-30 15:40:00+00:00",
+                                                                "2016-12-30 15:40:00+00:00"]
+
+    # test custom start end
+    schedule = cal.schedule("2016-12-23", "2016-12-31", start= "pre", end= "break_end")
+    assert schedule.columns.tolist() == ["pre", "market_open", "break_start", "break_end"]
+
+    # market_open is present, so special times should take effect
+    assert schedule.loc["2016-12-29"].astype(str).to_list() == ["2016-12-29 15:20:00+00:00",
+                                                                "2016-12-29 15:20:00+00:00",
+                                                                "2016-12-29 15:20:00+00:00",
+                                                                "2016-12-29 16:00:00+00:00"]
+
+    # market_close is not present, so special times should NOT take effect
+    assert schedule.loc["2016-12-30"].astype(str).to_list() == ["2016-12-30 14:00:00+00:00",
+                                                                "2016-12-30 14:30:00+00:00",
+                                                                "2016-12-30 15:00:00+00:00",
+                                                                "2016-12-30 16:00:00+00:00"]
+
+    # test custom market times
+    schedule = cal.schedule("2016-12-23", "2016-12-31", market_times= ["post", "pre"])
+    assert schedule.columns.tolist() == ["post", "pre"]
+    # Neither market_open nor market_close are present, so no specials should take effect
+    assert schedule.loc["2016-12-29"].astype(str).to_list() == ["2016-12-29 18:00:00+00:00",
+                                                                "2016-12-29 14:00:00+00:00"]
+
+    assert schedule.loc["2016-12-30"].astype(str).to_list() == ["2016-12-30 18:00:00+00:00",
+                                                                "2016-12-30 14:00:00+00:00"]
+
+
+    # only adjust column itself
+    schedule = cal.schedule("2016-12-23", "2016-12-31", force_special_times= False)
+    assert schedule.columns.tolist() == ["market_open", "break_start", "break_end", "market_close"]
+
+    # special market_open should only take effect on itself
+    assert schedule.loc["2016-12-29"].astype(str).to_list() == ["2016-12-29 15:20:00+00:00",
+                                                                "2016-12-29 15:00:00+00:00",
+                                                                "2016-12-29 16:00:00+00:00",
+                                                                "2016-12-29 17:00:00+00:00"]
+    # special market_close as well
+    assert schedule.loc["2016-12-30"].astype(str).to_list() == ["2016-12-30 14:30:00+00:00",
+                                                                "2016-12-30 15:00:00+00:00",
+                                                                "2016-12-30 16:00:00+00:00",
+                                                                "2016-12-30 15:40:00+00:00"]
+
+
+
+    # ignore special times completely
+    schedule = cal.schedule("2016-12-23", "2016-12-31", force_special_times= None)
+    assert schedule.columns.tolist() == ["market_open", "break_start", "break_end", "market_close"]
+
+    # special market_open should NOT take effect anywhere
+    assert schedule.loc["2016-12-29"].astype(str).to_list() == ["2016-12-29 14:30:00+00:00",
+                                                                "2016-12-29 15:00:00+00:00",
+                                                                "2016-12-29 16:00:00+00:00",
+                                                                "2016-12-29 17:00:00+00:00"]
+    # special market_close neither
+    assert schedule.loc["2016-12-30"].astype(str).to_list() == ["2016-12-30 14:30:00+00:00",
+                                                                "2016-12-30 15:00:00+00:00",
+                                                                "2016-12-30 16:00:00+00:00",
+                                                                "2016-12-30 17:00:00+00:00"]
 
 
 def test_schedule_w_breaks():
@@ -280,7 +529,7 @@ def test_schedule_w_breaks():
                              'break_end': [pd.Timestamp('2016-12-01 16:00:00', tz='UTC'),
                                            pd.Timestamp('2016-12-02 16:00:00', tz='UTC')]
     },
-                            columns=['market_open', 'market_close', 'break_start', 'break_end'],
+                            columns=['market_open', 'break_start', 'break_end', 'market_close'],
                             index=[pd.Timestamp('2016-12-01'), pd.Timestamp('2016-12-02')])
     actual = cal.schedule('2016-12-01', '2016-12-02')
     assert_frame_equal(actual, expected)
@@ -288,43 +537,43 @@ def test_schedule_w_breaks():
     results = cal.schedule('2016-12-01', '2016-12-31')
     assert len(results) == 21
 
-    expected = pd.Series({'market_open': pd.Timestamp('2016-12-01 14:30:00+0000', tz='UTC', freq='B'),
-                          'market_close': pd.Timestamp('2016-12-01 17:00:00+0000', tz='UTC', freq='B'),
-                          'break_start': pd.Timestamp('2016-12-01 15:00:00+0000', tz='UTC', freq='B'),
-                          'break_end': pd.Timestamp('2016-12-01 16:00:00+0000', tz='UTC', freq='B')
+    expected = pd.Series({'market_open': pd.Timestamp('2016-12-01 14:30:00+0000', tz='UTC'),
+                          'market_close': pd.Timestamp('2016-12-01 17:00:00+0000', tz='UTC'),
+                          'break_start': pd.Timestamp('2016-12-01 15:00:00+0000', tz='UTC'),
+                          'break_end': pd.Timestamp('2016-12-01 16:00:00+0000', tz='UTC')
     },
-                         name=pd.Timestamp('2016-12-01'), index=['market_open', 'market_close', 'break_start', 
-                         'break_end'])
+                         name=pd.Timestamp('2016-12-01'),
+                         index=['market_open', 'break_start', 'break_end', 'market_close'])
 
     assert_series_equal(results.iloc[0], expected)
 
     # special open is after break start
-    expected = pd.Series({'market_open': pd.Timestamp('2016-12-29 15:20:00+0000', tz='UTC', freq='B'),
-                          'market_close': pd.Timestamp('2016-12-29 17:00:00+0000', tz='UTC', freq='B'),
-                          'break_start': pd.Timestamp('2016-12-29 15:20:00+0000', tz='UTC', freq='B'),
-                          'break_end': pd.Timestamp('2016-12-29 16:00:00+0000', tz='UTC', freq='B')},
-                         name=pd.Timestamp('2016-12-29'), index=['market_open', 'market_close', 'break_start',
-                         'break_end'])
+    expected = pd.Series({'market_open': pd.Timestamp('2016-12-29 15:20:00+0000', tz='UTC'),
+                          'market_close': pd.Timestamp('2016-12-29 17:00:00+0000', tz='UTC'),
+                          'break_start': pd.Timestamp('2016-12-29 15:20:00+0000', tz='UTC'),
+                          'break_end': pd.Timestamp('2016-12-29 16:00:00+0000', tz='UTC')},
+                         name=pd.Timestamp('2016-12-29'),
+                         index=['market_open', 'break_start', 'break_end', 'market_close'])
 
     assert_series_equal(results.iloc[-2], expected)
 
     # special close is before break end
-    expected = pd.Series({'market_open': pd.Timestamp('2016-12-30 14:30:00+0000', tz='UTC', freq='B'),
-                          'market_close': pd.Timestamp('2016-12-30 15:40:00+0000', tz='UTC', freq='B'),
-                          'break_start': pd.Timestamp('2016-12-30 15:00:00+0000', tz='UTC', freq='B'),
-                          'break_end': pd.Timestamp('2016-12-30 15:40:00+0000', tz='UTC', freq='B')},
-                         name=pd.Timestamp('2016-12-30'), index=['market_open', 'market_close', 'break_start',
-                         'break_end'])
+    expected = pd.Series({'market_open': pd.Timestamp('2016-12-30 14:30:00+0000', tz='UTC'),
+                          'market_close': pd.Timestamp('2016-12-30 15:40:00+0000', tz='UTC'),
+                          'break_start': pd.Timestamp('2016-12-30 15:00:00+0000', tz='UTC'),
+                          'break_end': pd.Timestamp('2016-12-30 15:40:00+0000', tz='UTC')},
+                         name=pd.Timestamp('2016-12-30'),
+                         index=['market_open', 'break_start', 'break_end', 'market_close'])
 
     assert_series_equal(results.iloc[-1], expected)
 
     # using a different time zone
-    expected = pd.DataFrame({'market_open': pd.Timestamp('2016-12-28 09:30:00-05:00', tz='America/New_York', freq='B'),
-                             'market_close': pd.Timestamp('2016-12-28 12:00:00-05:00', tz='America/New_York', freq='B'),
-                             'break_start': pd.Timestamp('2016-12-28 10:00:00-05:00', tz='America/New_York', freq='B'),
-                             'break_end': pd.Timestamp('2016-12-28 11:00:00-05:00', tz='America/New_York', freq='B')},
-                            index=pd.DatetimeIndex([pd.Timestamp('2016-12-28')], freq='C'),
-                            columns=['market_open', 'market_close', 'break_start', 'break_end'])
+    expected = pd.DataFrame({'market_open': pd.Timestamp('2016-12-28 09:30:00-05:00', tz='America/New_York'),
+                             'market_close': pd.Timestamp('2016-12-28 12:00:00-05:00', tz='America/New_York'),
+                             'break_start': pd.Timestamp('2016-12-28 10:00:00-05:00', tz='America/New_York'),
+                             'break_end': pd.Timestamp('2016-12-28 11:00:00-05:00', tz='America/New_York')},
+                            index=pd.DatetimeIndex([pd.Timestamp('2016-12-28')]),
+                            columns=['market_open', 'break_start', 'break_end', 'market_close'])
 
     actual = cal.schedule('2016-12-28', '2016-12-28', tz='America/New_York')
     if pd.__version__ < '1.1.0':
@@ -342,8 +591,8 @@ def test_schedule_w_times():
     results = cal.schedule('2016-12-01', '2016-12-31')
     assert len(results) == 21
 
-    expected = pd.Series({'market_open': pd.Timestamp('2016-12-01 04:12:00+0000', tz='UTC', freq='B'),
-                          'market_close': pd.Timestamp('2016-12-01 05:13:00+0000', tz='UTC', freq='B')},
+    expected = pd.Series({'market_open': pd.Timestamp('2016-12-01 04:12:00+0000', tz='UTC'),
+                          'market_close': pd.Timestamp('2016-12-01 05:13:00+0000', tz='UTC')},
                          name=pd.Timestamp('2016-12-01'), index=['market_open', 'market_close'])
     # because of change in pandas in v0.24, pre-0.24 versions need object dtype
     if pd.__version__ < '0.24':
@@ -351,8 +600,8 @@ def test_schedule_w_times():
 
     assert_series_equal(results.iloc[0], expected)
 
-    expected = pd.Series({'market_open': pd.Timestamp('2016-12-30 04:12:00+0000', tz='UTC', freq='B'),
-                          'market_close': pd.Timestamp('2016-12-30 05:13:00+0000', tz='UTC', freq='B')},
+    expected = pd.Series({'market_open': pd.Timestamp('2016-12-30 04:12:00+0000', tz='UTC'),
+                          'market_close': pd.Timestamp('2016-12-30 05:13:00+0000', tz='UTC')},
                          name=pd.Timestamp('2016-12-30'), index=['market_open', 'market_close'])
     # because of change in pandas in v0.24, pre-0.24 versions need object dtype
     if pd.__version__ < '0.24':
@@ -392,7 +641,6 @@ def test_adhoc_holidays():
 
 def test_special_opens():
     cal = FakeCalendar()
-
     results = cal.schedule('2012-07-01', '2012-07-06')
     opens = results['market_open'].tolist()
 
@@ -466,6 +714,14 @@ def test_early_closes():
     assert pd.Timestamp('2014-07-03') in results.index
     assert pd.Timestamp('2016-12-14') in results.index
 
+    schedule = cal.schedule("1901-02-01", "1901-02-05")
+    assert cal.early_closes(schedule).empty
+
+def test_late_opens():
+    cal = FakeCalendar()
+    schedule = cal.schedule("1902-03-01", "1902-03-06")
+    assert cal.late_opens(schedule).empty
+
 
 def test_open_at_time():
     cal = FakeCalendar()
@@ -487,6 +743,18 @@ def test_open_at_time():
 
     # equivalent to 2014-07-02 03:40 UTC
     assert cal.open_at_time(schedule, pd.Timestamp('2014-07-01 23:40:00-0400', tz='America/New_York')) is True
+
+
+    cal["pre"] = time(11) # which is 3 am in Ulaanbaatar
+    schedule = cal.schedule('2014-01-01', '2016-12-31', market_times= "all")
+    assert cal.open_at_time(schedule, "2014-07-02 02:55:00+00:00") is False
+    # only_rth = True makes it ignore anything before market_open or after market_close
+    assert cal.open_at_time(schedule, "2014-07-02 03:05:00+00:00", only_rth= True) is False
+    assert cal.open_at_time(schedule, "2014-07-02 03:05:00+00:00")
+
+    # should raise error if not all columns are in self.market_times
+    with pytest.raises(ValueError):
+        cal.open_at_time(schedule.rename(columns= {"pre": "other"}), "2014-07-02 02:55:00+00:00")
 
 
 def test_open_at_time_breaks():
@@ -536,3 +804,104 @@ def test_bad_dates():
     # weekend and holiday
     schedule = cal.schedule('2017-12-30', '2018-01-01')
     assert_frame_equal(schedule, empty)
+
+############################################
+# TESTS FOR EXCHANGE_CALENDAR INTEGRATION  #
+############################################
+
+
+mcal_iepa = get_calendar("IEPA")
+ecal_iepa = ecal.get_calendar("IEPA")
+
+start, end = ecal_iepa._closes[[0, -1]]
+
+# No exchange_calendar has a close_offset so this class implements it for testing
+class _TstExchangeCalendar:
+    def __init__(self):
+        self.a_test_var = "initialized"
+    @property
+    def open_offset(self):
+        return -2
+    @property
+    def close_offset(self):
+        return 3
+
+
+TstExchangeCalendar = type("TestExchangeCalendar", (TradingCalendar,), {'_ec_class': _TstExchangeCalendar})
+
+test_cal = TstExchangeCalendar()
+
+def test_mirror():
+
+    assert not hasattr(mcal_iepa, "aliases")
+
+    assert not isinstance(ecal_iepa, mcal_iepa.__class__)
+
+    assert isinstance(ecal_iepa, mcal_iepa._ec.__class__)
+
+def test_basic_information():
+
+    assert mcal_iepa._EC_NOT_INITIALIZED
+    assert mcal_iepa.tz == timezone("America/New_York") == ecal_iepa.tz
+    assert mcal_iepa.open_offset == -1 == ecal_iepa.open_offset
+    assert mcal_iepa.open_time == time(20)
+    assert mcal_iepa.close_time == time(18)
+
+    assert test_cal._EC_NOT_INITIALIZED
+    assert test_cal.open_offset == -2
+    assert test_cal.close_offset == 3
+    assert test_cal["market_close", "all"] == ((None, time(23), 3),)
+    assert test_cal._EC_NOT_INITIALIZED
+
+
+def assert_same(one, two):
+    assert one.shape[0] == two.shape[0], f"the shape is different {one.shape[0]} != {two.shape[0]}"
+    assert (one.values == two.values).all()
+
+def test_closes_opens():
+    sched = mcal_iepa.schedule(start, end)
+
+    assert_same(ecal_iepa._closes, sched.market_close)
+    assert_same(ecal_iepa._opens, sched.market_open)
+
+def test_ec_property():
+    mcaliepa = get_calendar("IEPA")
+
+    assert mcaliepa._EC_NOT_INITIALIZED
+    ec = mcaliepa.ec
+    assert not mcaliepa._EC_NOT_INITIALIZED
+
+    assert test_cal._EC_NOT_INITIALIZED
+    assert not hasattr(test_cal._ec, "a_test_var")
+    assert test_cal.ec.a_test_var == "initialized"
+    assert not test_cal._EC_NOT_INITIALIZED
+
+
+def test_ec_schedule():
+    mcaliepa = get_calendar("IEPA")
+
+    assert mcaliepa._EC_NOT_INITIALIZED
+    ours = mcaliepa.schedule(start, end)
+    assert mcaliepa._EC_NOT_INITIALIZED
+    theirs = mcaliepa.ec.schedule[["market_open", "market_close"]]
+    assert not mcaliepa._EC_NOT_INITIALIZED
+
+    theirs = theirs.tz_localize(None) # our indexes are tz-naive, theirs are in UTC
+    for col in theirs: theirs[col] = theirs[col].dt.tz_localize("UTC") # our columns are in UTC but theirs are naive
+    assert_frame_equal(ours, theirs)
+
+
+
+if __name__ == '__main__':
+
+    test_basic_information()
+    test_ec_property()
+    # test_custom_schedule()
+    # test_special_opens()
+    #
+    # test_open_at_time_breaks()
+    exit()
+    for ref, obj in locals().copy().items():
+        if ref.startswith("test_"):
+            print("running: ", ref)
+            obj()

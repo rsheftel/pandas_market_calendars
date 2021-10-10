@@ -177,12 +177,12 @@ def test_jpx_closes_at_lunch():
         end_date=datetime.datetime(2015, 1, 16, tzinfo=pytz.timezone('Asia/Tokyo'))
     )
 
-    assert JPXExchangeCalendar.open_at_time(
+    assert jpx_calendar.open_at_time(
         schedule=jpx_schedule,
         timestamp=datetime.datetime(2015, 1, 14, 11, 0, tzinfo=pytz.timezone('Asia/Tokyo'))
     )
 
-    assert not JPXExchangeCalendar.open_at_time(
+    assert not jpx_calendar.open_at_time(
         schedule=jpx_schedule,
         timestamp=datetime.datetime(2015, 1, 14, 12, 0, tzinfo=pytz.timezone('Asia/Tokyo'))
     )

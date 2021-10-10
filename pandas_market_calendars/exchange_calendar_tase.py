@@ -97,6 +97,10 @@ class TASEExchangeCalendar(MarketCalendar):
     """
 
     aliases = ['TASE']
+    regular_market_times = {
+        "market_open": ((None, time(10)),),
+        "market_close": ((None, time(15,59)),)
+    }
 
     @property
     def name(self):
@@ -105,14 +109,6 @@ class TASEExchangeCalendar(MarketCalendar):
     @property
     def tz(self):
         return timezone("Asia/Jerusalem")
-
-    @property
-    def open_time_default(self):
-        return time(10, 0, tzinfo=self.tz)
-
-    @property
-    def close_time_default(self):
-        return time(15, 59, tzinfo=self.tz)
 
     @property
     def adhoc_holidays(self):

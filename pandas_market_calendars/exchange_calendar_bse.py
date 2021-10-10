@@ -356,6 +356,10 @@ class BSEExchangeCalendar(MarketCalendar):
     early closes or late opens.
     """
     aliases = ['BSE']
+    regular_market_times = {
+        "market_open": ((None, time(9, 15)),),
+        "market_close": ((None, time(15, 30)),)
+    }
 
     @property
     def name(self):
@@ -364,14 +368,6 @@ class BSEExchangeCalendar(MarketCalendar):
     @property
     def tz(self):
         return timezone('Asia/Calcutta')
-
-    @property
-    def open_time_default(self):
-        return time(9, 15, tzinfo=self.tz)
-
-    @property
-    def close_time_default(self):
-        return time(15, 30, tzinfo=self.tz)
 
     @property
     def adhoc_holidays(self):

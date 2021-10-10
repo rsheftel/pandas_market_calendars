@@ -110,6 +110,12 @@ class TSXExchangeCalendar(MarketCalendar):
     """
     aliases = ['TSX', 'TSXV']
 
+    regular_market_times = {
+        "market_open": ((None, time(9, 30)),),
+        "market_close": ((None, time(16)),)
+    }
+
+
     @property
     def name(self):
         return "TSX"
@@ -117,14 +123,6 @@ class TSXExchangeCalendar(MarketCalendar):
     @property
     def tz(self):
         return timezone('Canada/Eastern')
-
-    @property
-    def open_time_default(self):
-        return time(9, 30, tzinfo=self.tz)
-
-    @property
-    def close_time_default(self):
-        return time(16, tzinfo=self.tz)
 
     regular_early_close = time(13)
 

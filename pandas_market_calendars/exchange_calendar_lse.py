@@ -47,6 +47,11 @@ class LSEExchangeCalendar(MarketCalendar):
     - Dec. 28th (if Boxing Day is on a weekend)
     """
     aliases = ['LSE']
+    regular_market_times = {
+        "market_open": ((None, time(8)),),
+        "market_close": ((None, time(16,30)),),
+
+    }
 
     @property
     def name(self):
@@ -55,14 +60,6 @@ class LSEExchangeCalendar(MarketCalendar):
     @property
     def tz(self):
         return timezone('Europe/London')
-
-    @property
-    def open_time_default(self):
-        return time(8, 0, tzinfo=self.tz)
-
-    @property
-    def close_time_default(self):
-        return time(16, 30, tzinfo=self.tz)
 
     @property
     def regular_holidays(self):

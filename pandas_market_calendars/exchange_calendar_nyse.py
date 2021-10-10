@@ -20,8 +20,6 @@ import pandas as pd
 from pandas.tseries.holiday import AbstractHolidayCalendar
 from pytz import timezone
 
-from pandas_market_calendars.market_calendar import clean_dates, _overwrite_special_dates
-
 from pandas_market_calendars.holidays_nyse import (    
     # Always Celebrated Holidays
     USNewYearsDayNYSEpost1952, USNewYearsDayNYSEpre1952, SatBeforeNewYearsAdhoc,
@@ -748,25 +746,30 @@ class NYSEExchangeCalendar(MarketCalendar):
     """
     aliases = ['NYSE', 'stock', 'NASDAQ', 'BATS', 'DJIA', 'DOW']
 
+    regular_market_times = {
+        "pre": ((None, time(4)),),
+        "market_open": ((None, time(10)),
+                        ("1985-01-01", time(9, 30))),
+        "market_close":((None, time(15)),
+                        ("1952-09-29", time(15, 30)),
+                        ("1974-01-01", time(16))),
+        "post": ((None, time(20)),)
+    }
+
+    _saturday_close = time(12)
+    _saturday_end = pd.Timestamp('1952-09-29', tz='UTC')
+
     @property
     def name(self):
         return "NYSE"
 
     @property
+    def tz(self):
+        return timezone("America/New_York")
+
+    @property
     def weekmask(self):
         return "Mon Tue Wed Thu Fri Sat"    #Market open on Saturdays thru 5/24/1952
-
-    @property
-    def tz(self):
-        return timezone('America/New_York')
-
-    @property
-    def open_time_default(self):
-        return time(9, 30, tzinfo=self.tz)
-
-    @property
-    def close_time_default(self):
-        return time(16, tzinfo=self.tz)
 
     @property
     def regular_holidays(self):
@@ -961,31 +964,34 @@ class NYSEExchangeCalendar(MarketCalendar):
     def special_closes_adhoc(self):
         return [
             (time(13, tzinfo=timezone('America/New_York')),
-              [t.strftime("%Y-%m-%d") for t in DaysBeforeIndependenceDay1pmEarlyCloseAdhoc]
-            + [t.strftime("%Y-%m-%d") for t in ChristmasEve1pmEarlyCloseAdhoc]
-            + [t.strftime("%Y-%m-%d") for t in DayAfterChristmas1pmEarlyCloseAdhoc]
-            + [t.strftime("%Y-%m-%d") for t in BacklogRelief1pmEarlyClose1929]
+              DaysBeforeIndependenceDay1pmEarlyCloseAdhoc # list
+                + ChristmasEve1pmEarlyCloseAdhoc
+                + DayAfterChristmas1pmEarlyCloseAdhoc
+                + BacklogRelief1pmEarlyClose1929
             ),
-            (time(14, tzinfo=timezone('America/New_York')),
-             [t.strftime("%Y-%m-%d") for t in ChristmasEve2pmEarlyCloseAdhoc]
-             + BacklogRelief2pmEarlyClose1928.strftime("%Y-%m-%d").tolist()
-             + [t.strftime("%Y-%m-%d") for t in HeavyVolume2pmEarlyClose1933]
-             + [t.strftime("%Y-%m-%d") for t in TransitStrike2pmEarlyClose1966]
-             + [t.strftime("%Y-%m-%d") for t in Backlog2pmEarlyCloses1967]
-             + [t.strftime("%Y-%m-%d") for t in Backlog2pmEarlyCloses1968]
-             + [t.strftime("%Y-%m-%d") for t in PaperworkCrisis2pmEarlyCloses1969]
-             + [t.strftime("%Y-%m-%d") for t in Backlog2pmEarlyCloses1987]
+            (time(14, tzinfo=timezone('America/New_York')), pd.DatetimeIndex(
+                 ChristmasEve2pmEarlyCloseAdhoc
+                 + HeavyVolume2pmEarlyClose1933
+                        ).union_many([
+                 BacklogRelief2pmEarlyClose1928,
+                 TransitStrike2pmEarlyClose1966, # index
+                 Backlog2pmEarlyCloses1967, # index
+                 Backlog2pmEarlyCloses1968, # index
+                 PaperworkCrisis2pmEarlyCloses1969, # index
+                 Backlog2pmEarlyCloses1987 ])# index
             ),
-            (time(14, 30, tzinfo=timezone('America/New_York')),
-               [t.strftime("%Y-%m-%d") for t in PaperworkCrisis230pmEarlyCloses1969]
-             + [t.strftime("%Y-%m-%d") for t in Backlog230pmEarlyCloses1987]
+            (time(14, 30, tzinfo=timezone('America/New_York')), pd.DatetimeIndex([], tz= "UTC"
+                        ).union_many([
+                PaperworkCrisis230pmEarlyCloses1969,
+                Backlog230pmEarlyCloses1987]) # index
             ),
-            (time(15, tzinfo=timezone('America/New_York')),
-               [t.strftime("%Y-%m-%d") for t in PaperworkCrisis3pmEarlyCloses1969to1970]
-             + [t.strftime("%Y-%m-%d") for t in Backlog3pmEarlyCloses1987]
+            (time(15, tzinfo=timezone('America/New_York')), pd.DatetimeIndex([], tz= "UTC"
+                        ).union_many([
+                PaperworkCrisis3pmEarlyCloses1969to1970,
+                Backlog3pmEarlyCloses1987]) # index
             ),
             (time(15, 30, tzinfo=timezone('America/New_York')),
-               [t.strftime("%Y-%m-%d") for t in Backlog330pmEarlyCloses1987]
+                Backlog330pmEarlyCloses1987 # idnex
             ),
         ]
 
@@ -1052,15 +1058,13 @@ class NYSEExchangeCalendar(MarketCalendar):
     @property
     def special_opens_adhoc(self):
         return [
-            (time(9, 31, tzinfo=timezone('America/New_York')),
-             [t.strftime("%Y-%m-%d") for t in TroopsInGulf931LateOpens1991]
+            (time(9, 31, tzinfo=timezone('America/New_York')), TroopsInGulf931LateOpens1991
             ),
-            (time(11, tzinfo=timezone('America/New_York')),
-             [t.strftime("%Y-%m-%d") for t in HeavyVolume11amLateOpen1933]
+            (time(11, tzinfo=timezone('America/New_York')), HeavyVolume11amLateOpen1933
             ),
             (time(12, tzinfo=timezone('America/New_York')),
-                       [t.strftime("%Y-%m-%d") for t in BacklogRelief12pmLateOpen1929]
-                     + [t.strftime("%Y-%m-%d") for t in HeavyVolume12pmLateOpen1933]
+                BacklogRelief12pmLateOpen1929
+                + HeavyVolume12pmLateOpen1933
             ),
         ]
 
@@ -1074,10 +1078,10 @@ class NYSEExchangeCalendar(MarketCalendar):
         :param tz: time zone in either string or pytz.timezone
         :return: DatetimeIndex of valid business days
         """
-        trading_days = pd.date_range(start_date, end_date, freq=self.holidays(), normalize=True, tz=tz)
+        trading_days = super().valid_days(start_date, end_date, tz=tz)
 
         # Starting Monday Sept. 29, 1952, no more saturday trading days
-        above_cut_off = trading_days >= pd.Timestamp('1952-09-29', tz='UTC')
+        above_cut_off = trading_days >= self._saturday_end
         if above_cut_off.any():
             above_and_saturday = (trading_days.weekday == 5) & above_cut_off
             trading_days = trading_days[~above_and_saturday]
@@ -1085,227 +1089,25 @@ class NYSEExchangeCalendar(MarketCalendar):
         return trading_days
 
 
-    def days_at_time_open(self, days, tz, day_offset=0):
-        """
-        Create an index of days at time ``self.open_time``, interpreted in timezone ``tz``.
-        The returned index is localized to UTC.
+    def days_at_time(self, days, market_time, day_offset=0):
+        days = super().days_at_time(days, market_time, day_offset= day_offset)
 
-        If self.open_time == self.open_time_default, the times are adjusted according to
-        the real default time of NYSE:
-            before 1985: 10am
-            after: 9.30am
-        Otherwise, the user-chosen open_time is used for all days
-        
-        Rewritten from market_calendar.py due to variable open times    
-        
-        :param days: DatetimeIndex An index of dates (represented as midnight).
-        :param tz: pytz.timezone The timezone to use to interpret ``t``.
-        :param day_offset: int The number of days we want to offset @days by
-        :return: DatetimeIndex
-        """
-        if len(days) == 0:
-            return pd.DatetimeIndex(days).tz_localize(tz).tz_convert('UTC')
-
-        # Offset days without tz to avoid timezone issues.
-        _days = pd.DatetimeIndex(days).tz_localize(None)
-        delta = pd.Timedelta(
-            days=day_offset,
-            hours=self.open_time.hour,
-            minutes=self.open_time.minute,
-            seconds=self.open_time.second)
-
-        days = _days + delta  # standard market_open, either default or user-chosen
-
-        # If no custom time requested, change open, otherwise keep the chosen time
-        if self.open_time == self.open_time_default:
-            # Prior to 1985 trading began at 10am
-            # After 1985 trading begins at 9:30am
-            days = days.where(_days >= pd.Timestamp('1985-01-01'),
-                              _days + pd.Timedelta( days= day_offset,
-                                                    hours= 10))
-
-        days = days.tz_localize(tz).tz_convert('UTC')
-        # dates before 1901-12-14 have a 4 minute time shift. rounding removes it
-        # You also can't round when open/close is within the rounding period
-        return days.where(_days >= pd.Timestamp('1901-12-14'), days.round("15min"))
-
-
-    def days_at_time_close(self, days, tz, day_offset=0):
-        """
-        Create an index of days at time ``self.close_time``, interpreted in timezone ``tz``.
-        The returned index is localized to UTC.
-
-        If self.close_time == self.close_time_default, the times are adjusted according to
-        the real default time of NYSE:
-            before 1952-09-29: 15pm
-            before 1974: 15.30pm
-            after: 16pm
-            (Saturdays: 12pm)
-        Otherwise, the user-chosen close_time is used for all days
-
-        Rewritten from market_calendar.py due to variable close times    
-        
-        :param days: DatetimeIndex An index of dates (represented as midnight).
-        :param tz: pytz.timezone The timezone to use to interpret ``t``.
-        :param day_offset: int The number of days we want to offset @days by
-        :return: DatetimeIndex
-        """
-        if len(days) == 0:
-            return pd.DatetimeIndex(days).tz_localize(tz).tz_convert('UTC')
-
-        # Offset days without tz to avoid timezone issues.
-        _days = pd.DatetimeIndex(days).tz_localize(None)
-        delta = pd.Timedelta(
-            days=day_offset,
-            hours=self.close_time.hour,
-            minutes=self.close_time.minute,
-            seconds=self.close_time.second)
-        days = _days + delta  # standard market_close, either default or user-chosen
-
-        # If no custom time requested, change close, otherwise keep the chosen time
-        if self.close_time == self.close_time_default:
-
-            # before 1952-09-29, close was at 15 instead of 16
-            after_first = _days >= pd.Timestamp('1952-09-29')
-            days = days.where(after_first,
-                              _days + pd.Timedelta(days= day_offset,
-                                                   hours= 15))
-            # between 1952-09-29 and 1974-01-01, close is at 15:30
-            after_second = _days >= pd.Timestamp("1974-01-01")
-            days = days.where(~after_first | after_second,
-                              _days + pd.Timedelta(days= day_offset,
-                                                   hours= 15,
-                                                   minutes= 30))
-            # Saturday close is at 12
-            days = days.where(_days.weekday != 5,
-                              _days + pd.Timedelta(days= day_offset,
-                                                   hours= 12))
-
-
-        days = days.tz_localize(tz).tz_convert('UTC')
-        # dates before 1901-12-14 have a 4 minute time shift. rounding removes it
-        # You also can't round when open/close is within the rounding period
-        return days.where(_days >= pd.Timestamp('1901-12-14'), days.round("15min"))
-
-
-    # Override parent method so that derived valid_days is called            
-    def schedule(self, start_date, end_date, tz='UTC'):
-        """
-        Generates the schedule DataFrame. The resulting DataFrame will have all the valid business days as the index
-        and columns for the market opening datetime (market_open) and closing datetime (market_close). All time zones
-        are set to UTC by default. Setting the tz parameter will convert the columns to the desired timezone,
-        such as 'America/New_York'
-
-        :param start_date: start date
-        :param end_date: end date
-        :param tz: timezone
-        :return: schedule DataFrame
-        """
-        start_date, end_date = clean_dates(start_date, end_date)
-        if not (start_date <= end_date):
-            raise ValueError('start_date must be before or equal to end_date.')
-
-        # Setup all valid trading days
-        _all_days = self.valid_days(start_date, end_date)
-
-        # If no valid days return an empty DataFrame
-        if len(_all_days) == 0:
-            return pd.DataFrame(columns=['market_open', 'market_close'], index=pd.DatetimeIndex([], freq='C'))
-
-        opens =  self.days_at_time_open(_all_days, self.tz, self.open_offset).tz_convert(tz)
-        closes = self.days_at_time_close(_all_days, self.tz, self.close_offset).tz_convert(tz)
-
-        # `DatetimeIndex`s of nonstandard opens/closes
-        _special_opens = self._calculate_special_opens(start_date, end_date)
-        _special_closes = self._calculate_special_closes(start_date, end_date)
-
-        # Overwrite the special opens and closes on top of the standard ones.
-        _overwrite_special_dates(_all_days, opens, _special_opens)
-        _overwrite_special_dates(_all_days, closes, _special_closes)
-
-        result = pd.DataFrame(index=_all_days.tz_localize(None), columns=['market_open', 'market_close'],
-                            data={'market_open': opens, 'market_close': closes})
-
-        if self.break_start:
-            result['break_start'] = self.days_at_time(_all_days, self.break_start, self.tz).tz_convert(tz)
-            temp = result[['market_open', 'break_start']].max(axis=1)
-            result['break_start'] = temp
-            result['break_end'] = self.days_at_time(_all_days, self.break_end, self.tz).tz_convert(tz)
-            temp = result[['market_close', 'break_end']].min(axis=1)
-            result['break_end'] = temp
-
-        return result
+        if market_time == "market_close" and not self.is_custom(market_time):
+            days = days.tz_convert(self.tz)
+            days = days.where(days.weekday != 5, days.normalize()+ self._tdelta(self._saturday_close))
+            days = days.tz_convert("UTC")
+        return days
 
     def early_closes(self, schedule):
         """
         Get a DataFrame of the dates that are an early close.
-        
-        NOTE: Dates before 1901-12-14 convert with 4 minute time shift. 
-              Rounding removes this
 
         :param schedule: schedule DataFrame
         :return: schedule DataFrame with rows that are early closes
         """
-        # Prior to 1952-09-29 close was Mon-Fri 3pm and Sat noon
-        # 1952-1973 close was Mon-Fri 3:30pm (no saturday trades)
-        # 1974+ close is 4pm 
-        # dates before 1901-12-14 have a 4 minute time shift. rounding removes it
+        early = super().early_closes(schedule)
 
-        close3pmPre1901 = schedule['market_close'].apply(lambda x: (x.tz_convert(self.tz).round('15min').time() != time(15)) &
-                                                            (x < pd.Timestamp('1901-12-14', tz='UTC')) &
-                                                            (x < pd.Timestamp('1952-09-29', tz='UTC')) &
-                                                            (x.dayofweek != 5))
-
-        close3pm = schedule['market_close'].apply(lambda x: (x.tz_convert(self.tz).time() != time(15)) &
-                                                            (x >= pd.Timestamp('1901-12-14', tz='UTC')) &
-                                                            (x < pd.Timestamp('1952-09-29', tz='UTC')) &
-                                                            (x.dayofweek != 5))
-
-
-        close12SatPre1901  = schedule['market_close'].apply(lambda x: (x.tz_convert(self.tz).round('15min').time() != time(12)) &
-                                                                (x < pd.Timestamp('1901-12-14', tz='UTC')) &
-                                                                (x.dayofweek == 5))
-
-        close12Sat  = schedule['market_close'].apply(lambda x: (x.tz_convert(self.tz).time() != time(12)) &
-                                                               (x >= pd.Timestamp('1901-12-14', tz='UTC')) &
-                                                               (x.dayofweek == 5))
-
-        close330pm = schedule['market_close'].apply(lambda x: (x.tz_convert(self.tz).time() != time(15,30)) &
-                                                              (x >= pd.Timestamp('1952-09-29', tz='UTC')) &
-                                                              (x < pd.Timestamp('1974-01-01', tz='UTC'))
-                                                    )
-
-        close4pm = schedule['market_close'].apply(lambda x: (x.tz_convert(self.tz).time() != time(16)) &
-                                                              (x >= pd.Timestamp('1974-01-01', tz='UTC'))
-                                                    )
-
-        mask = close3pm | close3pmPre1901 | close330pm | close4pm | close12Sat | close12SatPre1901
-
-        return schedule[mask]
-
-
-
-    def late_opens(self, schedule):
-        """
-        Get a DataFrame of the dates that are an late opens.
-
-        :param schedule: schedule DataFrame
-        :return: schedule DataFrame with rows that are late opens
-        """
-        # Prior to 1985 trading began at 10am
-        # After 1985 trading begins at 9:30am 
-        # dates before 1901-12-14 have a 4 minute time shift. rounding removes it
-        open10amPre1901 = schedule['market_open'].apply(lambda x: (x.tz_convert(self.tz).round('15min').time() != time(10)) &
-                                                            (x < pd.Timestamp('1985-01-01', tz='UTC')) &
-                                                            (x < pd.Timestamp('1901-12-14', tz='UTC')))
-
-        open10am        = schedule['market_open'].apply(lambda x: (x.tz_convert(self.tz).time() != time(10)) &
-                                                            (x < pd.Timestamp('1985-01-01', tz='UTC')) &
-                                                            (x >= pd.Timestamp('1901-12-14', tz='UTC')))
-
-        open930am = schedule['market_open'].apply(lambda x: (x.tz_convert(self.tz).time() != time(9,30)) &
-                                                            (x >= pd.Timestamp('1985-01-01', tz='UTC')) )
-
-        mask = open10am | open10amPre1901 | open930am
-
-        return schedule[mask]
+        # make sure saturdays are not considered early closes if they are >= 12pm
+        mc = early.market_close.dt.tz_convert(self.tz)
+        after_noon = (mc - mc.dt.normalize()).ge(self._tdelta(self._saturday_close))
+        return early[~(mc.dt.weekday.eq(5) & after_noon)]

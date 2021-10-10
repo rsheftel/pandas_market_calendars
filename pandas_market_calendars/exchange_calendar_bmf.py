@@ -166,6 +166,10 @@ class BMFExchangeCalendar(MarketCalendar):
     - New Year's Eve (December 31)
     """
     aliases = ['BMF']
+    regular_market_times = {
+        "market_open": ((None, time(10,1)),),
+        "market_close": ((None, time(16)),)
+    }
 
     @property
     def name(self):
@@ -174,14 +178,6 @@ class BMFExchangeCalendar(MarketCalendar):
     @property
     def tz(self):
         return timezone("America/Sao_Paulo")
-
-    @property
-    def open_time_default(self):
-        return time(10, 1, tzinfo=self.tz)
-
-    @property
-    def close_time_default(self):
-        return time(16, tzinfo=self.tz)
 
     @property
     def regular_holidays(self):

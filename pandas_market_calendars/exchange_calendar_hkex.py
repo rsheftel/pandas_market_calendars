@@ -350,6 +350,12 @@ class HKEXExchangeCalendar(MarketCalendar):
     Close Time: 4:00 PM, Asia/Shanghai
     """
     aliases = ['HKEX']
+    regular_market_times = {
+        "market_open": ((None, time(9, 30)),),
+        "market_close": ((None, time(16)),),
+        "break_start": ((None, time(12)),),
+        "break_end": ((None, time(13)),)
+    }
 
     @property
     def name(self):
@@ -359,21 +365,6 @@ class HKEXExchangeCalendar(MarketCalendar):
     def tz(self):
         return timezone('Asia/Shanghai')
 
-    @property
-    def open_time_default(self):
-        return time(9, 30, tzinfo=self.tz)
-
-    @property
-    def close_time_default(self):
-        return time(16, tzinfo=self.tz)
-
-    @property
-    def break_start(self):
-        return time(12, 0)
-
-    @property
-    def break_end(self):
-        return time(13, 0)
 
     @property
     def regular_holidays(self):

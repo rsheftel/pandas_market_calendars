@@ -35,7 +35,7 @@ def _test_holidays(holidays, start, end):
     for h in holidays:
         assert h not in valid_days
 
-def _test_no_special_opens(start, end):   
+def _test_no_special_opens(start, end):
     assert len(nyse.late_opens(nyse.schedule(start, end))) == 0
     
 def _test_no_special_closes(start, end):
@@ -3723,4 +3723,4 @@ def test_2022():
     early_closes = [     
         pd.Timestamp('2022-11-25 1:00PM', tz='America/New_York'), # Day after Thanksgiving  
     ]
-    _test_has_early_closes(early_closes, start, end)     
+    _test_has_early_closes(early_closes, start, end)
