@@ -31,15 +31,16 @@ from pandas_market_calendars.holidays_nyse import (
     SatBeforeAfterLincolnsBirthdayAdhoc,  GrantsBirthDayAdhoc,  
     
     USMartinLutherKingJrAfter1998,
-    USJuneteenthAfter2022,
-    
+
     GoodFriday, GoodFridayPre1898, GoodFriday1899to1905, SatAfterGoodFridayAdhoc,
     
     USMemorialDay, USMemorialDayBefore1952, USMemorialDay1952to1964, USMemorialDay1964to1969,
     SatBeforeDecorationAdhoc, SatAfterDecorationAdhoc,
     DayBeforeDecorationAdhoc,
-    
-    USIndependenceDay, USIndependenceDayPre1952, USIndependenceDay1952to1954,    
+
+    USJuneteenthAfter2022,
+
+    USIndependenceDay, USIndependenceDayPre1952, USIndependenceDay1952to1954,
     SatBeforeIndependenceDayAdhoc, SatAfterIndependenceDayAdhoc,
     MonTuesThursBeforeIndependenceDay, FridayAfterIndependenceDayNYSEpre2013,
     WednesdayBeforeIndependenceDayPost2013,
