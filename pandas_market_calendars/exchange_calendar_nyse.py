@@ -30,7 +30,8 @@ from pandas_market_calendars.holidays_nyse import (
     SatBeforeWashingtonsBirthdayAdhoc, SatAfterWashingtonsBirthdayAdhoc, 
     SatBeforeAfterLincolnsBirthdayAdhoc,  GrantsBirthDayAdhoc,  
     
-    USMartinLutherKingJrAfter1998, 
+    USMartinLutherKingJrAfter1998,
+    USJuneteenthAfter2022,
     
     GoodFriday, GoodFridayPre1898, GoodFriday1899to1905, SatAfterGoodFridayAdhoc,
     
@@ -802,6 +803,7 @@ class NYSEExchangeCalendar(MarketCalendar):
             ChristmasNYSE,
             Christmas54to98NYSE,
             ChristmasBefore1954,
+            USJuneteenthAfter2022,
         ])
 
     @property
