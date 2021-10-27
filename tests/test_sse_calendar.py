@@ -6,6 +6,7 @@ import pytz
 from pandas_market_calendars.exchange_calendar_sse import SSEExchangeCalendar
 from pandas_market_calendars.holidays_cn import all_holidays
 
+all_holidays = pd.DatetimeIndex(all_holidays)
 
 def test_time_zone():
     assert SSEExchangeCalendar().tz == pytz.timezone('Asia/Shanghai')
@@ -15,9 +16,8 @@ def test_time_zone():
 def test_all_holidays():
     sse_calendar = SSEExchangeCalendar()
 
-    trading_days = sse_calendar.valid_days(pd.Timestamp('2004-01-01'), pd.Timestamp('2020-12-31'))
-    for session_label in all_holidays:
-        assert session_label.tz_localize("UTC") not in trading_days
+    trading_days = sse_calendar.valid_days(all_holidays.min(), all_holidays.max())
+    assert not all_holidays.tz_localize("UTC").isin(trading_days).any()
 
 
 def test_sse_closes_at_lunch():
