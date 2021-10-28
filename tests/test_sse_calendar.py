@@ -16,8 +16,15 @@ def test_time_zone():
 def test_all_holidays():
     sse_calendar = SSEExchangeCalendar()
 
+
     trading_days = sse_calendar.valid_days(all_holidays.min(), all_holidays.max())
     assert not all_holidays.tz_localize("UTC").isin(trading_days).any()
+
+    holidays = [
+        '2019-05-03', '2020-01-31', '2021-02-15', '2022-05-04',
+    ]
+    for date in holidays:
+        assert pd.Timestamp(date, tz='UTC') not in trading_days
 
 
 def test_sse_closes_at_lunch():
