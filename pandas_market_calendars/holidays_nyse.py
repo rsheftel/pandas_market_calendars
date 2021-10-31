@@ -254,6 +254,16 @@ DayBeforeDecorationAdhoc = [
 ]
 
 #######################################
+# US Juneteenth (June 19th)
+#######################################
+USJuneteenthAfter2022 = Holiday(
+    'Juneteenth Starting at 2022',
+    start_date=Timestamp('2022-06-19'),
+    month=6, day=19,
+    observance=nearest_workday,
+)
+
+#######################################
 # US Independence Day July 4
 #######################################
 USIndependenceDay = Holiday(
@@ -1461,3 +1471,4 @@ HurricaneSandyClosings2012 = [Timestamp('2012-10-29', tz='UTC'),
 
 # 2018
 GeorgeHWBushDeath2018 = [Timestamp('2018-12-05', tz='UTC'),]
+

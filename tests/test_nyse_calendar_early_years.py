@@ -3702,7 +3702,8 @@ def test_2021():
         pd.Timestamp('2021-11-26 1:00PM', tz='America/New_York'), # Day after Thanksgiving  
     ]
     _test_has_early_closes(early_closes, start, end)       
-    
+
+
 def test_2022():
     start = '2022-01-01'
     end   = '2022-12-31'    
@@ -3711,6 +3712,7 @@ def test_2022():
         pd.Timestamp('2022-02-21', tz='UTC'),
         pd.Timestamp('2022-04-15', tz='UTC'),
         pd.Timestamp('2022-05-30', tz='UTC'),
+        pd.Timestamp('2022-06-20', tz='UTC'),
         pd.Timestamp('2022-07-04', tz='UTC'),
         pd.Timestamp('2022-09-05', tz='UTC'),
         pd.Timestamp('2022-11-24', tz='UTC'),
@@ -3722,5 +3724,31 @@ def test_2022():
     # early closes we expect:
     early_closes = [     
         pd.Timestamp('2022-11-25 1:00PM', tz='America/New_York'), # Day after Thanksgiving  
+    ]
+    _test_has_early_closes(early_closes, start, end)
+
+
+def test_2023():
+    start = '2023-01-01'
+    end   = '2023-12-31'
+    holidays = [
+        pd.Timestamp('2023-01-02', tz='UTC'),
+        pd.Timestamp('2023-01-16', tz='UTC'),
+        pd.Timestamp('2023-02-20', tz='UTC'),
+        pd.Timestamp('2023-04-07', tz='UTC'),
+        pd.Timestamp('2023-05-29', tz='UTC'),
+        pd.Timestamp('2023-06-19', tz='UTC'),
+        pd.Timestamp('2023-07-04', tz='UTC'),
+        pd.Timestamp('2023-09-04', tz='UTC'),
+        pd.Timestamp('2023-11-23', tz='UTC'),
+        pd.Timestamp('2023-12-25', tz='UTC')
+    ]
+    _test_holidays(holidays, start, end)
+    _test_no_special_opens(start, end)
+
+    # early closes we expect:
+    early_closes = [
+        pd.Timestamp('2023-07-03 1:00PM', tz='America/New_York'), # Day before July 4th
+        pd.Timestamp('2023-11-24 1:00PM', tz='America/New_York'),  # Day after Thanksgiving
     ]
     _test_has_early_closes(early_closes, start, end)
