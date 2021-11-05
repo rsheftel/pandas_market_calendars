@@ -65,6 +65,8 @@ class _ProtectedDict(dict):
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
+        # __init__ is bypassed when unpickling, which causes __setitem__ to fail
+        # without the _INIT_RAN_NORMALLY flag
         self._INIT_RAN_NORMALLY = True
         self._ALLOW_SETTING_TIMES = False
 
