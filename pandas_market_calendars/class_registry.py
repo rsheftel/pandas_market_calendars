@@ -52,7 +52,7 @@ class RegisteryMeta(type):
 
         super(RegisteryMeta, cls).__init__(name, bases, attr)
 
-        cls.regular_market_times = ProtectedDict(cls.regular_market_times)
+        cls.regular_market_times = _ProtectedDict(cls.regular_market_times)
 
         cls.special_market_open = cls.special_opens
         cls.special_market_open_adhoc = cls.special_opens_adhoc
@@ -61,14 +61,17 @@ class RegisteryMeta(type):
         cls.special_market_close_adhoc = cls.special_closes_adhoc
 
 
-class ProtectedDict(dict):
+class _ProtectedDict(dict):
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
+        # __init__ is bypassed when unpickling, which causes __setitem__ to fail
+        # without the _INIT_RAN_NORMALLY flag
+        self._INIT_RAN_NORMALLY = True
         self._ALLOW_SETTING_TIMES = False
 
     def __setitem__(self, key, value):
-        if self._ALLOW_SETTING_TIMES:
+        if not hasattr(self, "_INIT_RAN_NORMALLY") or self._ALLOW_SETTING_TIMES:
             self._ALLOW_SETTING_TIMES = False
             return super().__setitem__(key, value)
 
@@ -78,7 +81,7 @@ class ProtectedDict(dict):
                         "or inherit from MarketCalendar to create a new Class with custom times.")
 
     def __delitem__(self, key):
-        if self._ALLOW_SETTING_TIMES:
+        if not hasattr(self, "_INIT_RAN_NORMALLY") or self._ALLOW_SETTING_TIMES:
             self._ALLOW_SETTING_TIMES = False
             return super().__delitem__(key)
 

@@ -15,6 +15,8 @@
 from datetime import time
 from itertools import chain
 from pytz import timezone
+import pickle
+
 
 import pandas as pd
 import pytest
@@ -26,6 +28,7 @@ from pandas_market_calendars.holidays_us import (Christmas, HurricaneSandyClosin
                                                  USNationalDaysofMourning, USNewYearsDay)
 from pandas_market_calendars.market_calendar import MarketCalendar #, clean_dates, days_at_time
 from pandas_market_calendars.exchange_calendars_mirror import TradingCalendar
+from pandas_market_calendars.exchange_calendar_nyse import NYSEExchangeCalendar
 
 import exchange_calendars as ecal
 
@@ -106,8 +109,8 @@ def patch_get_current_time(monkeypatch):
     monkeypatch.setattr(MarketCalendar, '_get_current_time', get_fake_time)
 
 
-def test_protected_dictionary():
-    cal = FakeCalendar()
+def test_protected_dictionary(cal= None):
+    cal = FakeCalendar() if cal is None else cal
     # shouldn't be able to add
     with pytest.raises(TypeError) as e:
         cal.regular_market_times["market_open"] = time(12)
@@ -115,6 +118,34 @@ def test_protected_dictionary():
     # nor delete
     with pytest.raises(TypeError) as e:
         del cal.regular_market_times["market_open"]
+
+def test_pickling():
+
+    for Cal in [FakeCalendar, FakeBreakCalendar, NYSEExchangeCalendar]:
+        # instance
+        cal = Cal()
+        pickled = pickle.dumps(cal)
+        unpickled = pickle.loads(pickled)
+
+        assert cal.regular_market_times == unpickled.regular_market_times
+        assert cal.market_times == unpickled.market_times
+        assert cal.discontinued_market_times == unpickled.discontinued_market_times
+        assert cal._regular_market_timedeltas == unpickled._regular_market_timedeltas
+
+        test_protected_dictionary(cal)
+        test_protected_dictionary(unpickled)
+
+        # class
+        pickled = pickle.dumps(Cal)
+        unpickled = pickle.loads(pickled)
+        assert Cal.regular_market_times == unpickled.regular_market_times
+
+        test_protected_dictionary(Cal)
+        test_protected_dictionary(unpickled)
+
+
+
+
 
 def test_get_time():
     cal = FakeCalendar()
@@ -153,7 +184,6 @@ def test_special_dates():
 
     special = cal.special_dates("market_open", "2016-12-10", "2016-12-31", filter_holidays= False)
     assert special.astype(str).tolist() == ["2016-12-13 03:20:00+00:00", "2016-12-25 03:20:00+00:00"]
-
 
 
 def test_change_add_remove_time():
