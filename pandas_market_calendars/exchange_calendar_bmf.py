@@ -26,12 +26,6 @@ ConfUniversal = Holiday(
     month=1,
     day=1,
 )
-# Sao Paulo city birthday
-AniversarioSaoPaulo = Holiday(
-    'Aniversario de Sao Paulo',
-    month=1,
-    day=25,
-)
 # Carnival Monday
 CarnavalSegunda = Holiday(
     'Carnaval Segunda',
@@ -73,13 +67,6 @@ DiaTrabalho = Holiday(
     'Dia Trabalho',
     month=5,
     day=1,
-)
-# Constitutionalist Revolution
-Constitucionalista = Holiday(
-    'Constitucionalista',
-    month=7,
-    day=9,
-    start_date='1997-01-01'
 )
 # Independence Day
 Independencia = Holiday(
@@ -148,14 +135,12 @@ class BMFExchangeCalendar(MarketCalendar):
 
     Regularly-Observed Holidays:
     - Universal Confraternization (New year's day, Jan 1)
-    - Sao Paulo City Anniversary (Jan 25)
     - Carnaval Monday (48 days before Easter)
     - Carnaval Tuesday (47 days before Easter)
     - Passion of the Christ (Good Friday, 2 days before Easter)
     - Corpus Christi (60 days after Easter)
     - Tiradentes (April 21)
     - Labor day (May 1)
-    - Constitutionalist Revolution (July 9 after 1997)
     - Independence Day (September 7)
     - Our Lady of Aparecida Feast (October 12)
     - All Souls' Day (November 2)
@@ -183,14 +168,12 @@ class BMFExchangeCalendar(MarketCalendar):
     def regular_holidays(self):
         return AbstractHolidayCalendar(rules=[
             ConfUniversal,
-            AniversarioSaoPaulo,
             CarnavalSegunda,
             CarnavalTerca,
             SextaPaixao,
             CorpusChristi,
             Tiradentes,
             DiaTrabalho,
-            Constitucionalista,
             Independencia,
             Aparecida,
             Finados,
