@@ -770,21 +770,39 @@ def test_open_at_time():
     # last bar of the day is True if include_close is True
     assert cal.open_at_time(schedule, pd.Timestamp('2016-09-07 11:49', tz='Asia/Ulaanbaatar'),
                             include_close=True) is True
-
     # equivalent to 2014-07-02 03:40 UTC
     assert cal.open_at_time(schedule, pd.Timestamp('2014-07-01 23:40:00-0400', tz='America/New_York')) is True
 
-
     cal["pre"] = time(11) # which is 3 am in Ulaanbaatar
-    schedule = cal.schedule('2014-01-01', '2016-12-31', market_times= "all")
+    schedule = cal.schedule('2014-07-01', '2014-07-10', market_times= "all")
     assert cal.open_at_time(schedule, "2014-07-02 02:55:00+00:00") is False
     # only_rth = True makes it ignore anything before market_open or after market_close
     assert cal.open_at_time(schedule, "2014-07-02 03:05:00+00:00", only_rth= True) is False
     assert cal.open_at_time(schedule, "2014-07-02 03:05:00+00:00")
 
+    # handle market times that cross midnight
+    cal.change_time("pre", time(7)) # is the day before in UTC
+    cal.add_time("post", (time(9), 1))
+    schedule = cal.schedule('2014-07-01', '2014-07-10', market_times= "all")
+    assert cal.open_at_time(schedule, pd.Timestamp("2014-07-03 23:30:00+00:00"))
+    assert cal.open_at_time(schedule, pd.Timestamp("2014-07-05 00:30:00+00:00"))
+    assert not cal.open_at_time(schedule, pd.Timestamp("2014-07-05 00:30:00+00:00"), only_rth= True)
+
+    cal.change_time("market_open", (cal.open_time, -2))
+    cal.change_time("market_close", (cal.close_time, 3))
+    schedule = cal.schedule('2014-07-01', '2014-07-10', market_times= "all")
+    assert cal.open_at_time(schedule, "2014-06-29 04:00:00+00:00")
+    assert cal.open_at_time(schedule, "2014-07-13 06:00:00+03:00")
+
     # should raise error if not all columns are in self.market_times
     with pytest.raises(ValueError):
         cal.open_at_time(schedule.rename(columns= {"pre": "other"}), "2014-07-02 02:55:00+00:00")
+
+    # or if the date is before/after the first/last dates covered by the schedule
+    with pytest.raises(ValueError):
+        cal.open_at_time(schedule, "2014-07-12 23:00:00-05:00")
+    with pytest.raises(ValueError):
+        cal.open_at_time(schedule, "2014-06-29 03:00:00+00:00")
 
 
 def test_open_at_time_breaks():
@@ -924,8 +942,8 @@ def test_ec_schedule():
 
 if __name__ == '__main__':
 
-    test_basic_information()
-    test_ec_property()
+    test_open_at_time()
+    # test_ec_property()
     # test_custom_schedule()
     # test_special_opens()
     #
