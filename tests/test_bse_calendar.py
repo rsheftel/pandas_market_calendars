@@ -1,5 +1,5 @@
 import datetime
-
+import pytest
 import pandas as pd
 import pytz
 
@@ -33,7 +33,8 @@ def test_open_close_time():
         timestamp=india_time_zone.localize(datetime.datetime(2015, 1, 14, 11, 0))
     )
 
-    assert not bse_calendar.open_at_time(
+    with pytest.raises(ValueError):
+        bse_calendar.open_at_time(
         schedule=bse_schedule,
         timestamp=india_time_zone.localize(datetime.datetime(2015, 1, 9, 12, 0))
     )
