@@ -548,7 +548,8 @@ class MarketCalendar(metaclass=MarketCalendarMeta):
 
     def open_at_time(self, schedule, timestamp, include_close=False, only_rth= False):
         """
-        To determine if a given timestamp is during an open time for the market.
+        To determine if a given timestamp is during an open time for the market. If the timestamp is
+        before the first open time or after the last close time of `schedule`, a ValueError will be raised.
 
         :param schedule: schedule DataFrame
         :param timestamp: the timestamp to check for
