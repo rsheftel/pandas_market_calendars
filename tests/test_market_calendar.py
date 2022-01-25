@@ -778,21 +778,21 @@ def test_open_at_time():
     assert cal.open_at_time(schedule, "2014-07-02 02:55:00+00:00") is False
     # only_rth = True makes it ignore anything before market_open or after market_close
     assert cal.open_at_time(schedule, "2014-07-02 03:05:00+00:00", only_rth= True) is False
-    assert cal.open_at_time(schedule, "2014-07-02 03:05:00+00:00")
+    assert cal.open_at_time(schedule, "2014-07-02 03:05:00+00:00") is True
 
     # handle market times that cross midnight
     cal.change_time("pre", time(7)) # is the day before in UTC
     cal.add_time("post", (time(9), 1))
     schedule = cal.schedule('2014-07-01', '2014-07-10', market_times= "all")
-    assert cal.open_at_time(schedule, pd.Timestamp("2014-07-03 23:30:00+00:00"))
-    assert cal.open_at_time(schedule, pd.Timestamp("2014-07-05 00:30:00+00:00"))
-    assert not cal.open_at_time(schedule, pd.Timestamp("2014-07-05 00:30:00+00:00"), only_rth= True)
+    assert cal.open_at_time(schedule, pd.Timestamp("2014-07-03 23:30:00+00:00")) is True
+    assert cal.open_at_time(schedule, pd.Timestamp("2014-07-05 00:30:00+00:00")) is True
+    assert cal.open_at_time(schedule, pd.Timestamp("2014-07-05 00:30:00+00:00"), only_rth= True) is False
 
     cal.change_time("market_open", (cal.open_time, -2))
     cal.change_time("market_close", (cal.close_time, 3))
     schedule = cal.schedule('2014-07-01', '2014-07-10', market_times= "all")
-    assert cal.open_at_time(schedule, "2014-06-29 04:00:00+00:00")
-    assert cal.open_at_time(schedule, "2014-07-13 06:00:00+03:00")
+    assert cal.open_at_time(schedule, "2014-06-29 04:00:00+00:00") is True
+    assert cal.open_at_time(schedule, "2014-07-13 06:00:00+03:00") is True
 
     # should raise error if not all columns are in self.market_times
     with pytest.raises(ValueError):
@@ -822,6 +822,21 @@ def test_open_at_time_breaks():
     assert cal.open_at_time(schedule, pd.Timestamp('2016-12-28 11:00', tz='America/New_York')) is True
     # between break and close
     assert cal.open_at_time(schedule, pd.Timestamp('2016-12-28 11:30', tz='America/New_York')) is True
+
+    # handle market times that cross midnight
+    cal.change_time("market_open", time(7)) # is the day before in UTC
+    cal.change_time("market_close", (time(9), 1))
+    cal.add_time("post", (time(10), 1))
+    schedule = cal.schedule('2014-07-01', '2014-07-10', market_times= "all")
+    assert cal.open_at_time(schedule, pd.Timestamp("2014-07-03 23:30:00+00:00")) is True
+    assert cal.open_at_time(schedule, pd.Timestamp("2014-07-05 00:30:00+00:00")) is True
+    assert cal.open_at_time(schedule, pd.Timestamp("2014-07-04 14:30:00+00:00")) is False
+    assert cal.open_at_time(schedule, pd.Timestamp("2014-07-11 12:00:00+00:00")) is True
+
+    assert cal.open_at_time(schedule, pd.Timestamp("2014-07-11 14:00:00+00:00"), include_close= True) is True
+    assert cal.open_at_time(schedule, pd.Timestamp("2014-07-11 14:00:00+00:00")) is False
+    with pytest.raises(ValueError):
+        cal.open_at_time(schedule, pd.Timestamp("2014-07-11 14:00:00+00:00"), only_rth= True)
 
 
 def test_is_open_now(patch_get_current_time):
