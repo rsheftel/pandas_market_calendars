@@ -548,7 +548,8 @@ class MarketCalendar(metaclass=MarketCalendarMeta):
 
     def open_at_time(self, schedule, timestamp, include_close=False, only_rth= False):
         """
-        To determine if a given timestamp is during an open time for the market.
+        To determine if a given timestamp is during an open time for the market. If the timestamp is
+        before the first open time or after the last close time of `schedule`, a ValueError will be raised.
 
         :param schedule: schedule DataFrame
         :param timestamp: the timestamp to check for
@@ -563,8 +564,7 @@ class MarketCalendar(metaclass=MarketCalendarMeta):
         if not schedule.columns.isin(self._market_times).all():
             raise ValueError("You seem to be using a schedule that isn't based on the market_times")
 
-        timestamp = pd.Timestamp(timestamp)
-        date = timestamp.tz_convert('UTC').tz_localize(None).normalize()
+        timestamp = pd.Timestamp(timestamp).tz_convert("UTC")
 
         if only_rth:
             lowest, highest = "market_open", "market_close"
@@ -573,21 +573,24 @@ class MarketCalendar(metaclass=MarketCalendarMeta):
             lowest = schedule.columns[ixs == ixs.min()][0]
             highest = schedule.columns[ixs == ixs.max()][0]
 
-        if date in schedule.index:
-            if 'break_start' in schedule.columns:
-                if include_close:
-                    return (schedule.at[date, lowest] <= timestamp <= schedule.at[date, 'break_start']) or \
-                           (schedule.at[date, 'break_end'] <= timestamp <= schedule.at[date, highest])
-                else:
-                    return (schedule.at[date, lowest] <= timestamp < schedule.at[date, 'break_start']) or \
-                           (schedule.at[date, 'break_end'] <= timestamp < schedule.at[date, highest])
+        if timestamp < schedule[lowest].iat[0] or timestamp > schedule[highest].iat[-1]:
+            raise ValueError("The provided timestamp is not covered by the schedule")
+
+        day = schedule[schedule[lowest].le(timestamp)].iloc[-1]
+
+        if 'break_start' in schedule.columns:
+            if include_close:
+                return ((day[lowest] <= timestamp <= day['break_start']) or
+                        (day['break_end'] <= timestamp <= day[highest]))
             else:
-                if include_close:
-                    return schedule.at[date, lowest] <= timestamp <= schedule.at[date, highest]
-                else:
-                    return schedule.at[date, lowest] <= timestamp < schedule.at[date, highest]
+                return ((day[lowest] <= timestamp < day['break_start']) or
+                        (day['break_end'] <= timestamp < day[highest]))
         else:
-            return False
+            if include_close:
+                return day[lowest] <= timestamp <= day[highest]
+            else:
+                return day[lowest] <= timestamp < day[highest]
+
 
     # need this to make is_open_now testable
     @staticmethod

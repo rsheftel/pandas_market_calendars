@@ -8,6 +8,7 @@
 """
 
 import pandas as pd
+import pytest
 import pytz
 
 from pandas_market_calendars.exchange_calendar_ose import OSEExchangeCalendar
@@ -68,8 +69,8 @@ def test_2017_calendar():
         schedule=ose_schedule,
         timestamp=pd.Timestamp("2017-04-12 12PM", tz=TIMEZONE)
     )
-
-    assert not ose.open_at_time(
+    with pytest.raises(ValueError):
+        ose.open_at_time(
         schedule=ose_schedule,
         timestamp=pd.Timestamp("2017-04-12 2PM", tz=TIMEZONE)
     )
@@ -112,8 +113,8 @@ def test_2018_calendar():
         schedule=ose_schedule,
         timestamp=pd.Timestamp("2018-03-28 12PM", tz=TIMEZONE)
     )
-
-    assert not ose.open_at_time(
+    with pytest.raises(ValueError):
+        ose.open_at_time(
         schedule=ose_schedule,
         timestamp=pd.Timestamp("2018-03-28 1:10PM", tz=TIMEZONE)
     )
@@ -157,8 +158,8 @@ def test_2019_calendar():
         schedule=ose_schedule,
         timestamp=pd.Timestamp("2019-04-17 12PM", tz=TIMEZONE)
     )
-
-    assert not ose.open_at_time(
+    with pytest.raises(ValueError):
+        ose.open_at_time(
         schedule=ose_schedule,
         timestamp=pd.Timestamp("2019-04-17 1:10PM", tz=TIMEZONE)
     )
