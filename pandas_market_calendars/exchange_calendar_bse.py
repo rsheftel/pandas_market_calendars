@@ -342,6 +342,19 @@ BSEClosedDay = [
     Timestamp('2021-11-04', tz='UTC'),  # Diwali/Laxmi Puja. muhurat trading day
     Timestamp('2021-11-05', tz='UTC'),  # Diwali/Laxmi Puja
     Timestamp('2021-11-19', tz='UTC'),  # Guru Nanak Jayanti
+    Timestamp('2022-01-26', tz='UTC'),  # Republic Day
+    Timestamp('2022-03-01', tz='UTC'),  # Maha Shivaratri
+    Timestamp('2022-03-18', tz='UTC'),  # Holi
+    Timestamp('2022-04-14', tz='UTC'),  # Dr.Baba Saheb Ambedkar Jayanti
+    Timestamp('2022-04-15', tz='UTC'),  # Good Friday
+    Timestamp('2022-05-03', tz='UTC'),  # Id-ul-Fitr
+    Timestamp('2022-08-09', tz='UTC'),  # Moharram
+    Timestamp('2022-08-15', tz='UTC'),  # Independence Day
+    Timestamp('2022-08-31', tz='UTC'),  # Ganesh Chaturthi
+    Timestamp('2022-10-05', tz='UTC'),  # Vijaya Dashami
+    Timestamp('2022-10-24', tz='UTC'),  # Diwali/Laxmi Puja. muhurat trading day
+    Timestamp('2022-10-26', tz='UTC'),  # Diwali-Balipratipada
+    Timestamp('2022-11-08', tz='UTC'),  # Guru Nanak Jayanti
 ]
 
 
