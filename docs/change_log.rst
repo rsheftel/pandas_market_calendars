@@ -3,6 +3,14 @@
 
 Updates
 -------
+3.3 (01/30/22)
+~~~~~~~~~~~~~~
+- `PR #166 <https://github.com/rsheftel/pandas_market_calendars/pull/166>`_ to solve the issue raised in
+  `#164 <https://github.com/rsheftel/pandas_market_calendars/issues/164>`_
+- Add Juneteenth to NYSE calendar
+- Fixed CN holidays
+- Make MarketCalendars pickleable
+
 3.2 (10/10/21)
 ~~~~~~~~~~~~~~
 - Major refactoring of the underlying code from `PR #150 <https://github.com/rsheftel/pandas_market_calendars/pull/150>`_
