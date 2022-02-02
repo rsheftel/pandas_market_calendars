@@ -54,7 +54,6 @@ class ASXExchangeCalendar(MarketCalendar):
 			QueensBirthday,
 			Christmas,
 			BoxingDay,
-			WeekendBoxingDay,
 			GoodFriday,
 			EasterMonday,
 		])
