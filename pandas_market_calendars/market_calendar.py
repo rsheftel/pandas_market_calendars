@@ -429,13 +429,18 @@ class MarketCalendar(metaclass=MarketCalendarMeta):
 
         (This is shared logic for computing special opens and special closes.)
         """
-        dates = pd.DatetimeIndex([], tz= "UTC").union_many(
-            [
+        indexes = ([
                 self.days_at_time(self._tryholidays(calendar, start, end), time_)
                       for time_, calendar in calendars
              ] + [
                 self.days_at_time(dates, time_) for time_, dates in ad_hoc_dates
             ])
+        if len(indexes):
+            dates = indexes[0]
+            for index in indexes[1:]:
+                dates = dates.union(index)
+        else:
+            dates = pd.DatetimeIndex([], tz="UTC")
 
         start = start.tz_localize("UTC")
         end = end.tz_localize("UTC").replace(hour=23, minute=59, second=59)
