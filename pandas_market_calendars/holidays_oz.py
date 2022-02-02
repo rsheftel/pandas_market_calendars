@@ -17,7 +17,7 @@ OZNewYearsDay = Holiday(
 AustraliaDay = Holiday(
     "Australia Day",
     month=1,
-    day=27,
+    day=26,
     observance=weekend_to_monday,
 )
 
