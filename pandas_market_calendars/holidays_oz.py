@@ -1,9 +1,12 @@
 # OZ Holidays
 
 from pandas import DateOffset
-from pandas.tseries.holiday import Holiday, MO, weekend_to_monday
-
-from pandas_market_calendars.market_calendar import MONDAY, TUESDAY
+from pandas.tseries.holiday import (
+    Holiday,
+    MO,
+    next_monday_or_tuesday,
+    weekend_to_monday,
+)
 
 # New Year's Day
 OZNewYearsDay = Holiday(
@@ -50,13 +53,5 @@ BoxingDay = Holiday(
     "Boxing Day",
     month=12,
     day=26,
-)
-
-# If boxing day is saturday then Monday 28th is a holiday
-# If boxing day is sunday then Tuesday 28th is a holiday
-WeekendBoxingDay = Holiday(
-    "Weekend Boxing Day",
-    month=12,
-    day=28,
-    days_of_week=(MONDAY, TUESDAY),
+    observance=next_monday_or_tuesday,
 )
