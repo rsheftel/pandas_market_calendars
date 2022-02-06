@@ -13,6 +13,7 @@ from .exchange_calendar_jpx import JPXExchangeCalendar
 from .exchange_calendar_lse import LSEExchangeCalendar
 from .exchange_calendar_nyse import NYSEExchangeCalendar
 from .exchange_calendar_ose import OSEExchangeCalendar
+from .exchange_calendar_sifma import SIFMAUSExchangeCalendar, SIFMAUKExchangeCalendar, SIFMAJPExchangeCalendar
 from .exchange_calendar_six import SIXExchangeCalendar
 from .exchange_calendar_sse import SSEExchangeCalendar
 from .exchange_calendar_tsx import TSXExchangeCalendar
