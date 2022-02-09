@@ -31,6 +31,7 @@ AniversarioSaoPaulo = Holiday(
     'Aniversario de Sao Paulo',
     month=1,
     day=25,
+    end_date=Timestamp('2021-12-31')
 )
 # Carnival Monday
 CarnavalSegunda = Holiday(
@@ -79,7 +80,8 @@ Constitucionalista = Holiday(
     'Constitucionalista',
     month=7,
     day=9,
-    start_date='1997-01-01'
+    start_date='1997-01-01',
+    end_date=Timestamp('2021-12-31')
 )
 # Independence Day
 Independencia = Holiday(
