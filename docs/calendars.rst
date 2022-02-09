@@ -34,6 +34,15 @@ CME        CME_Bond           CMEBondExchangeCalendar             Yes         rs
 CME        CME_Agricultural   CMEAgriculturalExchangeCalendar     Yes        lionelyoung
 ========== ================ =================================== ============ ============
 
+Bond Market Calendars
+#####################
+========== ================ =================================== ============ ============
+ Country        Name             Class                          Unit Tests    Creator
+========== ================ =================================== ============ ============
+   US          SIFMAUS        SIFMAUSExchangeCalendar             Yes
+   UK          SIFMAUK        SIFMAUKExchangeCalendar             Yes
+   JP          SIFMAJP        SIFMAJPExchangeCalendar             Yes
+
 Exchange Calendars Package
 ##########################
 pandas_market_calendars now imports and provides access to all the calendars in `exchange_calendars <https://github.com/gerrymanoim/exchange_calendars>`_

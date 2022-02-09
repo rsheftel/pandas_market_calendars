@@ -3,6 +3,12 @@
 
 Updates
 -------
+3.4 (XX/XX/XX)
+~~~~~~~~~~~~~~
+- Update to work with pandas 1.4.0
+- Fix boxing day for Australia
+- Add SIFMA US, UK and JP calendars
+
 3.3 (01/30/22)
 ~~~~~~~~~~~~~~
 - `PR #166 <https://github.com/rsheftel/pandas_market_calendars/pull/166>`_ to solve the issue raised in
