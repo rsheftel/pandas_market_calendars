@@ -58,7 +58,10 @@ class CMEBaseExchangeCalendar(MarketCalendar):
         return USNationalDaysofMourning
 
     @property
-    def special_closes(self, t=time(12)): return [( t, AbstractHolidayCalendar(rules=[
+    def special_closes(self):
+        return [(
+            time(12),
+            AbstractHolidayCalendar(rules=[
                 USMartinLutherKingJrAfter1998,
                 USPresidentsDay,
                 USMemorialDay,
@@ -69,7 +72,7 @@ class CMEBaseExchangeCalendar(MarketCalendar):
                 ChristmasEveBefore1993,
                 ChristmasEveInOrAfter1993,
             ])
-    )]
+        )]
 
 class CMEEquityExchangeCalendar(CMEBaseExchangeCalendar):
     aliases = ['CME_Equity', 'CBOT_Equity']
