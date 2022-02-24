@@ -13,6 +13,9 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+import warnings
+from abc import ABCMeta, abstractmethod
+
 from datetime import time
 from itertools import chain
 
@@ -26,32 +29,16 @@ from .holidays_us import (Christmas, ChristmasEveBefore1993, ChristmasEveInOrAft
 from .market_calendar import MarketCalendar
 
 
-# Useful resources for making changes to this file: http://www.cmegroup.com/tools-information/holiday-calendar.html
-# The CME has different holiday rules depending on the type of instrument.
-# For example, http://www.cmegroup.com/tools-information/holiday-calendar/files/2016-4th-of-july-holiday-schedule.pdf # noqa
-# shows that Equity, Interest Rate, FX, Energy, Metals & DME Products close at 1200 CT on July 4, 2016, while Grain,
-# Oilseed & MGEX Products and Livestock, Dairy & Lumber products are completely closed.
-
-
-class CMEEquityExchangeCalendar(MarketCalendar):
-    """
-    Exchange calendar for CME for Equity products
-
-    Open Time: 6:00 PM, America/New_York / 5:00 PM Chicago
-    Close Time: 5:00 PM, America/New_York / 4:00 PM Chicago
-    Break: 4:15 - 4:30pm America/New_York / 3:15 - 3:30 PM Chicago
-    """
-    aliases = ['CME_Equity', 'CBOT_Equity']
-    regular_market_times = {
-        "market_open": ((None, time(17), -1),), # offset by -1 day
-        "market_close": ((None, time(16)),),
-        "break_start": ((None, time(15,15)),),
-        "break_end": ((None, time(15,30)),)
-    }
-
+class CMEBaseExchangeCalendar(MarketCalendar):
     @property
+    @abstractmethod
     def name(self):
-        return "CME_Equity"
+        """
+        Name of the market
+
+        :return: string name
+        """
+        raise NotImplementedError()
 
     @property
     def tz(self):
@@ -71,10 +58,7 @@ class CMEEquityExchangeCalendar(MarketCalendar):
         return USNationalDaysofMourning
 
     @property
-    def special_closes(self):
-        return [(
-            time(12),
-            AbstractHolidayCalendar(rules=[
+    def special_closes(self, t=time(12)): return [( t, AbstractHolidayCalendar(rules=[
                 USMartinLutherKingJrAfter1998,
                 USPresidentsDay,
                 USMemorialDay,
@@ -85,7 +69,84 @@ class CMEEquityExchangeCalendar(MarketCalendar):
                 ChristmasEveBefore1993,
                 ChristmasEveInOrAfter1993,
             ])
-        )]
+    )]
+
+class CMEEquityExchangeCalendar(CMEBaseExchangeCalendar):
+    aliases = ['CME_Equity', 'CBOT_Equity']
+
+    regular_market_times = {
+        "market_open": ((None, time(17), -1),), # offset by -1 day
+        "market_close": ((None, time(16)),),
+        "break_start": ((None, time(15,15)),),
+        "break_end": ((None, time(15,30)),)
+    }
+
+    @property
+    def name(self):
+        return "CME_Equity"
+    
+
+
+# Useful resources for making changes to this file: http://www.cmegroup.com/tools-information/holiday-calendar.html
+# The CME has different holiday rules depending on the type of instrument.
+# For example, http://www.cmegroup.com/tools-information/holiday-calendar/files/2016-4th-of-july-holiday-schedule.pdf # noqa
+# shows that Equity, Interest Rate, FX, Energy, Metals & DME Products close at 1200 CT on July 4, 2016, while Grain,
+# Oilseed & MGEX Products and Livestock, Dairy & Lumber products are completely closed.
+
+
+# class CMEEquityExchangeCalendar(MarketCalendar):
+#     """
+#     Exchange calendar for CME for Equity products
+
+#     Open Time: 6:00 PM, America/New_York / 5:00 PM Chicago
+#     Close Time: 5:00 PM, America/New_York / 4:00 PM Chicago
+#     Break: 4:15 - 4:30pm America/New_York / 3:15 - 3:30 PM Chicago
+#     """
+#     aliases = ['CME_Equity', 'CBOT_Equity']
+#     regular_market_times = {
+#         "market_open": ((None, time(17), -1),), # offset by -1 day
+#         "market_close": ((None, time(16)),),
+#         "break_start": ((None, time(15,15)),),
+#         "break_end": ((None, time(15,30)),)
+#     }
+
+#     @property
+#     def name(self):
+#         return "CME_Equity"
+
+#     @property
+#     def tz(self):
+#         return timezone('America/Chicago')
+
+#     @property
+#     def regular_holidays(self):
+#         # Many days that are holidays for the NYSE are an early close day for CME
+#         return AbstractHolidayCalendar(rules=[
+#             USNewYearsDay,
+#             GoodFriday,
+#             Christmas,
+#         ])
+
+#     @property
+#     def adhoc_holidays(self):
+#         return USNationalDaysofMourning
+
+#     @property
+#     def special_closes(self):
+#         return [(
+#             time(12),
+#             AbstractHolidayCalendar(rules=[
+#                 USMartinLutherKingJrAfter1998,
+#                 USPresidentsDay,
+#                 USMemorialDay,
+#                 USLaborDay,
+#                 USIndependenceDay,
+#                 USThanksgivingDay,
+#                 USBlackFridayInOrAfter1993,
+#                 ChristmasEveBefore1993,
+#                 ChristmasEveInOrAfter1993,
+#             ])
+#         )]
 
 
 
@@ -238,3 +299,4 @@ class CMEBondExchangeCalendar(MarketCalendar):
         return [
             (time(10, tzinfo=self.tz), BondsGoodFridayOpen)
         ]
+
