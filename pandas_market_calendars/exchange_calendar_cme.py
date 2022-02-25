@@ -31,7 +31,7 @@ from .market_calendar import MarketCalendar
 
 class CMEBaseExchangeCalendar(MarketCalendar):
     @property
-    @abstractmethod
+    #@abstractmethod  #Would have prefered to keep this class abstract but it fails test_market_calendar.py
     def name(self):
         """
         Name of the market
@@ -43,6 +43,10 @@ class CMEBaseExchangeCalendar(MarketCalendar):
     @property
     def tz(self):
         return timezone('America/Chicago')
+
+    @property 
+    def special_close_time(self):
+        return time(12) #Default time for special closes
 
     @property
     def regular_holidays(self):
@@ -56,11 +60,11 @@ class CMEBaseExchangeCalendar(MarketCalendar):
     @property
     def adhoc_holidays(self):
         return USNationalDaysofMourning
-
+ 
     @property
     def special_closes(self):
         return [(
-            time(12),
+            self.special_close_time,
             AbstractHolidayCalendar(rules=[
                 USMartinLutherKingJrAfter1998,
                 USPresidentsDay,
@@ -74,20 +78,27 @@ class CMEBaseExchangeCalendar(MarketCalendar):
             ])
         )]
 
-class CMEEquityExchangeCalendar(CMEBaseExchangeCalendar):
-    aliases = ['CME_Equity', 'CBOT_Equity']
 
+
+class CMEEquityExchangeCalendar(CMEBaseExchangeCalendar):
+    aliases = ['CME_Equity', 'CBOT_Equity', '/ES', 'S&P500']
+
+    # Using CME Globex trading times
+    # https://www.cmegroup.com/markets/equities/sp/e-mini-sandp500.contractSpecs.html
     regular_market_times = {
         "market_open": ((None, time(17), -1),), # offset by -1 day
-        "market_close": ((None, time(16)),),
-        "break_start": ((None, time(15,15)),),
-        "break_end": ((None, time(15,30)),)
+        "market_close": ((None, time(16, 00)),)
+        #"break_start": ((None, time(17,45)),),
+        #"break_end": ((None, time(17,30)),)
     }
 
     @property
     def name(self):
         return "CME_Equity"
     
+    @property
+    def special_close_time(self):
+        return time(12, 30)
 
 
 # Useful resources for making changes to this file: http://www.cmegroup.com/tools-information/holiday-calendar.html
