@@ -1,49 +1,89 @@
 import datetime as dt
 
 import pandas as pd
+import pytest
 import pytz
+from pandas.tseries.offsets import Day, Hour, Minute
 
 from pandas_market_calendars.exchange_calendar_cme_globex_fx import CMECurrencyExchangeCalendar
 
+TZ = 'America/Chicago'
+
 
 def test_time_zone():
-    assert CMECurrencyExchangeCalendar().tz == pytz.timezone('America/Chicago')
+    assert CMECurrencyExchangeCalendar().tz == pytz.timezone(TZ)
     assert CMECurrencyExchangeCalendar().name == 'CME_Currency'
 
 
 def test_sunday_opens():
     cme = CMECurrencyExchangeCalendar()
-    schedule = cme.schedule('2020-01-01', '2020-01-31', tz='America/New_York')
-    assert pd.Timestamp('2020-01-12 18:00:00', tz='America/New_York') == schedule.loc['2020-01-13', 'market_open']
+    schedule = cme.schedule('2020-01-01', '2020-01-31')
+    assert pd.Timestamp('2020-01-12 17:00:00', tz=TZ) == schedule.loc['2020-01-13', 'market_open']
 
+@pytest.mark.parametrize(
+    'day_status',
+    [
+        # 2021
+        # 2021 Martin Luther King Day (18th = Monday)
+        ('2021-01-15', 'open'), ('2021-01-18', '1200'), ('2021-01-19', 'open'),
+        # 2021 Presidents Day (15th = Monday)
+        ('2021-02-12', 'open'), ('2021-02-15', '1200'), ('2021-02-16', 'open'),
+        # 2021 Good Friday (2nd = Friday)
+        ('2021-04-01', 'open'), ('2021-04-02', '1015'), ('2021-04-05', 'open'),
+        # 2021 Memorial Day (May 31 = Monday)
+        ('2021-05-28', 'open'), ('2021-05-31', '1200'), ('2021-06-01', 'open'),
+        # 2021 Independence Day (4th = Sunday)
+        ('2021-07-02', 'open'), ('2021-07-05', '1200'), ('2021-07-06', 'open'),
+        # 2021 Labor Day (6th = Monday)
+        ('2021-09-03', 'open'), ('2021-09-06', '1200'), ('2021-09-07', 'open'),
+        # 2021 Thanksgiving (25th = Thursday)
+        ('2021-11-24', 'open'), ('2021-11-25', '1200'), ('2021-11-26', '1215'),
+        # 2021 Christmas (25th = Saturday)
+        ('2021-12-22', 'open'), ('2021-12-23', 'closed'), ('2021-12-27', 'open'),
+        # 2021/22 New Year's (Dec 31 = Friday) (unusually this period was fully open)
+        ('2021-12-31', 'open'), ('2022-01-03', 'sunday'), ('2022-01-03', 'open'),
 
-def test_2022_holidays():
-    cme = CMECurrencyExchangeCalendar()
-    good_dates = cme.valid_days('2022-01-01', '2023-01-10')
-    # Closed holidays
-    # Good Friday 2022-04-15
-    # Christmas (observed): 2022-12-26
-    # New Years Day (obscerved) 2023-01-02
-    for holiday_date in ["2022-04-15", "2022-12-26", "2023-01-02"]:
-        assert pd.Timestamp(holiday_date, tz='UTC') not in good_dates
+        # 2022
+        # 2022 Martin Luther King Day (17th = Monday)
+        ('2022-01-14', 'open'), ('2022-01-17', 'open'), ('2022-01-18', 'open'),
+        # 2022 President's Day (21st = Monday)
+        ('2022-02-18', 'open'), ('2022-02-21', 'open'), ('2022-02-22', 'open'),
+        # 2022 Good Friday (15 = Friday)
+        ('2022-04-14', 'open'), ('2022-04-15', 'closed'), ('2021-04-18', 'open'),
+        # 2022 Memorial Day	 (30th = Monday)
+        ('2022-05-27', 'open'), ('2022-05-30', 'open'), ('2022-05-31', 'open'),
+        # 2022 Juneteenth (20th = Monday)
+        ('2022-06-17', 'open'), ('2022-06-20', 'open'), ('2022-06-21', 'open'),
+        # 2022 Independence Day (4th = Monday)
+        ('2022-07-01', 'open'), ('2022-07-04', 'open'), ('2022-07-05', 'open'),
+        # 2022 Labor Day (5th = Monday)
+        ('2022-09-02', 'open'), ('2022-09-05', 'open'), ('2022-09-06', 'open'),
+        # 2022 Thanksgiving (24th = Thursday)
+        ('2022-11-23', 'open'), ('2022-11-24', 'open'), ('2022-11-25', '1215'), ('2022-11-28', 'open'),
+        # 2022 Christmas (25 = Sunday)
+        ('2022-12-23', 'open'), ('2022-12-26', 'closed'), ('2022-12-27', 'open'),
+        # 2022/23 Christmas (Jan 1 = Sunday)
+        ('2022-12-30', 'open'), ('2023-01-02', 'closed'), ('2023-01-03', 'open'),
+    ],
+    ids=lambda x: f'{x[0]} {x[1]}',
+)
+def test_2022_and_prior_holidays(day_status):
+    day_str = day_status[0]
+    day_ts = pd.Timestamp(day_str, tz=TZ)
+    expected_status = day_status[1]
 
-    # Holidays that currencies are open but many other markets are not
-    # Independence day 2022-07-04
-    # Labour day 2022-09-05
-    # Thanksgiving Thursday 2022-11-24
-    for not_holiday_date in ["2022-07-04", "2022-09-05", "2022-11-24"]:
-        assert pd.Timestamp(not_holiday_date, tz='UTC') in good_dates
+    under_test = CMECurrencyExchangeCalendar()
+    schedule = under_test.schedule('2020-01-01', '2023-02-28', tz=TZ)
 
-
-def test_2022_early_closes():
-    cme = CMECurrencyExchangeCalendar()
-    schedule = cme.schedule('2022-01-01', '2022-12-31')
-    early_closes = cme.early_closes(schedule).index
-
-    # Thanksgiving Friday 2022-11-25
-    for date in ["2022-11-25"]:
-        ts = pd.Timestamp(date)
-        assert ts in early_closes
-
-        market_close = schedule.loc[ts].market_close
-        assert market_close.tz_convert(cme.tz).time() == dt.time(12, 15)
+    if expected_status == 'open':
+        s = schedule.loc[day_str]
+        assert s['market_open'] == day_ts + Day(-1) + Hour(17) + Minute(0)
+        assert s['market_close'] == day_ts + Day(0) + Hour(16) + Minute(0)
+    elif expected_status == 'closed':
+        assert day_ts not in schedule.index
+    else:
+        s = schedule.loc[day_str]
+        hour = int(expected_status[0:2])
+        minute = int(expected_status[2:4])
+        assert s['market_open'] == day_ts + Day(-1) + Hour(17)
+        assert s['market_close'] == day_ts + Day(0) + Hour(hour) + Minute(minute)
