@@ -14,7 +14,7 @@
 # limitations under the License.
 
 import warnings
-from abc import ABCMeta, abstractmethod
+from abc import ABC, abstractmethod
 
 from datetime import time
 from itertools import chain
@@ -29,7 +29,7 @@ from .holidays_us import (Christmas, ChristmasEveBefore1993, ChristmasEveInOrAft
 from .market_calendar import MarketCalendar
 
 
-class CMEBaseExchangeCalendar(MarketCalendar):
+class CMEBaseExchangeCalendar(MarketCalendar, ABC):
     """
     Base Exchange Calendar for CME.
 
@@ -57,7 +57,7 @@ class CMEBaseExchangeCalendar(MarketCalendar):
     - US Thanksgiving Day
     """
     @property
-    #@abstractmethod  #Would have prefered to keep this class abstract but it fails test_market_calendar.py
+    @abstractmethod
     def name(self):
         """
         Name of the market
@@ -144,7 +144,7 @@ class CMELivestockExchangeCalendar(CMEAgricultureExchangeCalendar):
     aliases = ['CME_Livestock', 'CME_Live_Cattle', 'CME_Feeder_Cattle', 'CME_Lean_Hog', 'CME_Port_Cutout']
 
     regular_market_times = {
-        "market_open": ((None, time(8, 30)),), 
+        "market_open": ((None, time(8, 30)),),
         "market_close": ((None, time(13, 5)),)
     }
 
@@ -180,9 +180,9 @@ class CMELivestockExchangeCalendar(CMEAgricultureExchangeCalendar):
                 ChristmasEveInOrAfter1993,
             ])
         )]
-  
 
-    
+
+
 class CMEEquityExchangeCalendar(CMEBaseExchangeCalendar):
     aliases = ['CME_Equity', 'CBOT_Equity', '/ES', 'S&P500']
 
@@ -198,7 +198,7 @@ class CMEEquityExchangeCalendar(CMEBaseExchangeCalendar):
     @property
     def name(self):
         return "CME_Equity"
-    
+
     @property
     def special_close_time(self):
         return time(12, 30)
