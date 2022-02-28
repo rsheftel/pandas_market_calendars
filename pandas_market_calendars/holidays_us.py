@@ -1,4 +1,4 @@
-from dateutil.relativedelta import (MO, TH, TU)
+from dateutil.relativedelta import (MO, TH, TU, FR)
 from pandas import (DateOffset, Timestamp, date_range)
 from pandas.tseries.holiday import (Holiday, nearest_workday, sunday_to_monday)
 from pandas.tseries.offsets import Day
@@ -94,6 +94,10 @@ USThanksgivingDay = Holiday('Thanksgiving',
                             start_date=Timestamp('1942-01-01'),
                             month=11, day=1,
                             offset=DateOffset(weekday=TH(4)))
+USThanksgivingFriday = Holiday('ThanksgivingFriday',
+                               start_date=Timestamp('1942-01-01'),
+                               month=11, day=1,
+                               offset=DateOffset(weekday=FR(4)))
 # http://www.tradingtheodds.com/nyse-full-day-closings/
 USMemorialDayBefore1964 = Holiday(
     'Memorial Day',
