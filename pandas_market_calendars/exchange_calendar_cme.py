@@ -24,8 +24,8 @@ from pandas.tseries.holiday import AbstractHolidayCalendar, GoodFriday, USLaborD
 from pytz import timezone
 
 from .holidays_us import (Christmas, ChristmasEveBefore1993, ChristmasEveInOrAfter1993, USBlackFridayInOrAfter1993,
-                          USIndependenceDay, USMartinLutherKingJrAfter1998, USMemorialDay, USNationalDaysofMourning,
-                          USNewYearsDay)
+                          USIndependenceDay, USMartinLutherKingJrAfter1998, USMemorialDay, USJuneteenthAfter2022,
+                          USNationalDaysofMourning, USNewYearsDay)
 from .market_calendar import MarketCalendar
 
 
@@ -91,6 +91,7 @@ class CMEBaseExchangeCalendar(MarketCalendar):
                 USMartinLutherKingJrAfter1998,
                 USPresidentsDay,
                 USMemorialDay,
+                USJuneteenthAfter2022,
                 USLaborDay,
                 USIndependenceDay,
                 USThanksgivingDay,

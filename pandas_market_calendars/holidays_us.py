@@ -351,3 +351,14 @@ USNationalDaysofMourning = [
     Timestamp('2007-01-02', tz='UTC'),
     Timestamp('2018-12-05', tz='UTC'),
 ]
+
+
+#######################################
+# US Juneteenth (June 19th)
+#######################################
+USJuneteenthAfter2022 = Holiday(
+    'Juneteenth Starting at 2022',
+    start_date=Timestamp('2022-06-19'),
+    month=6, day=19,
+    observance=nearest_workday,
+)
