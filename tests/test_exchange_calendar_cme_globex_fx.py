@@ -1,5 +1,3 @@
-import datetime as dt
-
 import pandas as pd
 import pytest
 import pytz
@@ -20,9 +18,30 @@ def test_sunday_opens():
     schedule = cme.schedule('2020-01-01', '2020-01-31')
     assert pd.Timestamp('2020-01-12 17:00:00', tz=TZ) == schedule.loc['2020-01-13', 'market_open']
 
+
 @pytest.mark.parametrize(
     'day_status',
     [
+        # 2020
+        # 2020 Martin Luther King Day (20th = Monday)
+        ('2020-01-17', 'open'), ('2020-01-20', '1200'), ('2020-01-21', 'open'),
+        # 2020 Presidents Day (17th = Monday)
+        ('2020-02-14', 'open'), ('2020-02-17', '1200'), ('2020-02-18', 'open'),
+        # 2020 Good Friday (10th = Friday)
+        ('2020-04-09', 'open'), ('2020-04-10', 'closed'), ('2020-04-13', 'open'),
+        # 2020 Memorial Day (May 25 = Monday)
+        ('2020-05-22', 'open'), ('2020-05-25', '1200'), ('2020-05-26', 'open'),
+        # 2020 Independence Day (4th = Saturday)
+        ('2020-07-02', 'open'), ('2020-07-03', '1200'), ('2020-07-06', 'open'),
+        # 2020 Labor Day (4th = Monday)
+        ('2020-09-04', 'open'), ('2020-09-07', '1200'), ('2020-09-08', 'open'),
+        # 2020 Thanksgiving (26th = Thursday)
+        ('2020-11-25', 'open'), ('2020-11-26', '1200'), ('2020-11-27', '1215'), ('2020-11-30', 'open'),
+        # 2020 Christmas (25th = Friday)
+        ('2020-12-24', '1215'), ('2020-12-25', 'closed'), ('2020-12-28', 'closed'), ('2020-12-29', 'open'),
+        # 2020/21 New Year's (Dec 31 = Thur)
+        ('2020-12-31', 'open'), ('2021-01-01', 'closed'), ('2022-01-04', 'open'),
+
         # 2021
         # 2021 Martin Luther King Day (18th = Monday)
         ('2021-01-15', 'open'), ('2021-01-18', '1200'), ('2021-01-19', 'open'),
@@ -39,9 +58,9 @@ def test_sunday_opens():
         # 2021 Thanksgiving (25th = Thursday)
         ('2021-11-24', 'open'), ('2021-11-25', '1200'), ('2021-11-26', '1215'),
         # 2021 Christmas (25th = Saturday)
-        ('2021-12-22', 'open'), ('2021-12-23', 'closed'), ('2021-12-27', 'open'),
+        ('2021-12-23', 'open'), ('2021-12-24', 'closed'), ('2021-12-27', 'open'),
         # 2021/22 New Year's (Dec 31 = Friday) (unusually this period was fully open)
-        ('2021-12-31', 'open'), ('2022-01-03', 'sunday'), ('2022-01-03', 'open'),
+        ('2021-12-31', 'open'), ('2022-01-03', 'open'), ('2022-01-03', 'open'),
 
         # 2022
         # 2022 Martin Luther King Day (17th = Monday)
@@ -49,7 +68,7 @@ def test_sunday_opens():
         # 2022 President's Day (21st = Monday)
         ('2022-02-18', 'open'), ('2022-02-21', 'open'), ('2022-02-22', 'open'),
         # 2022 Good Friday (15 = Friday)
-        ('2022-04-14', 'open'), ('2022-04-15', 'closed'), ('2021-04-18', 'open'),
+        ('2022-04-14', 'open'), ('2022-04-15', 'closed'), ('2022-04-18', 'open'),
         # 2022 Memorial Day	 (30th = Monday)
         ('2022-05-27', 'open'), ('2022-05-30', 'open'), ('2022-05-31', 'open'),
         # 2022 Juneteenth (20th = Monday)
@@ -62,12 +81,12 @@ def test_sunday_opens():
         ('2022-11-23', 'open'), ('2022-11-24', 'open'), ('2022-11-25', '1215'), ('2022-11-28', 'open'),
         # 2022 Christmas (25 = Sunday)
         ('2022-12-23', 'open'), ('2022-12-26', 'closed'), ('2022-12-27', 'open'),
-        # 2022/23 Christmas (Jan 1 = Sunday)
+        # 2022/23 New Years (Jan 1 = Sunday)
         ('2022-12-30', 'open'), ('2023-01-02', 'closed'), ('2023-01-03', 'open'),
     ],
     ids=lambda x: f'{x[0]} {x[1]}',
 )
-def test_2022_and_prior_holidays(day_status):
+def test_2020_through_2022_and_prior_holidays(day_status):
     day_str = day_status[0]
     day_ts = pd.Timestamp(day_str, tz=TZ)
     expected_status = day_status[1]
