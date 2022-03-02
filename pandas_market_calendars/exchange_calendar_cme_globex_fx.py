@@ -1,9 +1,29 @@
 from datetime import time
 
-from pandas.tseries.holiday import AbstractHolidayCalendar, GoodFriday
+from pandas.tseries.holiday import AbstractHolidayCalendar
 
 from pandas_market_calendars.exchange_calendar_cme import CMEBaseExchangeCalendar
-from pandas_market_calendars.holidays_us import USNewYearsDay, Christmas, USThanksgivingFriday
+from pandas_market_calendars.holidays_cme import (
+    USMartinLutherKingJrAfter1998Before2022,
+    USPresidentsDayBefore2022,
+    GoodFridayBefore2021,
+    GoodFriday2021,
+    GoodFridayAfter2021,
+    USMemorialDay2021AndPrior,
+    USIndependenceDayBefore2022,
+    USLaborDayStarting1887Before2022,
+    USThanksgivingBefore2022,
+    USThanksgivingFriday,
+)
+from pandas_market_calendars.holidays_us import (
+    USNewYearsDay,
+    ChristmasEveInOrAfter1993,
+    Christmas,
+)
+
+_1015 = time(10, 15)
+_1200 = time(12, 0)
+_1215 = time(12, 15)
 
 
 class CMECurrencyExchangeCalendar(CMEBaseExchangeCalendar):
@@ -26,23 +46,31 @@ class CMECurrencyExchangeCalendar(CMEBaseExchangeCalendar):
         return "CME_Currency"
 
     @property
-    def special_close_time(self):
-        return time(12, 15)
-
-    @property
     def regular_holidays(self):
         return AbstractHolidayCalendar(rules=[
             USNewYearsDay,
-            GoodFriday,
+            GoodFridayBefore2021,
+            GoodFridayAfter2021,
             Christmas,
         ])
 
     @property
     def special_closes(self):
-        # Currency futures are typically fully closed or they trade normal hours; Thanksgiving Friday is the exception
-        return [(
-            self.special_close_time,
-            AbstractHolidayCalendar(rules=[
-                USThanksgivingFriday,
-            ])
-        )]
+        """
+        Accurate 2020-2022 inclusive
+        TODO - enhance/verify prior to 2020
+        TODO - Add 2023+ once known
+        """
+        # Source https://www.cmegroup.com/tools-information/holiday-calendar.html
+        return [
+            (_1015, AbstractHolidayCalendar(rules=[GoodFriday2021])),
+            (_1200, AbstractHolidayCalendar(rules=[
+                USMartinLutherKingJrAfter1998Before2022,
+                USPresidentsDayBefore2022,
+                USMemorialDay2021AndPrior,
+                USIndependenceDayBefore2022,
+                USLaborDayStarting1887Before2022,
+                USThanksgivingBefore2022,
+            ])),
+            (_1215, AbstractHolidayCalendar(rules=[USThanksgivingFriday, ChristmasEveInOrAfter1993])),
+        ]

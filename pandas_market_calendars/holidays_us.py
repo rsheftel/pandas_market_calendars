@@ -94,10 +94,6 @@ USThanksgivingDay = Holiday('Thanksgiving',
                             start_date=Timestamp('1942-01-01'),
                             month=11, day=1,
                             offset=DateOffset(weekday=TH(4)))
-USThanksgivingFriday = Holiday('ThanksgivingFriday',
-                               start_date=Timestamp('1942-01-01'),
-                               month=11, day=1,
-                               offset=DateOffset(weekday=FR(4)))
 # http://www.tradingtheodds.com/nyse-full-day-closings/
 USMemorialDayBefore1964 = Holiday(
     'Memorial Day',
