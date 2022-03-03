@@ -1,3 +1,4 @@
+import inspect
 from pprint import pformat
 
 def _regmeta_instance_factory(cls, name, *args, **kwargs):
@@ -45,10 +46,11 @@ class RegisteryMeta(type):
         return cls
 
     def __init__(cls, name, bases, attr):
-        _regmeta_register_class(cls, cls, name)
-        for b in bases:
-            if hasattr(b, '_regmeta_class_registry'):
-                _regmeta_register_class(b, cls, name)
+        if not inspect.isabstract(cls):
+            _regmeta_register_class(cls, cls, name)
+            for b in bases:
+                if hasattr(b, '_regmeta_class_registry'):
+                    _regmeta_register_class(b, cls, name)
 
         super(RegisteryMeta, cls).__init__(name, bases, attr)
 
