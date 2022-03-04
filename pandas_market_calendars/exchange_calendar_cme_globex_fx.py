@@ -2,7 +2,7 @@ from datetime import time
 
 from pandas.tseries.holiday import AbstractHolidayCalendar
 
-from pandas_market_calendars.exchange_calendar_cme import CMEBaseExchangeCalendar
+from pandas_market_calendars.exchange_calendar_cme_globex_base import CMEGlobexBaseExchangeCalendar
 from pandas_market_calendars.holidays_cme import (
     USMartinLutherKingJrAfter1998Before2022,
     USPresidentsDayBefore2022,
@@ -26,7 +26,7 @@ _1200 = time(12, 0)
 _1215 = time(12, 15)
 
 
-class CMECurrencyExchangeCalendar(CMEBaseExchangeCalendar):
+class CMEGlobexFXExchangeCalendar(CMEGlobexBaseExchangeCalendar):
     aliases = ['CME_Currency']
 
     # Using CME Globex trading times eg AUD/USD, EUR/GBP, and BRL/USD
@@ -41,9 +41,11 @@ class CMECurrencyExchangeCalendar(CMEBaseExchangeCalendar):
         "market_close": ((None, time(16, 00)),)
     }
 
+    aliases = ['CMEGlobex_FX', 'CME_FX', 'CME_Currency']
+
     @property
     def name(self):
-        return "CME_Currency"
+        return "CMEGlobex_FX"
 
     @property
     def regular_holidays(self):

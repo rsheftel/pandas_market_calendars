@@ -3,18 +3,18 @@ import pytest
 import pytz
 from pandas.tseries.offsets import Day, Hour, Minute
 
-from pandas_market_calendars.exchange_calendar_cme_globex_fx import CMECurrencyExchangeCalendar
+from pandas_market_calendars.exchange_calendar_cme_globex_fx import CMEGlobexFXExchangeCalendar
 
 TZ = 'America/Chicago'
 
 
 def test_time_zone():
-    assert CMECurrencyExchangeCalendar().tz == pytz.timezone(TZ)
-    assert CMECurrencyExchangeCalendar().name == 'CME_Currency'
+    assert CMEGlobexFXExchangeCalendar().tz == pytz.timezone(TZ)
+    assert CMEGlobexFXExchangeCalendar().name == 'CMEGlobex_FX'
 
 
 def test_sunday_opens():
-    cme = CMECurrencyExchangeCalendar()
+    cme = CMEGlobexFXExchangeCalendar()
     schedule = cme.schedule('2020-01-01', '2020-01-31')
     assert pd.Timestamp('2020-01-12 17:00:00', tz=TZ) == schedule.loc['2020-01-13', 'market_open']
 
@@ -91,7 +91,7 @@ def test_2020_through_2022_and_prior_holidays(day_status):
     day_ts = pd.Timestamp(day_str, tz=TZ)
     expected_status = day_status[1]
 
-    under_test = CMECurrencyExchangeCalendar()
+    under_test = CMEGlobexFXExchangeCalendar()
     schedule = under_test.schedule('2020-01-01', '2023-02-28', tz=TZ)
 
     if expected_status == 'open':
