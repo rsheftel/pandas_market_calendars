@@ -3,11 +3,13 @@
 
 Updates
 -------
-3.4 (XX/XX/XX)
+3.4 (03/05/22)
 ~~~~~~~~~~~~~~
 - Update to work with pandas 1.4.0
 - Fix boxing day for Australia
 - Add SIFMA US, UK and JP calendars
+- Add IEX calendar
+- Add NSE calendar
 
 3.3 (01/30/22)
 ~~~~~~~~~~~~~~
