@@ -15,6 +15,7 @@
 
 from datetime import time
 
+from pandas import Timestamp
 from pandas.tseries.holiday import AbstractHolidayCalendar, Day, Easter, GoodFriday, Holiday
 from pytz import timezone
 
@@ -81,7 +82,7 @@ Constitucionalista = Holiday(
     month=7,
     day=9,
     start_date='1997-01-01',
-    end_date='2021-12-31'
+    end_date='2019-12-31'
 )
 # Independence Day
 Independencia = Holiday(
@@ -113,7 +114,7 @@ ConscienciaNegra = Holiday(
     month=11,
     day=20,
     start_date='2004-01-01',
-    end_date='2021-12-31'
+    end_date='2019-12-31'
 )
 # Christmas Eve
 VesperaNatal = Holiday(
@@ -141,6 +142,13 @@ AnoNovoSabado = Holiday(
     days_of_week=(FRIDAY,),
 )
 
+##########################
+# Non-recurring holidays
+##########################
+
+Constitucionalista2021 = Timestamp('2021-07-09', tz='UTC')
+ConscienciaNegra2021 = Timestamp('2021-11-20', tz='UTC')
+
 
 class BMFExchangeCalendar(MarketCalendar):
     """
@@ -158,12 +166,12 @@ class BMFExchangeCalendar(MarketCalendar):
     - Corpus Christi (60 days after Easter)
     - Tiradentes (April 21)
     - Labor day (May 1)
-    - Constitutionalist Revolution (July 9 after 1997 until 2021)
+    - Constitutionalist Revolution (July 9 after 1997 until 2021, skipping 2020)
     - Independence Day (September 7)
     - Our Lady of Aparecida Feast (October 12)
     - All Souls' Day (November 2)
     - Proclamation of the Republic (November 15)
-    - Day of Black Awareness (November 20 after 2004 until 2021)
+    - Day of Black Awareness (November 20 after 2004 until 2021, skipping 2020)
     - Christmas (December 24 and 25)
     - Day before New Year's Eve (December 30 if NYE falls on a Saturday)
     - New Year's Eve (December 31)
@@ -204,6 +212,13 @@ class BMFExchangeCalendar(MarketCalendar):
             AnoNovo,
             AnoNovoSabado,
         ])
+
+    @property
+    def adhoc_holidays(self):
+        return [
+            Constitucionalista2021,
+            ConscienciaNegra2021
+        ]
 
     @property
     def special_opens(self):
