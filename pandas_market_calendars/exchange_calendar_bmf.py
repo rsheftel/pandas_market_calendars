@@ -31,6 +31,7 @@ AniversarioSaoPaulo = Holiday(
     'Aniversario de Sao Paulo',
     month=1,
     day=25,
+    end_date='2021-12-31'
 )
 # Carnival Monday
 CarnavalSegunda = Holiday(
@@ -79,7 +80,8 @@ Constitucionalista = Holiday(
     'Constitucionalista',
     month=7,
     day=9,
-    start_date='1997-01-01'
+    start_date='1997-01-01',
+    end_date='2021-12-31'
 )
 # Independence Day
 Independencia = Holiday(
@@ -110,7 +112,8 @@ ConscienciaNegra = Holiday(
     'Dia da Consciencia Negra',
     month=11,
     day=20,
-    start_date='2004-01-01'
+    start_date='2004-01-01',
+    end_date='2021-12-31'
 )
 # Christmas Eve
 VesperaNatal = Holiday(
@@ -148,19 +151,19 @@ class BMFExchangeCalendar(MarketCalendar):
 
     Regularly-Observed Holidays:
     - Universal Confraternization (New year's day, Jan 1)
-    - Sao Paulo City Anniversary (Jan 25)
+    - Sao Paulo City Anniversary (Jan 25 until 2021)
     - Carnaval Monday (48 days before Easter)
     - Carnaval Tuesday (47 days before Easter)
     - Passion of the Christ (Good Friday, 2 days before Easter)
     - Corpus Christi (60 days after Easter)
     - Tiradentes (April 21)
     - Labor day (May 1)
-    - Constitutionalist Revolution (July 9 after 1997)
+    - Constitutionalist Revolution (July 9 after 1997 until 2021)
     - Independence Day (September 7)
     - Our Lady of Aparecida Feast (October 12)
     - All Souls' Day (November 2)
     - Proclamation of the Republic (November 15)
-    - Day of Black Awareness (November 20 after 2004)
+    - Day of Black Awareness (November 20 after 2004 until 2021)
     - Christmas (December 24 and 25)
     - Day before New Year's Eve (December 30 if NYE falls on a Saturday)
     - New Year's Eve (December 31)
