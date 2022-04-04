@@ -368,7 +368,7 @@ class BSEExchangeCalendar(MarketCalendar):
     of holidays back to 1997, and forward through 2020.  There are no known
     early closes or late opens.
     """
-    aliases = ['BSE']
+    aliases = ['BSE', 'NSE']
     regular_market_times = {
         "market_open": ((None, time(9, 15)),),
         "market_close": ((None, time(15, 30)),)

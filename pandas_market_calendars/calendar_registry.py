@@ -11,6 +11,7 @@ from .exchange_calendar_cme_globex_fx import CMEGlobexFXExchangeCalendar
 from .exchange_calendar_eurex import EUREXExchangeCalendar
 from .exchange_calendar_hkex import HKEXExchangeCalendar
 from .exchange_calendar_ice import ICEExchangeCalendar
+from .exchange_calendar_iex import IEXExchangeCalendar
 from .exchange_calendar_jpx import JPXExchangeCalendar
 from .exchange_calendar_lse import LSEExchangeCalendar
 from .exchange_calendar_nyse import NYSEExchangeCalendar
