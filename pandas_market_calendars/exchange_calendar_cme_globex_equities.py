@@ -39,6 +39,7 @@ from pandas_market_calendars.holidays_us import (
     USNewYearsDay,
     ChristmasEveInOrAfter1993,
     Christmas,
+    USJuneteenthAfter2022
 )
 
 class CMEGlobexEquitiesExchangeCalendar(CMEGlobexBaseExchangeCalendar):
@@ -67,11 +68,10 @@ class CMEGlobexEquitiesExchangeCalendar(CMEGlobexBaseExchangeCalendar):
                 12:00 early close on the Monday
     """
     """
-        * Juneteenth
+        * Juneteenth DONE
             2022
                 12:00 early close Monday after
                 
-        STILL NEEDS TO BE ADDED TO TESTS
     """
     """
         * Independence Day / July 4th
@@ -144,7 +144,7 @@ class CMEGlobexEquitiesExchangeCalendar(CMEGlobexBaseExchangeCalendar):
     """
     """
 
-        * Christmas  --------- GLOBEX
+        * Christmas  --------- GLOBEX  DONE
             --> nearest workday
         
             2009
@@ -167,9 +167,12 @@ class CMEGlobexEquitiesExchangeCalendar(CMEGlobexBaseExchangeCalendar):
     """
     """
         * New years ----------- GLOBEX
-                also pretty weird
-
-        * Good Friday  ---------- GLOBEX
+            
+            
+            
+    """
+    """
+        * Good Friday  ---------- GLOBEX    DONE
             2009
                 fully closed
             2010
@@ -244,7 +247,9 @@ class CMEGlobexEquitiesExchangeCalendar(CMEGlobexBaseExchangeCalendar):
                 USMemorialDay2013To2021,
                 USIndependenceDayAfter2014,
                 USLaborDayStarting1887After2014Before2022,
-                USThanksgivingAfter2014Before2022
+                USThanksgivingAfter2014Before2022,
+                USJuneteenthAfter2022
+
             ])),
             (time(8,15), AbstractHolidayCalendar(rules=[
                 GoodFriday2010,

@@ -302,7 +302,7 @@ TZ = 'America/Chicago'
         # 2022 Memorial Day	 (30th = Monday)
         ('2022-05-27', 'open'), ('2022-05-30', 'open'), ('2022-05-31', 'open'),
         # 2022 Juneteenth (20th = Monday)
-        ('2022-06-17', 'open'), ('2022-06-20', 'open'), ('2022-06-21', 'open'),
+        ('2022-06-17', 'open'), ('2022-06-20', '1200'), ('2022-06-21', 'open'),
         # 2022 Independence Day (4th = Monday)
         ('2022-07-01', 'open'), ('2022-07-04', 'open'), ('2022-07-05', 'open'),
         # 2022 Labor Day (5th = Monday)
