@@ -14,9 +14,13 @@ from pandas_market_calendars.holidays_cme import (
     USPresidentsDayBefore2015,
     USPresidentsDayAfter2015,
     USPresidentsDayBefore2022,
-    GoodFridayBefore2021,
+    GoodFridayBefore2021NotEarlyClose,
     GoodFriday2021,
     GoodFridayAfter2021,
+    GoodFriday2010,
+    GoodFriday2012,
+    GoodFriday2015,
+    GoodFriday2021,
     USMemorialDay2021AndPrior,
     USMemorialDay2013AndPrior,
     USMemorialDay2013To2021,
@@ -166,7 +170,9 @@ class CMEGlobexEquitiesExchangeCalendar(CMEGlobexBaseExchangeCalendar):
                 fully closed
             2021
                 8:15 early close
-
+            2022
+                fully closed
+            
     """
 
     regular_market_times = {
@@ -192,7 +198,7 @@ class CMEGlobexEquitiesExchangeCalendar(CMEGlobexBaseExchangeCalendar):
     def regular_holidays(self):
         return AbstractHolidayCalendar(rules=[
             USNewYearsDay,
-            GoodFridayBefore2021,
+            GoodFridayBefore2021NotEarlyClose,
             GoodFridayAfter2021,
             Christmas,
         ])
@@ -222,6 +228,12 @@ class CMEGlobexEquitiesExchangeCalendar(CMEGlobexBaseExchangeCalendar):
                 USIndependenceDayAfter2014,
                 USLaborDayStarting1887After2014Before2022,
                 USThanksgivingAfter2014Before2022
+            ])),
+            (time(8,15), AbstractHolidayCalendar(rules=[
+                GoodFriday2010,
+                GoodFriday2012,
+                GoodFriday2015,
+                GoodFriday2021,
             ])),
 
         ]

@@ -17,8 +17,8 @@ TZ = 'America/Chicago'
         ('2009-01-16', 'open'), ('2009-01-19', '1030'), ('2009-01-20', 'open'), # done
         # 2009 Presidents Day (16th = Monday)
         ('2009-02-13', 'open'), ('2009-02-16', '1030'), ('2009-02-17', 'open'),
-        # # 2009 Good Friday (10th = Friday)
-        # ('2009-04-09', 'open'), ('2009-04-10', 'closed'), ('2009-04-13', 'open'),
+        # 2009 Good Friday (10th = Friday)
+        ('2009-04-09', 'open'), ('2009-04-10', 'closed'), ('2009-04-13', 'open'),
         # 2009 Memorial Day (May 25 = Monday)
         ('2009-05-22', 'open'), ('2009-05-25', '1030'), ('2009-05-26', 'open'),
         # 2009 Independence Day (4th = Saturday)
@@ -38,8 +38,8 @@ TZ = 'America/Chicago'
         ('2010-01-15', 'open'), ('2010-01-18', '1030'), ('2010-01-19', 'open'),
         # 2010 Presidents Day (15th = Monday)
         ('2010-02-12', 'open'), ('2010-02-15', '1030'), ('2010-02-16', 'open'),
-        # # 2010 Good Friday (10th = Friday)
-        # ('2010-04-09', 'open'), ('2010-04-10', 'closed'), ('2010-04-13', 'open'),
+        # 2010 Good Friday (2nd = Friday)
+        ('2010-04-01', 'open'), ('2010-04-02', '0815'), ('2010-04-05', 'open'),
         # 2010 Memorial Day (May 31 = Monday)
         ('2010-05-18', 'open'), ('2010-05-31', '1030'), ('2010-06-01', 'open'),
         # 2010 Independence Day (4th = Sunday)
@@ -59,8 +59,8 @@ TZ = 'America/Chicago'
         ('2011-01-14', 'open'), ('2011-01-17', '1030'), ('2011-01-18', 'open'),
         # 2011 Presidents Day (21st = Monday)
         ('2011-02-18', 'open'), ('2011-02-21', '1030'), ('2011-02-22', 'open'),
-        # # 2011 Good Friday (10th = Friday)
-        # ('2011-04-09', 'open'), ('2011-04-10', 'closed'), ('2011-04-13', 'open'),
+        # 2011 Good Friday (22th = Friday)
+        ('2011-04-21', 'open'), ('2011-04-22', 'closed'), ('2011-04-25', 'open'),
         # 2011 Memorial Day (May 30 = Monday)
         ('2011-05-27', 'open'), ('2011-05-30', '1030'), ('2011-05-31', 'open'),
         # 2011 Independence Day (4th = Monday)
@@ -80,8 +80,8 @@ TZ = 'America/Chicago'
         ('2012-01-13', 'open'), ('2012-01-16', '1030'), ('2012-01-17', 'open'),
         # 2012 Presidents Day (20th = Monday)
         ('2012-02-17', 'open'), ('2012-02-20', '1030'), ('2012-02-21', 'open'),
-        # # 2012 Good Friday (10th = Friday)
-        # ('2012-04-09', 'open'), ('2012-04-10', 'closed'), ('2012-04-13', 'open'),
+        # 2012 Good Friday (06th = Friday)
+        ('2012-04-05', 'open'), ('2012-04-06', '0815'), ('2012-04-09', 'open'),
         # 2012 Memorial Day (May 28 = Monday)
         ('2012-05-25', 'open'), ('2012-05-28', '1030'), ('2012-05-29', 'open'),
         # 2012 Independence Day (4th = Wednesday)
@@ -122,8 +122,8 @@ TZ = 'America/Chicago'
         ('2014-01-17', 'open'), ('2014-01-20', '1030'), ('2014-01-21', 'open'),
         # 2014 Presidents Day (17th = Monday)
         ('2014-02-14', 'open'), ('2014-02-17', '1030'), ('2014-02-18', 'open'),
-        # # 2014 Good Friday (10th = Friday)
-        # ('2014-04-09', 'open'), ('2014-04-10', 'closed'), ('2014-04-13', 'open'),
+        # 2014 Good Friday (18th = Friday)
+        ('2014-04-17', 'open'), ('2014-04-18', 'closed'), ('2014-04-21', 'open'),
         # 2014 Memorial Day (May 26 = Monday)
         ('2014-05-23', 'open'), ('2014-05-26', '1200'), ('2014-05-27', 'open'),
         # 2014 Independence Day (4th = Friday)
@@ -143,8 +143,8 @@ TZ = 'America/Chicago'
         ('2015-01-16', 'open'), ('2015-01-19', '1200'), ('2015-01-20', 'open'),
         # 2015 Presidents Day (16th = Monday)
         ('2015-02-13', 'open'), ('2015-02-16', '1200'), ('2015-02-17', 'open'),
-        # # 2015 Good Friday (10th = Friday)
-        # ('2015-04-09', 'open'), ('2015-04-10', 'closed'), ('2015-04-13', 'open'),
+        # 2015 Good Friday (03th = Friday)
+        ('2015-04-02', 'open'), ('2015-04-03', '0815'), ('2015-04-06', 'open'),
         # 2015 Memorial Day (May 25 = Monday)
         ('2015-05-22', 'open'), ('2015-05-25', '1200'), ('2015-05-26', 'open'),
         # 2015 Independence Day (4th = Saturday)
@@ -164,8 +164,8 @@ TZ = 'America/Chicago'
         ('2016-01-15', 'open'), ('2016-01-18', '1200'), ('2016-01-19', 'open'),
         # 2016 Presidents Day (15th = Monday)
         ('2016-02-12', 'open'), ('2016-02-15', '1200'), ('2016-02-16', 'open'),
-        # # 2016 Good Friday (10th = Friday)
-        # ('2016-04-09', 'open'), ('2016-04-10', 'closed'), ('2016-04-13', 'open'),
+        # 2016 Good Friday (3/25th = Friday)
+        ('2016-03-24', 'open'), ('2016-03-25', 'closed'), ('2016-03-28', 'open'),
         # 2016 Memorial Day (May 30 = Monday)
         ('2016-05-27', 'open'), ('2016-05-30', '1200'), ('2016-05-31', 'open'),
         # 2016 Independence Day (4th = Monday)
@@ -185,8 +185,8 @@ TZ = 'America/Chicago'
         ('2017-01-13', 'open'), ('2017-01-16', '1200'), ('2017-01-17', 'open'),
         # 2017 Presidents Day (20th = Monday)
         ('2017-02-17', 'open'), ('2017-02-20', '1200'), ('2017-02-21', 'open'),
-        # # 2017 Good Friday (10th = Friday)
-        # ('2017-04-09', 'open'), ('2017-04-10', 'closed'), ('2017-04-13', 'open'),
+        # 2017 Good Friday (14th = Friday)
+        ('2017-04-13', 'open'), ('2017-04-14', 'closed'), ('2017-04-17', 'open'),
         # 2017 Memorial Day (May 29 = Monday)
         ('2017-05-26', 'open'), ('2017-05-29', '1200'), ('2017-05-30', 'open'),
         # 2017 Independence Day (4th = Tuesday)
@@ -206,8 +206,8 @@ TZ = 'America/Chicago'
         ('2018-01-12', 'open'), ('2018-01-15', '1200'), ('2018-01-16', 'open'),
         # 2018 Presidents Day (19th = Monday)
         ('2018-02-16', 'open'), ('2018-02-19', '1200'), ('2018-02-20', 'open'),
-        # # 2018 Good Friday (10th = Friday)
-        # ('2018-04-09', 'open'), ('2018-04-10', 'closed'), ('2018-04-13', 'open'),
+        # 2018 Good Friday (3/30th = Friday)
+        ('2018-03-29', 'open'), ('2018-03-30', 'closed'), ('2018-04-02', 'open'),
         # 2018 Memorial Day (May 28 = Monday)
         ('2018-05-25', 'open'), ('2018-05-28', '1200'), ('2018-05-29', 'open'),
         # 2018 Independence Day (4th = Wednesday)
@@ -227,8 +227,8 @@ TZ = 'America/Chicago'
         ('2019-01-18', 'open'), ('2019-01-21', '1200'), ('2019-01-22', 'open'),
         # 2019 Presidents Day (18th = Monday)
         ('2019-02-15', 'open'), ('2019-02-18', '1200'), ('2019-02-19', 'open'),
-        # # 2019 Good Friday (10th = Friday)
-        # ('2019-04-09', 'open'), ('2019-04-10', 'closed'), ('2019-04-13', 'open'),
+        # 2019 Good Friday (19th = Friday)
+        ('2019-04-18', 'open'), ('2019-04-19', 'closed'), ('2019-04-22', 'open'),
         # 2019 Memorial Day (May 27 = Monday)
         ('2019-05-24', 'open'), ('2019-05-27', '1200'), ('2019-05-28', 'open'),
         # 2019 Independence Day (4th = Thursday)
@@ -269,10 +269,8 @@ TZ = 'America/Chicago'
         ('2021-01-15', 'open'), ('2021-01-18', '1200'), ('2021-01-19', 'open'),
         # 2021 Presidents Day (15th = Monday)
         ('2021-02-12', 'open'), ('2021-02-15', '1200'), ('2021-02-16', 'open'),
-
-        # # 2021 Good Friday (2nd = Friday)
-        # ('2021-04-01', 'open'), ('2021-04-02', '1015'), ('2021-04-05', 'open'),
-
+        # 2021 Good Friday (2nd = Friday)
+        ('2021-04-01', 'open'), ('2021-04-02', '0815'), ('2021-04-05', 'open'),
         # 2021 Memorial Day (May 31 = Monday)
         ('2021-05-28', 'open'), ('2021-05-31', '1200'), ('2021-06-01', 'open'),
         # 2021 Independence Day (4th = Sunday)

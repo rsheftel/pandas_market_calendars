@@ -68,12 +68,31 @@ USPresidentsDayAfter2015 = Holiday(
 # Good Friday
 #########
 
+
 GoodFridayBefore2021 = Holiday(
     "Good Friday",
     month=1, day=1,
     offset=[Easter(), Day(-2)],
     end_date=Timestamp('2020-12-31'),
 )
+
+# On some years (i.e. 2010,2012,2015) there is a special close for equities at 08:15
+# so here it is made sure that those are not full holidays
+easter = Easter()
+daymin2 = Day(-2)
+def not_0815_close(dt):
+    if dt.year in (2010, 2012, 2015):
+       return None
+    else:
+        return dt + easter + daymin2
+
+GoodFridayBefore2021NotEarlyClose = Holiday(
+    "Good Friday",
+    month=1, day=1,
+    observance=not_0815_close,
+    end_date=Timestamp('2020-12-31'),
+)
+
 GoodFriday2021 = Holiday(
     "Good Friday",
     month=1, day=1,
@@ -86,6 +105,27 @@ GoodFridayAfter2021 = Holiday(
     month=1, day=1,
     offset=[Easter(), Day(-2)],
     start_date=Timestamp('2022-01-01'),
+)
+GoodFriday2010 = Holiday(
+    "Good Friday",
+    month=1, day=1,
+    offset=[Easter(), Day(-2)],
+    start_date=Timestamp('2010-01-01'),
+    end_date=Timestamp('2010-12-31'),
+)
+GoodFriday2012 = Holiday(
+    "Good Friday",
+    month=1, day=1,
+    offset=[Easter(), Day(-2)],
+    start_date=Timestamp('2012-01-01'),
+    end_date=Timestamp('2012-12-31'),)
+
+GoodFriday2015 = Holiday(
+    "Good Friday",
+    month=1, day=1,
+    offset=[Easter(), Day(-2)],
+    start_date=Timestamp('2015-01-01'),
+    end_date=Timestamp('2015-12-31'),
 )
 
 #########
