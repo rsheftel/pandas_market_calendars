@@ -218,7 +218,7 @@ USThanksgivingAfter2014Before2022 = Holiday(
 ######## The following Holidays shouldn't be set with the FR offset
 ## In 2013, Nov 1st is a friday, so the 4th Friday is before the 4th Thursday...
 # the observance rule defined herafter fixes this
-#
+
 # USThanksgivingFridayBefore2022 = Holiday(
 #     'ThanksgivingFriday',
 #     start_date=Timestamp('1942-01-01'),
@@ -245,10 +245,9 @@ def fri_after_4th_thu(dt):
     if diff_to_thu < 0: diff_to_thu += 7
     return dt + datetime.timedelta(days=diff_to_thu + 22)
 
-USThanksgivingFridayBefore2022 = Holiday(
+USThanksgivingFriday = Holiday(
     'ThanksgivingFriday',
     start_date=Timestamp('1942-01-01'),
-    end_date=Timestamp('2021-12-31'),
     month=11, day=1,
     observance= fri_after_4th_thu,
 )
@@ -259,8 +258,8 @@ USThanksgivingFriday2022AndAfter = Holiday(
     month=11, day=1,
     observance= fri_after_4th_thu,
 )
-USThanksgivingFriday = Holiday(
-    'ThanksgivingFriday',
-    month=11, day=1,
-    observance= fri_after_4th_thu,
-)
+# USThanksgivingFriday = Holiday(
+#     'ThanksgivingFriday',
+#     month=11, day=1,
+#     observance= fri_after_4th_thu,
+# )

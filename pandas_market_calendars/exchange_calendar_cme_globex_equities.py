@@ -29,7 +29,7 @@ from pandas_market_calendars.holidays_cme import (
     USLaborDayStarting1887After2014Before2022,
     USThanksgivingBefore2014,
     USThanksgivingAfter2014Before2022,
-    USThanksgivingFridayBefore2022,
+    USThanksgivingFriday,
 )
 from pandas_market_calendars.holidays_us import (
     USNewYearsDay,
@@ -44,6 +44,8 @@ class CMEGlobexEquitiesExchangeCalendar(CMEGlobexBaseExchangeCalendar):
                 10:30 early close on the 3rd Monday of January
             after
                 12:00 ''
+
+
     """
     """
         * President's Day
@@ -64,6 +66,8 @@ class CMEGlobexEquitiesExchangeCalendar(CMEGlobexBaseExchangeCalendar):
         * Juneteenth
             2022
                 12:00 early close Monday after
+                
+        STILL NEEDS TO BE ADDED TO TESTS
     """
     """
         * Independence Day / July 4th
@@ -138,8 +142,10 @@ class CMEGlobexEquitiesExchangeCalendar(CMEGlobexBaseExchangeCalendar):
 
         * Christmas  --------- GLOBEX
 
-                pretty weird check later
-
+                early close on 24th
+                
+    """
+    """
         * New years ----------- GLOBEX
                 also pretty weird
 
@@ -160,31 +166,6 @@ class CMEGlobexEquitiesExchangeCalendar(CMEGlobexBaseExchangeCalendar):
                 fully closed
             2021
                 8:15 early close
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
     """
 
@@ -231,7 +212,7 @@ class CMEGlobexEquitiesExchangeCalendar(CMEGlobexBaseExchangeCalendar):
 
             (time(12,15), AbstractHolidayCalendar(rules= [
                 USIndependenceDayBefore2022PreviousDay,
-                USThanksgivingFridayBefore2022,
+                USThanksgivingFriday,
             ])),
 
             (time(12), AbstractHolidayCalendar(rules=[
