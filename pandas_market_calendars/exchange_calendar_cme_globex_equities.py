@@ -145,8 +145,24 @@ class CMEGlobexEquitiesExchangeCalendar(CMEGlobexBaseExchangeCalendar):
     """
 
         * Christmas  --------- GLOBEX
-
-                early close on 24th
+            --> nearest workday
+        
+            2009
+                1215 on 24th (Thu)
+                full close on 25th
+            2010
+                full close on 24th (Fri) 
+            
+            2011
+                full close on 26th (Mon)
+                
+            2012
+                1215 on 24th (Mon)
+                full close on 25th
+            
+            2014
+                
+            
                 
     """
     """
@@ -219,6 +235,7 @@ class CMEGlobexEquitiesExchangeCalendar(CMEGlobexBaseExchangeCalendar):
             (time(12,15), AbstractHolidayCalendar(rules= [
                 USIndependenceDayBefore2022PreviousDay,
                 USThanksgivingFriday,
+                ChristmasEveInOrAfter1993,
             ])),
 
             (time(12), AbstractHolidayCalendar(rules=[
