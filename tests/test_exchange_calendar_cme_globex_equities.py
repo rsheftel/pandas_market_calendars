@@ -29,8 +29,8 @@ TZ = 'America/Chicago'
         # 2009 Christmas (25th = Friday)
         ('2009-12-24', '1215'), ('2009-12-25', 'closed'), ('2009-12-28', 'open'), ('2009-12-29', 'open'),
 
-        # # 2009/21 New Year's (Dec 31 = Thur)
-        # ('2009-12-31', 'open'), ('2021-01-01', 'closed'), ('2022-01-04', 'open'),
+        # 2009/10 New Year's (Dec 31 = Thur)
+        ('2009-12-31', 'open'), ('2010-01-01', 'closed'), ('2010-01-04', 'open'),
 
 
         # 2010
@@ -51,8 +51,8 @@ TZ = 'America/Chicago'
         # 2010 Christmas (25th = Saturday)
         ('2010-12-23', 'open'), ('2010-12-24', 'closed'), ('2010-12-27', 'open'),
 
-        # # 2010/21 New Year's (Dec 31 = Thur)
-        # ('2010-12-31', 'open'), ('2021-01-01', 'closed'), ('2022-01-04', 'open'),
+        # 2010/11 New Year's (Dec 31 = Fri)
+        ('2010-12-31', 'open'), ('2011-01-03', 'open'),
 
 
         # 2011
@@ -73,8 +73,8 @@ TZ = 'America/Chicago'
         # 2011 Christmas (25th = Sunday)
         ('2011-12-23', 'open'), ('2011-12-26', 'closed'), ('2011-12-27', 'open'),
 
-        # # 2011/21 New Year's (Dec 31 = Thur)
-        # ('2011-12-31', 'open'), ('2021-01-01', 'closed'), ('2022-01-04', 'open'),
+        # 2011/21 New Year's (Dec 31 = Saturday)
+        ('2011-12-30', 'open'), ('2012-01-02', 'closed'), ('2012-01-03', 'open'),
 
 
         # 2012
@@ -95,8 +95,8 @@ TZ = 'America/Chicago'
         # 2012 Christmas (25th = Friday)
         ('2012-12-24', '1215'), ('2012-12-25', 'closed'), ('2012-12-26', 'open'),
 
-        # # 2012/21 New Year's (Dec 31 = Thur)
-        # ('2012-12-31', 'open'), ('2021-01-01', 'closed'), ('2022-01-04', 'open'),
+        # 2012/21 New Year's (Dec 31 = Monday)
+        ('2012-12-31', 'open'), ('2013-01-01', 'closed'), ('2013-01-02', 'open'),
 
         # NO DATA IN CME HOLIDAY CALENDAR
         # # 2013
@@ -138,8 +138,8 @@ TZ = 'America/Chicago'
         # 2014 Christmas (25th = Thursday)
         ('2014-12-24', '1215'), ('2014-12-25', 'closed'), ('2014-12-26', 'open'),
 
-        # # 2014/21 New Year's (Dec 31 = Thur)
-        # ('2014-12-31', 'open'), ('2021-01-01', 'closed'), ('2022-01-04', 'open'),
+        # 2014/15 New Year's (Dec 31 = Wednesday)
+        ('2014-12-31', 'open'), ('2015-01-01', 'closed'), ('2015-01-02', 'open'),
 
 
         # 2015
@@ -160,8 +160,8 @@ TZ = 'America/Chicago'
         # 2015 Christmas (25th = Friday)
         ('2015-12-23', 'open'), ('2015-12-24', '1215'), ('2015-12-25', 'closed'), ('2015-12-28', 'closed'),
 
-        # # 2015/21 New Year's (Dec 31 = Thur)
-        # ('2015-12-31', 'open'), ('2021-01-01', 'closed'), ('2022-01-04', 'open'),
+        # 2015/16 New Year's (Dec 31 = Thur)
+        ('2015-12-31', 'open'), ('2016-01-01', 'closed'), ('2016-01-04', 'open'),
 
 
         # 2016
@@ -182,8 +182,8 @@ TZ = 'America/Chicago'
         # 2016 Christmas (25th = Sunday)
         ('2016-12-23', 'open'), ('2016-12-26', 'closed'), ('2016-12-27', 'open'),
 
-        # # 2016/21 New Year's (Dec 31 = Thur)
-        # ('2016-12-31', 'open'), ('2021-01-01', 'closed'), ('2022-01-04', 'open'),
+        # 2016/17 New Year's (Dec 31 = Saturday)
+        ('2016-12-30', 'open'), ('2017-01-02', 'closed'), ('2017-01-03', 'open'),
 
 
         # 2017
@@ -204,8 +204,8 @@ TZ = 'America/Chicago'
         # 2017 Christmas (25th = Monday)
         ('2017-12-22', 'open'), ('2017-12-25', 'closed'), ('2017-12-26', 'open'),
 
-        # # 2017/21 New Year's (Dec 31 = Thur)
-        # ('2017-12-31', 'open'), ('2021-01-01', 'closed'), ('2022-01-04', 'open'),
+        # 2017/18 New Year's (Dec 31 = Sunday)
+        ('2017-12-29', 'open'), ('2018-01-01', 'closed'), ('2018-01-02', 'open'),
 
 
         # 2018
@@ -226,8 +226,8 @@ TZ = 'America/Chicago'
         # 2018 Christmas (25th = Friday)
         ('2018-12-21', 'open'), ('2018-12-24', '1215'), ('2018-12-25', 'closed'), ('2018-12-26', 'open'),
 
-        # # 2018/21 New Year's (Dec 31 = Thur)
-        # ('2018-12-31', 'open'), ('2021-01-01', 'closed'), ('2022-01-04', 'open'),
+        # 2018/19 New Year's (Dec 31 = Thur)
+        ('2018-12-31', 'open'), ('2019-01-01', 'closed'), ('2019-01-02', 'open'),
 
 
         # 2019
@@ -248,8 +248,8 @@ TZ = 'America/Chicago'
         # 2019 Christmas (25th = Wednesday)
         ('2019-12-23', 'open'), ('2019-12-24', '1215'), ('2019-12-25', 'closed'), ('2019-12-26', 'open'),
 
-        # # 2019/21 New Year's (Dec 31 = Thur)
-        # ('2019-12-31', 'open'), ('2021-01-01', 'closed'), ('2022-01-04', 'open'),
+        # 2019/20 New Year's (Dec 31 = Thur)
+        ('2019-12-31', 'open'), ('2020-01-01', 'closed'), ('2020-01-02', 'open'),
 
         # 2020
         # 2020 Martin Luther King Day (20th = Monday)
@@ -270,7 +270,7 @@ TZ = 'America/Chicago'
         ('2020-12-23', 'open'), ('2020-12-24', '1215'), ('2020-12-25', 'closed'), ('2020-12-28', 'open'),
 
         # 2020/21 New Year's (Dec 31 = Thur)
-        ('2020-12-31', 'open'), ('2021-01-01', 'closed'), ('2022-01-04', 'open'),
+        ('2020-12-31', 'open'), ('2021-01-01', 'closed'), ('2021-01-04', 'open'),
 
         # 2021
         # 2021 Martin Luther King Day (18th = Monday)
