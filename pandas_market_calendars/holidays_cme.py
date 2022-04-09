@@ -30,13 +30,12 @@ USMartinLutherKingJrAfter1998Before2015 = Holiday(
     end_date=Timestamp('2014-12-31'),
     offset=DateOffset(weekday=MO(3)),)
 
-USMartinLutherKingJrAfter2015Before2022 = Holiday(
+USMartinLutherKingJrAfter2015 = Holiday(
     'Dr. Martin Luther King Jr. Day',
     month=1,
     day=1,
     # The US markets didn't observe MLK day as a holiday until 1998.
     start_date=Timestamp('2015-01-01'),
-    end_date=Timestamp('2021-12-31'),
     offset=DateOffset(weekday=MO(3)),)
 
 
@@ -56,10 +55,10 @@ USPresidentsDayBefore2015 = Holiday(
     end_date=Timestamp('2014-12-31'),
     month=2, day=1,
     offset=DateOffset(weekday=MO(3)),)
+
 USPresidentsDayAfter2015 = Holiday(
     'President''s Day',
     start_date=Timestamp('2015-01-01'),
-    end_date=Timestamp('2021-12-31'),
     month=2, day=1,
     offset=DateOffset(weekday=MO(3)),)
 
@@ -149,12 +148,11 @@ USMemorialDay2013AndPrior = Holiday(
     end_date=Timestamp('2013-12-31'),
     offset=DateOffset(weekday=MO(1)),
 )
-USMemorialDay2013To2021 = Holiday(
+USMemorialDayAfter2013 = Holiday(
     'Memorial Day',
     month=5,
     day=25,
     start_date=Timestamp('2014-01-01'),
-    end_date=Timestamp('2022-01-01'),
     offset=DateOffset(weekday=MO(1)),
 )
 
@@ -181,7 +179,6 @@ USIndependenceDayAfter2014 = Holiday(
     month=7,
     day=4,
     start_date=Timestamp('2014-01-01'),
-    end_date=Timestamp('2021-12-31'),
     observance=nearest_workday,)
 
 def previous_workday_if_july_4th_is_tue_to_fri(dt):
@@ -195,7 +192,6 @@ USIndependenceDayBefore2022PreviousDay = Holiday(
     month=7,
     day=4,
     start_date=Timestamp('1954-01-01'),
-    end_date=Timestamp('2021-12-31'),
     observance= previous_workday_if_july_4th_is_tue_to_fri
 )
 
@@ -220,12 +216,11 @@ USLaborDayStarting1887Before2014 = Holiday(
     end_date=Timestamp('2013-12-31'),
     offset=DateOffset(weekday=MO(1))
 )
-USLaborDayStarting1887After2014Before2022 = Holiday(
+USLaborDayStarting1887After2014 = Holiday(
     "Labor Day",
     month=9,
     day=1,
     start_date=Timestamp("2014-01-01"),
-    end_date=Timestamp('2021-12-31'),
     offset=DateOffset(weekday=MO(1))
 )
 
@@ -248,10 +243,9 @@ USThanksgivingBefore2014 = Holiday(
     month=11, day=1,
     offset=DateOffset(weekday=TH(4)),
 )
-USThanksgivingAfter2014Before2022 = Holiday(
+USThanksgivingAfter2014 = Holiday(
     'ThanksgivingFriday',
     start_date=Timestamp('2014-01-01'),
-    end_date=Timestamp('2021-12-31'),
     month=11, day=1,
     offset=DateOffset(weekday=TH(4)),
 )

@@ -6,7 +6,7 @@ from pytz import timezone
 
 from pandas_market_calendars.holidays_cme import (
     USMartinLutherKingJrAfter1998Before2015,
-    USMartinLutherKingJrAfter2015Before2022,
+    USMartinLutherKingJrAfter2015,
     USPresidentsDayBefore2015,
     USPresidentsDayAfter2015,
     GoodFridayBefore2021NotEarlyClose,
@@ -16,14 +16,14 @@ from pandas_market_calendars.holidays_cme import (
     GoodFriday2015,
     GoodFriday2021,
     USMemorialDay2013AndPrior,
-    USMemorialDay2013To2021,
+    USMemorialDayAfter2013,
     USIndependenceDayBefore2022PreviousDay,
     USIndependenceDayBefore2014,
     USIndependenceDayAfter2014,
     USLaborDayStarting1887Before2014,
-    USLaborDayStarting1887After2014Before2022,
+    USLaborDayStarting1887After2014,
     USThanksgivingBefore2014,
-    USThanksgivingAfter2014Before2022,
+    USThanksgivingAfter2014,
     USThanksgivingFriday,
 )
 from pandas_market_calendars.holidays_us import (
@@ -83,12 +83,12 @@ class CMEGlobexEquitiesExchangeCalendar(CMEGlobexBaseExchangeCalendar):
             ])),
 
             (time(12), AbstractHolidayCalendar(rules=[
-                USMartinLutherKingJrAfter2015Before2022,
+                USMartinLutherKingJrAfter2015,
                 USPresidentsDayAfter2015,
-                USMemorialDay2013To2021,
+                USMemorialDayAfter2013,
                 USIndependenceDayAfter2014,
-                USLaborDayStarting1887After2014Before2022,
-                USThanksgivingAfter2014Before2022,
+                USLaborDayStarting1887After2014,
+                USThanksgivingAfter2014,
                 USJuneteenthAfter2022
 
             ])),
