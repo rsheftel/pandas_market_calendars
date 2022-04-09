@@ -289,7 +289,7 @@ TZ = 'America/Chicago'
         ('2021-11-24', 'open'), ('2021-11-25', '1200'), ('2021-11-26', '1215'),
         # 2021 Christmas (25th = Saturday)
         ('2021-12-23', 'open'), ('2021-12-24', 'closed'), ('2021-12-27', 'open'),
-        # 2021/22 New Year's (Dec 31 = Friday) (unusually this period was fully open)
+        # 2021/22 New Year's (Dec 31 = Friday)
         ('2021-12-31', 'open'), ('2022-01-03', 'open'), ('2022-01-03', 'open'),
 
         # 2022
@@ -328,13 +328,13 @@ def test_2020_through_2022_and_prior_holidays(day_status):
     year = int(day_str.split("-")[0])
     under_test = CMEGlobexEquitiesExchangeCalendar()
     schedule = under_test.schedule(f'{year}-01-01', f'{year+1}-01-01', tz=TZ)
-    print(schedule[schedule.index.month == 12])
+
     if expected_status == 'open':
         s = schedule.loc[day_str]
         assert s['market_open'] == day_ts + Day(-1) + Hour(17) + Minute(0)
         assert s['market_close'] == day_ts + Day(0) + Hour(16) + Minute(0)
     elif expected_status == 'closed':
-        assert day_ts not in schedule.index
+        assert day_ts not in schedule.index.tz_localize(TZ)
     else:
         s = schedule.loc[day_str]
         hour = int(expected_status[0:2])

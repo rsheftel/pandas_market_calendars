@@ -99,7 +99,7 @@ def test_2020_through_2022_and_prior_holidays(day_status):
         assert s['market_open'] == day_ts + Day(-1) + Hour(17) + Minute(0)
         assert s['market_close'] == day_ts + Day(0) + Hour(16) + Minute(0)
     elif expected_status == 'closed':
-        assert day_ts not in schedule.index
+        assert day_ts not in schedule.index.tz_localize(TZ)
     else:
         s = schedule.loc[day_str]
         hour = int(expected_status[0:2])
