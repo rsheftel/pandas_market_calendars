@@ -98,27 +98,26 @@ TZ = 'America/Chicago'
         # 2012/21 New Year's (Dec 31 = Monday)
         ('2012-12-31', 'open'), ('2013-01-01', 'closed'), ('2013-01-02', 'open'),
 
-        # NO DATA IN CME HOLIDAY CALENDAR
-        # # 2013
-        # # 2013 Martin Luther King Day (20th = Monday)
-        # ('2013-01-17', 'open'), ('2013-01-20', '1200'), ('2013-01-21', 'open'),
-        # # 2013 Presidents Day (17th = Monday)
-        # ('2013-02-14', 'open'), ('2013-02-17', '1200'), ('2013-02-18', 'open'),
-        # # 2013 Good Friday (10th = Friday)
-        # ('2013-04-09', 'open'), ('2013-04-10', 'closed'), ('2013-04-13', 'open'),
-        # # 2013 Memorial Day (May 25 = Monday)
-        # ('2013-05-22', 'open'), ('2013-05-25', '1200'), ('2013-05-26', 'open'),
-        # # 2013 Independence Day (4th = Saturday)
-        # ('2013-07-02', 'open'), ('2013-07-03', '1200'), ('2013-07-06', 'open'),
-        # # 2013 Labor Day (4th = Monday)
-        # ('2013-09-04', 'open'), ('2013-09-07', '1200'), ('2013-09-08', 'open'),
-        # # 2013 Thanksgiving (26th = Thursday)
-        # ('2013-11-25', 'open'), ('2013-11-26', '1200'), ('2013-11-27', '1215'), ('2013-11-30', 'open'),
-        # 2013 Christmas (25th = Friday)
-        # ('2013-12-24', '1215'), ('2013-12-25', 'closed'), ('2013-12-28', 'closed'), ('2013-12-29', 'open'),
-        # # 2013/21 New Year's (Dec 31 = Thur)
-        # ('2013-12-31', 'open'), ('2021-01-01', 'closed'), ('2022-01-04', 'open'),
-        #
+        # 2013
+        # 2013 Martin Luther King Day (21st = Monday)
+        ('2013-01-18', 'open'), ('2013-01-21', '1030'), ('2013-01-22', 'open'),
+        # 2013 Presidents Day (18th = Monday)
+        ('2013-02-15', 'open'), ('2013-02-18', '1030'), ('2013-02-19', 'open'),
+        # 2013 Good Friday (3/29 = Friday)
+        ('2013-03-28', 'open'), ('2013-03-29', 'closed'), ('2013-04-01', 'open'),
+        # 2013 Memorial Day (May 27 = Monday)
+        ('2013-05-24', 'open'), ('2013-05-27', '1030'), ('2013-05-28', 'open'),
+        # 2013 Independence Day (4th = Thursday)
+        ('2013-07-03', '1215'), ('2013-07-04', '1030'), ('2013-07-05', 'open'),
+        # 2013 Labor Day (2nd = Monday)
+        ('2013-08-30', 'open'), ('2013-09-02', '1030'), ('2013-09-03', 'open'),
+        # 2013 Thanksgiving (28th = Thursday)
+        ('2013-11-27', 'open'), ('2013-11-28', '1030'), ('2013-11-29', '1215'), ('2013-04-02', 'open'),
+        # 2013 Christmas (25th = Wednesday)
+        ('2013-12-24', '1215'), ('2013-12-25', 'closed'), ('2013-12-26', 'open'),
+        # 2013/21 New Year's (Dec 31 = Tue)
+        ('2013-12-31', 'open'), ('2014-01-01', 'closed'), ('2014-01-02', 'open'),
+
 
         # 2014
         # 2014 Martin Luther King Day (20th = Monday)
@@ -158,7 +157,7 @@ TZ = 'America/Chicago'
         # 2015 Thanksgiving (26th = Thursday)
         ('2015-11-25', 'open'), ('2015-11-26', '1200'), ('2015-11-27', '1215'), ('2015-11-30', 'open'),
         # 2015 Christmas (25th = Friday)
-        ('2015-12-23', 'open'), ('2015-12-24', '1215'), ('2015-12-25', 'closed'), ('2015-12-28', 'closed'),
+        ('2015-12-23', 'open'), ('2015-12-24', '1215'), ('2015-12-25', 'closed'), ('2015-12-28', 'open'),
 
         # 2015/16 New Year's (Dec 31 = Thur)
         ('2015-12-31', 'open'), ('2016-01-01', 'closed'), ('2016-01-04', 'open'),
@@ -334,7 +333,7 @@ def test_2020_through_2022_and_prior_holidays(day_status):
         assert s['market_open'] == day_ts + Day(-1) + Hour(17) + Minute(0)
         assert s['market_close'] == day_ts + Day(0) + Hour(16) + Minute(0)
     elif expected_status == 'closed':
-        assert day_ts not in schedule.index.tz_localize(TZ)
+        assert day_ts.tz_localize(None) not in schedule.index
     else:
         s = schedule.loc[day_str]
         hour = int(expected_status[0:2])
