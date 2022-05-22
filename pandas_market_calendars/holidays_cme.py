@@ -38,6 +38,14 @@ USMartinLutherKingJrAfter2015 = Holiday(
     start_date=Timestamp('2015-01-01'),
     offset=DateOffset(weekday=MO(3)),)
 
+USMartinLutherKingJrAfter1998Before2016FridayBefore = Holiday(
+    "Dr. Martin Luther King Jr. Day",
+    month= 1,
+    day= 1,
+    start_date= Timestamp("1998-01-01"),
+    end_date= Timestamp("2015-12-31"),
+    offset= [DateOffset(weekday= MO(3)), DateOffset(weekday= FR(-1))]
+)
 
 #########
 # President's Day
@@ -62,6 +70,13 @@ USPresidentsDayAfter2015 = Holiday(
     month=2, day=1,
     offset=DateOffset(weekday=MO(3)),)
 
+USPresidentsDayBefore2016FridayBefore = Holiday(
+    'President''s Day',
+    start_date=Timestamp('1971-01-01'),
+    end_date=Timestamp('2015-12-31'),
+    month=2, day=1,
+    offset=[DateOffset(weekday=MO(3)), DateOffset(weekday= FR(-1))]
+)
 
 #########
 # Good Friday
@@ -90,6 +105,15 @@ GoodFridayBefore2021NotEarlyClose = Holiday(
     month=1, day=1,
     observance=not_0815_close,
     end_date=Timestamp('2020-12-31'),
+)
+
+## CME Interest Rate Products have this odd close
+GoodFriday2009 = Holiday(
+    "Good Friday",
+    month= 1, day= 1,
+    offset= [Easter(), Day(-3)],
+    start_date= Timestamp("2009-01-01"),
+    end_date= Timestamp("2009-12-31"),
 )
 
 GoodFriday2021 = Holiday(
@@ -155,6 +179,14 @@ USMemorialDayAfter2013 = Holiday(
     start_date=Timestamp('2014-01-01'),
     offset=DateOffset(weekday=MO(1)),
 )
+USMemorialDay2015AndPriorFridayBefore = Holiday(
+    'Memorial Day',
+    month=5,
+    day=25,
+    start_date=Timestamp('1971-01-01'),
+    end_date=Timestamp('2015-12-31'),
+    offset=[DateOffset(weekday=MO(1)), DateOffset(weekday= FR(-1))],
+)
 
 #######
 # Independence Day
@@ -181,6 +213,7 @@ USIndependenceDayAfter2014 = Holiday(
     start_date=Timestamp('2014-01-01'),
     observance=nearest_workday,)
 
+# Necessary for equities
 def previous_workday_if_july_4th_is_tue_to_fri(dt):
     july4th = datetime.datetime(dt.year, 7, 4)
     if july4th.weekday() in (1, 2, 3, 4):
@@ -194,7 +227,6 @@ USIndependenceDayBefore2022PreviousDay = Holiday(
     start_date=Timestamp('1954-01-01'),
     observance= previous_workday_if_july_4th_is_tue_to_fri
 )
-
 
 #########
 # Labor Day
@@ -215,6 +247,15 @@ USLaborDayStarting1887Before2014 = Holiday(
     start_date=Timestamp("1887-01-01"),
     end_date=Timestamp('2013-12-31'),
     offset=DateOffset(weekday=MO(1))
+)
+USLaborDayStarting1887Before2015FridayBefore = Holiday(
+    "Labor Day",
+    month=9,
+    day=1,
+    start_date=Timestamp("1887-01-01"),
+    end_date=Timestamp('2014-12-31'),
+    offset=[DateOffset(weekday=MO(1)), DateOffset(weekday=FR(-1))]
+
 )
 USLaborDayStarting1887After2014 = Holiday(
     "Labor Day",
