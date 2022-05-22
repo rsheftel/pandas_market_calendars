@@ -12,7 +12,7 @@ TZ = 'America/Chicago'
     [
         # 2009
         # 2009 Martin Luther King Day (19th = Monday)
-        ('2009-01-16', '1515'), ('2009-01-19', '1200'), ('2009-01-20', 'open'), # done
+        ('2009-01-16', '1515'), ('2009-01-19', '1200'), ('2009-01-20', 'open'),
 
         # # 2009 Presidents Day (16th = Monday)
         ('2009-02-13', '1515'), ('2009-02-16', '1200'), ('2009-02-17', 'open'),
@@ -44,13 +44,13 @@ TZ = 'America/Chicago'
         ('2010-01-15', '1515'), ('2010-01-18', '1200'), ('2010-01-19', 'open'),
 
         # # 2010 Presidents Day (15th = Monday)
-        ('2010-02-12', 'open'), ('2010-02-15', '1030'), ('2010-02-16', 'open'),
+        ('2010-02-12', '1515'), ('2010-02-15', '1200'), ('2010-02-16', 'open'),
 
         # 2010 Good Friday (2nd = Friday)
         ('2010-04-01', 'open'), ('2010-04-02', '1015'), ('2010-04-05', 'open'),
 
         # 2010 Memorial Day (May 31 = Monday)
-        ('2010-05-18', '1515'), ('2010-05-31', '1200'), ('2010-06-01', 'open'),
+        ('2010-05-28', '1515'), ('2010-05-31', '1200'), ('2010-06-01', 'open'),
 
         # 2010 Independence Day (4th = Sunday)
         ('2010-07-02', '1515'), ('2010-07-05', '1200'), ('2010-07-06', 'open'),
@@ -73,7 +73,7 @@ TZ = 'America/Chicago'
         ('2011-01-14', '1515'), ('2011-01-17', '1200'), ('2011-01-18', 'open'),
 
         # 2011 Presidents Day (21st = Monday)
-        ('2011-02-18', 'open'), ('2011-02-21', '1030'), ('2011-02-22', 'open'),
+        ('2011-02-18', '1515'), ('2011-02-21', '1200'), ('2011-02-22', 'open'),
 
         # 2011 Good Friday (22th = Friday)
         ('2011-04-21', 'open'), ('2011-04-22', 'closed'), ('2011-04-25', 'open'),
@@ -108,7 +108,7 @@ TZ = 'America/Chicago'
         ('2012-04-05', 'open'), ('2012-04-06', '1015'), ('2012-04-09', 'open'),
 
         # 2012 Memorial Day (May 28 = Monday)
-        ('2012-05-25', 'open'), ('2012-05-28', '1030'), ('2012-05-29', 'open'),
+        ('2012-05-25', '1515'), ('2012-05-28', '1200'), ('2012-05-29', 'open'),
 
         # 2012 Independence Day (4th = Wednesday)
         ('2012-07-02', 'open'), ('2012-07-03', 'open'), ('2012-07-04', '1200'), ('2012-07-05', 'open'),
@@ -362,7 +362,7 @@ TZ = 'America/Chicago'
         ('2021-02-12', 'open'), ('2021-02-15', '1200'), ('2021-02-16', 'open'),
 
         # 2021 Good Friday (2nd = Friday)
-        ('2021-04-01', 'open'), ('2021-04-02', '0815'), ('2021-04-05', 'open'),
+        ('2021-04-01', 'open'), ('2021-04-02', '1015'), ('2021-04-05', 'open'),
 
         # 2021 Memorial Day (May 31 = Monday)
         ('2021-05-28', 'open'), ('2021-05-31', '1200'), ('2021-06-01', 'open'),
@@ -429,15 +429,15 @@ def test_2020_through_2022_and_prior_holidays(day_status):
 
     if expected_status == 'open':
         s = schedule.loc[day_str]
-        assert s['market_open'] == day_ts + Day(-1) + Hour(17) + Minute(0)
-        assert s['market_close'] == day_ts + Day(0) + Hour(16) + Minute(0)
+        assert s['market_open'] == day_ts + Day(-1) + Hour(18) + Minute(0)
+        assert s['market_close'] == day_ts + Day(0) + Hour(17) + Minute(0)
     elif expected_status == 'closed':
         assert day_ts.tz_localize(None) not in schedule.index
     else:
         s = schedule.loc[day_str]
         hour = int(expected_status[0:2])
         minute = int(expected_status[2:4])
-        assert s['market_open'] == day_ts + Day(-1) + Hour(17)
+        assert s['market_open'] == day_ts + Day(-1) + Hour(18)
         assert s['market_close'] == day_ts + Day(0) + Hour(hour) + Minute(minute)
 
 
