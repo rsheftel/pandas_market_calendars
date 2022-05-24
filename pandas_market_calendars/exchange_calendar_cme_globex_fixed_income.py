@@ -39,6 +39,8 @@ from pandas_market_calendars.holidays_us import (
 
 
 class CMEGlobexFixedIncomeCalendar(CMEGlobexBaseExchangeCalendar):
+    aliases = ["CME Globex Fixed Income", "CME Globex Interest Rate Products"]
+
     regular_market_times = {
         "market_open": ((None, time(18), -1),),
         "market_close": ((None, time(17)),),
@@ -47,37 +49,9 @@ class CMEGlobexFixedIncomeCalendar(CMEGlobexBaseExchangeCalendar):
     }
 
     """ 
-    MLK 
-        before 2016, there was a special close on the friday before
-        but the mlk day itself always had a halt at 12:00
-    
-    President's Day
-        almost the same as MLK
-        
-    Good Friday
-        Same as equities (also the odd early closes)
-        
-    Independence Day
-        Seems to be same as equities except that the day before independence day special close
-        doesn't seem to exist
-    
-    Labor Day
-        
-        Mostly the same as equities except that there is an extra early close on the friday before
-        the first few years
-        
-    Thanksgiving
-    
-        Essentially the same except for the different early close time in the first few years
-        
-    Christmas
-        Essentially the same except for the different early close time in the first few years  <<-- weird 5am for a couple years
-        
-    New years
-        Essentially the same except for the different early close time in the first few years  <<-- weird 5am for a couple years
-           
-        
-        
+    Not yet implemented:
+        Christmas/New_Years
+            5am special open for a couple years (see tests)
     """
 
     @property

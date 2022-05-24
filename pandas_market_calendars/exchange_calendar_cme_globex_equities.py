@@ -35,11 +35,11 @@ from pandas_market_calendars.holidays_us import (
 
 class CMEGlobexEquitiesExchangeCalendar(CMEGlobexBaseExchangeCalendar):
 
+    alias = ["CME Globex Equity"]
+
     regular_market_times = {
         "market_open": ((None, time(17), -1),), # offset by -1 day
         "market_close": ((None, time(16)),),
-        "break_start": ((None, time(17)),),
-        "break_end": ((None, time(18)),)
     }
 
     @property
