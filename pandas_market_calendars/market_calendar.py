@@ -632,16 +632,8 @@ class MarketCalendar(metaclass=MarketCalendarMeta):
 
     def is_different(self, col, diff= None):
         if diff is None: diff = pd.Series.ne
-
-        col = col.dt.tz_convert(self.tz).dt.tz_localize(None)
-        col = col - col.dt.normalize() # timedeltas for vectorized comparison
-
-        cond = diff(col, self._regular_market_timedeltas[col.name][0][1])
-        for cut_off, timedelta in self._regular_market_timedeltas[col.name][1:]:
-            above = col.index >= pd.Timestamp(cut_off)
-            cond = (cond & ~above) | (diff(col, timedelta) & above)
-
-        return cond
+        normal = self.days_at_time(col.index, col.name)
+        return diff(col.dt.tz_convert("UTC"), normal)
 
     def early_closes(self, schedule):
         """
