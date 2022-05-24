@@ -43,6 +43,9 @@ class CMEGlobexEquitiesExchangeCalendar(CMEGlobexBaseExchangeCalendar):
     }
 
     @property
+    def tz(self): return timezone("America/Chicago")
+
+    @property
     def name(self):
         """
         Name of the market
