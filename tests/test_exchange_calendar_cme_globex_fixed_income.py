@@ -91,10 +91,10 @@ TZ = 'America/Chicago'
         ('2011-11-23', 'open'), ('2011-11-24', '1200'), ('2011-11-25', '1215'), ('2011-11-28', 'open'),
 
         # 2011 Christmas (25th = Sunday)
-        ('2011-12-23', 'open'), ('2011-12-26', 'closed'), ('2011-12-27', 'open'), ### Check out 5am special open on 27th, hadn't seen that before
+        ('2011-12-23', 'open'), ('2011-12-26', 'closed'), ('2011-12-27', 'open'), ## 5am special open on 27th
 
         # 2011/12 New Year's (Dec 31 = Saturday)
-        ('2011-12-30', 'open'), ('2012-01-02', 'closed'), ('2012-01-03', 'open'), ## Also weird 5am open on 3rd
+        ('2011-12-30', 'open'), ('2012-01-02', 'closed'), ('2012-01-03', 'open'), ## 5am open on 3rd
 
 
         # 2012
@@ -395,8 +395,9 @@ TZ = 'America/Chicago'
         # 2022 Memorial Day	 (30th = Monday)
         ('2022-05-27', 'open'), ('2022-05-30', '1200'), ('2022-05-31', 'open'),
 
-        # # 2022 Juneteenth (20th = Monday)
-        # ('2022-06-17', 'open'), ('2022-06-20', '1200'), ('2022-06-21', 'open'),
+        # 2022 Juneteenth (20th = Monday)
+        ('2022-06-17', 'open'), ('2022-06-20', '1200'), ('2022-06-21', 'open'),
+
         # 2022 Independence Day (4th = Monday)
         ('2022-07-01', 'open'), ('2022-07-04', '1200'), ('2022-07-05', 'open'),
 
