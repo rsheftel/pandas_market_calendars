@@ -77,12 +77,19 @@ class CMEGlobexFixedIncomeCalendar(CMEGlobexBaseExchangeCalendar):
         return [
             (time(12), AbstractHolidayCalendar(rules=[
                 USMartinLutherKingJrAfter1998Before2015,
+                USMartinLutherKingJrAfter2015,
                 USPresidentsDayBefore2015,
+                USPresidentsDayAfter2015,
                 USMemorialDay2013AndPrior,
+                USMemorialDayAfter2013,
                 USIndependenceDayBefore2014,
+                USIndependenceDayAfter2014,
                 USLaborDayStarting1887Before2014,
+                USLaborDayStarting1887After2014,
                 USThanksgivingBefore2014,
+                USThanksgivingAfter2014,
             ])),
+
             (time(15,15), AbstractHolidayCalendar(rules=[
                 USMartinLutherKingJrAfter1998Before2016FridayBefore,
                 USPresidentsDayBefore2016FridayBefore,
@@ -96,16 +103,6 @@ class CMEGlobexFixedIncomeCalendar(CMEGlobexBaseExchangeCalendar):
                 ChristmasEveInOrAfter1993,
             ])),
 
-            (time(12), AbstractHolidayCalendar(rules=[
-                USMartinLutherKingJrAfter2015,
-                USPresidentsDayAfter2015,
-                USMemorialDayAfter2013,
-                USIndependenceDayAfter2014,
-                USLaborDayStarting1887After2014,
-                USThanksgivingAfter2014,
-                USJuneteenthAfter2022
-
-            ])),
             (time(10,15), AbstractHolidayCalendar(rules=[
                 GoodFriday2010,
                 GoodFriday2012,
