@@ -44,14 +44,14 @@ class CMEGlobexFixedIncomeCalendar(CMEGlobexBaseExchangeCalendar):
     regular_market_times = {
         "market_open": ((None, time(18), -1),),
         "market_close": ((None, time(17)),),
-
-        # regular times changed from 17/16 to 18/17?
     }
 
     """ 
     Not yet implemented:
         Christmas/New_Years
             5am special open for a couple years (see tests)
+        
+        regular market_open/market_close changed from 17/16 to 18/17?
     """
 
     @property
@@ -88,6 +88,7 @@ class CMEGlobexFixedIncomeCalendar(CMEGlobexBaseExchangeCalendar):
                 USLaborDayStarting1887After2014,
                 USThanksgivingBefore2014,
                 USThanksgivingAfter2014,
+                USJuneteenthAfter2022,
             ])),
 
             (time(15,15), AbstractHolidayCalendar(rules=[
