@@ -55,7 +55,7 @@ class CMEGlobexFixedIncomeCalendar(CMEGlobexBaseExchangeCalendar):
     """
 
     @property
-    def name(self): return "CME Fixed Income"
+    def name(self): return "CME Globex Fixed Income"
 
     @property
     def regular_holidays(self):

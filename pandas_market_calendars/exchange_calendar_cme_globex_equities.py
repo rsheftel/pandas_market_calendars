@@ -35,7 +35,7 @@ from pandas_market_calendars.holidays_us import (
 
 class CMEGlobexEquitiesExchangeCalendar(CMEGlobexBaseExchangeCalendar):
 
-    alias = ["CME Globex Equity"]
+    aliases = ["CME Globex Equity"]
 
     regular_market_times = {
         "market_open": ((None, time(17), -1),), # offset by -1 day
@@ -52,7 +52,7 @@ class CMEGlobexEquitiesExchangeCalendar(CMEGlobexBaseExchangeCalendar):
 
         :return: string name
         """
-        raise NotImplementedError()
+        return "CME Globex Equities"
 
     @property
     def regular_holidays(self):
