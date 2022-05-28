@@ -8,6 +8,7 @@ from .exchange_calendar_cme import \
 from .exchange_calendar_cme_globex_base import CMEGlobexBaseExchangeCalendar
 from .exchange_calendar_cme_globex_agriculture import CMEGlobexAgricultureExchangeCalendar
 from .exchange_calendar_cme_globex_fx import CMEGlobexFXExchangeCalendar
+from .exchange_calendar_cme_globex_energy_and_metals import CMEGlobexEnergyAndMetalsExchangeCalendar
 from .exchange_calendar_eurex import EUREXExchangeCalendar
 from .exchange_calendar_hkex import HKEXExchangeCalendar
 from .exchange_calendar_ice import ICEExchangeCalendar
