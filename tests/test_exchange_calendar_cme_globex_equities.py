@@ -1,3 +1,4 @@
+import datetime as dt
 import pandas as pd
 import pytest
 import pytz
@@ -6,6 +7,31 @@ from pandas.tseries.offsets import Day, Hour, Minute
 from pandas_market_calendars.exchange_calendar_cme_globex_equities import CMEGlobexEquitiesExchangeCalendar
 
 TZ = 'America/Chicago'
+
+
+def test_is_different():
+    cal = CMEGlobexEquitiesExchangeCalendar()
+    sched = cal.schedule("2000-01-15", "2000-02-01")
+
+    early = cal.early_closes(sched).index
+    assert early.shape == (1,) and early[0] == pd.Timestamp("2000-01-17")
+
+    late = cal.late_opens(sched).index
+    assert late.empty
+
+    sched.loc["2000-01-19", "market_open"] += pd.Timedelta("3H")
+    late = cal.late_opens(sched).index
+    assert late.shape == (1,) and late[0] == pd.Timestamp("2000-01-19")
+
+
+    cal.change_time("market_open", ((None, dt.time(17), -1),
+                                    ("2000-01-25", dt.time(9))))
+
+    different = cal.is_different(sched.market_open)
+    different = different[different].index
+    assert different.shape == (7,) and (different == pd.DatetimeIndex(
+            ['2000-01-19', '2000-01-25', '2000-01-26', '2000-01-27',
+             '2000-01-28', '2000-01-31', '2000-02-01'], dtype='datetime64[ns]', freq=None)).all()
 
 
 @pytest.mark.parametrize(
