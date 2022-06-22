@@ -951,7 +951,7 @@ def test_ec_schedule():
     assert not mcaliepa._EC_NOT_INITIALIZED
 
     theirs.index.freq = None
-    theirs.rename(columns={"open": "market_open", "close": "market_close"})
+    theirs = theirs.rename(columns={"open": "market_open", "close": "market_close"})
     assert_frame_equal(ours, theirs)
 
 
