@@ -946,11 +946,12 @@ def test_ec_schedule():
     assert mcaliepa._EC_NOT_INITIALIZED
     ours = mcaliepa.schedule(start, end)
     assert mcaliepa._EC_NOT_INITIALIZED
-    theirs = mcaliepa.ec.schedule[["market_open", "market_close"]]
+
+    theirs = mcaliepa.ec.schedule[["open", "close"]]
     assert not mcaliepa._EC_NOT_INITIALIZED
 
-    theirs = theirs.tz_localize(None) # our indexes are tz-naive, theirs are in UTC
-    for col in theirs: theirs[col] = theirs[col].dt.tz_localize("UTC") # our columns are in UTC but theirs are naive
+    theirs.index.freq = None
+    theirs = theirs.rename(columns={"open": "market_open", "close": "market_close"})
     assert_frame_equal(ours, theirs)
 
 
