@@ -3,6 +3,12 @@
 
 Updates
 -------
+3.5 (06/25/22)
+~~~~~~~~~~~~~~
+- Updated BMF
+- New CME calendar setup
+- New CME calendars for equities, fixed income, ags, energies, metals, and FX
+
 3.4 (03/05/22)
 ~~~~~~~~~~~~~~
 - Update to work with pandas 1.4.0
