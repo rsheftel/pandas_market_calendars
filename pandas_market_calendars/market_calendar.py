@@ -39,7 +39,11 @@ class MarketCalendar(metaclass=MarketCalendarMeta):
 
     @staticmethod
     def _tdelta(t, day_offset= 0):
-        return pd.Timedelta(days=day_offset, hours=t.hour, minutes=t.minute, seconds=t.second)
+        try:
+            return pd.Timedelta(days=day_offset, hours=t.hour, minutes=t.minute, seconds=t.second)
+        except AttributeError:
+            t, day_offset = t
+            return pd.Timedelta(days=day_offset, hours=t.hour, minutes=t.minute, seconds=t.second)
 
     @staticmethod
     def _off(tple):
@@ -351,6 +355,37 @@ class MarketCalendar(metaclass=MarketCalendarMeta):
         """
         return self.get_offset("market_close")
 
+    @property
+    def interruptions(self):
+        """
+        This needs to be a list with a tuple for each date that had an interruption.
+        Each interruption needs a start and an end. The first time needs to be the start and the second time the end.
+        Any number of interruptions can be added for a date. Start/end of additional interruptions can be added to the tuple
+        like it has been for 2003-09-11 in this example.
+        """
+
+        return []
+
+    @property
+    def interruptions_df(self):
+        intr = self.interruptions
+        if not intr: return pd.DataFrame()
+
+        intr = pd.DataFrame(intr, dtype="string")
+        ix = intr.pop(0)
+
+        columns = []
+        for i in range(1, intr.shape[1] // 2 + 1):
+            i = str(i)
+            columns.append("interruption_start_" + i)
+            columns.append("interruption_end_" + i)
+        intr.columns = columns
+
+        f = "%Y-%m-%d"
+        intr = intr.radd(ix, axis=0).set_index(pd.to_datetime(ix, format=f))
+        todt = lambda x: pd.to_datetime(x, format=f + "%H:%M:%S", errors="coerce").dt.tz_localize(self.tz)
+        return intr.apply(todt)
+
     def holidays(self):
         """
         Returns the complete CustomBusinessDay object of holidays that can be used in any Pandas function that take
@@ -405,7 +440,7 @@ class MarketCalendar(metaclass=MarketCalendarMeta):
         :return: DatetimeIndex of date with the time t
         """
         # Offset days without tz to avoid timezone issues.
-        days = pd.DatetimeIndex(days).tz_localize(None)
+        days = pd.DatetimeIndex(days).tz_localize(None).to_series()
 
         if isinstance(market_time, str):  # if string, assume its a reference to saved market times
             timedeltas = self._regular_market_timedeltas[market_time]
@@ -414,9 +449,9 @@ class MarketCalendar(metaclass=MarketCalendarMeta):
                 datetimes = datetimes.where(days < pd.Timestamp(cut_off), days + timedelta)
 
         else: # otherwise, assume it is a datetime.time object
-           datetimes = days + self._tdelta(market_time, day_offset)
+            datetimes = days + self._tdelta(market_time, day_offset)
 
-        return datetimes.tz_localize(self.tz).tz_convert('UTC')
+        return datetimes.dt.tz_localize(self.tz).dt.tz_convert('UTC')
 
     def _tryholidays(self, cal, s, e):
         try: return cal.holidays(s, e)
@@ -429,22 +464,17 @@ class MarketCalendar(metaclass=MarketCalendarMeta):
 
         (This is shared logic for computing special opens and special closes.)
         """
-        indexes = ([
+        indexes = [
                 self.days_at_time(self._tryholidays(calendar, start, end), time_)
                       for time_, calendar in calendars
              ] + [
                 self.days_at_time(dates, time_) for time_, dates in ad_hoc_dates
-            ])
-        if len(indexes):
-            dates = indexes[0]
-            for index in indexes[1:]:
-                dates = dates.union(index)
-        else:
-            dates = pd.DatetimeIndex([], tz="UTC")
+            ]
+        if indexes:
+            dates = pd.concat(indexes).sort_index()
+            return dates.loc[start: end.replace(hour=23, minute=59, second=59)]
 
-        start = start.tz_localize("UTC")
-        end = end.tz_localize("UTC").replace(hour=23, minute=59, second=59)
-        return dates[(dates >= start) & (dates <= end)]
+        return pd.Series([], dtype= "datetime64[ns, UTC]", index= pd.DatetimeIndex([]))
 
     def special_dates(self, market_time, start_date, end_date, filter_holidays= True):
         """
@@ -464,7 +494,7 @@ class MarketCalendar(metaclass=MarketCalendarMeta):
 
         if filter_holidays:
             valid = self.valid_days(start_date, end_date)
-            special = special[special.normalize().isin(valid)]  # some sources of special times don't exclude holidays
+            special = special[special.index.isin(valid)]  # some sources of special times don't exclude holidays
         return special
 
 
@@ -511,33 +541,26 @@ class MarketCalendar(metaclass=MarketCalendarMeta):
         _adj_col = not force_special_times is None
         _open_adj = _close_adj = []
 
-        columns = {}
+        schedule = pd.DataFrame()
         for market_time in market_times:
-            temp = self.days_at_time(_all_days, market_time) # standard times
+            temp = self.days_at_time(_all_days, market_time).copy() # standard times
             if _adj_col:
                 # create an array of special times
                 special = self.special_dates(market_time, start_date, end_date, filter_holidays= False)
 
                 # overwrite standard times
-                temp = temp.to_series(index= _all_days)
-                _special = special.normalize()
-                special = special[_special.isin(_all_days)] # some sources of special times don't exclude holidays
-                _special = temp.index.isin(_special)
-
-                try: temp.loc[_special] = special
+                specialix = special.index[special.index.isin(temp.index)] # some sources of special times don't exclude holidays
+                try: temp.loc[specialix] = special
                 except ValueError as e:
                     raise ValueError("There seems to be a mistake in the special_times/holidays data,"
                                      "most likely this stems from duplicate entries. You can use the .special_dates "
                                      "method to inspect the data.") from e
 
-                temp = pd.DatetimeIndex(temp)
                 if _adj_others:
-                    if market_time == "market_open": _open_adj = _special
-                    elif market_time == "market_close": _close_adj = _special
+                    if market_time == "market_open": _open_adj = specialix
+                    elif market_time == "market_close": _close_adj = specialix
 
-            columns[market_time] = temp.tz_convert(tz)
-
-        schedule = pd.DataFrame(columns, index= _all_days.tz_localize(None), columns= market_times)
+            schedule[market_time] = temp.dt.tz_convert(tz)
 
         if _adj_others:
             adjusted = schedule.loc[_open_adj].apply(

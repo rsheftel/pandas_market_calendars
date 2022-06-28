@@ -58,19 +58,32 @@ class FakeCalendar(MarketCalendar):
 
     @property
     def special_opens(self):
-        return [(time(11, 15), AbstractHolidayCalendar(rules=[MonTuesThursBeforeIndependenceDay]))]
+        return [(time(11, 15), AbstractHolidayCalendar(rules=[MonTuesThursBeforeIndependenceDay])),
+                 ((time(23), -1), AbstractHolidayCalendar(rules=[Christmas]))]
 
     @property
     def special_opens_adhoc(self):
-        return [(time(11, 20), ['2016-12-13', "2016-12-25"])]
+        return [(time(11, 20), ["2016-12-13", "2016-12-25"]),
+                 ((time(22), -1), ["2016-12-09", "2016-12-07"])]
 
     @property
     def special_closes(self):
-        return [(time(11, 30), AbstractHolidayCalendar(rules=[MonTuesThursBeforeIndependenceDay]))]
+        return [(time(11, 30), AbstractHolidayCalendar(rules=[MonTuesThursBeforeIndependenceDay])),
+                 ((time(1), 1), AbstractHolidayCalendar(rules=[Christmas]))]
 
     @property
     def special_closes_adhoc(self):
-        return [(time(11, 40), ['2016-12-14'])]
+        return [(time(11, 40), ["2016-12-14"]),
+                ((time(1, 5), 1), ["2016-12-15"])]
+
+    @property
+    def interruptions(self):
+        return [
+            ("2011-01-10", time(11), time(11, 1)),
+            ("2010-01-11", time(11), time(11, 1)),
+            ("2003-09-11", time(9, 59), time(10), time(10, 29), time(10, 30)),
+            ("2002-02-03", time(11), time(11, 2))
+        ]
 
 
 class FakeBreakCalendar(MarketCalendar):
@@ -678,6 +691,10 @@ def test_special_opens():
     assert pd.Timestamp('2012-07-02 11:13', tz='Asia/Ulaanbaatar').tz_convert('UTC') in opens
     assert pd.Timestamp('2012-07-03 11:15', tz='Asia/Ulaanbaatar').tz_convert('UTC') in opens
     assert pd.Timestamp('2012-07-04 11:13', tz='Asia/Ulaanbaatar').tz_convert('UTC') in opens
+
+
+    results = cal.schedule('2012-07-01', '2012-07-06')
+    opens = results['market_open'].tolist()
 
 
 def test_special_opens_adhoc():
