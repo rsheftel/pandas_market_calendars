@@ -369,10 +369,11 @@ class MarketCalendar(metaclass=MarketCalendarMeta):
     @property
     def interruptions_df(self):
         intr = self.interruptions
-        if not intr: return pd.DataFrame()
+        if not intr: return pd.DataFrame(index= pd.DatetimeIndex())
 
         intr = pd.DataFrame(intr, dtype="string")
         ix = intr.pop(0)
+        ix.name = None
 
         columns = []
         for i in range(1, intr.shape[1] // 2 + 1):

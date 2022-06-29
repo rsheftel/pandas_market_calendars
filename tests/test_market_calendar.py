@@ -19,6 +19,7 @@ import pickle
 
 
 import pandas as pd
+import numpy as np
 import pytest
 from pandas.testing import assert_frame_equal, assert_index_equal, assert_series_equal
 from pandas.tseries.holiday import AbstractHolidayCalendar
@@ -897,7 +898,6 @@ def test_is_open_now(patch_get_current_time):
 
     assert cal.is_open_now(schedule) is True
 
-
 def test_bad_dates():
     cal = FakeCalendar()
 
@@ -918,6 +918,34 @@ def test_bad_dates():
     # weekend and holiday
     schedule = cal.schedule('2017-12-30', '2018-01-01')
     assert_frame_equal(schedule, empty)
+
+def test_interruptions_df():
+
+    goal = pd.DataFrame(
+        {'interruption_start_1':
+             pd.Series(['2011-01-10 11:00:00', '2010-01-11 11:00:00',
+                        '2003-09-11 09:59:00', '2002-02-03 11:00:00'],
+                       index= pd.DatetimeIndex(['2011-01-10', '2010-01-11', '2003-09-11', '2002-02-03']),
+                       dtype= 'datetime64[ns]').dt.tz_localize('Asia/Ulaanbaatar'),
+         'interruption_end_1':
+             pd.Series(['2011-01-10 11:01:00', '2010-01-11 11:01:00',
+                        '2003-09-11 10:00:00', '2002-02-03 11:02:00'],
+                       index= pd.DatetimeIndex(['2011-01-10', '2010-01-11', '2003-09-11', '2002-02-03']),
+                       dtype= 'datetime64[ns]').dt.tz_localize('Asia/Ulaanbaatar'),
+         'interruption_start_2':
+             pd.Series([np.nan, np.nan, '2003-09-11 10:29:00', np.nan],
+                       index= pd.DatetimeIndex(['2011-01-10', '2010-01-11', '2003-09-11', '2002-02-03']),
+                       dtype= 'datetime64[ns]').dt.tz_localize('Asia/Ulaanbaatar'),
+         'interruption_end_2':
+             pd.Series([np.nan, np.nan, '2003-09-11 10:30:00', np.nan],
+                       index= pd.DatetimeIndex(['2011-01-10', '2010-01-11', '2003-09-11', '2002-02-03']),
+                       dtype= 'datetime64[ns]').dt.tz_localize('Asia/Ulaanbaatar')},
+        index= pd.DatetimeIndex(['2011-01-10', '2010-01-11', '2003-09-11', '2002-02-03']))
+
+    cal = FakeCalendar()
+    print(cal.interruptions_df.to_string())
+    assert_frame_equal(cal.interruptions_df, goal)
+
 
 ############################################
 # TESTS FOR EXCHANGE_CALENDAR INTEGRATION  #
