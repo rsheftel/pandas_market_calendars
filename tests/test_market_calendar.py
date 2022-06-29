@@ -70,12 +70,12 @@ class FakeCalendar(MarketCalendar):
     @property
     def special_closes(self):
         return [(time(11, 30), AbstractHolidayCalendar(rules=[MonTuesThursBeforeIndependenceDay])),
-                 ((time(1), 1), AbstractHolidayCalendar(rules=[Christmas]))]
+                 ((time(1), 1), AbstractHolidayCalendar(rules=[Sept11Anniversary12pmLateOpen2002]))]
 
     @property
     def special_closes_adhoc(self):
         return [(time(11, 40), ["2016-12-14"]),
-                ((time(1, 5), 1), ["2016-12-15"])]
+                ((time(1, 5), 1), ["2016-12-16"])]
 
     @property
     def interruptions(self):
@@ -715,6 +715,15 @@ def test_special_opens_adhoc():
     assert pd.Timestamp('2016-12-13 11:20', tz='Asia/Ulaanbaatar').tz_convert('UTC') in opens
     assert pd.Timestamp('2016-12-14 11:13', tz='Asia/Ulaanbaatar').tz_convert('UTC') in opens
 
+    results = cal.schedule("2016-12-06", "2016-12-10", tz= cal.tz).market_open
+
+    goal = pd.Series(['2016-12-06 11:13:00+08:00', '2016-12-06 22:00:00+08:00',
+                      '2016-12-08 11:13:00+08:00', '2016-12-08 22:00:00+08:00'],
+                     index= pd.DatetimeIndex(['2016-12-06', '2016-12-07', '2016-12-08', '2016-12-09']),
+                     dtype= 'datetime64[ns, Asia/Ulaanbaatar]', name= "market_open")
+
+    assert_series_equal(results, goal)
+
 
 def test_special_closes():
     cal = FakeCalendar()
@@ -741,6 +750,15 @@ def test_special_closes():
                 pd.Timestamp('2012-07-03 11:30', tz='Asia/Ulaanbaatar').tz_convert('UTC')]
     assert actual == expected
 
+    results = cal.schedule("2002-09-10", "2002-09-12", tz= cal.tz).market_close
+
+    goal = pd.Series(['2002-09-10 11:49:00+09:00', '2002-09-12 01:00:00+09:00', '2002-09-12 11:49:00+09:00'],
+                     index= pd.DatetimeIndex(['2002-09-10', '2002-09-11', '2002-09-12']),
+                     dtype= 'datetime64[ns, Asia/Ulaanbaatar]', name= "market_close")
+
+    assert_series_equal(results, goal)
+
+
 
 def test_special_closes_adhoc():
     cal = FakeCalendar()
@@ -758,6 +776,15 @@ def test_special_closes_adhoc():
     closes = results['market_close'].tolist()
     assert pd.Timestamp('2016-12-13 11:49', tz='Asia/Ulaanbaatar').tz_convert('UTC') in closes
     assert pd.Timestamp('2016-12-14 11:40', tz='Asia/Ulaanbaatar').tz_convert('UTC') in closes
+
+    results = cal.schedule('2016-12-13', '2016-12-19', cal.tz).market_close
+
+    goal = pd.Series(['2016-12-13 11:49:00+08:00', '2016-12-14 11:40:00+08:00',
+                      '2016-12-15 11:49:00+08:00', '2016-12-17 01:05:00+08:00', '2016-12-19 11:49:00+08:00'],
+                     index= pd.DatetimeIndex(['2016-12-13', '2016-12-14', '2016-12-15', '2016-12-16', '2016-12-19']),
+                     dtype= 'datetime64[ns, Asia/Ulaanbaatar]', name= "market_close")
+
+    assert_series_equal(results, goal)
 
 
 def test_early_closes():
