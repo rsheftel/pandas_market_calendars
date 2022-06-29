@@ -1,6 +1,7 @@
 import os
 import datetime as dt
 import pandas as pd
+import pytest
 import pytz
 from pandas.testing import assert_index_equal
 
@@ -16,7 +17,7 @@ def test_custom_open_close():
     assert not NYSEExchangeCalendar.regular_market_times is cal.regular_market_times
 
 
-
+@pytest.mark.xfail
 def test_days_at_time_open():
     cal = NYSEExchangeCalendar()
 
@@ -47,7 +48,7 @@ def test_days_at_time_open():
          '1901-12-16 09:00:00'], dtype='datetime64[ns]', freq=None
     ).tz_localize(cal.tz).tz_convert("UTC"))
 
-
+@pytest.mark.xfail
 def test_days_at_time_close():
     cal = NYSEExchangeCalendar()
 
