@@ -369,7 +369,7 @@ class MarketCalendar(metaclass=MarketCalendarMeta):
     @property
     def interruptions_df(self):
         intr = self.interruptions
-        if not intr: return pd.DataFrame(index= pd.DatetimeIndex())
+        if not intr: return pd.DataFrame(index= pd.DatetimeIndex([]))
 
         intr = pd.DataFrame(intr, dtype="string")
         ix = intr.pop(0)
@@ -500,7 +500,7 @@ class MarketCalendar(metaclass=MarketCalendarMeta):
 
 
     def schedule(self, start_date, end_date, tz='UTC', start= "market_open", end= "market_close",
-                 force_special_times= True, market_times= None):
+                 force_special_times= True, market_times= None, interruptions= False):
         """
         Generates the schedule DataFrame. The resulting DataFrame will have all the valid business days as the index
         and columns for the requested market times. The columns can be determined either by setting a range (inclusive
@@ -571,6 +571,11 @@ class MarketCalendar(metaclass=MarketCalendarMeta):
             adjusted = schedule.loc[_close_adj].apply(
                 lambda x: x.where(x.le(x["market_close"]), x["market_close"]), axis= 1)
             schedule.loc[_close_adj] = adjusted
+
+        if interruptions:
+            interrs = self.interruptions_df
+            schedule[interrs.columns] = interrs
+            schedule = schedule.dropna(how= "all", axis= 1)
 
         return schedule
 

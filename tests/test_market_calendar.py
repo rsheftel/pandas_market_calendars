@@ -82,8 +82,8 @@ class FakeCalendar(MarketCalendar):
     def interruptions(self):
         return [
             ("2011-01-10", time(11), time(11, 1)),
+            ("2010-01-13", time(9, 59), time(10), time(10, 29), time(10, 30)),
             ("2010-01-11", time(11), time(11, 1)),
-            ("2003-09-11", time(9, 59), time(10), time(10, 29), time(10, 30)),
             ("2002-02-03", time(11), time(11, 2))
         ]
 
@@ -655,6 +655,40 @@ def test_schedule_w_times():
     assert_series_equal(results.iloc[-1], expected)
 
 
+def test_schedule_w_interruptions():
+
+    cal = FakeCalendar()
+
+    results = cal.schedule("2010-01-08", "2010-01-14", interruptions= True, tz= cal.tz)
+    assert results.shape == (5, 6)
+
+    ix = pd.DatetimeIndex(['2010-01-08', '2010-01-11', '2010-01-12', '2010-01-13', '2010-01-14'])
+    start1 = pd.Series([np.nan, '2010-01-11 11:00:00', np.nan, '2010-01-13 09:59:00', np.nan], index = ix,
+                      dtype= "datetime64[ns]", name= "interruption_start_1").dt.tz_localize(cal.tz)
+
+    end1 = pd.Series([np.nan, '2010-01-11 11:01:00', np.nan, '2010-01-13 10:00:00', np.nan], index = ix,
+                      dtype= "datetime64[ns]", name= "interruption_end_1").dt.tz_localize(cal.tz)
+
+    start2 = pd.Series([np.nan, np.nan, np.nan, '2010-01-13 10:29:00', np.nan], index = ix,
+                      dtype= "datetime64[ns]", name= "interruption_start_2").dt.tz_localize(cal.tz)
+
+    end2 = pd.Series([np.nan, np.nan, np.nan, '2010-01-13 10:30:00', np.nan], index = ix,
+                      dtype= "datetime64[ns]", name= "interruption_end_2").dt.tz_localize(cal.tz)
+
+    assert_series_equal(results["interruption_start_1"], start1)
+    assert_series_equal(results["interruption_end_1"], end1)
+
+    assert_series_equal(results["interruption_start_2"], start2)
+    assert_series_equal(results["interruption_end_2"], end2)
+
+    # single interruption
+    results = cal.schedule("2010-01-08", "2010-01-12", interruptions= True, tz= cal.tz)
+    assert results.shape == (3, 4)
+
+    # no interruption
+    results = cal.schedule("2009-01-08", "2009-01-12", interruptions= True, tz= cal.tz)
+    assert results.shape == (3, 2)
+
 def test_regular_holidays():
     cal = FakeCalendar()
 
@@ -923,24 +957,24 @@ def test_interruptions_df():
 
     goal = pd.DataFrame(
         {'interruption_start_1':
-             pd.Series(['2011-01-10 11:00:00', '2010-01-11 11:00:00',
-                        '2003-09-11 09:59:00', '2002-02-03 11:00:00'],
-                       index= pd.DatetimeIndex(['2011-01-10', '2010-01-11', '2003-09-11', '2002-02-03']),
+             pd.Series(['2011-01-10 11:00:00', '2010-01-13 09:59:00',
+                        '2010-01-11 11:00:00', '2002-02-03 11:00:00'],
+                       index= pd.DatetimeIndex(['2011-01-10', '2010-01-13', '2010-01-11', '2002-02-03']),
                        dtype= 'datetime64[ns]').dt.tz_localize('Asia/Ulaanbaatar'),
          'interruption_end_1':
-             pd.Series(['2011-01-10 11:01:00', '2010-01-11 11:01:00',
-                        '2003-09-11 10:00:00', '2002-02-03 11:02:00'],
-                       index= pd.DatetimeIndex(['2011-01-10', '2010-01-11', '2003-09-11', '2002-02-03']),
+             pd.Series(['2011-01-10 11:01:00', '2010-01-13 10:00:00',
+                        '2010-01-11 11:01:00', '2002-02-03 11:02:00'],
+                       index= pd.DatetimeIndex(['2011-01-10', '2010-01-13', '2010-01-11', '2002-02-03']),
                        dtype= 'datetime64[ns]').dt.tz_localize('Asia/Ulaanbaatar'),
          'interruption_start_2':
-             pd.Series([np.nan, np.nan, '2003-09-11 10:29:00', np.nan],
-                       index= pd.DatetimeIndex(['2011-01-10', '2010-01-11', '2003-09-11', '2002-02-03']),
+             pd.Series([np.nan, '2010-01-13 10:29:00', np.nan, np.nan],
+                       index= pd.DatetimeIndex(['2011-01-10', '2010-01-13', '2010-01-11', '2002-02-03']),
                        dtype= 'datetime64[ns]').dt.tz_localize('Asia/Ulaanbaatar'),
          'interruption_end_2':
-             pd.Series([np.nan, np.nan, '2003-09-11 10:30:00', np.nan],
-                       index= pd.DatetimeIndex(['2011-01-10', '2010-01-11', '2003-09-11', '2002-02-03']),
+             pd.Series([np.nan, '2010-01-13 10:30:00', np.nan, np.nan],
+                       index= pd.DatetimeIndex(['2011-01-10', '2010-01-13', '2010-01-11', '2002-02-03']),
                        dtype= 'datetime64[ns]').dt.tz_localize('Asia/Ulaanbaatar')},
-        index= pd.DatetimeIndex(['2011-01-10', '2010-01-11', '2003-09-11', '2002-02-03']))
+        index= pd.DatetimeIndex(['2011-01-10', '2010-01-13', '2010-01-11', '2002-02-03']))
 
     cal = FakeCalendar()
     print(cal.interruptions_df.to_string())
