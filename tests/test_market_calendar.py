@@ -26,6 +26,7 @@ from pandas.tseries.holiday import AbstractHolidayCalendar
 from pandas_market_calendars import get_calendar, get_calendar_names
 from pandas_market_calendars.holidays_us import (Christmas, HurricaneSandyClosings, MonTuesThursBeforeIndependenceDay,
                                                  USNationalDaysofMourning, USNewYearsDay)
+from pandas_market_calendars.holidays_nyse import Sept11Anniversary12pmLateOpen2002
 from pandas_market_calendars.market_calendar import MarketCalendar #, clean_dates, days_at_time
 from pandas_market_calendars.exchange_calendars_mirror import TradingCalendar
 from pandas_market_calendars.exchange_calendar_nyse import NYSEExchangeCalendar
@@ -59,7 +60,7 @@ class FakeCalendar(MarketCalendar):
     @property
     def special_opens(self):
         return [(time(11, 15), AbstractHolidayCalendar(rules=[MonTuesThursBeforeIndependenceDay])),
-                 ((time(23), -1), AbstractHolidayCalendar(rules=[Christmas]))]
+                 ((time(23), -1), AbstractHolidayCalendar(rules=[Sept11Anniversary12pmLateOpen2002]))]
 
     @property
     def special_opens_adhoc(self):
@@ -693,8 +694,14 @@ def test_special_opens():
     assert pd.Timestamp('2012-07-04 11:13', tz='Asia/Ulaanbaatar').tz_convert('UTC') in opens
 
 
-    results = cal.schedule('2012-07-01', '2012-07-06')
-    opens = results['market_open'].tolist()
+    results = cal.schedule("2002-09-10", "2002-09-12", tz= cal.tz).market_open
+
+    goal = pd.Series(['2002-09-10 11:13:00+09:00', '2002-09-10 23:00:00+09:00', '2002-09-12 11:13:00+09:00'],
+                     index= pd.DatetimeIndex(['2002-09-10', '2002-09-11', '2002-09-12']),
+                     dtype= 'datetime64[ns, Asia/Ulaanbaatar]', name= "market_open")
+
+    assert_series_equal(results, goal)
+
 
 
 def test_special_opens_adhoc():

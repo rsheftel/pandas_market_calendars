@@ -411,7 +411,7 @@ class MarketCalendar(metaclass=MarketCalendarMeta):
         :param tz: time zone in either string or pytz.timezone
         :return: DatetimeIndex of valid business days
         """
-        return pd.date_range(start_date, end_date, freq=self.holidays(), normalize=True, tz=tz)
+        return pd.date_range(start_date, end_date, freq=self.holidays(), normalize=True, tz= tz)
 
     def _get_market_times(self, start, end):
         start = self._market_times.index(start)
@@ -493,7 +493,7 @@ class MarketCalendar(metaclass=MarketCalendarMeta):
         special = self._special_dates(calendars, ad_hoc, start_date, end_date)
 
         if filter_holidays:
-            valid = self.valid_days(start_date, end_date)
+            valid = self.valid_days(start_date, end_date, tz= None)
             special = special[special.index.isin(valid)]  # some sources of special times don't exclude holidays
         return special
 
