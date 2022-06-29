@@ -870,6 +870,7 @@ def test_open_at_time():
     cal.change_time("pre", time(7)) # is the day before in UTC
     cal.add_time("post", (time(9), 1))
     schedule = cal.schedule('2014-07-01', '2014-07-10', market_times= "all")
+    print(schedule.to_string())
     assert cal.open_at_time(schedule, pd.Timestamp("2014-07-03 23:30:00+00:00")) is True
     assert cal.open_at_time(schedule, pd.Timestamp("2014-07-05 00:30:00+00:00")) is True
     assert cal.open_at_time(schedule, pd.Timestamp("2014-07-05 00:30:00+00:00"), only_rth= True) is False

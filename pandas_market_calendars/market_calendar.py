@@ -37,6 +37,13 @@ class MarketCalendar(metaclass=MarketCalendarMeta):
                             "market_close": ((None, time(23)),)
                             }
 
+    open_close_map = {"market_open": True,
+                      "market_close": False,
+                      "break_start": False,
+                      "break_end": True,
+                      "pre": True,
+                      "post": False}
+
     @staticmethod
     def _tdelta(t, day_offset= 0):
         try:
@@ -610,21 +617,12 @@ class MarketCalendar(metaclass=MarketCalendarMeta):
         if timestamp < schedule[lowest].iat[0] or timestamp > schedule[highest].iat[-1]:
             raise ValueError("The provided timestamp is not covered by the schedule")
 
-        day = schedule[schedule[lowest].le(timestamp)].iloc[-1]
+        day = schedule[schedule[lowest].le(timestamp)].iloc[-1].sort_values()
+        if include_close: below = day.lt(timestamp)
+        else: below = day.le(timestamp)
 
-        if 'break_start' in schedule.columns:
-            if include_close:
-                return ((day[lowest] <= timestamp <= day['break_start']) or
-                        (day['break_end'] <= timestamp <= day[highest]))
-            else:
-                return ((day[lowest] <= timestamp < day['break_start']) or
-                        (day['break_end'] <= timestamp < day[highest]))
-        else:
-            if include_close:
-                return day[lowest] <= timestamp <= day[highest]
-            else:
-                return day[lowest] <= timestamp < day[highest]
-
+        last = day[below].index[-1]
+        return self.open_close_map[last]
 
     # need this to make is_open_now testable
     @staticmethod
