@@ -422,9 +422,8 @@ class MarketCalendar(metaclass=MarketCalendarMeta):
         return pd.date_range(start_date, end_date, freq=self.holidays(), normalize=True, tz= tz)
 
     def _get_market_times(self, start, end):
-        start = self._market_times.index(start)
-        end = self._market_times.index(end)
-        return self._market_times[start: end + 1]
+        mts = self._market_times
+        return mts[mts.index(start): mts.index(end) + 1]
 
     def days_at_time(self, days, market_time, day_offset=0):
         """
@@ -602,27 +601,33 @@ class MarketCalendar(metaclass=MarketCalendarMeta):
             include_close will be referring to market_close.
         :return: True if the timestamp is a valid open date and time, False if not
         """
-        if not schedule.columns.isin(self._market_times).all():
-            raise ValueError("You seem to be using a schedule that isn't based on the market_times")
-
         timestamp = pd.Timestamp(timestamp).tz_convert("UTC")
+        cols = schedule.columns
+        interrs = cols.str.startswith("interruption_")
+
+        if not (cols.isin(self._market_times) | interrs).all():
+            raise ValueError("You seem to be using a schedule that isn't based on the market_times")
 
         if only_rth:
             lowest, highest = "market_open", "market_close"
+            cols = cols.isin(self._get_market_times(lowest, highest)) | interrs
+            schedule = schedule.loc[:, cols]
         else:
-            ixs = schedule.columns.map(self._market_times.index)
-            lowest = schedule.columns[ixs == ixs.min()][0]
-            highest = schedule.columns[ixs == ixs.max()][0]
+            cols = cols[~interrs]
+            ix = cols.map(self._market_times.index)
+            lowest, highest = cols[ix == ix.min()][0], cols[ix == ix.max()][0]
 
         if timestamp < schedule[lowest].iat[0] or timestamp > schedule[highest].iat[-1]:
             raise ValueError("The provided timestamp is not covered by the schedule")
 
         day = schedule[schedule[lowest].le(timestamp)].iloc[-1].sort_values()
-        if include_close: below = day.lt(timestamp)
-        else: below = day.le(timestamp)
+        day = day.index.to_series(index= day).replace(self.open_close_map)
+        day.loc[day.eq(day.shift(-1)) & day.eq(False)] = True # handle market_close before post
 
-        last = day[below].index[-1]
-        return self.open_close_map[last]
+        if include_close: below = day.index < timestamp
+        else: below = day.index <= timestamp
+        return bool(day[below].iat[-1]) # might return numpy.bool_ if not bool(...)
+
 
     # need this to make is_open_now testable
     @staticmethod
