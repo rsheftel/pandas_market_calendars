@@ -619,7 +619,6 @@ class MarketCalendar(metaclass=MarketCalendarMeta):
 
         if only_rth:
             lowest, highest = "market_open", "market_close"
-            cols = cols[cols.isin(self._get_market_times(lowest, highest)) | interrs]
         else:
             cols = cols[~interrs]
             ix = cols.map(self._market_times.index)
@@ -629,6 +628,7 @@ class MarketCalendar(metaclass=MarketCalendarMeta):
             raise ValueError("The provided timestamp is not covered by the schedule")
 
         day = schedule[schedule[lowest].le(timestamp)].iloc[-1].dropna().sort_values()
+        day = day.loc[lowest:highest]
         day = day.index.to_series(index= day)
 
         if interrs.any():

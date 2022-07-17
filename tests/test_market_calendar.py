@@ -857,10 +857,9 @@ def test_open_at_time():
     cal.change_time("pre", time(7)) # is the day before in UTC
     cal.add_time("post", (time(9), 1))
     schedule = cal.schedule('2014-07-01', '2014-07-10', market_times= "all")
-    print(schedule.to_string())
     assert cal.open_at_time(schedule, pd.Timestamp("2014-07-03 23:30:00+00:00")) is True
     assert cal.open_at_time(schedule, pd.Timestamp("2014-07-05 00:30:00+00:00")) is True
-    # assert cal.open_at_time(schedule, pd.Timestamp("2014-07-05 00:30:00+00:00"), only_rth= True) is False
+    assert cal.open_at_time(schedule, pd.Timestamp("2014-07-05 00:30:00+00:00"), only_rth= True) is False
 
     cal.change_time("market_open", (cal.open_time, -2))
     cal.change_time("market_close", (cal.close_time, 3))
@@ -970,23 +969,11 @@ def test_open_at_time_interruptions():
     assert cal.open_at_time(sched, "2010-01-12 17:55:00", include_close=True) is True
     assert cal.open_at_time(sched, "2010-01-12 17:57:00", include_close=True) is False
 
-
-    print(sched.to_string())
-
-
-
-    # assert cal.open_at_time(sched, "2010-01-13 14:00:00", only_rth= True) is False
-    # assert cal.open_at_time(sched, "2010-01-13 14:30:00", only_rth= True) is False
-    # assert cal.open_at_time(sched, "2010-01-13 14:35:00", only_rth= True) is True
-    #
-    # assert cal.open_at_time(sched, "2010-01-13 16:03:00", only_rth= True) is True
-    # assert cal.open_at_time(sched, "2010-01-13 17:05:00", only_rth= True) is False
-
-
-
-
-
-
+    assert cal.open_at_time(sched, "2010-01-13 14:00:00", only_rth= True) is False
+    assert cal.open_at_time(sched, "2010-01-13 14:30:00", only_rth= True) is False
+    assert cal.open_at_time(sched, "2010-01-13 14:35:00", only_rth= True) is True
+    assert cal.open_at_time(sched, "2010-01-13 16:03:00", only_rth= True) is True
+    assert cal.open_at_time(sched, "2010-01-13 17:05:00", only_rth= True) is False
 
 def test_is_open_now(patch_get_current_time):
     cal = FakeCalendar()
