@@ -117,6 +117,14 @@ class FakeBreakCalendar(MarketCalendar):
     def special_closes_adhoc(self):
         return [(time(10, 40), ['2016-12-30'])]
 
+    @property
+    def interruptions(self):
+        return [
+            ("2010-01-11", time(9,42), time(9,44)),
+            ("2010-01-12", time(11,16), time(11,18), time(11,55), time(11,57)),
+            ("2010-01-13", time(9, 30), time(9, 31), time(11,5), (time(1), 1)),
+        ]
+
 @pytest.fixture
 def patch_get_current_time(monkeypatch):
     def get_fake_time():
@@ -158,10 +166,6 @@ def test_pickling():
         test_protected_dictionary(Cal)
         test_protected_dictionary(unpickled)
 
-
-
-
-
 def test_get_time():
     cal = FakeCalendar()
 
@@ -199,7 +203,6 @@ def test_special_dates():
 
     special = cal.special_dates("market_open", "2016-12-10", "2016-12-31", filter_holidays= False)
     assert special.astype(str).tolist() == ["2016-12-13 03:20:00+00:00", "2016-12-25 03:20:00+00:00"]
-
 
 def test_change_add_remove_time():
     cal = FakeCalendar()
@@ -260,7 +263,6 @@ def test_change_add_remove_time():
     with pytest.raises(AssertionError):
         cal.add_time("wrong_format", pd.Timedelta("5H"))
 
-
 def test_dunder_methods():
     cal = FakeCalendar()
 
@@ -278,8 +280,6 @@ def test_dunder_methods():
     cal["market_open"] = time(9)
     assert cal["market_open"] == time(9)
 
-
-
 def test_default_calendars():
     for name in get_calendar_names():
         if name == "XKRX":
@@ -287,7 +287,6 @@ def test_default_calendars():
                 assert get_calendar(name) is not None
         else:
             assert get_calendar(name) is not None
-
 
 def test_days_at_time():
     class New_York(FakeCalendar):
@@ -367,7 +366,6 @@ def test_days_at_time():
     for args in args_list:
         dat(args[0], args[1], args[2], args[3], args[4])
 
-
 def test_clean_dates():
     cal = FakeCalendar()
 
@@ -389,12 +387,10 @@ def test_clean_dates():
     assert start == pd.Timestamp('2016-12-01')
     assert end == pd.Timestamp('2016-12-31')
 
-
 def test_properties():
     cal = FakeCalendar()
     assert cal.name == 'DMY'
     assert cal.tz == timezone('Asia/Ulaanbaatar')
-
 
 def test_holidays():
     cal = FakeCalendar()
@@ -406,7 +402,6 @@ def test_holidays():
     assert pd.Timestamp('2012-10-29') in actual
     assert pd.Timestamp('2012-10-30') in actual
 
-
 def test_valid_dates():
     cal = FakeCalendar()
 
@@ -414,7 +409,6 @@ def test_valid_dates():
                                                                      '2016-12-29', '2016-12-30', '2017-01-03']])
     actual = cal.valid_days('2016-12-23', '2017-01-03')
     assert_index_equal(actual, expected)
-
 
 def test_schedule():
     cal = FakeCalendar()
@@ -557,7 +551,6 @@ def test_custom_schedule():
                                                                 "2016-12-30 16:00:00+00:00",
                                                                 "2016-12-30 17:00:00+00:00"]
 
-
 def test_schedule_w_breaks():
     cal = FakeBreakCalendar()
     assert cal.open_time == time(9, 30)
@@ -626,7 +619,6 @@ def test_schedule_w_breaks():
     else:
         assert_frame_equal(actual, expected, check_freq=False)
 
-
 def test_schedule_w_times():
     cal = FakeCalendar(time(12, 12), time(13, 13))
 
@@ -653,7 +645,6 @@ def test_schedule_w_times():
         expected = expected.astype(object)
 
     assert_series_equal(results.iloc[-1], expected)
-
 
 def test_schedule_w_interruptions():
 
@@ -708,7 +699,6 @@ def test_regular_holidays():
     assert pd.Timestamp('2017-01-02') not in days
     assert pd.Timestamp('2017-01-03') in days
 
-
 def test_adhoc_holidays():
     cal = FakeCalendar()
 
@@ -721,7 +711,6 @@ def test_adhoc_holidays():
     assert pd.Timestamp('2012-10-29') not in days
     assert pd.Timestamp('2012-10-30') not in days
     assert pd.Timestamp('2012-10-31') in days
-
 
 def test_special_opens():
     cal = FakeCalendar()
@@ -871,7 +860,7 @@ def test_open_at_time():
     print(schedule.to_string())
     assert cal.open_at_time(schedule, pd.Timestamp("2014-07-03 23:30:00+00:00")) is True
     assert cal.open_at_time(schedule, pd.Timestamp("2014-07-05 00:30:00+00:00")) is True
-    assert cal.open_at_time(schedule, pd.Timestamp("2014-07-05 00:30:00+00:00"), only_rth= True) is False
+    # assert cal.open_at_time(schedule, pd.Timestamp("2014-07-05 00:30:00+00:00"), only_rth= True) is False
 
     cal.change_time("market_open", (cal.open_time, -2))
     cal.change_time("market_close", (cal.close_time, 3))
@@ -921,6 +910,83 @@ def test_open_at_time_breaks():
     assert cal.open_at_time(schedule, pd.Timestamp("2014-07-11 14:00:00+00:00")) is False
     with pytest.raises(ValueError):
         cal.open_at_time(schedule, pd.Timestamp("2014-07-11 14:00:00+00:00"), only_rth= True)
+
+def test_open_at_time_interruptions():
+    cal = FakeBreakCalendar()
+
+    sched = cal.schedule("2010-01-08", "2010-01-14", interruptions=True)
+
+    """
+    possibilities
+    
+     interruption between
+         market_open/break
+         break/market_close
+         pre/market_open
+         market_close/post
+         
+     multiple interruptions
+        
+     only_rth  True/False
+     
+     different timezones for passed timestamp and schedule
+     
+     timestamp between
+        interruptions
+        break
+        after post/market_close
+        
+    
+    """
+    print(sched.to_string())
+
+    # No pre/post
+    assert cal.open_at_time(sched, "2010-01-11 14:40:00") is True
+    assert cal.open_at_time(sched, "2010-01-11 14:42:00") is False
+    assert cal.open_at_time(sched, "2010-01-11 15:05:00") is False
+    assert cal.open_at_time(sched, "2010-01-11 16:40:00") is True
+    assert cal.open_at_time(sched, "2010-01-11 17:05:00") is False
+
+    # with pre/post
+    cal.add_time("pre", time(8))
+    cal.add_time("post", time(13))
+
+    # different timezone
+    sched = cal.schedule("2010-01-08", "2010-01-14", market_times="all", interruptions=True, tz=cal.tz)
+
+    # interruption between pre/market_open
+    sched.iloc[2, [-4, -3]] = pd.to_datetime(["2010-01-12 08:05:00", "2010-01-12 08:07:00"]).tz_localize(cal.tz)
+
+    assert cal.open_at_time(sched, "2010-01-12 13:01:00") is True
+    assert cal.open_at_time(sched, "2010-01-12 13:06:00") is False
+    assert cal.open_at_time(sched, "2010-01-12 16:00:00") is True
+    assert cal.open_at_time(sched, "2010-01-12 16:56:00") is False
+    assert cal.open_at_time(sched, "2010-01-12 16:55:00", include_close= True) is True
+    assert cal.open_at_time(sched, "2010-01-12 16:57:00", include_close= True) is False
+
+    # interruption between market_close/post
+    sched.iloc[2, [-2, -1]] += pd.Timedelta("1H")
+    assert cal.open_at_time(sched, "2010-01-12 17:56:00") is False
+    assert cal.open_at_time(sched, "2010-01-12 17:55:00", include_close=True) is True
+    assert cal.open_at_time(sched, "2010-01-12 17:57:00", include_close=True) is False
+
+
+    print(sched.to_string())
+
+
+
+    # assert cal.open_at_time(sched, "2010-01-13 14:00:00", only_rth= True) is False
+    # assert cal.open_at_time(sched, "2010-01-13 14:30:00", only_rth= True) is False
+    # assert cal.open_at_time(sched, "2010-01-13 14:35:00", only_rth= True) is True
+    #
+    # assert cal.open_at_time(sched, "2010-01-13 16:03:00", only_rth= True) is True
+    # assert cal.open_at_time(sched, "2010-01-13 17:05:00", only_rth= True) is False
+
+
+
+
+
+
 
 def test_is_open_now(patch_get_current_time):
     cal = FakeCalendar()

@@ -386,9 +386,8 @@ class MarketCalendar(metaclass=MarketCalendarMeta):
 
     @property
     def interruptions_df(self):
-        intr = self.interruptions
-        if not intr: return pd.DataFrame(index= pd.DatetimeIndex([]))
-        intr = pd.DataFrame(intr)
+        if not self.interruptions: return pd.DataFrame(index= pd.DatetimeIndex([]))
+        intr = pd.DataFrame(self.interruptions)
         intr.index = pd.to_datetime(intr.pop(0))
 
         columns = []
@@ -599,7 +598,7 @@ class MarketCalendar(metaclass=MarketCalendarMeta):
         before the first open time or after the last close time of `schedule`, a ValueError will be raised.
 
         :param schedule: schedule DataFrame
-        :param timestamp: the timestamp to check for
+        :param timestamp: the timestamp to check for. Assumed to be UTC, if it doesn't include tz information.
         :param include_close: if False then the timestamp that equals the closing timestamp will return False and not be
             considered a valid open date and time. If True then it will be considered valid and return True. Use True
             if using bars and would like to include the last bar as a valid open date and time. The close refers to the
@@ -608,7 +607,10 @@ class MarketCalendar(metaclass=MarketCalendarMeta):
             include_close will be referring to market_close.
         :return: True if the timestamp is a valid open date and time, False if not
         """
-        timestamp = pd.Timestamp(timestamp).tz_convert("UTC")
+        timestamp = pd.Timestamp(timestamp)
+        try: timestamp = timestamp.tz_convert("UTC")
+        except TypeError: timestamp = timestamp.tz_localize("UTC")
+
         cols = schedule.columns
         interrs = cols.str.startswith("interruption_")
 
@@ -617,8 +619,7 @@ class MarketCalendar(metaclass=MarketCalendarMeta):
 
         if only_rth:
             lowest, highest = "market_open", "market_close"
-            cols = cols.isin(self._get_market_times(lowest, highest)) | interrs
-            schedule = schedule.loc[:, cols]
+            cols = cols[cols.isin(self._get_market_times(lowest, highest)) | interrs]
         else:
             cols = cols[~interrs]
             ix = cols.map(self._market_times.index)
@@ -627,13 +628,22 @@ class MarketCalendar(metaclass=MarketCalendarMeta):
         if timestamp < schedule[lowest].iat[0] or timestamp > schedule[highest].iat[-1]:
             raise ValueError("The provided timestamp is not covered by the schedule")
 
-        day = schedule[schedule[lowest].le(timestamp)].iloc[-1].sort_values()
-        day = day.index.to_series(index= day).replace(self.open_close_map)
-        day.loc[day.eq(day.shift(-1)) & day.eq(False)] = True # handle market_close before post
+        day = schedule[schedule[lowest].le(timestamp)].iloc[-1].dropna().sort_values()
+        day = day.index.to_series(index= day)
+
+        if interrs.any():
+            starts = day.str.startswith("interruption_start_")
+            ends = day.str.startswith("interruption_end_")
+            day.loc[starts] = False
+            day.loc[ends] = True
+
+        day = day.replace(self.open_close_map)
+        # the call to .where handles the possibility of post following market_close
+        day = day.where(day.ne(day.shift(-1)) & ~day, True)
 
         if include_close: below = day.index < timestamp
         else: below = day.index <= timestamp
-        return bool(day[below].iat[-1]) # might return numpy.bool_ if not bool(...)
+        return bool(day[below].iat[-1]) # returns numpy.bool_ if not bool(...)
 
 
     # need this to make is_open_now testable
