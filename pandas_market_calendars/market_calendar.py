@@ -373,14 +373,23 @@ class MarketCalendar(metaclass=MarketCalendarMeta):
 
         return []
 
+    def _convert(self, col):
+        try: times = col.str[0]
+        except AttributeError: # no tuples, only offset 0
+            return (pd.to_timedelta(col.astype("string"), errors="coerce") + col.index
+                    ).dt.tz_localize(self.tz).dt.tz_convert("UTC")
+
+        return (pd.to_timedelta(times.fillna(col).astype("string"), errors="coerce"
+                               ) + pd.to_timedelta(col.str[1].fillna(0), unit="D"
+                                                   ) + col.index
+                ).dt.tz_localize(self.tz).dt.tz_convert("UTC")
+
     @property
     def interruptions_df(self):
         intr = self.interruptions
         if not intr: return pd.DataFrame(index= pd.DatetimeIndex([]))
-
-        intr = pd.DataFrame(intr, dtype="string")
-        ix = intr.pop(0)
-        ix.name = None
+        intr = pd.DataFrame(intr)
+        intr.index = pd.to_datetime(intr.pop(0))
 
         columns = []
         for i in range(1, intr.shape[1] // 2 + 1):
@@ -388,11 +397,9 @@ class MarketCalendar(metaclass=MarketCalendarMeta):
             columns.append("interruption_start_" + i)
             columns.append("interruption_end_" + i)
         intr.columns = columns
+        intr.index.name = None
 
-        f = "%Y-%m-%d"
-        intr = intr.radd(ix, axis=0).set_index(pd.to_datetime(ix, format=f))
-        todt = lambda x: pd.to_datetime(x, format=f + "%H:%M:%S", errors="coerce").dt.tz_localize(self.tz)
-        return intr.apply(todt)
+        return intr.apply(self._convert).sort_index()
 
     def holidays(self):
         """
@@ -579,7 +586,7 @@ class MarketCalendar(metaclass=MarketCalendarMeta):
             schedule.loc[_close_adj] = adjusted
 
         if interruptions:
-            interrs = self.interruptions_df
+            interrs = self.interruptions_df.apply(lambda s: s.dt.tz_convert(tz))
             schedule[interrs.columns] = interrs
             schedule = schedule.dropna(how= "all", axis= 1)
 
