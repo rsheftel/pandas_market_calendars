@@ -5,6 +5,7 @@ import itertools
 import warnings
 
 import pandas as pd
+import numpy as np
 
 def merge_schedules(schedules, how='outer'):
     """
@@ -152,9 +153,8 @@ class _date_range:
 
         :param schedule: pd.DataFrame with first column: 'start' and second column: 'end'
         :return: pd.Series of float64"""
-        num_bars = (schedule.end - schedule.start) / self.frequency
-        remains = num_bars % 1    # round up, np.ceil-style
-        return num_bars.where(remains == 0, num_bars + 1 - remains).round()
+        return np.ceil((schedule.end - schedule.start) / self.frequency)
+
 
     def _calc_time_series(self, schedule):
         """Method used by date_range to calculate the trading index.
@@ -219,6 +219,6 @@ class _date_range:
         time_series = self._calc_time_series(schedule)
 
         time_series.name = None
-        return pd.DatetimeIndex(time_series.drop_duplicates(), tz= "UTC")
+        return pd.DatetimeIndex(time_series.drop_duplicates())
 
 date_range = _date_range()

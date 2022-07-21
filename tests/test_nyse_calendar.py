@@ -16,8 +16,6 @@ def test_custom_open_close():
 
     assert not NYSEExchangeCalendar.regular_market_times is cal.regular_market_times
 
-
-
 @pytest.mark.parametrize("dates, results", [
     (("1984-12-30", "1985-01-03"), ['1984-12-31 10:00:00', '1985-01-02 09:30:00', '1985-01-03 09:30:00']),
     (("1901-12-13", "1901-12-16"), ['1901-12-13 10:00:00', '1901-12-14 10:00:00', '1901-12-16 10:00:00'])
@@ -32,7 +30,6 @@ def test_days_at_time_open(dates, results):
     assert_series_equal(at_open, pd.Series(
         results, index= pd.DatetimeIndex(results).normalize(), dtype= "datetime64[ns]"
     ).dt.tz_localize(cal.tz).dt.tz_convert("UTC"))
-
 
 @pytest.mark.parametrize("dates, results", [
     (("1952-09-26", "1952-09-30"), ['1952-09-26 15:00:00', '1952-09-29 15:30:00', '1952-09-30 15:30:00']),
