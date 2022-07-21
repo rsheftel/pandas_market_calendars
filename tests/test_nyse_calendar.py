@@ -42,18 +42,12 @@ def test_days_at_time_open(dates, results):
 ])
 def test_days_at_time_close(dates, results):
     cal = NYSEExchangeCalendar()
-    # test market_close before/after 1952-09-29
     valid = cal.valid_days(*dates)
     at_close = cal.days_at_time(valid, "market_close")
 
-    print(at_close)
-    print(pd.Series(
-        results, index= pd.DatetimeIndex(results, freq= None).normalize(), dtype= "datetime64[ns]",
-    ).dt.tz_localize(cal.tz).dt.tz_convert("UTC"))
-
-    assert_series_equal(at_close, pd.Series(
-        results, index= pd.DatetimeIndex(results).normalize(), dtype= "datetime64[ns]"
-    ).dt.tz_localize(cal.tz).dt.tz_convert("UTC"))
+    results = pd.DatetimeIndex(results)
+    ix = pd.DatetimeIndex(results.normalize(), freq= None)
+    assert_series_equal(at_close, pd.Series(results.tz_localize(cal.tz).tz_convert("UTC"), index= ix))
 
 def test_days_at_time_custom():
     cal = NYSEExchangeCalendar()
