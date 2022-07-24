@@ -12,6 +12,7 @@ def test_inheritance():
             "market_open": {None: time(0)},
             "market_close": {None: time(23)}
         }
+        open_close_map = {}
         @classmethod
         def _prepare_regular_market_times(cls): return
 
@@ -96,6 +97,7 @@ def test_metamixing():
             "market_open": {None: time(0)},
             "market_close": {None: time(23)}
         }
+        open_close_map = {}
         @classmethod
         def _prepare_regular_market_times(cls): return
         def special_opens(self): return []

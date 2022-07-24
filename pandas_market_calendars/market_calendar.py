@@ -123,6 +123,9 @@ class MarketCalendar(metaclass=MarketCalendarMeta):
         for market_time, times in self.regular_market_times.items():
             # in case a market_time has been discontinued, extend the last time
             # and add it to the discontinued_market_times dictionary
+            if market_time.startswith("interruption_"):
+                raise ValueError("'interruption_' prefix is reserved")
+
             if times[-1][1] is None:
                 self.discontinued_market_times[market_time] = times[-1][0]
                 times = times[:-1]

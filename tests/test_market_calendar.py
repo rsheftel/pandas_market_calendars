@@ -138,9 +138,22 @@ def test_protected_dictionary(cal= None):
     with pytest.raises(TypeError) as e:
         cal.regular_market_times["market_open"] = time(12)
 
+    with pytest.raises(TypeError) as e:
+        cal.open_close_map["anything"] = time(12)
+
     # nor delete
     with pytest.raises(TypeError) as e:
         del cal.regular_market_times["market_open"]
+
+    with pytest.raises(TypeError) as e:
+        del cal.open_close_map["break_start"]
+
+def test_market_time_names():
+    cal = FakeCalendar()
+
+    with pytest.raises(ValueError):
+        cal.add_time("interruption_anything", time(11, 30))
+
 
 def test_pickling():
 

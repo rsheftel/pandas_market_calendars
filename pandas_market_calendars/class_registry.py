@@ -54,7 +54,8 @@ class RegisteryMeta(type):
 
         super(RegisteryMeta, cls).__init__(name, bases, attr)
 
-        cls.regular_market_times = _ProtectedDict(cls.regular_market_times)
+        cls.regular_market_times = ProtectedDict(cls.regular_market_times)
+        cls.open_close_map = ProtectedDict(cls.open_close_map)
 
         cls.special_market_open = cls.special_opens
         cls.special_market_open_adhoc = cls.special_opens_adhoc
@@ -63,7 +64,7 @@ class RegisteryMeta(type):
         cls.special_market_close_adhoc = cls.special_closes_adhoc
 
 
-class _ProtectedDict(dict):
+class ProtectedDict(dict):
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
