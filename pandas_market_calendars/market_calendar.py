@@ -453,7 +453,7 @@ class MarketCalendar(metaclass=MarketCalendarMeta):
         :param days: DatetimeIndex An index of dates (represented as midnight).
         :param market_time: datetime.time The time to apply as an offset to each day in ``days``.
         :param day_offset: int The number of days we want to offset @days by
-        :return: DatetimeIndex of date with the time t
+        :return: pd.Series of date with the time t
         """
         # Offset days without tz to avoid timezone issues.
         days = pd.DatetimeIndex(days).tz_localize(None).to_series()

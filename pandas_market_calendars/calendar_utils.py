@@ -54,7 +54,8 @@ class _date_range:
     """
     This is a callable class that should be used by calling the already initiated instance: `date_range`.
     Given a schedule, it will return a DatetimeIndex with all of the valid datetimes at the frequency given.
-    The schedule values are assumed to be in UTC.
+
+    The schedule columns should all have the same time zone.
 
     The calculations will be made for each trading session. If the passed schedule-DataFrame doesn't have
     breaks, there is one trading session per day going from market_open to market_close, otherwise there are two,
