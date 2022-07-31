@@ -219,7 +219,7 @@ class MarketCalendar(metaclass=MarketCalendarMeta):
 
         :param market_time: the market_time to add
         :param times: the time information
-        :param opens: see .add_time docstring
+        :param opens: see .change_time docstring
         :return: None
         """
         assert not market_time in self.regular_market_times, f"{market_time} is already in regular_market_times:" \
