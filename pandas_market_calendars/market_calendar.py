@@ -669,15 +669,15 @@ class MarketCalendar(metaclass=MarketCalendarMeta):
 
         cols = schedule.columns
         interrs = cols.str.startswith("interruption_")
-
-        if not (cols.isin(self._market_times) | interrs).all():
-            raise ValueError("You seem to be using a schedule that isn't based on the market_times")
+        if not (cols.isin(self._oc_market_times) | interrs).all():
+            raise ValueError("You seem to be using a schedule that isn't based on the market_times, "
+                             "or includes market_times that are not represented in the open_close_map.")
 
         if only_rth:
             lowest, highest = "market_open", "market_close"
         else:
             cols = cols[~interrs]
-            ix = cols.map(self._market_times.index)
+            ix = cols.map(self._oc_market_times.index)
             lowest, highest = cols[ix == ix.min()][0], cols[ix == ix.max()][0]
 
         if timestamp < schedule[lowest].iat[0] or timestamp > schedule[highest].iat[-1]:
@@ -693,9 +693,9 @@ class MarketCalendar(metaclass=MarketCalendarMeta):
             day.loc[starts] = False
             day.loc[ends] = True
 
+        # When post follows market_close, market_close should not be considered a close
+        day.loc[day.eq("market_close") & day.shift(-1).eq("post")] = "market_open"
         day = day.replace(self.open_close_map)
-        # the call to .where handles the possibility of post following market_close
-        day = day.where(day.ne(day.shift(-1)) & ~day, True)
 
         if include_close: below = day.index < timestamp
         else: below = day.index <= timestamp

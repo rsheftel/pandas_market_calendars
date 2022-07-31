@@ -154,7 +154,6 @@ def test_market_time_names():
     with pytest.raises(ValueError):
         cal.add_time("interruption_anything", time(11, 30))
 
-
 def test_pickling():
 
     for Cal in [FakeCalendar, FakeBreakCalendar, NYSEExchangeCalendar]:
@@ -883,7 +882,7 @@ def test_open_at_time():
     cal.change_time("market_close", (cal.close_time, 3))
     schedule = cal.schedule('2014-07-01', '2014-07-10', market_times= "all")
     assert cal.open_at_time(schedule, "2014-06-29 04:00:00+00:00") is True
-    assert cal.open_at_time(schedule, "2014-07-13 06:00:00+03:00") is True
+    assert cal.open_at_time(schedule, "2014-07-13 06:00:00+03:00") is False
 
     # should raise error if not all columns are in self.market_times
     with pytest.raises(ValueError):
@@ -959,8 +958,9 @@ def test_open_at_time_interruptions():
     # interruption between market_close/post
     sched.iloc[2, [-2, -1]] += pd.Timedelta("1H")
     assert cal.open_at_time(sched, "2010-01-12 17:56:00") is False
-    assert cal.open_at_time(sched, "2010-01-12 17:55:00", include_close=True) is True
+    assert cal.open_at_time(sched, "2010-01-12 17:55:00", include_close=True) is False
     assert cal.open_at_time(sched, "2010-01-12 17:57:00", include_close=True) is False
+    assert cal.open_at_time(sched, "2010-01-12 17:57:00", include_close=False) is True
 
     assert cal.open_at_time(sched, "2010-01-13 14:00:00", only_rth= True) is False
     assert cal.open_at_time(sched, "2010-01-13 14:30:00", only_rth= True) is False
