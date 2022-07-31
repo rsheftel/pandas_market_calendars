@@ -847,6 +847,9 @@ def test_open_at_time():
     schedule = cal.schedule('2014-01-01', '2016-12-31')
     # regular trading day
     assert cal.open_at_time(schedule, pd.Timestamp('2014-07-02 03:40', tz='UTC')) is True
+    assert cal.open_at_time(schedule, pd.Timestamp('2014-07-02 03:40')) is True
+    assert cal.open_at_time(schedule, pd.Timestamp('2014-07-02 03:40', tz='UTC'
+                                                   ).tz_convert("America/New_York")) is True
     # early close
     assert cal.open_at_time(schedule, pd.Timestamp('2014-07-03 03:40', tz='UTC')) is False
     # holiday
