@@ -269,13 +269,59 @@ def test_change_add_remove_time():
     assert cal.is_custom("market_open")
     assert cal.is_custom("other_test")
 
-
     # wrong formats
     with pytest.raises(AssertionError):
         cal.add_time("wrong_format", (-1, time(10)))
 
     with pytest.raises(AssertionError):
         cal.add_time("wrong_format", pd.Timedelta("5H"))
+
+def test_add_change_remove_time_w_open_close_map():
+    cal = FakeCalendar()
+
+    ## Non standard time
+
+    cal.add_time("newtime", time(10))
+    assert not "newtime" in cal.open_close_map and "newtime" in cal.regular_market_times
+
+    cal.remove_time("newtime")
+    assert not "newtime" in cal.regular_market_times
+
+    cal.add_time("newtime", time(10), opens= None)
+    assert not "newtime" in cal.open_close_map and "newtime" in cal.regular_market_times
+
+    cal.change_time("newtime", time(11), opens= False)
+    assert cal.open_close_map["newtime"] is False
+
+    cal.remove_time("newtime")
+    for b in (True, False):
+        cal.add_time("newtime", time(10), opens= b)
+        assert cal.open_close_map["newtime"] is b
+        cal.remove_time("newtime")
+
+    ## Standard time
+
+    cal.remove_time("market_close")
+    assert not "market_close" in cal.open_close_map and not "market_close" in cal.regular_market_times
+
+    cal.add_time("market_close", time(15))
+    assert "market_close" in cal.open_close_map and "market_close" in cal.regular_market_times
+
+    cal.remove_time("market_close")
+    cal.add_time("market_close", time(15), opens= None)
+    assert not "market_close" in cal.open_close_map and "market_close" in cal.regular_market_times
+
+    cal.change_time("market_close", time(16), opens= False)
+    assert cal.open_close_map["market_close"] is False
+
+    cal.remove_time("market_close")
+    cal.add_time("market_close", time(15), opens=True)
+    assert cal.open_close_map["market_close"] is True and "market_close" in cal.regular_market_times
+
+    # Incorrect opens argument
+    with pytest.raises(ValueError):
+        cal.change_time("market_close", time(15), opens= 2)
+
 
 def test_dunder_methods():
     cal = FakeCalendar()

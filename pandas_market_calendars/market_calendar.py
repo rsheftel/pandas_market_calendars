@@ -24,7 +24,7 @@ from .class_registry import RegisteryMeta, ProtectedDict
 
 MONDAY, TUESDAY, WEDNESDAY, THURSDAY, FRIDAY, SATURDAY, SUNDAY = range(7)
 
-class _DEFAULT: pass
+class DEFAULT: pass
 
 class MarketCalendarMeta(ABCMeta, RegisteryMeta):
     pass
@@ -174,7 +174,7 @@ class MarketCalendar(metaclass=MarketCalendarMeta):
                 raise AssertionError("The passed time information is not in the right format, "
                                      "please consult the docs for how to set market times")
 
-        if opens is _DEFAULT:
+        if opens is DEFAULT:
             opens = self.__class__.open_close_map.get(market_time, None)
 
         if opens in (True, False):
@@ -184,8 +184,7 @@ class MarketCalendar(metaclass=MarketCalendarMeta):
             try: self.open_close_map._del(market_time)
             except KeyError: pass
         else:
-            raise ValuerError("when you pass `opens`, it needs to be True, False, or None")
-
+            raise ValueError("when you pass `opens`, it needs to be True, False, or None")
 
         self.regular_market_times._set(market_time, times)
 
@@ -195,7 +194,7 @@ class MarketCalendar(metaclass=MarketCalendarMeta):
         self._prepare_regular_market_times()
 
 
-    def change_time(self, market_time, times, opens= _DEFAULT):
+    def change_time(self, market_time, times, opens= DEFAULT):
         """
         Changes the specified market time in regular_market_times and makes the necessary adjustments.
 
@@ -205,14 +204,16 @@ class MarketCalendar(metaclass=MarketCalendarMeta):
             this is only needed if the market_time should be respected by .open_at_time
             True: opens
             False: closes
-            None: consider it neither opening nor closing (ignore in .open_at_time)
+            None: consider it neither opening nor closing, don't add to open_close_map (ignore in .open_at_time)
+            DEFAULT: same as None, unless the market_time is in self.__class__.open_close_map. Then it will take
+                the default value as defined by the class.
         :return: None
         """
         assert market_time in self.regular_market_times, f"{market_time} is not in regular_market_times:" \
                                                          f"\n{self._market_times}."
         return self._set_time(market_time, times, opens)
 
-    def add_time(self, market_time, times, opens= _DEFAULT):
+    def add_time(self, market_time, times, opens= DEFAULT):
         """
         Adds the specified market time to regular_market_times and makes the necessary adjustments.
 
