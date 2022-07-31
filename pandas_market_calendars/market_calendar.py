@@ -369,11 +369,24 @@ class MarketCalendar(metaclass=MarketCalendarMeta):
     def interruptions(self):
         """
         This needs to be a list with a tuple for each date that had an interruption.
-        Each interruption needs a start and an end. The first time needs to be the start and the second time the end.
-        Any number of interruptions can be added for a date. Start/end of additional interruptions can be added to the tuple
-        like it has been for 2003-09-11 in this example.
-        """
+        The tuple should have this layout:
 
+            (date, start_time, end_time[, start_time2, end_time2, ...])
+
+        E.g.:
+        [
+            ("2002-02-03", (time(11), -1), time(11, 2)),
+            ("2010-01-11", time(11), (time(11, 1), 1)),
+            ("2010-01-13", time(9, 59), time(10), time(10, 29), time(10, 30)),
+            ("2011-01-10", time(11), time(11, 1))
+        ]
+
+        The date needs to be a string in this format: 'yyyy-mm-dd'.
+        Times need to be two datetime.time objects for each interruption, indicating start and end.
+         Optionally these can be wrapped in a tuple, where the
+         second element needs to be an integer indicating an offset.
+        On "2010-01-13" in the example, it is shown that there can be multiple interruptions in a day.
+        """
         return []
 
     def _convert(self, col):
@@ -389,6 +402,9 @@ class MarketCalendar(metaclass=MarketCalendarMeta):
 
     @property
     def interruptions_df(self):
+        """
+        Will return a pd.DataFrame only containing interruptions.
+        """
         if not self.interruptions: return pd.DataFrame(index= pd.DatetimeIndex([]))
         intr = pd.DataFrame(self.interruptions)
         intr.index = pd.to_datetime(intr.pop(0))
@@ -428,7 +444,7 @@ class MarketCalendar(metaclass=MarketCalendarMeta):
         :param tz: time zone in either string or pytz.timezone
         :return: DatetimeIndex of valid business days
         """
-        return pd.date_range(start_date, end_date, freq=self.holidays(), normalize=True, tz= tz)
+        return pd.date_range(start_date, end_date, freq=self.holidays(), normalize=True, tz=tz)
 
     def _get_market_times(self, start, end):
         mts = self._market_times
@@ -453,7 +469,7 @@ class MarketCalendar(metaclass=MarketCalendarMeta):
         :param days: DatetimeIndex An index of dates (represented as midnight).
         :param market_time: datetime.time The time to apply as an offset to each day in ``days``.
         :param day_offset: int The number of days we want to offset @days by
-        :return: pd.Series of date with the time t
+        :return: pd.Series of date with the time requested.
         """
         # Offset days without tz to avoid timezone issues.
         days = pd.DatetimeIndex(days).tz_localize(None).to_series()
@@ -521,10 +537,10 @@ class MarketCalendar(metaclass=MarketCalendarMeta):
         and columns for the requested market times. The columns can be determined either by setting a range (inclusive
         on both sides), using `start` and `end`, or by passing a list to `market_times'. A range of market_times is
         derived from a list of market_times that are available to the instance, which are sorted based on the current
-        regular time. See the docs for examples.
+        regular time. See examples/usage.ipynb for demonstrations.
 
         All time zones are set to UTC by default. Setting the tz parameter will convert the columns to the desired
-        timezone, such as 'America/New_York'
+        timezone, such as 'America/New_York'.
 
         :param start_date: first date of the schedule
         :param end_date: last date of the schedule
@@ -536,8 +552,11 @@ class MarketCalendar(metaclass=MarketCalendarMeta):
                 market_open/market_close if those are requested.
             False: only overwrite regular times of the column itself, leave others alone
             None: completely ignore special times
-            -> See examples/usage.ipynb for demonstrations
         :param market_times: alternative to start/end, list of market_times that are in self.regular_market_times
+        :param interruptions: bool, whether to add interruptions to the schedule, default: False
+            These will be added as columns to the right of the DataFrame. Any interruption on a day between
+            start_date and end_date will be included, regardless of the market_times requested.
+            Also, `force_special_times` does not take these into consideration.
         :return: schedule DataFrame
         """
         start_date, end_date = self.clean_dates(start_date, end_date)
@@ -576,7 +595,7 @@ class MarketCalendar(metaclass=MarketCalendarMeta):
                     if market_time == "market_open": _open_adj = specialix
                     elif market_time == "market_close": _close_adj = specialix
 
-            schedule[market_time] = temp.dt.tz_convert(tz)
+            schedule[market_time] = temp
 
         if _adj_others:
             adjusted = schedule.loc[_open_adj].apply(
@@ -588,16 +607,19 @@ class MarketCalendar(metaclass=MarketCalendarMeta):
             schedule.loc[_close_adj] = adjusted
 
         if interruptions:
-            interrs = self.interruptions_df.apply(lambda s: s.dt.tz_convert(tz))
+            interrs = self.interruptions_df
             schedule[interrs.columns] = interrs
             schedule = schedule.dropna(how= "all", axis= 1)
+
+        if tz != "UTC":
+            schedule = schedule.apply(lambda s: s.dt.tz_convert(tz))
 
         return schedule
 
 
     def open_at_time(self, schedule, timestamp, include_close=False, only_rth= False):
         """
-        To determine if a given timestamp is during an open time for the market. If the timestamp is
+        Determine if a given timestamp is during an open time for the market. If the timestamp is
         before the first open time or after the last close time of `schedule`, a ValueError will be raised.
 
         :param schedule: schedule DataFrame
@@ -611,8 +633,8 @@ class MarketCalendar(metaclass=MarketCalendarMeta):
         :return: True if the timestamp is a valid open date and time, False if not
         """
         timestamp = pd.Timestamp(timestamp)
-        try: timestamp = timestamp.tz_convert("UTC")
-        except TypeError: timestamp = timestamp.tz_localize("UTC")
+        try: timestamp = timestamp.tz_localize("UTC")
+        except TypeError: pass
 
         cols = schedule.columns
         interrs = cols.str.startswith("interruption_")

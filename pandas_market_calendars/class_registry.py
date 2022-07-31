@@ -78,27 +78,25 @@ class ProtectedDict(dict):
             self._ALLOW_SETTING_TIMES = False
             return super().__setitem__(key, value)
 
-        raise TypeError("You cannot set a value directly, "
-                        "please use the instance methods MarketCalendar.change_time or "
-                        "MarketCalendar.add_time to alter the regular_market_times information, "
-                        "or inherit from MarketCalendar to create a new Class with custom times.")
+        raise TypeError("You cannot set a value directly, you can change regular_market_times "
+                        "using .change_time, .add_time or .remove_time.")
 
     def __delitem__(self, key):
         if not hasattr(self, "_INIT_RAN_NORMALLY") or self._ALLOW_SETTING_TIMES:
             self._ALLOW_SETTING_TIMES = False
             return super().__delitem__(key)
 
-        raise TypeError("You are not allowed to delete an item directly."
-                        "Pleas use the instance method MarketCalendar.remove_time.")
+        raise TypeError("You cannot delete an item directly. You can change regular_market_times "
+                        "using .change_time, .add_time or .remove_time")
 
     def __repr__(self):
         return self.__class__.__name__+ "(" + super().__repr__() + ")"
 
     def __str__(self):
         try:
-            formatted = pformat(self, sort_dicts= False) # sort_dicts apparently not available < python3.8
+            formatted = pformat(dict(self), sort_dicts= False) # sort_dicts apparently not available < python3.8
         except TypeError:
-            formatted = pformat(self)
+            formatted = pformat(dict(self))
 
         return self.__class__.__name__+ "(\n" + formatted + "\n)"
 
