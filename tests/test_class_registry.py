@@ -1,9 +1,10 @@
 from abc import ABCMeta, abstractmethod
 from datetime import time
+from pprint import pformat
 
 import pytest
 
-from pandas_market_calendars.class_registry import RegisteryMeta
+from pandas_market_calendars.class_registry import RegisteryMeta, ProtectedDict
 
 
 def test_inheritance():
@@ -132,6 +133,25 @@ def test_metamixing():
             return "test"
 
     assert Base.factory("Class2").test() == "test"
+
+
+def test_protected_dict():
+
+    dct = ProtectedDict(dict(a= 1, b= 2))
+
+    with pytest.raises(TypeError):
+        dct["a"] = 2
+
+    with pytest.raises(TypeError):
+        del dct["b"]
+
+    del dct._INIT_RAN_NORMALLY
+    del dct["b"]
+
+    dct = ProtectedDict(dict(a=1, b=2))
+
+    s = "ProtectedDict(\n" + pformat(dict(dct), sort_dicts= False) + "\n)"
+    assert str(dct) == s
 
 
 # if __name__ == '__main__':
