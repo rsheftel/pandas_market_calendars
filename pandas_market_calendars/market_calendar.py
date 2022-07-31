@@ -20,9 +20,11 @@ from datetime import time
 import pandas as pd
 from pandas.tseries.offsets import CustomBusinessDay
 
-from .class_registry import RegisteryMeta
+from .class_registry import RegisteryMeta, ProtectedDict
 
 MONDAY, TUESDAY, WEDNESDAY, THURSDAY, FRIDAY, SATURDAY, SUNDAY = range(7)
+
+class _DEFAULT: pass
 
 class MarketCalendarMeta(ABCMeta, RegisteryMeta):
     pass
@@ -81,6 +83,7 @@ class MarketCalendar(metaclass=MarketCalendarMeta):
         """
 
         self.regular_market_times = self.regular_market_times.copy()
+        self.open_close_map = self.open_close_map.copy()
         self._customized_market_times = []
 
         if not open_time is None:
@@ -117,45 +120,40 @@ class MarketCalendar(metaclass=MarketCalendarMeta):
         return self._market_times
 
     def _prepare_regular_market_times(self):
+        oc_map = self.open_close_map
+        assert all(isinstance(x, bool) for x in oc_map.values()), "Values in open_close_map need to be True or False"
 
-        self.discontinued_market_times = {}
-        self._regular_market_timedeltas = {}
-        for market_time, times in self.regular_market_times.items():
+        regular = self.regular_market_times
+        discontinued = ProtectedDict()
+        regular_tds = {}
+
+        for market_time, times in regular.items():
             # in case a market_time has been discontinued, extend the last time
             # and add it to the discontinued_market_times dictionary
             if market_time.startswith("interruption_"):
                 raise ValueError("'interruption_' prefix is reserved")
 
             if times[-1][1] is None:
-                self.discontinued_market_times[market_time] = times[-1][0]
+                discontinued._set(market_time, times[-1][0])
                 times = times[:-1]
-                self.regular_market_times._ALLOW_SETTING_TIMES = True
-                self.regular_market_times[market_time] = times
+                regular._set(market_time, times)
 
-            self._regular_market_timedeltas[market_time] = tuple((t[0], self._tdelta(t[1], self._off(t)))
-                                                                 for t in times)
+            regular_tds[market_time] = tuple((t[0], self._tdelta(t[1], self._off(t))) for t in times)
 
-        self._market_times = sorted(self.regular_market_times.keys(),
-                                    key= lambda x: self._regular_market_timedeltas[x][-1][1])
-
-        if self.has_discontinued:
-            warnings.warn(f"{list(self.discontinued_market_times.keys())} are discontinued, the dictionary"
+        if discontinued:
+            warnings.warn(f"{list(discontinued.keys())} are discontinued, the dictionary"
                           f" `.discontinued_market_times` has the dates on which these were discontinued."
                           f" The times as of those dates are incorrect, use .remove_time(market_time)"
                           f" to ignore a market_time.")
 
-    def change_time(self, market_time, times):
-        """
-        Changes the specified market time in regular_market_times and makes the necessary adjustments.
+        self.discontinued_market_times = discontinued
+        self.regular_market_times = regular
 
-        :param market_time: the market_time to change
-        :param times: new time information
-        :return: None
-        """
+        self._regular_market_timedeltas = regular_tds
+        self._market_times = sorted(regular.keys(), key= lambda x: regular_tds[x][-1][1])
+        self._oc_market_times = list(filter(oc_map.__contains__, self._market_times))
 
-
-        assert market_time in self.regular_market_times, f"{market_time} is not in regular_market_times:" \
-                                                         f"\n{self._market_times}."
+    def _set_time(self, market_time, times, opens):
 
         if isinstance(times, (tuple, list)): # passed a tuple
             if not isinstance(times[0], (tuple, list)): # doesn't have a tuple inside
@@ -176,27 +174,57 @@ class MarketCalendar(metaclass=MarketCalendarMeta):
                 raise AssertionError("The passed time information is not in the right format, "
                                      "please consult the docs for how to set market times")
 
-        self.regular_market_times._ALLOW_SETTING_TIMES = True
-        self.regular_market_times[market_time] = times
+        if opens is _DEFAULT:
+            opens = self.__class__.open_close_map.get(market_time, None)
+
+        if opens in (True, False):
+            self.open_close_map._set(market_time, opens)
+
+        elif opens is None: # make sure it's ignored
+            try: self.open_close_map._del(market_time)
+            except KeyError: pass
+        else:
+            raise ValuerError("when you pass `opens`, it needs to be True, False, or None")
+
+
+        self.regular_market_times._set(market_time, times)
 
         if not self.is_custom(market_time):
             self._customized_market_times.append(market_time)
 
         self._prepare_regular_market_times()
 
-    def add_time(self, market_time, times):
+
+    def change_time(self, market_time, times, opens= _DEFAULT):
+        """
+        Changes the specified market time in regular_market_times and makes the necessary adjustments.
+
+        :param market_time: the market_time to change
+        :param times: new time information
+        :param opens: whether the market_time is a time that closes or opens the market
+            this is only needed if the market_time should be respected by .open_at_time
+            True: opens
+            False: closes
+            None: consider it neither opening nor closing (ignore in .open_at_time)
+        :return: None
+        """
+        assert market_time in self.regular_market_times, f"{market_time} is not in regular_market_times:" \
+                                                         f"\n{self._market_times}."
+        return self._set_time(market_time, times, opens)
+
+    def add_time(self, market_time, times, opens= _DEFAULT):
         """
         Adds the specified market time to regular_market_times and makes the necessary adjustments.
 
         :param market_time: the market_time to add
         :param times: the time information
+        :param opens: see .add_time docstring
         :return: None
         """
         assert not market_time in self.regular_market_times, f"{market_time} is already in regular_market_times:" \
                                                              f"\n{self._market_times}"
-        self.regular_market_times._ALLOW_SETTING_TIMES = True
-        self.regular_market_times[market_time] = ()
-        self.change_time(market_time, times)
+
+        return self._set_time(market_time, times, opens)
 
     def remove_time(self, market_time):
         """
@@ -205,8 +233,11 @@ class MarketCalendar(metaclass=MarketCalendarMeta):
         :param market_time: the market_time to remove
         :return: None
         """
-        self.regular_market_times._ALLOW_SETTING_TIMES = True
-        del self.regular_market_times[market_time]
+
+        self.regular_market_times._del(market_time)
+        try: self.open_close_map._del(market_time)
+        except KeyError: pass
+
         self._prepare_regular_market_times()
         if self.is_custom(market_time):
             self._customized_market_times.remove(market_time)

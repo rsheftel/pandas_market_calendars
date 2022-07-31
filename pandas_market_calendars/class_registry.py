@@ -71,20 +71,23 @@ class ProtectedDict(dict):
         # __init__ is bypassed when unpickling, which causes __setitem__ to fail
         # without the _INIT_RAN_NORMALLY flag
         self._INIT_RAN_NORMALLY = True
-        self._ALLOW_SETTING_TIMES = False
+
+    def _set(self, key, value):
+        return super().__setitem__(key, value)
+
+    def _del(self, key):
+        return super().__delitem__(key)
 
     def __setitem__(self, key, value):
-        if not hasattr(self, "_INIT_RAN_NORMALLY") or self._ALLOW_SETTING_TIMES:
-            self._ALLOW_SETTING_TIMES = False
-            return super().__setitem__(key, value)
+        if not hasattr(self, "_INIT_RAN_NORMALLY"):
+            return self._set(key, value)
 
         raise TypeError("You cannot set a value directly, you can change regular_market_times "
                         "using .change_time, .add_time or .remove_time.")
 
     def __delitem__(self, key):
-        if not hasattr(self, "_INIT_RAN_NORMALLY") or self._ALLOW_SETTING_TIMES:
-            self._ALLOW_SETTING_TIMES = False
-            return super().__delitem__(key)
+        if not hasattr(self, "_INIT_RAN_NORMALLY"):
+            return self._del(key)
 
         raise TypeError("You cannot delete an item directly. You can change regular_market_times "
                         "using .change_time, .add_time or .remove_time")

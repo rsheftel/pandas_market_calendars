@@ -31,14 +31,12 @@ class TradingCalendar(MarketCalendar):
         # offsets of exchange_calendar_mirrors are only available through the instance
         if cls._FINALIZE_TRADING_CALENDAR:
             if self._ec.open_offset:
-                cls.regular_market_times._ALLOW_SETTING_TIMES = True
-                cls.regular_market_times["market_open"] = tuple(
-                    (t[0], t[1], self._ec.open_offset) for t in cls.regular_market_times["market_open"])
+                cls.regular_market_times._set("market_open", tuple(
+                    (t[0], t[1], self._ec.open_offset) for t in cls.regular_market_times["market_open"]))
 
             if self._ec.close_offset:
-                cls.regular_market_times._ALLOW_SETTING_TIMES = True
-                cls.regular_market_times["market_close"] = tuple(
-                    (t[0], t[1], self._ec.close_offset) for t in cls.regular_market_times["market_close"])
+                cls.regular_market_times._set("market_close", tuple(
+                    (t[0], t[1], self._ec.close_offset) for t in cls.regular_market_times["market_close"]))
             cls._FINALIZE_TRADING_CALENDAR = False
 
         self.__init__(*args, **kwargs)
