@@ -61,17 +61,17 @@ class FakeCalendar(MarketCalendar):
     @property
     def special_opens(self):
         return [(time(11, 15), AbstractHolidayCalendar(rules=[MonTuesThursBeforeIndependenceDay])),
-                 ((time(23), -1), AbstractHolidayCalendar(rules=[Sept11Anniversary12pmLateOpen2002]))]
+                ((time(23), -1), AbstractHolidayCalendar(rules=[Sept11Anniversary12pmLateOpen2002]))]
 
     @property
     def special_opens_adhoc(self):
         return [(time(11, 20), ["2016-12-13", "2016-12-25"]),
-                 ((time(22), -1), ["2016-12-09", "2016-12-07"])]
+                ((time(22), -1), ["2016-12-09", "2016-12-07"])]
 
     @property
     def special_closes(self):
         return [(time(11, 30), AbstractHolidayCalendar(rules=[MonTuesThursBeforeIndependenceDay])),
-                 ((time(1), 1), AbstractHolidayCalendar(rules=[Sept11Anniversary12pmLateOpen2002]))]
+                ((time(1), 1), AbstractHolidayCalendar(rules=[Sept11Anniversary12pmLateOpen2002]))]
 
     @property
     def special_closes_adhoc(self):
@@ -81,10 +81,10 @@ class FakeCalendar(MarketCalendar):
     @property
     def interruptions(self):
         return [
-            ("2011-01-10", time(11), time(11, 1)),
-            ("2010-01-13", time(9, 59), time(10), time(10, 29), time(10, 30)),
+            ("2002-02-03", (time(11), -1), time(11, 2)),
             ("2010-01-11", time(11), (time(11, 1), 1)),
-            ("2002-02-03", (time(11), -1), time(11, 2))
+            ("2010-01-13", time(9, 59), time(10), time(10, 29), time(10, 30)),
+            ("2011-01-10", time(11), time(11, 1))
         ]
 
 
@@ -167,6 +167,7 @@ def test_pickling():
         assert cal.market_times == unpickled.market_times
         assert cal.discontinued_market_times == unpickled.discontinued_market_times
         assert cal._regular_market_timedeltas == unpickled._regular_market_timedeltas
+        assert cal.open_close_map == unpickled.open_close_map
 
         test_protected_dictionary(cal)
         test_protected_dictionary(unpickled)
@@ -175,6 +176,7 @@ def test_pickling():
         pickled = pickle.dumps(Cal)
         unpickled = pickle.loads(pickled)
         assert Cal.regular_market_times == unpickled.regular_market_times
+        assert Cal.open_close_map == unpickled.open_close_map
 
         test_protected_dictionary(Cal)
         test_protected_dictionary(unpickled)
@@ -925,32 +927,7 @@ def test_open_at_time_breaks():
 
 def test_open_at_time_interruptions():
     cal = FakeBreakCalendar()
-
     sched = cal.schedule("2010-01-08", "2010-01-14", interruptions=True)
-
-    """
-    possibilities
-    
-     interruption between
-         market_open/break
-         break/market_close
-         pre/market_open
-         market_close/post
-         
-     multiple interruptions
-        
-     only_rth  True/False
-     
-     different timezones for passed timestamp and schedule
-     
-     timestamp between
-        interruptions
-        break
-        after post/market_close
-        
-    
-    """
-    print(sched.to_string())
 
     # No pre/post
     assert cal.open_at_time(sched, "2010-01-11 14:40:00") is True
@@ -1034,7 +1011,6 @@ def test_interruptions_df():
         }).set_index(pd.DatetimeIndex(['2002-02-03', '2010-01-11', '2010-01-13', '2011-01-10']))
 
     cal = FakeCalendar()
-    print(cal.interruptions_df.to_string())
     assert_frame_equal(cal.interruptions_df, goal)
 
 
