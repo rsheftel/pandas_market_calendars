@@ -614,14 +614,9 @@ class MarketCalendar(metaclass=MarketCalendarMeta):
             if _adj_col:
                 # create an array of special times
                 special = self.special_dates(market_time, start_date, end_date, filter_holidays= False)
-
                 # overwrite standard times
                 specialix = special.index[special.index.isin(temp.index)] # some sources of special times don't exclude holidays
-                try: temp.loc[specialix] = special
-                except ValueError as e:
-                    raise ValueError("There seems to be a mistake in the special_times/holidays data,"
-                                     "most likely this stems from duplicate entries. You can use the .special_dates "
-                                     "method to inspect the data.") from e
+                temp.loc[specialix] = special
 
                 if _adj_others:
                     if market_time == "market_open": _open_adj = specialix

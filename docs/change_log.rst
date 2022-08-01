@@ -3,6 +3,14 @@
 
 Updates
 -------
+4.0 (08/02/22)
+~~~~~~~~~~~~~~
+- Added interruptions support
+- Updated MarketCalendar.open_at_time to respect interruptions
+- Special times can be set with offsets
+- MarketCalendar.days_at_time returns a pandas.Series
+- calendar_utils.date_range supports schedules of any timezone
+
 3.5 (06/25/22)
 ~~~~~~~~~~~~~~
 - Updated BMF
