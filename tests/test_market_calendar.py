@@ -154,6 +154,16 @@ def test_market_time_names():
     with pytest.raises(ValueError):
         cal.add_time("interruption_anything", time(11, 30))
 
+    class WrongCal(FakeCalendar):
+        regular_market_times = {**FakeCalendar.regular_market_times,
+                                "interruption_anything": True}
+
+    with pytest.raises(ValueError) as e: cal = WrongCal()
+
+    assert "'interruption_' prefix is reserved" in e.exconly(), e.exconly()
+
+    del WrongCal._regmeta_class_registry["WrongCal"]
+
 def test_pickling():
 
     for Cal in [FakeCalendar, FakeBreakCalendar, NYSEExchangeCalendar]:
@@ -322,6 +332,23 @@ def test_add_change_remove_time_w_open_close_map():
     with pytest.raises(ValueError):
         cal.change_time("market_close", time(15), opens= 2)
 
+def test_open_close_map():
+    cal = FakeCalendar()
+    assert FakeCalendar.open_close_map == {"market_open": True, "market_close": False,
+                                           "break_start": False, "break_end": True,
+                                           "pre": True, "post": False}
+    assert not cal.open_close_map is FakeCalendar.open_close_map
+    assert cal.open_close_map == FakeCalendar.open_close_map
+
+    class WrongCal(FakeCalendar):
+        open_close_map = {**FakeCalendar.open_close_map,
+                          "pre": None, "post": "string"}
+
+    with pytest.raises(AssertionError) as e: cal = WrongCal()
+
+    assert "Values in open_close_map need to be True or False" in str(e)
+
+    del WrongCal._regmeta_class_registry["WrongCal"]
 
 def test_dunder_methods():
     cal = FakeCalendar()
