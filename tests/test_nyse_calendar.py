@@ -1,8 +1,9 @@
 import os
 import datetime as dt
 import pandas as pd
+import pytest
 import pytz
-from pandas.testing import assert_index_equal
+from pandas.testing import assert_index_equal, assert_series_equal
 
 from pandas_market_calendars.exchange_calendar_nyse import NYSEExchangeCalendar
 
@@ -15,94 +16,65 @@ def test_custom_open_close():
 
     assert not NYSEExchangeCalendar.regular_market_times is cal.regular_market_times
 
-
-
-def test_days_at_time_open():
+@pytest.mark.parametrize("dates, results", [
+    (("1984-12-30", "1985-01-03"), ['1984-12-31 10:00:00', '1985-01-02 09:30:00', '1985-01-03 09:30:00']),
+    (("1901-12-13", "1901-12-16"), ['1901-12-13 10:00:00', '1901-12-14 10:00:00', '1901-12-16 10:00:00'])
+])
+def test_days_at_time_open(dates, results):
     cal = NYSEExchangeCalendar()
 
     # check if market_open before/after 1985 is correct
-    valid = cal.valid_days("1984-12-30", "1985-01-03")
+    valid = cal.valid_days(*dates)
     at_open = cal.days_at_time(valid, "market_open")
 
-    assert_index_equal(at_open, pd.DatetimeIndex(
-        ['1984-12-31 10:00:00', '1985-01-02 09:30:00',
-         '1985-01-03 09:30:00'], dtype='datetime64[ns]', freq=None
-    ).tz_localize(cal.tz).tz_convert("UTC"))
+    assert_series_equal(at_open, pd.Series(
+        results, index= pd.DatetimeIndex(results).normalize(), dtype= "datetime64[ns]"
+    ).dt.tz_localize(cal.tz).dt.tz_convert("UTC"))
 
-    # check if it is rounded
-    valid = cal.valid_days("1901-12-13", "1901-12-16")
-    at_open = cal.days_at_time(valid, "market_open")
-
-    assert_index_equal(at_open, pd.DatetimeIndex(
-        ['1901-12-13 10:00:00', '1901-12-14 10:00:00',
-         '1901-12-16 10:00:00'], dtype='datetime64[ns]', freq=None
-    ).tz_localize(cal.tz).tz_convert("UTC"))
-
-    # check if chosen time is kept
-    cal = NYSEExchangeCalendar(open_time=dt.time(9))
-    at_open = cal.days_at_time(valid, "market_open")
-
-    assert_index_equal(at_open, pd.DatetimeIndex(
-        ['1901-12-13 09:00:00', '1901-12-14 09:00:00',
-         '1901-12-16 09:00:00'], dtype='datetime64[ns]', freq=None
-    ).tz_localize(cal.tz).tz_convert("UTC"))
-
-
-def test_days_at_time_close():
+@pytest.mark.parametrize("dates, results", [
+    (("1952-09-26", "1952-09-30"), ['1952-09-26 15:00:00', '1952-09-29 15:30:00', '1952-09-30 15:30:00']),
+    (("1973-12-28", "1974-01-02"), ['1973-12-28 15:30:00', '1973-12-31 15:30:00', '1974-01-02 16:00:00']),
+    (("1952-05-23", "1952-05-26"), ['1952-05-23 15:00:00', '1952-05-24 12:00:00', '1952-05-26 15:00:00']),
+    (("1901-12-13", "1901-12-16"), ['1901-12-13 15:00:00', '1901-12-14 12:00:00', '1901-12-16 15:00:00']),
+])
+def test_days_at_time_close(dates, results):
     cal = NYSEExchangeCalendar()
-
-    # test market_close before/after 1952-09-29
-    valid = cal.valid_days("1952-09-26", "1952-09-30")
+    valid = cal.valid_days(*dates)
     at_close = cal.days_at_time(valid, "market_close")
 
-    assert_index_equal(at_close, pd.DatetimeIndex(
-        ['1952-09-26 15:00:00', '1952-09-29 15:30:00',
-         '1952-09-30 15:30:00'], dtype='datetime64[ns]', freq=None
-    ).tz_localize(cal.tz).tz_convert("UTC"))
+    results = pd.DatetimeIndex(results)
+    ix = pd.DatetimeIndex(results.normalize(), freq= None)
+    assert_series_equal(at_close, pd.Series(results.tz_localize(cal.tz).tz_convert("UTC"), index= ix))
 
-    # market_close before/after 1974-01-01
-    valid = cal.valid_days("1973-12-28", "1974-01-02")
-    at_close = cal.days_at_time(valid, "market_close")
-    assert_index_equal(at_close, pd.DatetimeIndex(
-        ['1973-12-28 15:30:00', '1973-12-31 15:30:00',
-         '1974-01-02 16:00:00'], dtype='datetime64[ns]', freq=None
-    ).tz_localize(cal.tz).tz_convert("UTC"))
+def test_days_at_time_custom():
+    cal = NYSEExchangeCalendar()
 
     # test all three market_closes
     valid = cal.valid_days("1952-09-26", "1974-01-02")
-    at_close = cal.days_at_time(valid, "market_close").tz_convert(cal.tz)
+    at_close = cal.days_at_time(valid, "market_close").dt.tz_convert(cal.tz)
 
-    assert at_close[0] == pd.Timestamp('1952-09-26 15:00:00').tz_localize(cal.tz)
-    assert at_close[1] == pd.Timestamp('1952-09-29 15:30:00').tz_localize(cal.tz)
-    assert at_close[-2] == pd.Timestamp('1973-12-31 15:30:00').tz_localize(cal.tz)
-    assert at_close[-1] == pd.Timestamp('1974-01-02 16:00:00').tz_localize(cal.tz)
-
-    # test Saturday closes
-    valid = cal.valid_days("1952-05-23", "1952-05-26")
-    at_close = cal.days_at_time(valid, "market_close")
-
-    assert_index_equal(at_close, pd.DatetimeIndex(
-        ['1952-05-23 15:00:00', '1952-05-24 12:00:00',
-         '1952-05-26 15:00:00'], dtype='datetime64[ns]', freq=None
-    ).tz_localize(cal.tz).tz_convert("UTC"))
-
-    # check if it is rounded
-    valid = cal.valid_days("1901-12-13", "1901-12-16")
-    at_close = cal.days_at_time(valid, "market_close")
-
-    assert_index_equal(at_close, pd.DatetimeIndex(
-        ['1901-12-13 15:00:00', '1901-12-14 12:00:00',
-         '1901-12-16 15:00:00'], dtype='datetime64[ns]', freq=None
-    ).tz_localize(cal.tz).tz_convert("UTC"))
+    assert at_close.iat[0] == pd.Timestamp('1952-09-26 15:00:00').tz_localize(cal.tz)
+    assert at_close.iat[1] == pd.Timestamp('1952-09-29 15:30:00').tz_localize(cal.tz)
+    assert at_close.iat[-2] == pd.Timestamp('1973-12-31 15:30:00').tz_localize(cal.tz)
+    assert at_close.iat[-1] == pd.Timestamp('1974-01-02 16:00:00').tz_localize(cal.tz)
 
     # check if chosen time is kept
     cal = NYSEExchangeCalendar(close_time=dt.time(10))
-    at_close = cal.days_at_time(valid, "market_close")
+    at_close = cal.days_at_time(cal.valid_days("1901-12-13", "1901-12-16"), "market_close")
 
-    assert_index_equal(at_close, pd.DatetimeIndex(
-        ['1901-12-13 10:00:00', '1901-12-14 10:00:00',
-         '1901-12-16 10:00:00'], dtype='datetime64[ns]', freq=None
-    ).tz_localize(cal.tz).tz_convert("UTC"))
+    results = pd.DatetimeIndex(['1901-12-13 10:00:00', '1901-12-14 10:00:00', '1901-12-16 10:00:00'])
+    assert_series_equal(at_close,
+                        pd.Series(results.tz_localize(cal.tz).tz_convert("UTC"),
+                        index= results.normalize()))
+
+    # check if chosen time is kept
+    cal = NYSEExchangeCalendar(open_time=dt.time(9))
+    at_open = cal.days_at_time(cal.valid_days("1901-12-13", "1901-12-16"), "market_open")
+
+    results = pd.DatetimeIndex(['1901-12-13 09:00:00', '1901-12-14 09:00:00', '1901-12-16 09:00:00'])
+    assert_series_equal(at_open,
+                        pd.Series(results.tz_localize(cal.tz).tz_convert("UTC"),
+                        index= results.normalize()))
 
 
 def test_time_zone():

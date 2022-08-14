@@ -54,7 +54,8 @@ class RegisteryMeta(type):
 
         super(RegisteryMeta, cls).__init__(name, bases, attr)
 
-        cls.regular_market_times = _ProtectedDict(cls.regular_market_times)
+        cls.regular_market_times = ProtectedDict(cls.regular_market_times)
+        cls.open_close_map = ProtectedDict(cls.open_close_map)
 
         cls.special_market_open = cls.special_opens
         cls.special_market_open_adhoc = cls.special_opens_adhoc
@@ -63,41 +64,42 @@ class RegisteryMeta(type):
         cls.special_market_close_adhoc = cls.special_closes_adhoc
 
 
-class _ProtectedDict(dict):
+class ProtectedDict(dict):
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         # __init__ is bypassed when unpickling, which causes __setitem__ to fail
         # without the _INIT_RAN_NORMALLY flag
         self._INIT_RAN_NORMALLY = True
-        self._ALLOW_SETTING_TIMES = False
+
+    def _set(self, key, value):
+        return super().__setitem__(key, value)
+
+    def _del(self, key):
+        return super().__delitem__(key)
 
     def __setitem__(self, key, value):
-        if not hasattr(self, "_INIT_RAN_NORMALLY") or self._ALLOW_SETTING_TIMES:
-            self._ALLOW_SETTING_TIMES = False
-            return super().__setitem__(key, value)
+        if not hasattr(self, "_INIT_RAN_NORMALLY"):
+            return self._set(key, value)
 
-        raise TypeError("You cannot set a value directly, "
-                        "please use the instance methods MarketCalendar.change_time or "
-                        "MarketCalendar.add_time to alter the regular_market_times information, "
-                        "or inherit from MarketCalendar to create a new Class with custom times.")
+        raise TypeError("You cannot set a value directly, you can change regular_market_times "
+                        "using .change_time, .add_time or .remove_time.")
 
     def __delitem__(self, key):
-        if not hasattr(self, "_INIT_RAN_NORMALLY") or self._ALLOW_SETTING_TIMES:
-            self._ALLOW_SETTING_TIMES = False
-            return super().__delitem__(key)
+        if not hasattr(self, "_INIT_RAN_NORMALLY"):
+            return self._del(key)
 
-        raise TypeError("You are not allowed to delete an item directly."
-                        "Pleas use the instance method MarketCalendar.remove_time.")
+        raise TypeError("You cannot delete an item directly. You can change regular_market_times "
+                        "using .change_time, .add_time or .remove_time")
 
     def __repr__(self):
         return self.__class__.__name__+ "(" + super().__repr__() + ")"
 
     def __str__(self):
         try:
-            formatted = pformat(self, sort_dicts= False) # sort_dicts apparently not available < python3.8
+            formatted = pformat(dict(self), sort_dicts= False) # sort_dicts apparently not available < python3.8
         except TypeError:
-            formatted = pformat(self)
+            formatted = pformat(dict(self))
 
         return self.__class__.__name__+ "(\n" + formatted + "\n)"
 

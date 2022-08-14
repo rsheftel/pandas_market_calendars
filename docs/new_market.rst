@@ -18,10 +18,10 @@ To create a new exchange (or OTC market):
       #. If there is a break, there must be a "break_start" and a "break_end".
       #. only ONE break is currently supported.
 
-   #. One list/tuple for each market_time, containing at least one list/tuple:
+   #. One tuple for each market_time, containing at least one tuple:
 
-      #. Each nested iterable needs at least two items: `(first_date_used, time[, offset])`.
-      #. The first iterable's date should be None, marking the start. In every iterable thereafter this is the date when `time` was first used.
+      #. Each nested tuple needs at least two items: `(first_date_used, time[, offset])`.
+      #. The first tuple's date should be None, marking the start. In every tuple thereafter this is the date when `time` was first used.
       #. Optionally (assumed to be zero, when not present), a positive or negative integer, representing an offset in number of days.
       #. Dates need to be in ascending order, None coming first.
 
@@ -55,6 +55,9 @@ To create a new exchange (or OTC market):
       #. special_{market_time}
            same format as special_opens, which is the same as special_market_open
 
+   #. Add interruptions:
+
+      #. interruptions - returns a list of tuples. The tuple is (date, start_time, end_time[, start_time2, end_time2, ...])
 
 
 #. Import your new calendar class in `calendar_registry.py`:

@@ -5,6 +5,7 @@ import itertools
 import warnings
 
 import pandas as pd
+import numpy as np
 
 def merge_schedules(schedules, how='outer'):
     """
@@ -53,7 +54,8 @@ class _date_range:
     """
     This is a callable class that should be used by calling the already initiated instance: `date_range`.
     Given a schedule, it will return a DatetimeIndex with all of the valid datetimes at the frequency given.
-    The schedule values are assumed to be in UTC.
+
+    The schedule columns should all have the same time zone.
 
     The calculations will be made for each trading session. If the passed schedule-DataFrame doesn't have
     breaks, there is one trading session per day going from market_open to market_close, otherwise there are two,
@@ -152,9 +154,8 @@ class _date_range:
 
         :param schedule: pd.DataFrame with first column: 'start' and second column: 'end'
         :return: pd.Series of float64"""
-        num_bars = (schedule.end - schedule.start) / self.frequency
-        remains = num_bars % 1    # round up, np.ceil-style
-        return num_bars.where(remains == 0, num_bars + 1 - remains).round()
+        return np.ceil((schedule.end - schedule.start) / self.frequency)
+
 
     def _calc_time_series(self, schedule):
         """Method used by date_range to calculate the trading index.
@@ -219,6 +220,6 @@ class _date_range:
         time_series = self._calc_time_series(schedule)
 
         time_series.name = None
-        return pd.DatetimeIndex(time_series.drop_duplicates(), tz= "UTC")
+        return pd.DatetimeIndex(time_series.drop_duplicates())
 
 date_range = _date_range()

@@ -46,6 +46,11 @@ markets that have a lunch break, or futures markets that are open 24 hours with 
 As of v2.0 this package provides a mirror of all the calendars from the `exchange_calendars <https://github.com/gerrymanoim/exchange_calendars>`_
 package, which itself is the now maintained fork of the original trading_calendars package. This adds over 50 calendars.
 
+As of v3.0, the function date_range() is more complete and consistent, for more discussion on the topic refer to PR #142 and Issue #138.
+
+As of v4.0, this package provides the framework to add interruptions to calendars. These can also be added to a schedule and viewed using
+the new interruptions_df property. A full list of changes can be found in PR #210.
+
 Source location
 ~~~~~~~~~~~~~~~
 Hosted on GitHub: https://github.com/rsheftel/pandas_market_calendars

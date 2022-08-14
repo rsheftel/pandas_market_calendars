@@ -3,7 +3,7 @@ import numpy as np
 from datetime import time 
 from pytz import timezone 
 from pandas_market_calendars.exchange_calendar_iex import IEXExchangeCalendar
-from pandas_market_calendars.class_registry import _ProtectedDict 
+from pandas_market_calendars.class_registry import ProtectedDict
 
 iex = IEXExchangeCalendar()
 
@@ -19,7 +19,7 @@ def test_open_close():
 
 def test_calendar_utility():
     assert len(iex.holidays().holidays) > 0
-    assert isinstance(iex.regular_market_times, _ProtectedDict)
+    assert isinstance(iex.regular_market_times, ProtectedDict)
     
     valid_days = iex.valid_days(start_date='2016-12-20', end_date='2017-01-10')
     assert isinstance(valid_days, pd.DatetimeIndex)

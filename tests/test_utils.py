@@ -86,17 +86,17 @@ def test_date_range_exceptions():
 
 
 
-
-def test_date_range_permutations():
+@pytest.mark.parametrize("tz", ["America/New_York", "Asia/Ulaanbaatar", "UTC"])
+def test_date_range_permutations(tz):
     # open_time = 9, close_time = 11.30, freq = "1H"
     cal = FakeCalendar(open_time= datetime.time(9), close_time= datetime.time(11, 30))
-    schedule = cal.schedule("2021-01-05", "2021-01-05")
+    schedule = cal.schedule("2021-01-05", "2021-01-05", tz= tz)
 
     # result         matching values for:   closed force_close
     # 9 10 11        left False/ left None/ both False/ None False
     expected = pd.DatetimeIndex(
         ["2021-01-05 01:00:00+00:00", "2021-01-05 02:00:00+00:00",
-         "2021-01-05 03:00:00+00:00"], tz= "UTC")
+         "2021-01-05 03:00:00+00:00"], tz= tz)
     actual = mcal.date_range(schedule, "1H", closed= "left", force_close= False)
     assert_index_equal(actual, expected)
     actual = mcal.date_range(schedule, "1H", closed= "left", force_close= None)
@@ -109,7 +109,7 @@ def test_date_range_permutations():
     # 9 10 11 11.30  left True/ both True/ None True
     expected = pd.DatetimeIndex(
         ["2021-01-05 01:00:00+00:00", "2021-01-05 02:00:00+00:00",
-         "2021-01-05 03:00:00+00:00", "2021-01-05 03:30:00+00:00"], tz= "UTC")
+         "2021-01-05 03:00:00+00:00", "2021-01-05 03:30:00+00:00"], tz= tz)
     actual = mcal.date_range(schedule, "1H", closed= "left", force_close= True)
     assert_index_equal(actual, expected)
     actual = mcal.date_range(schedule, "1H", closed= "both", force_close= True)
@@ -119,28 +119,28 @@ def test_date_range_permutations():
 
     # 10 11          right False
     expected = pd.DatetimeIndex(
-        ["2021-01-05 02:00:00+00:00", "2021-01-05 03:00:00+00:00"], tz="UTC")
+        ["2021-01-05 02:00:00+00:00", "2021-01-05 03:00:00+00:00"], tz=tz)
     actual = mcal.date_range(schedule, "1H", closed="right", force_close=False)
     assert_index_equal(actual, expected)
 
     # 10 11 11.30    right True
     expected = pd.DatetimeIndex(
         ["2021-01-05 02:00:00+00:00", "2021-01-05 03:00:00+00:00",
-         "2021-01-05 03:30:00+00:00"], tz="UTC")
+         "2021-01-05 03:30:00+00:00"], tz=tz)
     actual = mcal.date_range(schedule, "1H", closed="right", force_close=True)
     assert_index_equal(actual, expected)
 
     # 10 11 12       right None
     expected = pd.DatetimeIndex(
         ["2021-01-05 02:00:00+00:00", "2021-01-05 03:00:00+00:00",
-         "2021-01-05 04:00:00+00:00"], tz="UTC")
+         "2021-01-05 04:00:00+00:00"], tz=tz)
     actual = mcal.date_range(schedule, "1H", closed="right", force_close=None)
     assert_index_equal(actual, expected)
 
     # 9 10 11 12     both None/ None None
     expected = pd.DatetimeIndex(
         ["2021-01-05 01:00:00+00:00", "2021-01-05 02:00:00+00:00",
-         "2021-01-05 03:00:00+00:00", "2021-01-05 04:00:00+00:00"], tz="UTC")
+         "2021-01-05 03:00:00+00:00", "2021-01-05 04:00:00+00:00"], tz=tz)
     actual = mcal.date_range(schedule, "1H", closed="both", force_close=None)
     assert_index_equal(actual, expected)
     actual = mcal.date_range(schedule, "1H", closed=None, force_close=None)
