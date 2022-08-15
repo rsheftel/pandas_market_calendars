@@ -24,12 +24,11 @@ class IEXExchangeCalendar(NYSEExchangeCalendar):
     """
     Exchange calendar for the Investor's Exchange (IEX).
 
-    IEX is an equities exchange, based in New York City, US 
-    that integrates proprietary technology to facilitate fair
-    play between HFT firms and retail investors. 
+    IEX Exchange is a U.S. stock exchange focused on driving performance
+    for broker-dealers and investors through innovative design and technology.
 
     Most of this class inherits from NYSEExchangeCalendar since 
-    the holdiays are the same. The only variation is (1) IEX began 
+    the holidays are the same. The only variation is (1) IEX began 
     operation in 2013, and (2) IEX has different hours of operation
 
     References: 
