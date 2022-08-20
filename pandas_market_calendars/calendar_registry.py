@@ -25,6 +25,7 @@ from .exchange_calendar_sse import SSEExchangeCalendar
 from .exchange_calendar_tsx import TSXExchangeCalendar
 from .exchange_calendar_bse import BSEExchangeCalendar
 from .exchange_calendar_tase import TASEExchangeCalendar
+from .exchange_calendar_xsto import XSTOExchangeCalendar
 from .exchange_calendars_mirror import *
 
 
