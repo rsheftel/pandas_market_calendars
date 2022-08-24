@@ -76,6 +76,16 @@ def test_days_at_time_custom():
                         pd.Series(results.tz_localize(cal.tz).tz_convert("UTC"),
                         index= results.normalize()))
 
+def test_valid_days():
+    cal = NYSEExchangeCalendar()
+
+    assert not cal.valid_days("1999-01-01", "2014-01-01") is None
+    # used to raise an error because tz= None
+    assert not cal.valid_days("1999-01-01", "2014-01-01", tz= None) is None
+
+    assert not cal.special_dates("market_close", "1999-01-01", "2014-01-01", False) is None
+    # calls valid_days internally
+    assert not cal.special_dates("market_close", "1999-01-01", "2014-01-01", True) is None
 
 def test_time_zone():
     assert NYSEExchangeCalendar().tz == pytz.timezone('America/New_York')
