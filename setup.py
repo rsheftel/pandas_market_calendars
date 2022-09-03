@@ -9,7 +9,7 @@ from os import path
 from setuptools import find_packages, setup
 
 # version
-VERSION = '4.0'
+VERSION = '4.0.1'
 
 # requirements
 REQUIRED_PYTHON = '>=3.8.0'
