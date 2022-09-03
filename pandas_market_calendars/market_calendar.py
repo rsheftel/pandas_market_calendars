@@ -535,7 +535,7 @@ class MarketCalendar(metaclass=MarketCalendarMeta):
                 self.days_at_time(dates, time_) for time_, dates in ad_hoc_dates
             ]
         if indexes:
-            dates = pd.concat(indexes).sort_index()
+            dates = pd.concat(indexes).sort_index().drop_duplicates()
             return dates.loc[start: end.replace(hour=23, minute=59, second=59)]
 
         return pd.Series([], dtype= "datetime64[ns, UTC]", index= pd.DatetimeIndex([]))
