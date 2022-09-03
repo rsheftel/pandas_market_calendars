@@ -45,7 +45,7 @@ from pandas_market_calendars.holidays_nyse import (
     MonTuesThursBeforeIndependenceDay, FridayAfterIndependenceDayNYSEpre2013,
     WednesdayBeforeIndependenceDayPost2013,
     MonBeforeIndependenceDayAdhoc, DaysAfterIndependenceDayAdhoc,
-    DaysBeforeIndependenceDay1pmEarlyCloseAdhoc, 
+    # DaysBeforeIndependenceDay1pmEarlyCloseAdhoc,
     
     USColumbusDayBefore1954, USElectionDay1848to1967, 
     
@@ -974,8 +974,8 @@ class NYSEExchangeCalendar(MarketCalendar):
 
         return [
             (time(13, tzinfo=timezone('America/New_York')),
-                DaysBeforeIndependenceDay1pmEarlyCloseAdhoc # list
-                + ChristmasEve1pmEarlyCloseAdhoc
+                # DaysBeforeIndependenceDay1pmEarlyCloseAdhoc # list
+                ChristmasEve1pmEarlyCloseAdhoc
                 + DayAfterChristmas1pmEarlyCloseAdhoc
                 + BacklogRelief1pmEarlyClose1929
             ),
