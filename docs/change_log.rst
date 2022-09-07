@@ -3,6 +3,11 @@
 
 Updates
 -------
+4.0.1 (09/03/22)
+~~~~~~~~~~~~~~
+- Fix duplicates bug in special_dates
+- Fix tz=None bug in NYSEExchangeCalendar.valid_days
+
 4.0 (08/02/22)
 ~~~~~~~~~~~~~~
 - Added interruptions support

@@ -45,7 +45,7 @@ from pandas_market_calendars.holidays_nyse import (
     MonTuesThursBeforeIndependenceDay, FridayAfterIndependenceDayNYSEpre2013,
     WednesdayBeforeIndependenceDayPost2013,
     MonBeforeIndependenceDayAdhoc, DaysAfterIndependenceDayAdhoc,
-    DaysBeforeIndependenceDay1pmEarlyCloseAdhoc, 
+    # DaysBeforeIndependenceDay1pmEarlyCloseAdhoc,
     
     USColumbusDayBefore1954, USElectionDay1848to1967, 
     
@@ -974,8 +974,8 @@ class NYSEExchangeCalendar(MarketCalendar):
 
         return [
             (time(13, tzinfo=timezone('America/New_York')),
-                DaysBeforeIndependenceDay1pmEarlyCloseAdhoc # list
-                + ChristmasEve1pmEarlyCloseAdhoc
+                # DaysBeforeIndependenceDay1pmEarlyCloseAdhoc # list
+                ChristmasEve1pmEarlyCloseAdhoc
                 + DayAfterChristmas1pmEarlyCloseAdhoc
                 + BacklogRelief1pmEarlyClose1929
             ),
@@ -1089,7 +1089,7 @@ class NYSEExchangeCalendar(MarketCalendar):
         :param tz: time zone in either string or pytz.timezone
         :return: DatetimeIndex of valid business days
         """
-        trading_days = super().valid_days(start_date, end_date, tz=tz)
+        trading_days = super().valid_days(start_date, end_date, tz= 'UTC')
 
         # Starting Monday Sept. 29, 1952, no more saturday trading days
         above_cut_off = trading_days >= self._saturday_end
@@ -1097,7 +1097,7 @@ class NYSEExchangeCalendar(MarketCalendar):
             above_and_saturday = (trading_days.weekday == 5) & above_cut_off
             trading_days = trading_days[~above_and_saturday]
 
-        return trading_days
+        return trading_days.tz_convert(tz)
 
 
     def days_at_time(self, days, market_time, day_offset=0):
