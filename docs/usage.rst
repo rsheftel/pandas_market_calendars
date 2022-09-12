@@ -582,7 +582,7 @@ inheriting from the closest MarketCalendar class, which requires an
 explanation of market times…
 
 Market times
-~~~~~~~~~~~~
+------------
 
 Market times are moments in a trading day that are contained in the
 ``regular_market_times`` attribute, for example:
@@ -1005,7 +1005,7 @@ argument, changes this behaviour:
 
 
 Inheriting from a MarketCalendar
---------------------------------
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 You get even more control over a calendar (or help this package by
 contributing a calendar) by inheriting from a MarketCalendar class. The
@@ -1135,7 +1135,7 @@ CFEExchangeCalendar, and the special case on 2000-12-27 is also
 integrated
 
 Interruptions
-~~~~~~~~~~~~~
+^^^^^^^^^^^^^
 
 MarketCalendar subclasses also support interruptions, which can be
 defined in the ``interruptions`` property. To view interruptions, you
@@ -1609,10 +1609,10 @@ You can even change this dynamically, using the ``opens`` keyword in
     
 
 Extra Usage
------------
+===========
 
 Checking for special times
-~~~~~~~~~~~~~~~~~~~~~~~~~~
+--------------------------
 
 *The following functions respect varying times in regular_market_times*
 
@@ -1969,7 +1969,7 @@ Handling discontinued times
 
 .. parsed-literal::
 
-    C:\Code\pandas_market_calendars\pandas_market_calendars\market_calendar.py:144: UserWarning: ['break_start', 'break_end'] are discontinued, the dictionary `.discontinued_market_times` has the dates on which these were discontinued. The times as of those dates are incorrect, use .remove_time(market_time) to ignore a market_time.
+    c:\Code\pandas_market_calendars\pandas_market_calendars\market_calendar.py:144: UserWarning: ['break_start', 'break_end'] are discontinued, the dictionary `.discontinued_market_times` has the dates on which these were discontinued. The times as of those dates are incorrect, use .remove_time(market_time) to ignore a market_time.
       warnings.warn(f"{list(discontinued.keys())} are discontinued, the dictionary"
     
 
