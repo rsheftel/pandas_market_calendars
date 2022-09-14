@@ -1,0 +1,67 @@
+name: test_runner
+on: 
+  pull_request: 
+    branches: [dev]
+  workflow_call:
+  workflow_dispatch:
+    
+jobs:
+  run_tests:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        os: [ubuntu-latest]
+        python-version: ['3.8', '3.9', '3.10']
+        
+    env:
+      GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/setup-python@v4
+        with:
+          python-version: ${{ matrix.python-version }}
+      
+      - name: install dependencies
+        run: | 
+          python -m pip install --upgrade pip
+          pip install pytest coveralls
+          pip install -r requirements.txt
+          
+      - name: run tests
+        run: |          
+          coverage run --source=cvhero -m pytest cv_tests
+          coverage lcov -o coverage.lcov
+          
+      - name: coveralls parallel
+        uses: coverallsapp/github-action@master
+        with:
+          github-token: ${{ secrets.github_token }}
+          flag-name: test_${{matrix.os}}_${{matrix.python-version}}
+          parallel: true
+          path-to-lcov: coverage.lcov
+
+  report_coverage:
+    if: ${{ always() }}
+    needs: run_tests
+    runs-on: ubuntu-latest
+
+    steps:  
+      - uses: actions/checkout@v3
+      
+      - name: coveralls finalize
+        id: coveralls_finalize
+        uses: coverallsapp/github-action@master
+        with:
+          github-token: ${{secrets.github_token}}
+          parallel-finished: true
+          path-to-lcov: coverage.lcov
+      
+
+      
+    
+      
+      
+    
+    
+    
