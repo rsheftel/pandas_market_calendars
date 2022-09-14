@@ -80,7 +80,7 @@
             echo "Will wait 120s" && sleep 120s
             pip install pip --upgrade
             pip install --index-url https://test.pypi.org/simple pandas_market_calendars==$NEWV --no-deps 
-            pip install -r requirements.txt
+            pip install .
             python -c 'import pandas_market_calendars;print(pandas_market_calendars.__version__)'
             pytest tests
             pip uninstall -y pandas_market_calendars 
