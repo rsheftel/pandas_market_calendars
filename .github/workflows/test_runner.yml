@@ -10,7 +10,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        os: [ubuntu-latest]
+        os: [ubuntu-latest, windows-latest, macos-latest]
         python-version: ['3.8', '3.9', '3.10']
         
     env:
@@ -30,7 +30,7 @@ jobs:
           
       - name: run tests
         run: |          
-          coverage run --source=cvhero -m pytest cv_tests
+          coverage run --source=pandas_market_calendars -m pytest tests
           coverage lcov -o coverage.lcov
           
       - name: coveralls parallel

@@ -1,7 +1,7 @@
 name: releaser
 on:
   push:
-    branches: [main]
+    branches: [master]
 
 env:
   NEWV: ''
@@ -70,7 +70,7 @@ jobs:
       - name: Install dependencies
         run: |
           python -m pip install --upgrade pip
-          pip install build twine
+          pip install build twine jupyter
           
       - name: Build Package
         run: python -m build
@@ -83,19 +83,16 @@ jobs:
       - name: Install and run tests
         run: |
           echo "Will wait 120s" && sleep 120s
-          pip install cvhero
+          pip install pandas_market_calendars
           pip install -r requirements.txt
-          python -c 'import cvhero;print(cvhero.__version__)'
-          pytest cv_tests
-          pip uninstall -y cvhero
+          python -c 'import pandas_market_calendars;print(pandas_market_calendars.__version__)'
+          pytest tests
+          pip uninstall -y pandas_market_calendars
           
       - name: prepare usage.rst
         run: |
-          pip install jupyter
-          sudo apt install pandoc
-          cd docs 
-          jupyter nbconvert --execute --ExecutePreprocessor.kernel_name='python3' --to rst --output-dir . --output usage.rst ../examples/usage.ipynb
-          cd ..
+          sudo apt install pandoc 
+          jupyter nbconvert --execute --ExecutePreprocessor.kernel_name='python3' --to rst --output-dir docs --output usage.rst examples/usage.ipynb
           
       - uses: stefanzweifel/git-auto-commit-action@v4
         with:

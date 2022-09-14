@@ -1,0 +1,36 @@
+[project]
+name = "pandas_market_calendars"
+version = "4.0.1"
+authors = [
+  { name="Marcel Pieper", email="marcel.pieper@outlook.com" },
+]
+description = "Market and exchange trading calendars for pandas"
+readme = "README.rst"
+license = { text="MIT" }
+requires-python = ">=3.8"
+classifiers = [
+        'Development Status :: 5 - Production/Stable',
+
+        # Indicate who your project is intended for
+        'Intended Audience :: Developers',
+        'Topic :: Software Development',
+
+        # Pick your license as you wish (should match "license" above)
+        'License :: OSI Approved :: MIT License',
+
+        # Specify the Python versions you support here.
+        'Programming Language :: Python :: 3.8',
+        'Programming Language :: Python :: 3.9',
+        'Programming Language :: Python :: 3.10',
+]
+
+[build-system]
+requires = ["setuptools>=61.0"]
+build-backend = "setuptools.build_meta"
+
+[tool.setuptools]
+py-modules = ["pandas_market_calendars"]
+
+[project.urls]
+"Homepage" = "https://github.com/rsheftel/pandas_market_calendars"
+"Bug Tracker" = "https://github.com/rsheftel/pandas_market_calendars/issues"

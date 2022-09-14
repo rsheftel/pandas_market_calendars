@@ -1,0 +1,14 @@
+
+new_version: '0.1.44'
+
+change_log: |
+  - testing stuff
+  - and others
+  
+
+
+release_body: |
+
+
+  Full Documentation: pandas_market_calendars.readthedocs.io
+

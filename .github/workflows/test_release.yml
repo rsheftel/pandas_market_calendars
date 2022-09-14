@@ -1,7 +1,7 @@
   name: test_release
   on:
     pull_request:
-      branches: [main]
+      branches: [master]
       
     workflow_dispatch:
     
@@ -79,8 +79,8 @@
           run: |
             echo "Will wait 120s" && sleep 120s
             pip install pip --upgrade
-            pip install --index-url https://test.pypi.org/simple cvhero==$NEWV --no-deps 
+            pip install --index-url https://test.pypi.org/simple pandas_market_calendars==$NEWV --no-deps 
             pip install -r requirements.txt
-            python -c 'import cvhero;print(cvhero.__version__)'
-            pytest cv_tests
-            pip uninstall -y cvhero 
+            python -c 'import pandas_market_calendars;print(pandas_market_calendars.__version__)'
+            pytest tests
+            pip uninstall -y pandas_market_calendars 
