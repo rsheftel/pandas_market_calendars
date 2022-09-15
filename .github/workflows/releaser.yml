@@ -70,7 +70,7 @@ jobs:
       - name: Install dependencies
         run: |
           python -m pip install --upgrade pip
-          pip install build twine jupyter
+          pip install build twine jupyter pytest
           
       - name: Build Package
         run: python -m build
@@ -80,14 +80,18 @@ jobs:
           user: __token__
           password: ${{ secrets.PYPI_TOKEN  }}
         
-      - name: Install and run tests
+      - name: install from pypi
         run: |
-          echo "Will wait 120s" && sleep 120s
-          pip install pandas_market_calendars
-          pip install .
-          python -c 'import pandas_market_calendars;print(pandas_market_calendars.__version__)'
-          pytest tests
-          pip uninstall -y pandas_market_calendars
+            while [ "$NEWV" != $(pip index versions pandas_market_calendars | cut -d'(' -f2 | cut -d')' -f1 | sed 1q) ];\
+              do echo not found yet, sleeping 5s; sleep 5s; done
+            pip install pandas_market_calendars==$NEWV
+
+      - name: run tests
+        run: |
+            pip install .
+            mv pandas_market_calendars pandas_market_calendars_copy
+            python -c 'import pandas_market_calendars;print(pandas_market_calendars.__version__)'
+            pytest tests
           
       - name: prepare usage.rst
         run: |
