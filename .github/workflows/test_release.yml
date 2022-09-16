@@ -66,7 +66,7 @@
 
         - name: Install dependencies
           run: |
-            python -m pip install --upgrade pip
+            pip install --upgrade pip
             pip install build twine pytest
             
         - name: Build source distribution and wheel files
@@ -75,7 +75,7 @@
         - name: Upload files to TestPyPI
           run: python -m twine upload --verbose --repository testpypi dist/* -u__token__ -p${{ secrets.TEST_PYPI_TOKEN }}
 
-        - name: Install from testpypi
+        - name: Install from testpypi           
           run: | 
             while [ "$NEWV" != $(pip index versions -i https://test.pypi.org/simple --pre pandas_market_calendars | cut -d'(' -f2 | cut -d')' -f1 | sed 1q) ];\
               do echo not found yet, sleeping 5s; sleep 5s; done
