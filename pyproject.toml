@@ -2,7 +2,7 @@
 name = "pandas_market_calendars"
 version = "4.0.1"
 authors = [
-  { name="Marcel Pieper", email="marcel.pieper@outlook.com" },
+  { name="Ryan Sheftel", email="rsheftel@alumni.upenn.edu" },
 ]
 description = "Market and exchange trading calendars for pandas"
 readme = "README.rst"
