@@ -165,6 +165,9 @@ UniqueCloses.append(pd.Timestamp("2012-06-05", tz='UTC'))
 UniqueCloses.append(pd.Timestamp("2022-06-02", tz='UTC'))
 UniqueCloses.append(pd.Timestamp("2022-06-03", tz='UTC'))
 
+# State Funeral of Queen Elizabeth II
+UniqueCloses.append(pd.Timestamp("2022-09-19", tz='UTC'))
+
 # Royal Weddings
 UniqueCloses.append(pd.Timestamp("1973-11-14", tz='UTC'))     # Wedding Day of Princess Anne and Mark Phillips
 UniqueCloses.append(pd.Timestamp("1981-07-29", tz='UTC'))     # Wedding Day of Prince Charles and Diana Spencer
