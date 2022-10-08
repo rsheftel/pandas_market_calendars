@@ -3,6 +3,10 @@
 
 Updates
 -------
+4.0.3 (10/08/2022)
+~~~~~~~~~~~~~~
+- Enabled tests that failed before PR #215
+
 4.0.2 (10/08/2022)
 ~~~~~~~~~~~~~~
 - Implemented new release management  
