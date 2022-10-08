@@ -1,6 +1,6 @@
 # OZ Holidays
 
-from pandas import DateOffset
+from pandas import DateOffset, Timestamp
 from pandas.tseries.holiday import (
     Holiday,
     MO,
@@ -55,3 +55,11 @@ BoxingDay = Holiday(
     day=26,
     observance=next_monday_or_tuesday,
 )
+
+
+# One-off holiday additions and removals in Australia
+
+UniqueCloses = []
+
+# National Day of Mourning for Her Majesty the Queen
+UniqueCloses.append(Timestamp("2022-09-22", tz='UTC'))

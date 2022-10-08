@@ -56,6 +56,7 @@ def test_unique_holidays():
     england_unique_hols_names = [
                                 "VE_50", "VE_75", 
                                 "QEII_Jubilee_25", "QEII_Jubilee_50", "QEII_Jubilee_60",
+                                "QEII_StateFuneral",
                                 "Royal_Wedding_Anne_1973", "Royal_Wedding_Charles_1981", "Royal_Wedding_William_2011",
                                 "3rd_Millennium_Eve",
                             ]
@@ -83,6 +84,9 @@ def test_unique_holidays():
     # Platinum Jubilee
     england_unique_hols["QEII_Jubilee_60"]["closed"] = [pd.Timestamp("2022-06-02"), pd.Timestamp("2022-06-03")]
     england_unique_hols["QEII_Jubilee_60"]["open"] = [pd.Timestamp("2022-05-31")]  # Spring bank holiday removed
+
+    # State Funeral of Queen Elizabeth II
+    england_unique_hols["QEII_StateFuneral"]["closed"] = [pd.Timestamp("2022-09-19")]
 
     # Royal Weddings
     # Wedding Day of Princess Anne and Mark Phillips

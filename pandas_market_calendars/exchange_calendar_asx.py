@@ -57,3 +57,7 @@ class ASXExchangeCalendar(MarketCalendar):
 			GoodFriday,
 			EasterMonday,
 		])
+
+	@property
+	def adhoc_holidays(self):
+		return UniqueCloses
