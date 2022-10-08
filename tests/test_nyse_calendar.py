@@ -78,7 +78,7 @@ def test_days_at_time_custom():
 
 def test_valid_days():
     cal = NYSEExchangeCalendar()
-    print("in test_valid_days")
+
     assert not cal.valid_days("1999-01-01", "2014-01-01") is None
     # used to raise an error because tz= None
     assert not cal.valid_days("1999-01-01", "2014-01-01", tz= None) is None
