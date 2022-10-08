@@ -86,7 +86,7 @@ def test_2022():
         pd.Timestamp('2022-12-26' , tz='UTC'), # Christmas
      ]
     _test_holidays(holidays, start, end)
-    #_test_no_special_opens(start, end)
+    _test_no_special_opens(start, end)
 
     early_closes = [
         pd.Timestamp('2022-01-17  1:30PM', tz='America/Chicago'), # MLK
@@ -109,7 +109,7 @@ def test_2021():
         pd.Timestamp('2021-12-24' , tz='UTC'), # Christmas
      ]
     _test_holidays(holidays, start, end)
-    #_test_no_special_opens(start, end)
+    _test_no_special_opens(start, end)
 
     early_closes = [
         pd.Timestamp('2021-01-18 12:00PM', tz='America/Chicago'), # MLK
@@ -131,7 +131,7 @@ def test_2020():
         pd.Timestamp('2020-12-25' , tz='UTC'), # Christmas
      ]
     _test_holidays(holidays, start, end)
-    #_test_no_special_opens(start, end)
+    _test_no_special_opens(start, end)
 
     early_closes = [
         pd.Timestamp('2020-01-20 12:00PM', tz='America/Chicago'), # MLK
