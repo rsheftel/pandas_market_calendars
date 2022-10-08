@@ -1092,6 +1092,8 @@ class NYSEExchangeCalendar(MarketCalendar):
         trading_days = super().valid_days(start_date, end_date, tz= 'UTC')
 
         # Starting Monday Sept. 29, 1952, no more saturday trading days
+        print(trading_days)
+        print(self._saturday_end)
         above_cut_off = trading_days >= self._saturday_end
         if above_cut_off.any():
             above_and_saturday = (trading_days.weekday == 5) & above_cut_off

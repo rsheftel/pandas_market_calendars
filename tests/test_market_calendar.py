@@ -493,7 +493,7 @@ def test_properties():
 def test_holidays():
     cal = FakeCalendar()
 
-    actual = cal.holidays().holidays
+    actual = pd.DatetimeIndex(cal.holidays().holidays)
     assert pd.Timestamp('2016-12-26') in actual
     assert pd.Timestamp('2012-01-02') in actual
     assert pd.Timestamp('2012-12-25') in actual
