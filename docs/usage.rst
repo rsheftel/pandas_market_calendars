@@ -72,7 +72,7 @@ View the available information on regular market times
                       ('1974-01-01', datetime.time(16, 0))),
      'post': ((None, datetime.time(20, 0)),)}
     )
-    
+
 
 Exchange open valid business days
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -575,7 +575,7 @@ open and/or close of *regular trading hours*.
 .. parsed-literal::
 
     open, close: 10:00:00, 14:30:00
-    
+
 
 More advanced customizations can be done after initialization or by
 inheriting from the closest MarketCalendar class, which requires an
@@ -604,7 +604,7 @@ Market times are moments in a trading day that are contained in the
                       ('1974-01-01', datetime.time(16, 0))),
      'post': ((None, datetime.time(20, 0)),)}
     )
-    
+
 
 NYSE’s regular trading hours are referenced by “market_open” and
 “market_close”, but NYSE also has extended hours, which are referenced
@@ -642,7 +642,7 @@ E.g.:
 .. parsed-literal::
 
     ((None, datetime.time(15, 0)), ('1952-09-29', datetime.time(15, 30)), ('1974-01-01', datetime.time(16, 0)))
-    
+
 
 The first known close was 3pm, which changed on 1952-09-29 to 3:30pm,
 which changed on 1974-01-01 to 4pm. The dates are the first dates that
@@ -677,7 +677,7 @@ There are three methods that allow customizing the
                       ('1974-01-01', datetime.time(16, 0))),
      'post': ((None, datetime.time(20, 0)),)}
     )
-    
+
 
 .. code:: ipython3
 
@@ -696,7 +696,7 @@ There are three methods that allow customizing the
                       ('1974-01-01', datetime.time(16, 0))),
      'new_post': ((None, datetime.time(19, 0)),)}
     )
-    
+
 
 .. code:: ipython3
 
@@ -726,7 +726,7 @@ information in these formats:
      'changes_and_offset': ((None, datetime.time(17, 0)),
                             ('2009-12-28', datetime.time(11, 0), -2))}
     )
-    
+
 
 CAVEATS:
 ~~~~~~~~
@@ -1048,7 +1048,7 @@ are looked for in two properties:
         @property
         def special_order_acceptance_adhoc(self):  # include special cases
             return [(time(8,30), ["2000-12-27", "2001-12-27"])]
-    
+
 
 .. code:: ipython3
 
@@ -1064,7 +1064,7 @@ are looked for in two properties:
      'market_close': ((None, datetime.time(15, 0)),),
      'order_acceptance': ((None, datetime.time(7, 30)),)}
     )
-    
+
 
 .. code:: ipython3
 
@@ -1342,7 +1342,7 @@ Here you can see that MarketCalendar.open_at_time respects interruptions
     open on 2010-01-12 14:35:00 : True
     open on 2010-01-13 15:59:00 : False
     open on 2010-01-13 16:30:00 : True
-    
+
 
 In the ``DemoOptionsCalendar``, we did not specify what order_acceptance
 means for the market, which will not allow open_at_time to work.
@@ -1359,7 +1359,7 @@ means for the market, which will not allow open_at_time to work.
 .. parsed-literal::
 
     You seem to be using a schedule that isn't based on the market_times, or includes market_times that are not represented in the open_close_map.
-    
+
 
 .. code:: ipython3
 
@@ -1377,7 +1377,7 @@ means for the market, which will not allow open_at_time to work.
      'pre': True,
      'post': False}
     )
-    
+
 
 To correct the calendar we should include the following:
 
@@ -1496,7 +1496,7 @@ order_acceptance (first) is respected
     open on 2010-01-12 14:35:00 : True
     open on 2010-01-13 15:59:00 : False
     open on 2010-01-13 16:30:00 : True
-    
+
 
 You can even change this dynamically, using the ``opens`` keyword in
 ``.change_time`` and ``.add_time``
@@ -1514,7 +1514,7 @@ You can even change this dynamically, using the ``opens`` keyword in
     open on 2010-01-12 14:35:00 : True
     open on 2010-01-13 15:59:00 : False
     open on 2010-01-13 16:30:00 : True
-    
+
 
 .. code:: ipython3
 
@@ -1606,7 +1606,7 @@ You can even change this dynamically, using the ``opens`` keyword in
     open on 2010-01-11 13:35:00 : True
     open on 2010-01-11 14:15:00 : False
     open on 2010-01-11 14:35:00 : True
-    
+
 
 Extra Usage
 ===========
@@ -1939,7 +1939,7 @@ that case ``.change_time`` is the explicit alternative.
 
     post is already in regular_market_times:
     ['pre', 'market_open', 'market_close', 'post', 'new_post']
-    
+
 
 Array of special times
 ~~~~~~~~~~~~~~~~~~~~~~
@@ -1969,9 +1969,9 @@ Handling discontinued times
 
 .. parsed-literal::
 
-    c:\Code\pandas_market_calendars\pandas_market_calendars\market_calendar.py:144: UserWarning: ['break_start', 'break_end'] are discontinued, the dictionary `.discontinued_market_times` has the dates on which these were discontinued. The times as of those dates are incorrect, use .remove_time(market_time) to ignore a market_time.
+    /opt/hostedtoolcache/Python/3.10.7/x64/lib/python3.10/site-packages/pandas_market_calendars/market_calendar.py:144: UserWarning: ['break_start', 'break_end'] are discontinued, the dictionary `.discontinued_market_times` has the dates on which these were discontinued. The times as of those dates are incorrect, use .remove_time(market_time) to ignore a market_time.
       warnings.warn(f"{list(discontinued.keys())} are discontinued, the dictionary"
-    
+
 
 .. code:: ipython3
 
@@ -2052,7 +2052,7 @@ Handling discontinued times
 
     True
     False
-    
+
 
 .. code:: ipython3
 

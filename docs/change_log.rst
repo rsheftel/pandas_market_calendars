@@ -3,6 +3,10 @@
 
 Updates
 -------
+4.0.2 (10/08/2022)
+~~~~~~~~~~~~~~
+- Implemented new release management  
+
 4.0.1 (09/03/22)
 ~~~~~~~~~~~~~~
 - Fix duplicates bug in special_dates
