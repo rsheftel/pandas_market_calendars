@@ -25,6 +25,6 @@ If you would like to see a new feature in `pandas_market_calendars`, it is proba
 
 If you would like to fix something in `pandas_market_calendars` -  improvements to documentation, bug fixes, feature implementations, etc - pull requests are welcome!
 
-The most important thing to include in your pull request are *tests* - please write one or more tests to cover the behavior you intend your patch to improve. Ideally, tests would use only the public interface - try to get 100% difference coverage using only supported behavior of the API.
+All pull requests should be opened against the `dev` branch and should include a clear and concise summary of the changes you made. 
 
-Also, please make sure to include a clear and concise summary of the changes you made. 
+The most important thing to include in your pull request are *tests* - please write one or more tests to cover the behavior you intend your patch to improve.
