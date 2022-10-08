@@ -1,10 +1,8 @@
 
-new_version: '4.0.1'
+new_version: '4.0.2'
 
 change_log: |
-  - testing stuff
-  - and others
-  
+  - Implemented new release management  
 
 
 release_body: |
