@@ -151,6 +151,10 @@ To add new functionality please include tests which are in standard pytest forma
 
 Use pytest to run the test suite.
 
+For complete information on contributing see CONTRIBUTING.md_
+
+.. _CONTRIBUTING.md: https://github.com/rsheftel/pandas_market_calendars/blob/master/CONTRIBUTING.md
+
 Future
 ------
 This package is open sourced under the MIT license. Everyone is welcome to add more exchanges or OTC markets, confirm
