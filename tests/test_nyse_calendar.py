@@ -88,9 +88,9 @@ def test_valid_days():
     assert not cal.special_dates("market_close", "1999-01-01", "2014-01-01", True) is None
 
     start, end = "2000-01-01", "2000-01-30"
-    valid = cal.valid_days(start, end, tz= "UTC")
+    valid = cal.valid_days(start, end, tz= "UTC").tz_localize(None)
     for tz in ("America/New_York", "Europe/Berlin", None):
-        assert (valid.tz_localize(None).tz_localize(tz) == cal.valid_days(start, end, tz= tz)).all()
+        assert (valid.tz_localize(tz) == cal.valid_days(start, end, tz= tz)).all()
 
 def test_time_zone():
     assert NYSEExchangeCalendar().tz == pytz.timezone('America/New_York')
