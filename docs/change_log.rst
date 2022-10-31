@@ -3,6 +3,18 @@
 
 Updates
 -------
+4.1.0 (10/08/2022)
+~~~~~~~~~~~~~~
+- Added UK and Australia holidays for Queen Elizabeth II's State Funeral
+
+4.0.3 (10/08/2022)
+~~~~~~~~~~~~~~
+- Enabled tests that failed before PR #215
+
+4.0.2 (10/08/2022)
+~~~~~~~~~~~~~~
+- Implemented new release management  
+
 4.0.1 (09/03/22)
 ~~~~~~~~~~~~~~
 - Fix duplicates bug in special_dates
