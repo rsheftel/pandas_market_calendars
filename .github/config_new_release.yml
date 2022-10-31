@@ -1,8 +1,8 @@
 
-new_version: '4.1.0'
+new_version: '4.1.1'
 
 change_log: |
-  - Added UK and Australia holidays for Queen Elizabeth II's State Funeral
+  - Fix for bug in NYSEExchangeCalendar.valid_days
 
 
 release_body: |
