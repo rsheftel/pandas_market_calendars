@@ -355,6 +355,28 @@ BSEClosedDay = [
     Timestamp('2022-10-24', tz='UTC'),  # Diwali/Laxmi Puja. muhurat trading day
     Timestamp('2022-10-26', tz='UTC'),  # Diwali-Balipratipada
     Timestamp('2022-11-08', tz='UTC'),  # Guru Nanak Jayanti
+    Timestamp('2023-01-26', tz='UTC'), # Thu, Republic Day
+    Timestamp('2023-03-08', tz='UTC'), # Wed, Holi
+    Timestamp('2023-03-18', tz='UTC'), # Sat, Maha Shivaratri
+    Timestamp('2023-03-30', tz='UTC'), # Thu, Ramanavami
+    Timestamp('2023-04-04', tz='UTC'), # Tue, Mahavir Jayanthi
+    Timestamp('2023-04-07', tz='UTC'), # Fri, Good Friday
+    Timestamp('2023-04-14', tz='UTC'), # Fri, Ambedkar Jayanti
+    Timestamp('2023-04-22', tz='UTC'), # Sat, EID AL FITR
+    Timestamp('2023-05-01', tz='UTC'), # Mon, Maharashtra Din
+    Timestamp('2023-06-28', tz='UTC'), # Wed, Bakri Id / Eid ul-Adha
+    Timestamp('2023-08-15', tz='UTC'), # Tue, Independence Day
+    Timestamp('2023-08-29', tz='UTC'), # Tue, Muharram
+    Timestamp('2023-09-19', tz='UTC'), # Tue, Ganesh Chaturthi
+    Timestamp('2023-10-02', tz='UTC'), # Mon, Gandhi Jayanti
+    Timestamp('2023-10-24', tz='UTC'), # Tue, Dussehra
+    Timestamp('2023-11-12', tz='UTC'), # Sun, Diwali
+    Timestamp('2023-11-14', tz='UTC'), # Tue, Diwali
+    Timestamp('2023-11-27', tz='UTC'), # Mon, Guru Nanak's Birthday
+    Timestamp('2023-12-25', tz='UTC'), # Mon, Christmas
+
+    
+    
 ]
 
 
