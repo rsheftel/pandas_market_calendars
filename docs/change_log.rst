@@ -3,6 +3,10 @@
 
 Updates
 -------
+4.1.2 (12/08/2022)
+~~~~~~~~~~~~~~
+- Added 2023 holidays to BSE calendar
+
 4.1.1 (10/31/2022)
 ~~~~~~~~~~~~~~
 - Fix for bug in NYSEExchangeCalendar.valid_days
