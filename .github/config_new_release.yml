@@ -1,8 +1,8 @@
 
-new_version: '4.1.1'
+new_version: '4.1.2'
 
 change_log: |
-  - Fix for bug in NYSEExchangeCalendar.valid_days
+  - Added 2023 holidays to BSE calendar
 
 
 release_body: |
