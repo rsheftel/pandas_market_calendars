@@ -3,6 +3,10 @@
 
 Updates
 -------
+4.1.1 (10/31/2022)
+~~~~~~~~~~~~~~
+- Fix for bug in NYSEExchangeCalendar.valid_days
+
 4.1.0 (10/08/2022)
 ~~~~~~~~~~~~~~
 - Added UK and Australia holidays for Queen Elizabeth II's State Funeral
