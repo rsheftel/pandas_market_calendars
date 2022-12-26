@@ -1969,7 +1969,7 @@ Handling discontinued times
 
 .. parsed-literal::
 
-    /opt/hostedtoolcache/Python/3.10.8/x64/lib/python3.10/site-packages/pandas_market_calendars/market_calendar.py:144: UserWarning: ['break_start', 'break_end'] are discontinued, the dictionary `.discontinued_market_times` has the dates on which these were discontinued. The times as of those dates are incorrect, use .remove_time(market_time) to ignore a market_time.
+    /opt/hostedtoolcache/Python/3.10.9/x64/lib/python3.10/site-packages/pandas_market_calendars/market_calendar.py:144: UserWarning: ['break_start', 'break_end'] are discontinued, the dictionary `.discontinued_market_times` has the dates on which these were discontinued. The times as of those dates are incorrect, use .remove_time(market_time) to ignore a market_time.
       warnings.warn(f"{list(discontinued.keys())} are discontinued, the dictionary"
 
 
