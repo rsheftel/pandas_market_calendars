@@ -1,8 +1,8 @@
 
-new_version: '4.1.3'
+new_version: '4.1.4'
 
 change_log: |
-  - Added Chinese 2023 holidays
+  - Updated TASE Holidays 2022-2025 
 
 
 release_body: |
