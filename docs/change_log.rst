@@ -3,6 +3,10 @@
 
 Updates
 -------
+4.1.4 (02/04/2023)
+~~~~~~~~~~~~~~
+- Updated TASE Holidays 2022-2025 
+
 4.1.3 (12/26/2022)
 ~~~~~~~~~~~~~~
 - Added Chinese 2023 holidays
