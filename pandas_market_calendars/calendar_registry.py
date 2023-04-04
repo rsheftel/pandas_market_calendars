@@ -28,7 +28,7 @@ from .exchange_calendar_tase import TASEExchangeCalendar
 from .exchange_calendars_mirror import *
 
 
-def get_calendar(name, open_time=None, close_time=None):
+def get_calendar(name, open_time=None, close_time=None) -> MarketCalendar:
     """
     Retrieves an instance of an MarketCalendar whose name is given.
 
