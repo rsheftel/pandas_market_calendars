@@ -17,7 +17,7 @@ Market calendars to use with pandas for trading applications.
 
 Documentation
 -------------
-http://pandas_market_calendars.readthedocs.io/en/latest/
+http://pandas-market-calendars.readthedocs.io/en/latest/
 
 Overview
 --------
