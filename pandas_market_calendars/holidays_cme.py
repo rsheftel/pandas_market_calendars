@@ -1,7 +1,6 @@
 import datetime
 
-from dateutil.relativedelta import (MO, FR)
-from dateutil.relativedelta import (TH)
+from dateutil.relativedelta import (MO, TH, FR)
 from pandas import (DateOffset, Timestamp)
 from pandas.tseries.holiday import (Holiday, Easter)
 from pandas.tseries.holiday import (nearest_workday)
@@ -213,11 +212,11 @@ USIndependenceDayAfter2014 = Holiday(
     start_date=Timestamp('2014-01-01'),
     observance=nearest_workday,)
 
-# Necessary for equities
+# Necessary for equities and crypto
 def previous_workday_if_july_4th_is_tue_to_fri(dt):
     july4th = datetime.datetime(dt.year, 7, 4)
     if july4th.weekday() in (1, 2, 3, 4):
-        return july4th - datetime.timedelta(days= 1)
+        return july4th - datetime.timedelta(days=1)
     # else None
 
 USIndependenceDayBefore2022PreviousDay = Holiday(

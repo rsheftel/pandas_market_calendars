@@ -26,7 +26,7 @@ USNewYearsDay = Holiday(
 # Martin Luther King Jr. 
 #    Starting 1998
 ##########################################################################
-USMartinLutherKingJrFrom2022 = Holiday( # Early Close 1:30pm
+USMartinLutherKingJrFrom2022 = Holiday( 
     'Dr. Martin Luther King Jr. Day',
     month=1,
     day=1,
@@ -35,7 +35,7 @@ USMartinLutherKingJrFrom2022 = Holiday( # Early Close 1:30pm
     offset=DateOffset(weekday=MO(3)),
 )
 
-USMartinLutherKingJrPre2022 = Holiday( # Early Close 12:00pm
+USMartinLutherKingJrPre2022 = Holiday( 
     'Dr. Martin Luther King Jr. Day',
     month=1,
     day=1,
@@ -48,12 +48,12 @@ USMartinLutherKingJrPre2022 = Holiday( # Early Close 12:00pm
 #########################################################################
 # US Presidents Day Feb 
 ##########################################################################
-USPresidentsDayFrom2022 = Holiday('President''s Day',  # 1:30pm Early Close
+USPresidentsDayFrom2022 = Holiday('President''s Day',  
     start_date=Timestamp('2022-01-01'),
     month=2, day=1,
     offset=DateOffset(weekday=MO(3)))
 
-USPresidentsDayPre2022 = Holiday('President''s Day',  # 12:00pm Early Close
+USPresidentsDayPre2022 = Holiday('President''s Day',  
     end_date=Timestamp('2021-12-31'),
     month=2, day=1,
     offset=DateOffset(weekday=MO(3)))
@@ -74,7 +74,7 @@ GoodFriday = Holiday(
 ##################################################
 # US Memorial Day (Decoration Day) May 30 
 ##################################################
-USMemorialDayFrom2022 = Holiday( # 1:30pm early close
+USMemorialDayFrom2022 = Holiday( 
     'Memorial Day',
     month=5,
     day=25,
@@ -82,7 +82,7 @@ USMemorialDayFrom2022 = Holiday( # 1:30pm early close
     offset=DateOffset(weekday=MO(1)),
 )
 
-USMemorialDayPre2022 = Holiday( # 12:00pm early close
+USMemorialDayPre2022 = Holiday( 
     'Memorial Day', 
     month=5,
     day=25,
@@ -122,6 +122,20 @@ USIndependenceDayPre2022 = Holiday(
 #################################################
 # US Labor Day Starting 1887
 #################################################
+USLaborDayFrom2022 = Holiday(
+    'Labor Day',
+    month=9,
+    day=1,
+    start_date=Timestamp('2022-01-01'),
+    offset=DateOffset(weekday=MO(1)),
+)
+USLaborDayPre2022 = Holiday(
+    'Labor Day',
+    month=9,
+    day=1,
+    end_date=Timestamp('2021-12-31'),
+    offset=DateOffset(weekday=MO(1)),
+)
 USLaborDay = Holiday(
     "Labor Day", 
     month=9, 
@@ -155,6 +169,21 @@ FridayAfterThanksgiving = Holiday(
     offset=[DateOffset(weekday=TH(4)), Day(1)],
 )
 
+USThanksgivingFridayFrom2021 = Holiday(
+    'Thanksgiving Friday',
+    month=11,
+    day=1,
+    offset=[DateOffset(weekday=TH(4)), Day(1)],
+    start_date=Timestamp('2021-01-01'),
+)
+
+USThanksgivingFridayPre2021 = Holiday(
+    'Thanksgiving Friday',
+    month=11,
+    day=1,
+    offset=[DateOffset(weekday=TH(4)), Day(1)],
+    end_date=Timestamp('2020-12-31'),
+)
 
 ################################
 # Christmas Dec 25
