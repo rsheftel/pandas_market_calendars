@@ -26,13 +26,14 @@ Exchange  BSE    BSEExchangeCalendar                rakesh1988
 
 Futures Calendars
 #################
-========== ================ =================================== ============ ============
+========== ================= =================================== ============ ============
  Exchange        Name             Class                          Unit Tests    Creator
-========== ================ =================================== ============ ============
+========== ================= =================================== ============ ============
 CME        CME_Equity         CMEEquityExchangeCalendar           Yes         rsheftel
 CME        CME_Bond           CMEBondExchangeCalendar             Yes         rsheftel
-CME        CME_Agricultural   CMEAgriculturalExchangeCalendar     Yes        lionelyoung
-========== ================ =================================== ============ ============
+CME        CME_Agricultural   CMEAgriculturalExchangeCalendar     Yes         lionelyoung
+CME        CME Globex Crypto  CMEGlobexCryptoExchangeCalendar     Yes         Coinbase Asset Management
+========== ================= =================================== ============ ============
 
 Bond Market Calendars
 #####################

@@ -34,6 +34,7 @@ class CMEGlobexBaseExchangeCalendar(MarketCalendar, ABC):
 
     CME Markets: https://www.cmegroup.com/markets/agriculture.html#overview
     - Agriculture
+    - Crypto
     - Energy
     - Equity Index
     - FX
