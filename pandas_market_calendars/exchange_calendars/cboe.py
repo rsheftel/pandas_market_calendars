@@ -6,9 +6,9 @@ from pytz import timezone
 from itertools import chain
 import pandas as pd
 
-from pandas_market_calendars.holidays_us import (Christmas, USBlackFridayInOrAfter1993, USIndependenceDay, USMartinLutherKingJrAfter1998,
-                          USMemorialDay, USNewYearsDay, HurricaneSandyClosings, USNationalDaysofMourning,
-                          USJuneteenthAfter2022)
+from pandas_market_calendars.holidays.us import (Christmas, USBlackFridayInOrAfter1993, USIndependenceDay, USMartinLutherKingJrAfter1998,
+                                                 USMemorialDay, USNewYearsDay, HurricaneSandyClosings, USNationalDaysofMourning,
+                                                 USJuneteenthAfter2022)
 from pandas_market_calendars.market_calendar import MarketCalendar
 
 

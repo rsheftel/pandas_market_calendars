@@ -6,8 +6,8 @@ from pandas.tseries.holiday import AbstractHolidayCalendar, EasterMonday, GoodFr
 from pandas.tseries.offsets import LastWeekOfMonth, WeekOfMonth
 from pytz import timezone
 
-from pandas_market_calendars.holidays_us import USNewYearsDay
-from pandas_market_calendars.holidays_cn import bsd_mapping, dbf_mapping, dnf_mapping, maf_mapping, sf_mapping, tsd_mapping
+from pandas_market_calendars.holidays.us import USNewYearsDay
+from pandas_market_calendars.holidays.cn import bsd_mapping, dbf_mapping, dnf_mapping, maf_mapping, sf_mapping, tsd_mapping
 from pandas_market_calendars.market_calendar import MarketCalendar
 
 

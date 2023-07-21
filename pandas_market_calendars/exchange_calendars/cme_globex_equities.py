@@ -4,7 +4,7 @@ from datetime import time
 from pandas.tseries.holiday import AbstractHolidayCalendar
 from pytz import timezone
 
-from pandas_market_calendars.holidays_cme import (
+from pandas_market_calendars.holidays.cme import (
     USMartinLutherKingJrAfter1998Before2015,
     USMartinLutherKingJrAfter2015,
     USPresidentsDayBefore2015,
@@ -26,7 +26,7 @@ from pandas_market_calendars.holidays_cme import (
     USThanksgivingAfter2014,
     USThanksgivingFriday,
 )
-from pandas_market_calendars.holidays_us import (
+from pandas_market_calendars.holidays.us import (
     USNewYearsDay,
     ChristmasEveInOrAfter1993,
     Christmas,

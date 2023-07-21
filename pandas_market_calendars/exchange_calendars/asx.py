@@ -3,7 +3,7 @@ from datetime import time
 from pandas.tseries.holiday import AbstractHolidayCalendar, GoodFriday, EasterMonday
 from pytz import timezone
 
-from pandas_market_calendars.holidays_oz import *
+from pandas_market_calendars.holidays.oz import *
 from pandas_market_calendars.market_calendar import MarketCalendar
 
 AbstractHolidayCalendar.start_date = '2011-01-01'

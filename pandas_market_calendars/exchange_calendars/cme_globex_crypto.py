@@ -4,13 +4,13 @@ from pandas.tseries.holiday import AbstractHolidayCalendar
 import pytz
 
 from .cme_globex_base import CMEGlobexBaseExchangeCalendar
-from pandas_market_calendars.holidays_cme import (
+from pandas_market_calendars.holidays.cme import (
     GoodFriday2021,
     GoodFridayAfter2021,
     GoodFridayBefore2021,
     USIndependenceDayBefore2022PreviousDay,
 )
-from pandas_market_calendars.holidays_cme_globex import (
+from pandas_market_calendars.holidays.cme_globex import (
     ChristmasCME,
     USMartinLutherKingJrFrom2022,
     USMartinLutherKingJrPre2022,
@@ -28,7 +28,7 @@ from pandas_market_calendars.holidays_cme_globex import (
     USThanksgivingFridayFrom2021,
     USThanksgivingFridayPre2021,
 )
-from pandas_market_calendars.holidays_us import (
+from pandas_market_calendars.holidays.us import (
     ChristmasEveInOrAfter1993,
     USNewYearsDay,
 )

@@ -4,7 +4,7 @@ import pandas as pd
 import pytz
 
 from pandas_market_calendars.exchange_calendars.sse import SSEExchangeCalendar
-from pandas_market_calendars.holidays_cn import all_holidays
+from pandas_market_calendars.holidays.cn import all_holidays
 
 all_holidays = pd.DatetimeIndex(all_holidays)
 

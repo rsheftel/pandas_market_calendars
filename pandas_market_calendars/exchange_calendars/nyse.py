@@ -20,7 +20,7 @@ import pandas as pd
 from pandas.tseries.holiday import AbstractHolidayCalendar
 from pytz import timezone
 
-from pandas_market_calendars.holidays_nyse import (    
+from pandas_market_calendars.holidays.nyse import (
     # Always Celebrated Holidays
     USNewYearsDayNYSEpost1952, USNewYearsDayNYSEpre1952, SatBeforeNewYearsAdhoc,
     

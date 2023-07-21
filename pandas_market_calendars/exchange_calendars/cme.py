@@ -20,7 +20,7 @@ from pandas import Timestamp
 from pandas.tseries.holiday import AbstractHolidayCalendar, GoodFriday, USLaborDay, USPresidentsDay, USThanksgivingDay
 from pytz import timezone
 
-from pandas_market_calendars.holidays_us import (Christmas, ChristmasEveBefore1993, ChristmasEveInOrAfter1993, USBlackFridayInOrAfter1993,
+from pandas_market_calendars.holidays.us import (Christmas, ChristmasEveBefore1993, ChristmasEveInOrAfter1993, USBlackFridayInOrAfter1993,
                                                  USIndependenceDay, USMartinLutherKingJrAfter1998, USMemorialDay, USNationalDaysofMourning,
                                                  USNewYearsDay)
 from pandas_market_calendars.market_calendar import MarketCalendar

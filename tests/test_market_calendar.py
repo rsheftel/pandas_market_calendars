@@ -25,9 +25,9 @@ from pandas.testing import assert_frame_equal, assert_index_equal, assert_series
 from pandas.tseries.holiday import AbstractHolidayCalendar
 
 from pandas_market_calendars import get_calendar, get_calendar_names
-from pandas_market_calendars.holidays_us import (Christmas, HurricaneSandyClosings, MonTuesThursBeforeIndependenceDay,
+from pandas_market_calendars.holidays.us import (Christmas, HurricaneSandyClosings, MonTuesThursBeforeIndependenceDay,
                                                  USNationalDaysofMourning, USNewYearsDay)
-from pandas_market_calendars.holidays_nyse import Sept11Anniversary12pmLateOpen2002
+from pandas_market_calendars.holidays.nyse import Sept11Anniversary12pmLateOpen2002
 from pandas_market_calendars.market_calendar import MarketCalendar #, clean_dates, days_at_time
 from pandas_market_calendars.exchange_calendars.mirror import TradingCalendar
 from pandas_market_calendars.exchange_calendars.nyse import NYSEExchangeCalendar
