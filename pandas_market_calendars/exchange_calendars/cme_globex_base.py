@@ -22,10 +22,10 @@ from pandas import Timestamp
 from pandas.tseries.holiday import AbstractHolidayCalendar, GoodFriday, USLaborDay, USPresidentsDay, USThanksgivingDay
 from pytz import timezone
 
-from .holidays_us import (Christmas, ChristmasEveBefore1993, ChristmasEveInOrAfter1993, USBlackFridayInOrAfter1993,
-                          USIndependenceDay, USMartinLutherKingJrAfter1998, USMemorialDay, USJuneteenthAfter2022,
-                          USNationalDaysofMourning, USNewYearsDay)
-from .market_calendar import MarketCalendar
+from pandas_market_calendars.holidays_us import (Christmas, ChristmasEveBefore1993, ChristmasEveInOrAfter1993, USBlackFridayInOrAfter1993,
+                                                 USIndependenceDay, USMartinLutherKingJrAfter1998, USMemorialDay, USJuneteenthAfter2022,
+                                                 USNationalDaysofMourning, USNewYearsDay)
+from pandas_market_calendars.market_calendar import MarketCalendar
 
 
 class CMEGlobexBaseExchangeCalendar(MarketCalendar, ABC):

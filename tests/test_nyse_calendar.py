@@ -5,7 +5,7 @@ import pytest
 import pytz
 from pandas.testing import assert_index_equal, assert_series_equal
 
-from pandas_market_calendars.exchange_calendar_nyse import NYSEExchangeCalendar
+from pandas_market_calendars.exchange_calendars.nyse import NYSEExchangeCalendar
 
 
 def test_custom_open_close():

@@ -5,7 +5,7 @@ Bombay Stock Exchnage
 from pandas import Timestamp
 from pytz import timezone
 from datetime import time
-from .market_calendar import MarketCalendar
+from pandas_market_calendars.market_calendar import MarketCalendar
 
 
 BSEClosedDay = [

@@ -3,7 +3,7 @@ from itertools import chain
 import pandas as pd
 import pytz
 
-from pandas_market_calendars.exchange_calendar_lse import LSEExchangeCalendar
+from pandas_market_calendars.exchange_calendars.lse import LSEExchangeCalendar
 
 
 def test_time_zone():

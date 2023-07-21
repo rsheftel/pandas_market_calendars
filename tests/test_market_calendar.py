@@ -29,8 +29,8 @@ from pandas_market_calendars.holidays_us import (Christmas, HurricaneSandyClosin
                                                  USNationalDaysofMourning, USNewYearsDay)
 from pandas_market_calendars.holidays_nyse import Sept11Anniversary12pmLateOpen2002
 from pandas_market_calendars.market_calendar import MarketCalendar #, clean_dates, days_at_time
-from pandas_market_calendars.exchange_calendars_mirror import TradingCalendar
-from pandas_market_calendars.exchange_calendar_nyse import NYSEExchangeCalendar
+from pandas_market_calendars.exchange_calendars.mirror import TradingCalendar
+from pandas_market_calendars.exchange_calendars.nyse import NYSEExchangeCalendar
 
 import exchange_calendars as ecal
 

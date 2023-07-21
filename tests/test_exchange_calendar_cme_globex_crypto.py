@@ -3,7 +3,7 @@ import pandas as pd
 import pytest
 from pandas.tseries.offsets import Day, Hour, Minute
 
-from pandas_market_calendars.exchange_calendar_cme_globex_crypto import (
+from pandas_market_calendars.exchange_calendars.cme_globex_crypto import (
     CMEGlobexCryptoExchangeCalendar,
 )
 

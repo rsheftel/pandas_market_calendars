@@ -6,7 +6,7 @@ from pytz import timezone
 
 from pandas_market_calendars.holidays_jp import *
 from pandas_market_calendars.holidays_us import USNewYearsDay
-from .market_calendar import MarketCalendar
+from pandas_market_calendars.market_calendar import MarketCalendar
 
 
 # TODO:

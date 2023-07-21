@@ -2,7 +2,7 @@ from datetime import time
 
 from pandas.tseries.holiday import AbstractHolidayCalendar
 
-from pandas_market_calendars.exchange_calendar_cme_globex_base import CMEGlobexBaseExchangeCalendar
+from pandas_market_calendars.exchange_calendars.cme_globex_base import CMEGlobexBaseExchangeCalendar
 from pandas_market_calendars.holidays_cme import (
     USMartinLutherKingJrAfter1998Before2022,
     USPresidentsDayBefore2022,

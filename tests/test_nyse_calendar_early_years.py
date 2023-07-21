@@ -4,7 +4,7 @@ import pandas as pd
 from pandas.testing import assert_index_equal
 from pandas.tseries.offsets import CustomBusinessDay
 
-from pandas_market_calendars.exchange_calendar_nyse import NYSEExchangeCalendar
+from pandas_market_calendars.exchange_calendars.nyse import NYSEExchangeCalendar
 
 nyse = NYSEExchangeCalendar()
 

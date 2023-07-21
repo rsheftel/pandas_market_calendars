@@ -3,7 +3,7 @@ import datetime as dt
 from pandas.tseries.holiday import AbstractHolidayCalendar
 import pytz
 
-from .exchange_calendar_cme_globex_base import CMEGlobexBaseExchangeCalendar
+from .cme_globex_base import CMEGlobexBaseExchangeCalendar
 from pandas_market_calendars.holidays_cme import (
     GoodFriday2021,
     GoodFridayAfter2021,
