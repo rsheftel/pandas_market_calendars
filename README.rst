@@ -159,3 +159,11 @@ Future
 ------
 This package is open sourced under the MIT license. Everyone is welcome to add more exchanges or OTC markets, confirm
 or correct the existing calendars, and generally do whatever they desire with this code.
+
+Sponsor
+-------
+.. image:: https://www.tradinghours.com/img/logo-with-words.png
+    :target: https://www.tradinghours.com/data
+    :alt: TradingHours.com
+
+`TradingHours.com <https://www.tradinghours.com>`_ provides the most accurate and comprehensive coverage of market holidays and trading hours data available. They cover over 900 markets around the world. Their data is continually monitored for changes and updated daily. `Learn more » <https://www.tradinghours.com/data>`_
