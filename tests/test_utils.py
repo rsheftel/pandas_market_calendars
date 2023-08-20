@@ -23,21 +23,22 @@ def test_get_calendar():
 def test_get_calendar_names():
     assert 'ASX' in mcal.get_calendar_names()
 
+
 def test_date_range_exceptions():
     cal = FakeCalendar(open_time= datetime.time(9), close_time= datetime.time(11, 30))
     schedule = cal.schedule("2021-01-05", "2021-01-05")
 
-    ### invalid closed argument
+    # invalid closed argument
     with pytest.raises(ValueError) as e:
-        mcal.date_range(schedule, "15min", closed= "righ")
+        mcal.date_range(schedule, "15min", closed="righ")
     assert e.exconly() == "ValueError: closed must be 'left', 'right', 'both' or None."
 
-    ### invalid force_close argument
+    # invalid force_close argument
     with pytest.raises(ValueError) as e:
-        mcal.date_range(schedule, "15min", force_close= "True")
+        mcal.date_range(schedule, "15min", force_close="True")
     assert e.exconly() == "ValueError: force_close must be True, False or None."
 
-    ### close_time is before open_time
+    # close_time is before open_time
     schedule = pd.DataFrame([["2020-01-01 12:00:00+00:00", "2020-01-01 11:00:00+00:00"]],
                             index= ["2020-01-01"], columns= ["market_open", "market_close"])
     with pytest.raises(ValueError) as e:
@@ -45,8 +46,8 @@ def test_date_range_exceptions():
     assert e.exconly() == "ValueError: Schedule contains rows where market_close < market_open,"\
                                      " please correct the schedule"
 
-    ### Overlap -
-    ### the end of the last bar goes over the next start time
+    # Overlap -
+    # the end of the last bar goes over the next start time
     bcal = FakeBreakCalendar()
     bschedule = bcal.schedule("2021-01-05", "2021-01-05")
     with pytest.raises(ValueError) as e1:
@@ -83,7 +84,6 @@ def test_date_range_exceptions():
         mcal.date_range(bschedule, "2H", closed="left", force_close=None)
     except ValueError as e:
         pytest.fail(f"Unexpected Error: \n{e}")
-
 
 
 @pytest.mark.parametrize("tz", ["America/New_York", "Asia/Ulaanbaatar", "UTC"])

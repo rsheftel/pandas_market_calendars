@@ -3,6 +3,12 @@
 
 Updates
 -------
+4.2.0 (08/20/2023)
+~~~~~~~~~~~~~~
+- CBOE GoodFriday special close is broken, reverted back to standard GoodFriday logic PR #265
+- Fixed BSE Holiday PR #248 Issue #245
+- Updated TASE Holidays 2022-2025 PR #263
+
 4.1.4 (02/04/2023)
 ~~~~~~~~~~~~~~
 - Updated TASE Holidays 2022-2025 
