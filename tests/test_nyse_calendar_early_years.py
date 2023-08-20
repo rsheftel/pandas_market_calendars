@@ -3752,3 +3752,55 @@ def test_2023():
         pd.Timestamp('2023-11-24 1:00PM', tz='America/New_York'),  # Day after Thanksgiving
     ]
     _test_has_early_closes(early_closes, start, end)
+
+def test_2024():
+    start = '2024-01-01'
+    end   = '2024-12-31'
+    holidays = [
+        pd.Timestamp('2024-01-01', tz='UTC'),
+        pd.Timestamp('2024-01-15', tz='UTC'),
+        pd.Timestamp('2024-02-19', tz='UTC'),
+        pd.Timestamp('2024-03-29', tz='UTC'),
+        pd.Timestamp('2024-05-27', tz='UTC'),
+        pd.Timestamp('2024-06-19', tz='UTC'),
+        pd.Timestamp('2024-07-04', tz='UTC'),
+        pd.Timestamp('2024-09-02', tz='UTC'),
+        pd.Timestamp('2024-11-28', tz='UTC'),
+        pd.Timestamp('2024-12-25', tz='UTC')
+    ]
+    _test_holidays(holidays, start, end)
+    _test_no_special_opens(start, end)
+
+    # early closes we expect:
+    early_closes = [
+        pd.Timestamp('2024-07-03 1:00PM', tz='America/New_York'), #  Day before July 4th
+        pd.Timestamp('2024-11-29 1:00PM', tz='America/New_York'),  # Day after Thanksgiving
+        pd.Timestamp('2024-12-24 1:00PM', tz='America/New_York'),  # Christmas eve
+    ]
+    _test_has_early_closes(early_closes, start, end)
+
+def test_2025():
+    start = '2025-01-01'
+    end   = '2025-12-31'
+    holidays = [
+        pd.Timestamp('2025-01-01', tz='UTC'),
+        pd.Timestamp('2025-01-20', tz='UTC'),
+        pd.Timestamp('2025-02-17', tz='UTC'),
+        pd.Timestamp('2025-04-18', tz='UTC'),
+        pd.Timestamp('2025-05-26', tz='UTC'),
+        pd.Timestamp('2025-06-19', tz='UTC'),
+        pd.Timestamp('2025-07-04', tz='UTC'),
+        pd.Timestamp('2025-09-01', tz='UTC'),
+        pd.Timestamp('2025-11-27', tz='UTC'),
+        pd.Timestamp('2025-12-25', tz='UTC')
+    ]
+    _test_holidays(holidays, start, end)
+    _test_no_special_opens(start, end)
+
+    # early closes we expect:
+    early_closes = [
+        pd.Timestamp('2025-07-03 1:00PM', tz='America/New_York'), #  Day before July 4th
+        pd.Timestamp('2025-11-28 1:00PM', tz='America/New_York'),  # Day after Thanksgiving
+        pd.Timestamp('2025-12-24 1:00PM', tz='America/New_York'),  # Christmas eve
+    ]
+    _test_has_early_closes(early_closes, start, end)
