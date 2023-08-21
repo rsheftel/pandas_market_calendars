@@ -14,7 +14,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-import pkg_resources
+from importlib import metadata
 
 from .calendar_registry import get_calendar, get_calendar_names
 from .calendar_utils import convert_freq, date_range, merge_schedules
@@ -23,8 +23,8 @@ from .market_calendar import MarketCalendar
 
 # if running in development there may not be a package
 try:
-    __version__ = pkg_resources.get_distribution('pandas_market_calendars').version
-except pkg_resources.DistributionNotFound:
+    __version__ = metadata.version('pandas_market_calendars')
+except metadata.PackageNotFoundError:
     __version__ = 'development'
 
 __all__ = [

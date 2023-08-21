@@ -8,6 +8,10 @@ Updates
 - CBOE GoodFriday special close is broken, reverted back to standard GoodFriday logic PR #265
 - Fixed BSE Holiday PR #248 Issue #245
 - Updated TASE Holidays 2022-2025 PR #263
+- King Charles III's Coronation Day holiday to LSE calendar PR #255
+- Added NYSE tests for 2024 and 2025 PR #259
+- Deleted setup.cfg that was only used for flake8. Will move to Black in a future release
+- Moved all setuptools build workflows to pyproject.toml and deleted setup.py
 
 4.1.4 (02/04/2023)
 ~~~~~~~~~~~~~~
