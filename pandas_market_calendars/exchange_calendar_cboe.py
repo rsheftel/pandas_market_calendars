@@ -11,22 +11,21 @@ from .holidays_us import (Christmas, USBlackFridayInOrAfter1993, USIndependenceD
 from .market_calendar import MarketCalendar
 
 
+# TODO: In pandas 2.0.3 this no longer works as the dt passed in is the entire matrix and not a single date
 def good_friday_unless_christmas_nye_friday(dt):
     """
     Good Friday is a valid trading day if Christmas Day or New Years Day fall
     on a Friday.
     """
-    year_str = str(dt.year)
+    year = dt.year
     christmas_weekday = Christmas.observance(
-        pd.Timestamp(year_str+"-12-25")
+        pd.Timestamp(year, 12, 25)
     ).weekday()
     nyd_weekday = USNewYearsDay.observance(
-        pd.Timestamp(year_str+"-01-01")
+        pd.Timestamp(year, 1, 1)
     ).weekday()
     if christmas_weekday != 4 and nyd_weekday != 4:
-        return GoodFriday._apply_rule(
-            pd.Timestamp(str(dt.year)+"-"+str(dt.month)+"-"+str(dt.day))
-        )
+        return GoodFriday._apply_rule(dt)
     else:
         # compatibility for pandas 0.18.1
         return pd.NaT
@@ -57,7 +56,6 @@ class CFEExchangeCalendar(MarketCalendar):
         "market_close": ((None, time(15, 15)),)
     }
 
-
     @property
     def name(self):
         return "CFE"
@@ -72,7 +70,8 @@ class CFEExchangeCalendar(MarketCalendar):
             USNewYearsDay,
             USMartinLutherKingJrAfter1998,
             USPresidentsDay,
-            GoodFridayUnlessChristmasNYEFriday,
+            # GoodFridayUnlessChristmasNYEFriday, #TODO: When this is fixed can return to using it
+            GoodFriday,
             USIndependenceDay,
             USMemorialDay,
             USLaborDay,
@@ -96,6 +95,7 @@ class CFEExchangeCalendar(MarketCalendar):
             USNationalDaysofMourning,
         ))
 
+
 class CBOEEquityOptionsExchangeCalendar(CFEExchangeCalendar):
     name = "CBOE_Equity_Options"
     aliases = [name]
@@ -103,6 +103,7 @@ class CBOEEquityOptionsExchangeCalendar(CFEExchangeCalendar):
         "market_open": ((None, time(8, 30)),),
         "market_close": ((None, time(15)),)
     }
+
 
 class CBOEIndexOptionsExchangeCalendar(CFEExchangeCalendar):
     name = "CBOE_Index_Options"

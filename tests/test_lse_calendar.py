@@ -58,6 +58,7 @@ def test_unique_holidays():
                                 "QEII_Jubilee_25", "QEII_Jubilee_50", "QEII_Jubilee_60",
                                 "QEII_StateFuneral",
                                 "Royal_Wedding_Anne_1973", "Royal_Wedding_Charles_1981", "Royal_Wedding_William_2011",
+                                "KCIII_Coronation",
                                 "3rd_Millennium_Eve",
                             ]
     england_unique_hols = {i: {"closed": None, "open": None} for i in england_unique_hols_names}
@@ -95,7 +96,10 @@ def test_unique_holidays():
     england_unique_hols["Royal_Wedding_Charles_1981"]["closed"] = [pd.Timestamp("1981-07-29")]
     # Wedding Day of Prince William and Catherine Middleton
     england_unique_hols["Royal_Wedding_William_2011"]["closed"] = [pd.Timestamp("2011-04-29")]
-    
+
+    # Coronation of King Charles III
+    england_unique_hols["KCIII_Coronation"]["closed"] = [pd.Timestamp("2023-05-08")]
+
     # Miscellaneous
     # Eve of 3rd Millennium A.D.
     england_unique_hols["3rd_Millennium_Eve"]["closed"] = [pd.Timestamp("1999-12-31")]

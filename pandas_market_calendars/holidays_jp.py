@@ -35,6 +35,12 @@ NoN225IndexPrices = [
     Timestamp('1959-04-10', tz='UTC'),
 ]
 
+EquityTradingSystemFailure = [
+    # The Failure of Equity Trading System on October 1, 2020
+    # source: https://www.jpx.co.jp/english/corporate/news/news-releases/0060/20201019-01.html
+    Timestamp('2020-10-01', tz='UTC'),
+]
+
 JapanNewYearsDay2 = Holiday(
     name="New Year's Day",
     month=1,
@@ -193,11 +199,18 @@ JapanMarineDay2020 = Holiday(
     day=23,
 )
 
+JapanMarineDay2021 = Holiday(
+    name="Marine Day",  # shift for Olympics (Olympics and Paralympics postponed until 2021 due to the COVID-19 pandemic)
+    year=2021,
+    month=7,
+    day=22,
+)
+
 JapanMarineDay = Holiday(
     name="Marine Day",
     month=7,
     day=1,
-    start_date=Timestamp(2021, 1, 1),
+    start_date=Timestamp(2022, 1, 1),
     offset=DateOffset(weekday=MO(3)),
 )
 
@@ -217,11 +230,25 @@ JapanMountainDay2020 = Holiday(
     day=10,
 )
 
+JapanMountainDay2021 = Holiday(
+    name="Mountain Day",  # shift for Olympics (Olympics and Paralympics postponed until 2021 due to the COVID-19 pandemic)
+    year=2021,
+    month=8,
+    day=8,
+)
+
+JapanMountainDay2021NextDay = Holiday(
+    name="Mountain Day",  # shift for Olympics (Olympics and Paralympics postponed until 2021 due to the COVID-19 pandemic)
+    year=2021,
+    month=8,
+    day=9,
+)
+
 JapanMountainDay = Holiday(
     name="Mountain Day",
     month=8,
     day=11,
-    start_date=Timestamp(2021, 1, 1),
+    start_date=Timestamp(2022, 1, 1),
     observance=sunday_to_monday,
 )
 
@@ -292,11 +319,18 @@ JapanSportsDay2020 = Holiday(
     day=24,
 )
 
+JapanSportsDay2021 = Holiday(
+    name="Sports Day",  # shift for Olympics (Olympics and Paralympics postponed until 2021 due to the COVID-19 pandemic)
+    year=2021,
+    month=7,
+    day=23,
+)
+
 JapanSportsDay = Holiday(
     name="Sports Day",
     month=10,
     day=1,
-    start_date=Timestamp(2021, 1, 1),
+    start_date=Timestamp(2022, 1, 1),
     offset=DateOffset(weekday=MO(2)),
 )
 
