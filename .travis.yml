@@ -2,12 +2,14 @@ language: python
 python:
   - "3.8"
   - "3.9"
+  - "3.10"
+  - "3.11"
 
 install:
   - "pip install pandas"
   - "pip install coveralls"
   - "pip install coverage"
-  - "python setup.py install"
+  - "python -m build"
 
 script:
 #  - py.test --cov=pandas_market_calendars

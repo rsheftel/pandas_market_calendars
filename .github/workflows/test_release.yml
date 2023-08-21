@@ -37,7 +37,7 @@
         - name: get_new_current_version
           run: | 
             echo "NEWV=${{ steps.new_version.outputs.data }}" >> $GITHUB_ENV
-            echo "OLDV=$(grep "VERSION" -m1 setup.py | cut -d"=" -f2 | sed "s/['\" ]//g")" >> $GITHUB_ENV
+            echo "OLDV=$(grep "VERSION" -m1 pyproject.toml | cut -d"=" -f2 | sed "s/['\" ]//g")" >> $GITHUB_ENV
             
         - name: warn_no_version
           if: ${{ env.NEWV <= env.OLDV }}
@@ -56,7 +56,6 @@
         - name: set version
           run: |  
               echo release candidate: $NEWV
-              sed -i "s/$OLDV/$NEWV/" setup.py
               sed -i "s/$OLDV/$NEWV/" pyproject.toml
               
         - name: Set up Python
