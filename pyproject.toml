@@ -1,6 +1,6 @@
 [project]
 name = "pandas_market_calendars"
-version = "4.2.0"
+version = "4.2.1"
 authors = [
   { name="Ryan Sheftel", email="rsheftel@alumni.upenn.edu" },
 ]
@@ -35,7 +35,7 @@ requires = ["setuptools>=61.0", "wheel"]
 build-backend = "setuptools.build_meta"
 
 [tool.setuptools]
-py-modules = ["pandas_market_calendars"]
+packages = ["pandas_market_calendars"]
 
 [project.urls]
 "Homepage" = "https://github.com/rsheftel/pandas_market_calendars"
@@ -43,3 +43,26 @@ py-modules = ["pandas_market_calendars"]
 "Documentation" = "https://pandas-market-calendars.readthedocs.io/en/latest/"
 "Changelog" = "https://pandas-market-calendars.readthedocs.io/en/latest/change_log.html"
 "Bug Tracker" = "https://github.com/rsheftel/pandas_market_calendars/issues"
+
+[tool.coverage.run]
+branch = true
+
+[tool.coverage.report]
+exclude_also = [
+    # Don't complain about missing debug-only code:
+    "def __repr__",
+    "if self\\.debug",
+
+    # Don't complain if tests don't hit defensive assertion code:
+    "raise AssertionError",
+    "raise NotImplementedError",
+
+    # Don't complain if non-runnable code isn't run:
+    "if 0:",
+    "if __name__ == .__main__.:",
+
+    # Don't complain about abstract methods, they aren't run:
+    "@(abc\\.)?abstractmethod",
+    ]
+
+ignore_errors = true

@@ -3,8 +3,14 @@
 
 Updates
 -------
+4.2.1 (08/21/2023)
+~~~~~~~~~~~~~~~~~~
+- Fix the pyproject.toml to properly generate sdist PR #267
+- Remove .travis.yml file as Travis-CI is no longer used
+- Merge .coveragerc into pyproject.toml
+
 4.2.0 (08/20/2023)
-~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~
 - CBOE GoodFriday special close is broken, reverted back to standard GoodFriday logic PR #265
 - Fixed BSE Holiday PR #248 Issue #245
 - Updated TASE Holidays 2022-2025 PR #263
