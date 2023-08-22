@@ -1,6 +1,6 @@
 [project]
 name = "pandas_market_calendars"
-version = "4.2.0"
+version = "4.2.1"
 authors = [
   { name="Ryan Sheftel", email="rsheftel@alumni.upenn.edu" },
 ]
