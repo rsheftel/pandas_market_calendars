@@ -7,7 +7,8 @@ from itertools import chain
 import pandas as pd
 
 from .holidays_us import (Christmas, USBlackFridayInOrAfter1993, USIndependenceDay, USMartinLutherKingJrAfter1998,
-                          USMemorialDay, USNewYearsDay, HurricaneSandyClosings, USNationalDaysofMourning)
+                          USMemorialDay, USNewYearsDay, HurricaneSandyClosings, USNationalDaysofMourning,
+                          USJuneteenthAfter2022)
 from .market_calendar import MarketCalendar
 
 
@@ -72,6 +73,7 @@ class CFEExchangeCalendar(MarketCalendar):
             USPresidentsDay,
             # GoodFridayUnlessChristmasNYEFriday, #TODO: When this is fixed can return to using it
             GoodFriday,
+            USJuneteenthAfter2022,
             USIndependenceDay,
             USMemorialDay,
             USLaborDay,
