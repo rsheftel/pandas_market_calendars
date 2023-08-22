@@ -1,4 +1,4 @@
- Change Log
+Change Log
 ==========
 
 Updates
@@ -20,35 +20,35 @@ Updates
 - Moved all setuptools build workflows to pyproject.toml and deleted setup.py
 
 4.1.4 (02/04/2023)
-~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~
 - Updated TASE Holidays 2022-2025 
 
 4.1.3 (12/26/2022)
-~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~
 - Added Chinese 2023 holidays
 
 4.1.2 (12/08/2022)
-~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~
 - Added 2023 holidays to BSE calendar
 
 4.1.1 (10/31/2022)
-~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~
 - Fix for bug in NYSEExchangeCalendar.valid_days
 
 4.1.0 (10/08/2022)
-~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~
 - Added UK and Australia holidays for Queen Elizabeth II's State Funeral
 
 4.0.3 (10/08/2022)
-~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~
 - Enabled tests that failed before PR #215
 
 4.0.2 (10/08/2022)
-~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~
 - Implemented new release management  
 
 4.0.1 (09/03/22)
-~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~
 - Fix duplicates bug in special_dates
 - Fix tz=None bug in NYSEExchangeCalendar.valid_days
 
