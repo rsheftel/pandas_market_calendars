@@ -129,6 +129,7 @@ def test_jpx_2020_holidays():
         pd.Timestamp("2020-08-10", tz='UTC'),  # mountain day
         pd.Timestamp("2020-09-21", tz='UTC'),
         pd.Timestamp("2020-09-22", tz='UTC'),
+        pd.Timestamp("2020-10-01", tz='UTC'),  # Trading system failure
         pd.Timestamp("2020-11-03", tz='UTC'),
         pd.Timestamp("2020-11-23", tz='UTC'),
         pd.Timestamp("2020-12-31", tz='UTC'),
@@ -155,11 +156,12 @@ def test_jpx_2021_holidays():
         pd.Timestamp("2021-05-03", tz='UTC'),
         pd.Timestamp("2021-05-04", tz='UTC'),
         pd.Timestamp("2021-05-05", tz='UTC'),
-        pd.Timestamp("2021-07-19", tz='UTC'),
-        pd.Timestamp("2021-08-11", tz='UTC'),
+        pd.Timestamp("2021-07-22", tz='UTC'),  # Marine day shift for COVID
+        pd.Timestamp("2021-07-23", tz='UTC'),  # Sports day shift for COVID
+        pd.Timestamp("2021-08-08", tz='UTC'),  # Mountain day shift for COVID
+        pd.Timestamp("2021-08-09", tz='UTC'),  # Mountain day shift for COVID
         pd.Timestamp("2021-09-20", tz='UTC'),
         pd.Timestamp("2021-09-23", tz='UTC'),
-        pd.Timestamp("2021-10-11", tz='UTC'),
         pd.Timestamp("2021-11-03", tz='UTC'),
         pd.Timestamp("2021-11-23", tz='UTC'),
         pd.Timestamp("2021-12-31", tz='UTC'),

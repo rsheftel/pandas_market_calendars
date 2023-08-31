@@ -1,13 +1,14 @@
 [project]
 name = "pandas_market_calendars"
-version = "4.1.3"
+version = "4.2.1"
 authors = [
   { name="Ryan Sheftel", email="rsheftel@alumni.upenn.edu" },
 ]
 description = "Market and exchange trading calendars for pandas"
 readme = "README.rst"
-license = { text="MIT" }
 requires-python = ">=3.8"
+keywords = ["trading", "exchanges", "markets", "OTC", "datetime", "holiday", "business days"]
+license = { text="MIT" }
 classifiers = [
         'Development Status :: 5 - Production/Stable',
 
@@ -22,15 +23,46 @@ classifiers = [
         'Programming Language :: Python :: 3.8',
         'Programming Language :: Python :: 3.9',
         'Programming Language :: Python :: 3.10',
+        'Programming Language :: Python :: 3.11',
 ]
+dependencies = ['pandas>=1.1', 'pytz', 'python-dateutil', 'exchange_calendars>=3.3']
+
+[project.optional-dependencies]
+test = ['pytest']
 
 [build-system]
-requires = ["setuptools>=61.0"]
+requires = ["setuptools>=61.0", "wheel"]
 build-backend = "setuptools.build_meta"
 
 [tool.setuptools]
-py-modules = ["pandas_market_calendars"]
+packages = ["pandas_market_calendars"]
 
 [project.urls]
 "Homepage" = "https://github.com/rsheftel/pandas_market_calendars"
+"Source" = "https://github.com/rsheftel/pandas_market_calendars"
+"Documentation" = "https://pandas-market-calendars.readthedocs.io/en/latest/"
+"Changelog" = "https://pandas-market-calendars.readthedocs.io/en/latest/change_log.html"
 "Bug Tracker" = "https://github.com/rsheftel/pandas_market_calendars/issues"
+
+[tool.coverage.run]
+branch = true
+
+[tool.coverage.report]
+exclude_also = [
+    # Don't complain about missing debug-only code:
+    "def __repr__",
+    "if self\\.debug",
+
+    # Don't complain if tests don't hit defensive assertion code:
+    "raise AssertionError",
+    "raise NotImplementedError",
+
+    # Don't complain if non-runnable code isn't run:
+    "if 0:",
+    "if __name__ == .__main__.:",
+
+    # Don't complain about abstract methods, they aren't run:
+    "@(abc\\.)?abstractmethod",
+    ]
+
+ignore_errors = true

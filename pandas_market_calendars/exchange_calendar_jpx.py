@@ -47,7 +47,8 @@ class JPXExchangeCalendar(MarketCalendar):
             FuneralShowa,
             EnthronementDays,
             AutumnalCitizenDates,
-            NoN225IndexPrices
+            NoN225IndexPrices,
+            EquityTradingSystemFailure
         ))
 
     @property
@@ -74,9 +75,12 @@ class JPXExchangeCalendar(MarketCalendar):
             JapanMarineDay1996To2002,
             JapanMarineDay2003To2019,
             JapanMarineDay2020,
+            JapanMarineDay2021,
             JapanMarineDay,
             JapanMountainDay2016to2019,
             JapanMountainDay2020,
+            JapanMountainDay2021,
+            JapanMountainDay2021NextDay,
             JapanMountainDay,
             JapanRespectForTheAgedDay1966To1972,
             JapanRespectForTheAgedDay1973To2002,
@@ -86,6 +90,7 @@ class JPXExchangeCalendar(MarketCalendar):
             JapanHealthAndSportsDay1973To1999,
             JapanHealthAndSportsDay2000To2019,
             JapanSportsDay2020,
+            JapanSportsDay2021,
             JapanSportsDay,
             JapanCultureDayUntil1972,
             JapanCultureDay,

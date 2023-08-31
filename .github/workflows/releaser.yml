@@ -27,7 +27,7 @@ jobs:
       - name: get_new_current_version
         run: | 
           echo "NEWV=${{ steps.new_version.outputs.data }}" >> $GITHUB_ENV
-          echo "OLDV=$(grep "VERSION" -m1 setup.py | cut -d"=" -f2 | sed "s/['\" ]//g")" >> $GITHUB_ENV
+          echo "OLDV=$(grep "VERSION" -m1 pyproject.toml | cut -d"=" -f2 | sed "s/['\" ]//g")" >> $GITHUB_ENV
           
       - name: verify ${{env.NEWV}} > ${{env.OLDV}}
         if: ${{ env.NEWV <= env.OLDV }}
@@ -59,7 +59,6 @@ jobs:
 
       - name: set up new version
         run: |  
-            sed -i "s/$OLDV/$NEWV/" setup.py
             sed -i "s/$OLDV/$NEWV/" pyproject.toml
 
       - name: Set up Python
@@ -100,7 +99,7 @@ jobs:
           
       - uses: stefanzweifel/git-auto-commit-action@v4
         with:
-          file_pattern: setup.py pyproject.toml docs/change_log.rst docs/usage.rst
+          file_pattern: pyproject.toml docs/change_log.rst docs/usage.rst
           commit_message: '[GH-Actions] v${{ env.NEWV }} -- updated configuration and documentation files.'
           
       - name: Create Release  

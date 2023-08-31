@@ -5,19 +5,13 @@ Market calendars to use with pandas for trading applications.
 .. image:: https://badge.fury.io/py/pandas-market-calendars.svg
     :target: https://badge.fury.io/py/pandas-market-calendars
 
-.. image:: https://travis-ci.com/rsheftel/pandas_market_calendars.svg?branch=master
-    :target: https://travis-ci.com/rsheftel/pandas_market_calendars
-
-.. image:: https://coveralls.io/repos/github/rsheftel/pandas_market_calendars/badge.svg?branch=master
-    :target: https://coveralls.io/github/rsheftel/pandas_market_calendars?branch=master
-
 .. image:: https://readthedocs.org/projects/pandas-market-calendars/badge/?version=latest
    :target: http://pandas-market-calendars.readthedocs.io/en/latest/?badge=latest
    :alt: Documentation Status
 
 Documentation
 -------------
-http://pandas_market_calendars.readthedocs.io/en/latest/
+http://pandas-market-calendars.readthedocs.io/en/latest/
 
 Overview
 --------
@@ -159,3 +153,11 @@ Future
 ------
 This package is open sourced under the MIT license. Everyone is welcome to add more exchanges or OTC markets, confirm
 or correct the existing calendars, and generally do whatever they desire with this code.
+
+Sponsor
+-------
+.. image:: https://www.tradinghours.com/img/logo-with-words.png
+    :target: https://www.tradinghours.com/data
+    :alt: TradingHours.com
+
+`TradingHours.com <https://www.tradinghours.com>`_ provides the most accurate and comprehensive coverage of market holidays and trading hours data available. They cover over 900 markets around the world. Their data is continually monitored for changes and updated daily. `Learn more <https://www.tradinghours.com/data>`_

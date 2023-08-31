@@ -1,4 +1,4 @@
-.. code:: ipython3
+.. code:: python
 
     import sys
     sys.path.append("../") 
@@ -15,13 +15,13 @@ Basic Usage
 Setup new exchange calendar
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-.. code:: ipython3
+.. code:: python
 
     nyse = mcal.get_calendar('NYSE')
 
 Get the time zone
 
-.. code:: ipython3
+.. code:: python
 
     nyse.tz.zone
 
@@ -36,7 +36,7 @@ Get the time zone
 
 Get the AbstractHolidayCalendar object
 
-.. code:: ipython3
+.. code:: python
 
     holidays = nyse.holidays()
     holidays.holidays[-5:]
@@ -56,7 +56,7 @@ Get the AbstractHolidayCalendar object
 
 View the available information on regular market times
 
-.. code:: ipython3
+.. code:: python
 
     print(nyse.regular_market_times) # more on this under the 'Customizations' heading
 
@@ -81,7 +81,7 @@ Get the valid open exchange business dates between a start and end date.
 Note that Dec 26 (Christmas), Jan 2 (New Years) and all weekends are
 missing
 
-.. code:: ipython3
+.. code:: python
 
     nyse.valid_days(start_date='2016-12-20', end_date='2017-01-10')
 
@@ -104,7 +104,7 @@ missing
 Schedule
 ~~~~~~~~
 
-.. code:: ipython3
+.. code:: python
 
     schedule = nyse.schedule(start_date='2016-12-30', end_date='2017-01-10')
     schedule
@@ -178,7 +178,7 @@ Schedule
 
 
 
-.. code:: ipython3
+.. code:: python
 
     # with early closes
     early = nyse.schedule(start_date='2012-07-01', end_date='2012-07-10')
@@ -248,7 +248,7 @@ Schedule
 
 
 
-.. code:: ipython3
+.. code:: python
 
     # including pre and post-market
     extended = nyse.schedule(start_date='2012-07-01', end_date='2012-07-10', start="pre", end="post")
@@ -332,7 +332,7 @@ Schedule
 
 
 
-.. code:: ipython3
+.. code:: python
 
     # specific market times 
     # CAVEAT: Looking at 2012-07-03, you can see that times will NOT be adjusted to special_opens/sepcial_closes
@@ -407,7 +407,7 @@ Schedule
 Get early closes
 ~~~~~~~~~~~~~~~~
 
-.. code:: ipython3
+.. code:: python
 
     nyse.early_closes(schedule=early)
 
@@ -450,7 +450,7 @@ Get early closes
 
 
 
-.. code:: ipython3
+.. code:: python
 
     nyse.early_closes(schedule=extended)
 
@@ -503,7 +503,7 @@ Open at time
 Test to see if a given timestamp is during market open hours. (You can
 find more on this under the ‘Advanced open_at_time’ header)
 
-.. code:: ipython3
+.. code:: python
 
     nyse.open_at_time(early, pd.Timestamp('2012-07-03 12:00', tz='America/New_York'))
 
@@ -516,7 +516,7 @@ find more on this under the ‘Advanced open_at_time’ header)
 
 
 
-.. code:: ipython3
+.. code:: python
 
     nyse.open_at_time(early, pd.Timestamp('2012-07-03 16:00', tz='America/New_York'))
 
@@ -531,7 +531,7 @@ find more on this under the ‘Advanced open_at_time’ header)
 
 Other market times will also be considered
 
-.. code:: ipython3
+.. code:: python
 
     nyse.open_at_time(extended, pd.Timestamp('2012-07-05 18:00', tz='America/New_York'))
 
@@ -546,7 +546,7 @@ Other market times will also be considered
 
 but can be ignored by setting only_rth = True
 
-.. code:: ipython3
+.. code:: python
 
     nyse.open_at_time(extended, pd.Timestamp('2012-07-05 18:00', tz='America/New_York'), only_rth = True)
 
@@ -566,7 +566,7 @@ The simplest way to customize the market times of a calendar is by
 passing datetime.time objects to the constructor, which will modify the
 open and/or close of *regular trading hours*.
 
-.. code:: ipython3
+.. code:: python
 
     cal = mcal.get_calendar('NYSE', open_time=time(10, 0), close_time=time(14, 30))
     print('open, close: %s, %s' % (cal.open_time, cal.close_time))
@@ -587,7 +587,7 @@ Market times
 Market times are moments in a trading day that are contained in the
 ``regular_market_times`` attribute, for example:
 
-.. code:: ipython3
+.. code:: python
 
     print("The original NYSE calendar: \n", nyse.regular_market_times)
 
@@ -634,7 +634,7 @@ by “pre” and “post”.
 
 E.g.:
 
-.. code:: ipython3
+.. code:: python
 
     print(nyse.get_time("market_close", all_times= True)) # all_times = False only returns current
 
@@ -656,7 +656,7 @@ There are three methods that allow customizing the
 ``.change_time(market_time, times)`` \*
 ``.add_time(market_time, times)`` \* ``.remove_time(market_time)``
 
-.. code:: ipython3
+.. code:: python
 
     cal = mcal.get_calendar("NYSE")
     cal.change_time("market_open", time(10,30))
@@ -679,7 +679,7 @@ There are three methods that allow customizing the
     )
 
 
-.. code:: ipython3
+.. code:: python
 
     cal.remove_time("post")
     cal.add_time("new_post", time(19))
@@ -698,7 +698,7 @@ There are three methods that allow customizing the
     )
 
 
-.. code:: ipython3
+.. code:: python
 
     cal.remove_time("pre")
     cal.remove_time("new_post")
@@ -706,7 +706,7 @@ There are three methods that allow customizing the
 The methods ``.add_time`` and ``.change_time`` also accept the time
 information in these formats:
 
-.. code:: ipython3
+.. code:: python
 
     cal.add_time("just_time", time(10))
     cal.add_time("with_offset", (time(10), -1))
@@ -739,7 +739,7 @@ FIRST
 | Because of the offsets in “with_offset” and “changes_and_offset”, the
   columns in a schedule are in the following order:
 
-.. code:: ipython3
+.. code:: python
 
     cal.schedule("2009-12-23", "2009-12-29", market_times= "all")
 
@@ -817,7 +817,7 @@ but as of 2009-12-28 it is.
 
 Passing a list to ``market_times``, allows you to keep a custom order:
 
-.. code:: ipython3
+.. code:: python
 
     cal.schedule("2009-12-23", "2009-12-29", market_times= ["with_offset", "market_open", "market_close", "changes_and_offset"])
 
@@ -896,7 +896,7 @@ SECOND
 Providing ``False`` or ``None`` to the ``force_special_times`` keyword
 argument, changes this behaviour:
 
-.. code:: ipython3
+.. code:: python
 
     # False - will only adjust the columns itself (changes_and_offset left alone, market_close adjusted)
     cal.schedule("2009-12-23", "2009-12-28", market_times= ["changes_and_offset", "market_close"], force_special_times= False)
@@ -950,7 +950,7 @@ argument, changes this behaviour:
 
 
 
-.. code:: ipython3
+.. code:: python
 
     # None - will not adjust any column (both are left alone)
     cal.schedule("2009-12-23", "2009-12-28", market_times= ["changes_and_offset", "market_close"], force_special_times= None) 
@@ -1030,7 +1030,7 @@ are looked for in two properties:
    special_{market_time}
        same format as special_opens, which is the same as special_market_open
 
-.. code:: ipython3
+.. code:: python
 
     # For example, CFEExchangeCalendar only has the regular trading hours for the futures exchange (8:30 - 15:15).
     # If you want to use the equity options exchange (8:30 - 15:00), including the order acceptance time at 7:30, and
@@ -1050,7 +1050,7 @@ are looked for in two properties:
             return [(time(8,30), ["2000-12-27", "2001-12-27"])]
 
 
-.. code:: ipython3
+.. code:: python
 
     options = mcal.get_calendar("Demo_Options")
     
@@ -1066,7 +1066,7 @@ are looked for in two properties:
     )
 
 
-.. code:: ipython3
+.. code:: python
 
     schedule = options.schedule("2000-12-22", "2000-12-28", start= "order_acceptance") 
     schedule
@@ -1142,7 +1142,7 @@ defined in the ``interruptions`` property. To view interruptions, you
 can use the ``interruptions_df`` property or set ``interruptions= True``
 when calling ``schedule``.
 
-.. code:: ipython3
+.. code:: python
 
     class InterruptionsDemo(DemoOptionsCalendar):
         @property
@@ -1154,11 +1154,11 @@ when calling ``schedule``.
                 ("2011-01-10", time(11), time(11, 1))]
         
 
-.. code:: ipython3
+.. code:: python
 
     cal = InterruptionsDemo()
 
-.. code:: ipython3
+.. code:: python
 
     cal.interruptions_df
 
@@ -1226,7 +1226,7 @@ when calling ``schedule``.
 
 
 
-.. code:: ipython3
+.. code:: python
 
     sched = cal.schedule("2010-01-09", "2010-01-15", interruptions= True)
     sched
@@ -1314,7 +1314,7 @@ when calling ``schedule``.
 
 
 
-.. code:: ipython3
+.. code:: python
 
     def is_open(c, s, *dates):
         for t in dates:
@@ -1331,7 +1331,7 @@ to respect interruptions.
 Here you can see that MarketCalendar.open_at_time respects interruptions
 (the last two timestamps):
 
-.. code:: ipython3
+.. code:: python
 
     is_open(cal, sched, "2010-01-12 14:00:00", "2010-01-12 14:35:00","2010-01-13 15:59:00","2010-01-13 16:30:00")
 
@@ -1347,7 +1347,7 @@ Here you can see that MarketCalendar.open_at_time respects interruptions
 In the ``DemoOptionsCalendar``, we did not specify what order_acceptance
 means for the market, which will not allow open_at_time to work.
 
-.. code:: ipython3
+.. code:: python
 
     sched = cal.schedule("2010-01-09", "2010-01-15", start= "order_acceptance", interruptions= True)
     try: 
@@ -1361,7 +1361,7 @@ means for the market, which will not allow open_at_time to work.
     You seem to be using a schedule that isn't based on the market_times, or includes market_times that are not represented in the open_close_map.
 
 
-.. code:: ipython3
+.. code:: python
 
     # These are the defaults that every MarketCalendar has, which is still missing order_accpetance.
     print(cal.open_close_map)
@@ -1381,7 +1381,7 @@ means for the market, which will not allow open_at_time to work.
 
 To correct the calendar we should include the following:
 
-.. code:: ipython3
+.. code:: python
 
     class OpenCloseDemo(InterruptionsDemo):
         
@@ -1485,7 +1485,7 @@ To correct the calendar we should include the following:
 Now we can see that not only interruptions (last two) but also
 order_acceptance (first) is respected
 
-.. code:: ipython3
+.. code:: python
 
     is_open(cal, sched, "2010-01-11 13:35:00", "2010-01-12 14:35:00", "2010-01-13 15:59:00", "2010-01-13 16:30:00")
 
@@ -1501,7 +1501,7 @@ order_acceptance (first) is respected
 You can even change this dynamically, using the ``opens`` keyword in
 ``.change_time`` and ``.add_time``
 
-.. code:: ipython3
+.. code:: python
 
     cal.change_time("order_acceptance", cal["order_acceptance"], opens= False)
     
@@ -1516,7 +1516,7 @@ You can even change this dynamically, using the ``opens`` keyword in
     open on 2010-01-13 16:30:00 : True
 
 
-.. code:: ipython3
+.. code:: python
 
     cal.change_time("order_acceptance", cal["order_acceptance"], opens= True)
     
@@ -1596,7 +1596,7 @@ You can even change this dynamically, using the ``opens`` keyword in
 
 
 
-.. code:: ipython3
+.. code:: python
 
     is_open(cal, sched, "2010-01-11 13:35:00", "2010-01-11 14:15:00", "2010-01-11 14:35:00")
 
@@ -1619,7 +1619,7 @@ Checking for special times
 These will only check market_close/market_open columns for early/late
 times
 
-.. code:: ipython3
+.. code:: python
 
     options.early_closes(schedule), options.late_opens(schedule)
 
@@ -1641,7 +1641,7 @@ The ``is_different`` method uses the name of the series passed to it, to
 determine which rows are not equal to the regular market times, and
 return a boolean Series
 
-.. code:: ipython3
+.. code:: python
 
     schedule[options.is_different(schedule["order_acceptance"])]
 
@@ -1689,7 +1689,7 @@ return a boolean Series
 You can also pass ``pd.Series.lt/ -.gt / -.ge / etc.`` for more control
 over the comparison
 
-.. code:: ipython3
+.. code:: python
 
     schedule[options.is_different(schedule["order_acceptance"], pd.Series.lt)]
 
@@ -1728,7 +1728,7 @@ over the comparison
 
 
 
-.. code:: ipython3
+.. code:: python
 
     schedule[options.is_different(schedule["order_acceptance"], pd.Series.ge)]
 
@@ -1794,7 +1794,7 @@ over the comparison
 Checking custom times
 ~~~~~~~~~~~~~~~~~~~~~
 
-.. code:: ipython3
+.. code:: python
 
     options.has_custom # order_acceptance is not considered custom because it is hardcoded into the class
 
@@ -1807,11 +1807,11 @@ Checking custom times
 
 
 
-.. code:: ipython3
+.. code:: python
 
     options.add_time("post", time(17))
 
-.. code:: ipython3
+.. code:: python
 
     options.has_custom, options.is_custom("market_open"), options.is_custom("post")
 
@@ -1827,7 +1827,7 @@ Checking custom times
 Get the regular time on a certain date
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-.. code:: ipython3
+.. code:: python
 
     nyse.open_time, nyse.close_time  # these always refer to the current time of market_open/market_close
 
@@ -1841,7 +1841,7 @@ Get the regular time on a certain date
 
 
 
-.. code:: ipython3
+.. code:: python
 
     nyse.get_time("post"), nyse.get_time("pre")  # these also refer to the current time 
 
@@ -1855,7 +1855,7 @@ Get the regular time on a certain date
 
 
 
-.. code:: ipython3
+.. code:: python
 
     # open_time_on looks for market_open, close_time_on looks for market_close and get_time_on looks for the provided market time
     nyse.open_time_on("1950-01-01"), nyse.get_time_on("market_close", "1960-01-01") 
@@ -1873,7 +1873,7 @@ Get the regular time on a certain date
 Special Methods
 ~~~~~~~~~~~~~~~
 
-.. code:: ipython3
+.. code:: python
 
     nyse["market_open"] # gets the current time
 
@@ -1886,7 +1886,7 @@ Special Methods
 
 
 
-.. code:: ipython3
+.. code:: python
 
     nyse["market_open", "all"] # gets all times
 
@@ -1899,7 +1899,7 @@ Special Methods
 
 
 
-.. code:: ipython3
+.. code:: python
 
     nyse["market_open", "1950-01-01"] # gets the time on a certain date
 
@@ -1915,7 +1915,7 @@ Special Methods
 This tries to *add* a time, which will fail if it already exists. In
 that case ``.change_time`` is the explicit alternative.
 
-.. code:: ipython3
+.. code:: python
 
     nyse["new_post"] = time(20)  
     nyse["new_post"]
@@ -1929,7 +1929,7 @@ that case ``.change_time`` is the explicit alternative.
 
 
 
-.. code:: ipython3
+.. code:: python
 
     try: nyse["post"] = time(19)
     except AssertionError as e: print(e)
@@ -1944,7 +1944,7 @@ that case ``.change_time`` is the explicit alternative.
 Array of special times
 ~~~~~~~~~~~~~~~~~~~~~~
 
-.. code:: ipython3
+.. code:: python
 
     options.special_dates("order_acceptance", "2000-12-22", "2001-12-28")
 
@@ -1962,7 +1962,7 @@ Array of special times
 Handling discontinued times
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-.. code:: ipython3
+.. code:: python
 
     xkrx = mcal.get_calendar("XKRX")
 
@@ -1973,7 +1973,7 @@ Handling discontinued times
       warnings.warn(f"{list(discontinued.keys())} are discontinued, the dictionary"
 
 
-.. code:: ipython3
+.. code:: python
 
     xkrx.schedule("2020-01-01", "2020-01-05")
 
@@ -2027,7 +2027,7 @@ Handling discontinued times
 
 
 
-.. code:: ipython3
+.. code:: python
 
     xkrx.discontinued_market_times # these are the dates as of which the market time didn't exist anymore
 
@@ -2040,7 +2040,7 @@ Handling discontinued times
 
 
 
-.. code:: ipython3
+.. code:: python
 
     print(xkrx.has_discontinued)
     xkrx.remove_time("break_start")
@@ -2054,7 +2054,7 @@ Handling discontinued times
     False
 
 
-.. code:: ipython3
+.. code:: python
 
     xkrx.schedule("2020-01-01", "2020-01-05")
 
@@ -2115,7 +2115,7 @@ This function will take a schedule DataFrame and return a DatetimeIndex
 with all timestamps at the frequency given for all of the exchange open
 dates and times.
 
-.. code:: ipython3
+.. code:: python
 
     mcal.date_range(early, frequency='1D')
 
@@ -2131,7 +2131,7 @@ dates and times.
 
 
 
-.. code:: ipython3
+.. code:: python
 
     mcal.date_range(early, frequency='1H')
 
@@ -2167,7 +2167,7 @@ dates and times.
 Merge schedules
 ---------------
 
-.. code:: ipython3
+.. code:: python
 
     # NYSE Calendar
     nyse = mcal.get_calendar('NYSE')
@@ -2263,7 +2263,7 @@ Merge schedules
 
 
 
-.. code:: ipython3
+.. code:: python
 
     # LSE Calendar
     lse = mcal.get_calendar('LSE')
@@ -2362,7 +2362,7 @@ that Dec 28th is open for NYSE but not LSE. Also note that some days
 have a close prior to the open. This function does not currently check
 for that.
 
-.. code:: ipython3
+.. code:: python
 
     mcal.merge_schedules(schedules=[schedule_nyse, schedule_lse], how='inner')
 
@@ -2456,7 +2456,7 @@ Outer merge
 This will return the dates and times where either the NYSE or the LSE
 are open
 
-.. code:: ipython3
+.. code:: python
 
     mcal.merge_schedules(schedules=[schedule_nyse, schedule_lse], how='outer')
 
@@ -2554,7 +2554,7 @@ Use holidays in numpy
 
 This will use your exchange calendar in numpy to add business days
 
-.. code:: ipython3
+.. code:: python
 
     import numpy as np
     cme = mcal.get_calendar("CME_Agriculture")
@@ -2576,7 +2576,7 @@ Some markets have breaks in the day, like the CME Equity Futures markets
 which are closed from 4:15 - 4:35 (NY) daily. These calendars will have
 additional columns in the schedule() DataFrame
 
-.. code:: ipython3
+.. code:: python
 
     cme = mcal.get_calendar('CME_Equity')
     schedule = cme.schedule('2020-01-01', '2020-01-04')
@@ -2634,7 +2634,7 @@ additional columns in the schedule() DataFrame
 
 The date_range() properly accounts for the breaks
 
-.. code:: ipython3
+.. code:: python
 
     mcal.date_range(schedule, '5H')
 

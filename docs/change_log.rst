@@ -1,34 +1,54 @@
- Change Log
+Change Log
 ==========
 
 Updates
 -------
+4.2.1 (08/21/2023)
+~~~~~~~~~~~~~~~~~~
+- Fix the pyproject.toml to properly generate sdist PR #267
+- Remove .travis.yml file as Travis-CI is no longer used
+- Merge .coveragerc into pyproject.toml
+
+4.2.0 (08/20/2023)
+~~~~~~~~~~~~~~~~~~
+- CBOE GoodFriday special close is broken, reverted back to standard GoodFriday logic PR #265
+- Fixed BSE Holiday PR #248 Issue #245
+- Updated TASE Holidays 2022-2025 PR #263
+- King Charles III's Coronation Day holiday to LSE calendar PR #255
+- Added NYSE tests for 2024 and 2025 PR #259
+- Deleted setup.cfg that was only used for flake8. Will move to Black in a future release
+- Moved all setuptools build workflows to pyproject.toml and deleted setup.py
+
+4.1.4 (02/04/2023)
+~~~~~~~~~~~~~~~~~~
+- Updated TASE Holidays 2022-2025 
+
 4.1.3 (12/26/2022)
-~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~
 - Added Chinese 2023 holidays
 
 4.1.2 (12/08/2022)
-~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~
 - Added 2023 holidays to BSE calendar
 
 4.1.1 (10/31/2022)
-~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~
 - Fix for bug in NYSEExchangeCalendar.valid_days
 
 4.1.0 (10/08/2022)
-~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~
 - Added UK and Australia holidays for Queen Elizabeth II's State Funeral
 
 4.0.3 (10/08/2022)
-~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~
 - Enabled tests that failed before PR #215
 
 4.0.2 (10/08/2022)
-~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~
 - Implemented new release management  
 
 4.0.1 (09/03/22)
-~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~
 - Fix duplicates bug in special_dates
 - Fix tz=None bug in NYSEExchangeCalendar.valid_days
 

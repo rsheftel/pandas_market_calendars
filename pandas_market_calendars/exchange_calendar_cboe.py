@@ -7,10 +7,12 @@ from itertools import chain
 import pandas as pd
 
 from .holidays_us import (Christmas, USBlackFridayInOrAfter1993, USIndependenceDay, USMartinLutherKingJrAfter1998,
-                          USMemorialDay, USNewYearsDay, HurricaneSandyClosings, USNationalDaysofMourning)
+                          USMemorialDay, USNewYearsDay, HurricaneSandyClosings, USNationalDaysofMourning,
+                          USJuneteenthAfter2022)
 from .market_calendar import MarketCalendar
 
 
+# TODO: In pandas 2.0.3 this no longer works as the dt passed in is the entire matrix and not a single date
 def good_friday_unless_christmas_nye_friday(dt):
     """
     Good Friday is a valid trading day if Christmas Day or New Years Day fall
@@ -51,7 +53,6 @@ class CFEExchangeCalendar(MarketCalendar):
         "market_close": ((None, time(15, 15)),)
     }
 
-
     @property
     def name(self):
         return "CFE"
@@ -66,7 +67,9 @@ class CFEExchangeCalendar(MarketCalendar):
             USNewYearsDay,
             USMartinLutherKingJrAfter1998,
             USPresidentsDay,
-            GoodFridayUnlessChristmasNYEFriday,
+            # GoodFridayUnlessChristmasNYEFriday, #TODO: When this is fixed can return to using it
+            GoodFriday,
+            USJuneteenthAfter2022,
             USIndependenceDay,
             USMemorialDay,
             USLaborDay,
@@ -90,6 +93,7 @@ class CFEExchangeCalendar(MarketCalendar):
             USNationalDaysofMourning,
         ))
 
+
 class CBOEEquityOptionsExchangeCalendar(CFEExchangeCalendar):
     name = "CBOE_Equity_Options"
     aliases = [name]
@@ -97,6 +101,7 @@ class CBOEEquityOptionsExchangeCalendar(CFEExchangeCalendar):
         "market_open": ((None, time(8, 30)),),
         "market_close": ((None, time(15)),)
     }
+
 
 class CBOEIndexOptionsExchangeCalendar(CFEExchangeCalendar):
     name = "CBOE_Index_Options"
