@@ -19,14 +19,10 @@ def good_friday_unless_christmas_nye_friday(dt):
     on a Friday.
     """
     year = dt.year
-    christmas_weekday = Christmas.observance(
-        pd.Timestamp(year, 12, 25)
-    ).weekday()
-    nyd_weekday = USNewYearsDay.observance(
-        pd.Timestamp(year, 1, 1)
-    ).weekday()
+    christmas_weekday = Christmas.observance(pd.Timestamp(year=year, month=12, day=25)).weekday()
+    nyd_weekday = USNewYearsDay.observance(pd.Timestamp(year=year, month=1, day=1)).weekday()
     if christmas_weekday != 4 and nyd_weekday != 4:
-        return GoodFriday._apply_rule(dt)
+        return GoodFriday.dates(pd.Timestamp(year=year, month=1, day=1), pd.Timestamp(year=year, month=12, day=31))[0]
     else:
         # compatibility for pandas 0.18.1
         return pd.NaT
