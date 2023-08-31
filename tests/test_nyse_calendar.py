@@ -347,7 +347,7 @@ def test_all_full_day_holidays_since_1928(request):
     assert_index_equal(expected, actual)
 
     # using the holidays method
-    actual = pd.DatetimeIndex(nyse.holidays().holidays).unique()
+    actual = pd.DatetimeIndex(nyse.holidays().holidays, dtype='datetime64[ns]').unique()
     slice_locs = actual.slice_locs(expected[0], expected[-1])
     actual = actual[slice_locs[0]:slice_locs[1]]
     assert_index_equal(expected, actual)

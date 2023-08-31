@@ -16,17 +16,11 @@ def good_friday_unless_christmas_nye_friday(dt):
     Good Friday is a valid trading day if Christmas Day or New Years Day fall
     on a Friday.
     """
-    year_str = str(dt.year)
-    christmas_weekday = Christmas.observance(
-        pd.Timestamp(year_str+"-12-25")
-    ).weekday()
-    nyd_weekday = USNewYearsDay.observance(
-        pd.Timestamp(year_str+"-01-01")
-    ).weekday()
+    year = dt.year
+    christmas_weekday = Christmas.observance(pd.Timestamp(year=year, month=12, day=25)).weekday()
+    nyd_weekday = USNewYearsDay.observance(pd.Timestamp(year=year, month=1, day=1)).weekday()
     if christmas_weekday != 4 and nyd_weekday != 4:
-        return GoodFriday._apply_rule(
-            pd.Timestamp(str(dt.year)+"-"+str(dt.month)+"-"+str(dt.day))
-        )
+        return GoodFriday.dates(pd.Timestamp(year=year, month=1, day=1), pd.Timestamp(year=year, month=12, day=31))[0]
     else:
         # compatibility for pandas 0.18.1
         return pd.NaT

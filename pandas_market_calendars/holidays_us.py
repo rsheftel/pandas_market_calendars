@@ -10,10 +10,6 @@ from pandas_market_calendars.market_calendar import (FRIDAY, MONDAY, THURSDAY, T
 # NYSE closed at 2:00 PM on Christmas Eve until 1993.
 
 
-def july_5th_holiday_observance(datetime_index):
-    return datetime_index[datetime_index.year < 2013]
-
-
 def following_tuesday_every_four_years_observance(dt):
     return dt + DateOffset(years=(4 - (dt.year % 4)) % 4, weekday=TU(1))
 
@@ -201,8 +197,8 @@ FridayAfterIndependenceDayPre2013 = Holiday(
     month=7,
     day=5,
     days_of_week=(FRIDAY,),
-    observance=july_5th_holiday_observance,
     start_date=Timestamp("1995-01-01"),
+    end_date=Timestamp("2012-12-31"),
 )
 WednesdayBeforeIndependenceDayPost2013 = Holiday(
     # When July 4th is a Thursday, the next day is a half day prior to 2013.
