@@ -106,7 +106,7 @@ for exchange in calendars:
     cal = type(exchange, (TradingCalendar,), {'_ec_class': calendars[exchange],
                                               'alias': [exchange],
                                               'regular_market_times': regular_market_times})
-    locals()[exchange + 'ExchangeCalendar'] = cal
+    locals()[f'{exchange}ExchangeCalendar'] = cal
 
 
 

@@ -295,7 +295,7 @@ def test_add_change_remove_time_w_open_close_map():
     assert not "newtime" in cal.open_close_map and "newtime" in cal.regular_market_times
 
     cal.remove_time("newtime")
-    assert not "newtime" in cal.regular_market_times
+    assert "newtime" not in cal.regular_market_times
 
     cal.add_time("newtime", time(10), opens= None)
     assert not "newtime" in cal.open_close_map and "newtime" in cal.regular_market_times

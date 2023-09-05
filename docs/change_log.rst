@@ -3,6 +3,13 @@ Change Log
 
 Updates
 -------
+4.3.0 (09/05/2023)
+~~~~~~~~~~~~~~~~~~
+- Fixed for pandas 2.0 so all tests pass PR #282
+- Move exchange_calendar*.py files to pandas_market_calendar/exchange_calendars/ PR #284
+- Move holidays_*.py to pandas_market_calendar/holidays/ PR #284
+- Major cleanup including unused imports PR #284
+
 4.2.1 (08/21/2023)
 ~~~~~~~~~~~~~~~~~~
 - Fix the pyproject.toml to properly generate sdist PR #267

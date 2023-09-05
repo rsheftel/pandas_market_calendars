@@ -9,6 +9,9 @@ Market calendars to use with pandas for trading applications.
    :target: http://pandas-market-calendars.readthedocs.io/en/latest/?badge=latest
    :alt: Documentation Status
 
+.. image:: https://coveralls.io/repos/github/rsheftel/pandas_market_calendars/badge.svg?branch=master
+    :target: https://coveralls.io/github/rsheftel/pandas_market_calendars?branch=master
+
 Documentation
 -------------
 http://pandas-market-calendars.readthedocs.io/en/latest/
