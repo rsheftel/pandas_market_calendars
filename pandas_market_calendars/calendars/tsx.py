@@ -5,8 +5,8 @@ from pandas.tseries.holiday import AbstractHolidayCalendar, DateOffset, GoodFrid
 from pytz import timezone
 from itertools import chain
 
-from .holidays_uk import BoxingDay, WeekendBoxingDay, WeekendChristmas
-from .market_calendar import MarketCalendar, MONDAY, TUESDAY, WEDNESDAY, THURSDAY, FRIDAY
+from pandas_market_calendars.holidays.uk import BoxingDay, WeekendBoxingDay, WeekendChristmas
+from pandas_market_calendars.market_calendar import MarketCalendar, MONDAY, TUESDAY, WEDNESDAY, THURSDAY, FRIDAY
 
 # New Year's Day
 TSXNewYearsDay = Holiday(

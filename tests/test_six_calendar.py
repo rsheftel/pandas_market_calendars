@@ -1,7 +1,7 @@
 import pandas as pd
 import pytz
 
-from pandas_market_calendars.exchange_calendar_six import SIXExchangeCalendar
+from pandas_market_calendars.calendars.six import SIXExchangeCalendar
 
 
 def test_time_zone():

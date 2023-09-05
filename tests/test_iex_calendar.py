@@ -2,7 +2,7 @@ import pandas as pd
 import numpy as np 
 from datetime import time 
 from pytz import timezone 
-from pandas_market_calendars.exchange_calendar_iex import IEXExchangeCalendar
+from pandas_market_calendars.calendars.iex import IEXExchangeCalendar
 from pandas_market_calendars.class_registry import ProtectedDict
 
 iex = IEXExchangeCalendar()

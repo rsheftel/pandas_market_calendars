@@ -20,7 +20,7 @@ import pandas as pd
 from pandas.tseries.holiday import AbstractHolidayCalendar
 from pytz import timezone
 
-from pandas_market_calendars.holidays_nyse import (    
+from pandas_market_calendars.holidays.nyse import (
     # Always Celebrated Holidays
     USNewYearsDayNYSEpost1952, USNewYearsDayNYSEpre1952, SatBeforeNewYearsAdhoc,
     
@@ -244,7 +244,7 @@ from pandas_market_calendars.holidays_nyse import (
     # 2018
     GeorgeHWBushDeath2018
 )
-from .market_calendar import MarketCalendar
+from pandas_market_calendars.market_calendar import MarketCalendar
 
 # Useful resources for making changes to this file:
 # http://www.nyse.com/pdfs/closings.pdf

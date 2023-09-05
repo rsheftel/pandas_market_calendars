@@ -1,31 +1,32 @@
 from .market_calendar import MarketCalendar
-from .exchange_calendar_asx import ASXExchangeCalendar
-from .exchange_calendar_bmf import BMFExchangeCalendar
-from .exchange_calendar_cboe import CFEExchangeCalendar
-from .exchange_calendar_cme import \
+from .calendars.asx import ASXExchangeCalendar
+from .calendars.bmf import BMFExchangeCalendar
+from .calendars.bse import BSEExchangeCalendar
+from .calendars.cboe import CFEExchangeCalendar
+from .calendars.cme import \
     CMEEquityExchangeCalendar, \
     CMEBondExchangeCalendar
-from .exchange_calendar_cme_globex_base import CMEGlobexBaseExchangeCalendar
-from .exchange_calendar_cme_globex_agriculture import CMEGlobexAgricultureExchangeCalendar
-from .exchange_calendar_cme_globex_fx import CMEGlobexFXExchangeCalendar
-from .exchange_calendar_cme_globex_energy_and_metals import CMEGlobexEnergyAndMetalsExchangeCalendar
-from .exchange_calendar_cme_globex_equities import CMEGlobexEquitiesExchangeCalendar
-from .exchange_calendar_cme_globex_fixed_income import CMEGlobexFixedIncomeCalendar
-from .exchange_calendar_eurex import EUREXExchangeCalendar
-from .exchange_calendar_hkex import HKEXExchangeCalendar
-from .exchange_calendar_ice import ICEExchangeCalendar
-from .exchange_calendar_iex import IEXExchangeCalendar
-from .exchange_calendar_jpx import JPXExchangeCalendar
-from .exchange_calendar_lse import LSEExchangeCalendar
-from .exchange_calendar_nyse import NYSEExchangeCalendar
-from .exchange_calendar_ose import OSEExchangeCalendar
-from .exchange_calendar_sifma import SIFMAUSExchangeCalendar, SIFMAUKExchangeCalendar, SIFMAJPExchangeCalendar
-from .exchange_calendar_six import SIXExchangeCalendar
-from .exchange_calendar_sse import SSEExchangeCalendar
-from .exchange_calendar_tsx import TSXExchangeCalendar
-from .exchange_calendar_bse import BSEExchangeCalendar
-from .exchange_calendar_tase import TASEExchangeCalendar
-from .exchange_calendars_mirror import *
+from .calendars.cme_globex_base import CMEGlobexBaseExchangeCalendar
+from .calendars.cme_globex_agriculture import CMEGlobexAgricultureExchangeCalendar
+from .calendars.cme_globex_crypto import CMEGlobexCryptoExchangeCalendar
+from .calendars.cme_globex_energy_and_metals import CMEGlobexEnergyAndMetalsExchangeCalendar
+from .calendars.cme_globex_equities import CMEGlobexEquitiesExchangeCalendar
+from .calendars.cme_globex_fx import CMEGlobexFXExchangeCalendar
+from .calendars.cme_globex_fixed_income import CMEGlobexFixedIncomeCalendar
+from .calendars.eurex import EUREXExchangeCalendar
+from .calendars.hkex import HKEXExchangeCalendar
+from .calendars.ice import ICEExchangeCalendar
+from .calendars.iex import IEXExchangeCalendar
+from .calendars.jpx import JPXExchangeCalendar
+from .calendars.lse import LSEExchangeCalendar
+from .calendars.nyse import NYSEExchangeCalendar
+from .calendars.ose import OSEExchangeCalendar
+from .calendars.sifma import SIFMAUSExchangeCalendar, SIFMAUKExchangeCalendar, SIFMAJPExchangeCalendar
+from .calendars.six import SIXExchangeCalendar
+from .calendars.sse import SSEExchangeCalendar
+from .calendars.tase import TASEExchangeCalendar
+from .calendars.tsx import TSXExchangeCalendar
+from .calendars.mirror import *
 
 
 def get_calendar(name, open_time=None, close_time=None) -> MarketCalendar:

@@ -3,7 +3,7 @@ from itertools import chain
 import pytz
 import pandas as pd
 
-from pandas_market_calendars.exchange_calendar_asx import ASXExchangeCalendar
+from pandas_market_calendars.calendars.asx import ASXExchangeCalendar
 
 
 def test_time_zone():

@@ -4,7 +4,7 @@ from pandas.tseries.holiday import AbstractHolidayCalendar, EasterMonday, GoodFr
 from pandas.tseries.offsets import Day, Easter
 from pytz import timezone
 
-from .market_calendar import MarketCalendar
+from pandas_market_calendars.market_calendar import MarketCalendar
 
 OSENewYearsDay = Holiday(
     "New Year's Day",

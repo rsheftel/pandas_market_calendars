@@ -11,7 +11,7 @@ from pandas_market_calendars.market_calendar import ( MONDAY, TUESDAY, WEDNESDAY
 # main reference:     
 #    https://github.com/rsheftel/pandas_market_calendars/files/6827110/Stocks.NYSE-Closings.pdf 
 #
-# See exchange_calendar_nyse.py for details
+# See nyse.py for details
 #################################################################################################
 
 def previous_saturday(dt):

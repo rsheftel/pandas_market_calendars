@@ -13,14 +13,10 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-from abc import ABC, abstractmethod
-from .exchange_calendar_cme_globex_base import CMEGlobexBaseExchangeCalendar
+from .cme_globex_base import CMEGlobexBaseExchangeCalendar
 
 from datetime import time
-from itertools import chain
 
-import pandas as pd
-from pandas import Timestamp
 from pandas.tseries.holiday import AbstractHolidayCalendar #, GoodFriday, USLaborDay, USPresidentsDay, USThanksgivingDay
 from pytz import timezone
 
@@ -28,19 +24,15 @@ from pytz import timezone
 #                          USIndependenceDay, USMartinLutherKingJrAfter1998, USMemorialDay, USJuneteenthAfter2022,
 #                          USNationalDaysofMourning, USNewYearsDay)
 
-from .holidays_cme_globex import (  USNewYearsDay,
-                                    USMartinLutherKingJrFrom2022, USMartinLutherKingJrPre2022, USNewYearsDay,
-                                    USPresidentsDayFrom2022, USPresidentsDayPre2022, 
-                                    GoodFriday, 
-                                    USMemorialDayFrom2022, USMemorialDayPre2022, 
-                                    USJuneteenthFrom2022, 
-                                    USIndependenceDayFrom2022, USIndependenceDayPre2022, 
-                                    USLaborDay,
-                                    USThanksgivingDayFrom2022, USThanksgivingDayPre2022, FridayAfterThanksgiving,
-                                    ChristmasCME)                          
-from .market_calendar import MarketCalendar
-
-
+from pandas_market_calendars.holidays.cme_globex import (USMartinLutherKingJrFrom2022, USMartinLutherKingJrPre2022, USNewYearsDay,
+                                                         USPresidentsDayFrom2022, USPresidentsDayPre2022,
+                                                         GoodFriday,
+                                                         USMemorialDayFrom2022, USMemorialDayPre2022,
+                                                         USJuneteenthFrom2022,
+                                                         USIndependenceDayFrom2022, USIndependenceDayPre2022,
+                                                         USLaborDay,
+                                                         USThanksgivingDayFrom2022, USThanksgivingDayPre2022, FridayAfterThanksgiving,
+                                                         ChristmasCME)
 
 
 class CMEGlobexEnergyAndMetalsExchangeCalendar(CMEGlobexBaseExchangeCalendar):

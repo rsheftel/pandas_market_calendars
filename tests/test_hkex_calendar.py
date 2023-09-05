@@ -3,7 +3,7 @@ import datetime
 import pandas as pd
 import pytz
 
-from pandas_market_calendars.exchange_calendar_hkex import HKEXExchangeCalendar
+from pandas_market_calendars.calendars.hkex import HKEXExchangeCalendar
 
 
 def test_time_zone():

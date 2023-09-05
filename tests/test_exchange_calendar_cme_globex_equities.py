@@ -1,10 +1,9 @@
 import datetime as dt
 import pandas as pd
 import pytest
-import pytz
 from pandas.tseries.offsets import Day, Hour, Minute
 
-from pandas_market_calendars.exchange_calendar_cme_globex_equities import CMEGlobexEquitiesExchangeCalendar
+from pandas_market_calendars.calendars.cme_globex_equities import CMEGlobexEquitiesExchangeCalendar
 
 TZ = 'America/Chicago'
 

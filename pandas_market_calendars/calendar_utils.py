@@ -14,7 +14,7 @@ def merge_schedules(schedules, how='outer'):
 
     CAVEATS:
         * This does not work for schedules with breaks, the break information will be lost.
-        * Onlu "market_open" and "market_close" are considered, other market times are not yet supported.
+        * Only "market_open" and "market_close" are considered, other market times are not yet supported.
 
     :param schedules: list of schedules
     :param how: outer or inner

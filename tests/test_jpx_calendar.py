@@ -5,7 +5,7 @@ import pandas as pd
 import pytz
 from pandas.testing import assert_index_equal
 
-from pandas_market_calendars.exchange_calendar_jpx import JPXExchangeCalendar
+from pandas_market_calendars.calendars.jpx import JPXExchangeCalendar
 
 
 def test_time_zone():
