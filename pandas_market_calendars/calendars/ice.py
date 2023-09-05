@@ -5,9 +5,9 @@ from pandas import Timestamp
 from pandas.tseries.holiday import AbstractHolidayCalendar, GoodFriday, USLaborDay, USPresidentsDay, USThanksgivingDay
 from pytz import timezone
 
-from .holidays_us import (Christmas, USIndependenceDay, USMartinLutherKingJrAfter1998, USMemorialDay,
-                          USNationalDaysofMourning, USNewYearsDay)
-from .market_calendar import MarketCalendar
+from pandas_market_calendars.holidays.us import (Christmas, USIndependenceDay, USMartinLutherKingJrAfter1998, USMemorialDay,
+                                                 USNationalDaysofMourning, USNewYearsDay)
+from pandas_market_calendars.market_calendar import MarketCalendar
 
 
 class ICEExchangeCalendar(MarketCalendar):

@@ -11,7 +11,7 @@ import pandas as pd
 import pytest
 import pytz
 
-from pandas_market_calendars.exchange_calendar_ose import OSEExchangeCalendar
+from pandas_market_calendars.calendars.ose import OSEExchangeCalendar
 
 TIMEZONE = pytz.timezone("Europe/Oslo")
 

@@ -5,7 +5,7 @@ import pytest
 from pandas.testing import assert_frame_equal, assert_index_equal
 
 import pandas_market_calendars as mcal
-from pandas_market_calendars.exchange_calendar_nyse import NYSEExchangeCalendar
+from pandas_market_calendars.calendars.nyse import NYSEExchangeCalendar
 from tests.test_market_calendar import FakeCalendar, FakeBreakCalendar
 
 

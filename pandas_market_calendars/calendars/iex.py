@@ -1,10 +1,10 @@
 from datetime import time
 from itertools import chain
-from .exchange_calendar_nyse import NYSEExchangeCalendar 
+from .nyse import NYSEExchangeCalendar
 from pandas.tseries.holiday import AbstractHolidayCalendar
 from pytz import timezone 
 
-from pandas_market_calendars.holidays_nyse import (
+from pandas_market_calendars.holidays.nyse import (
     USPresidentsDay,
     GoodFriday,
     USMemorialDay,

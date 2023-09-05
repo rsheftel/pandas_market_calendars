@@ -1,7 +1,6 @@
 import pandas as pd
 
-from pandas_market_calendars.exchange_calendar_cboe import (CFEExchangeCalendar,
-                                                           CBOEEquityOptionsExchangeCalendar)
+from pandas_market_calendars.calendars.cboe import (CFEExchangeCalendar, CBOEEquityOptionsExchangeCalendar)
 
 calendars = (CFEExchangeCalendar, CBOEEquityOptionsExchangeCalendar)
 

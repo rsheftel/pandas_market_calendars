@@ -7,7 +7,7 @@ from datetime import time
 from pandas.tseries.holiday import AbstractHolidayCalendar, EasterMonday, GoodFriday, Holiday, previous_friday
 from pytz import timezone
 
-from .market_calendar import (FRIDAY, MONDAY, MarketCalendar, THURSDAY, TUESDAY, WEDNESDAY)
+from pandas_market_calendars.market_calendar import (FRIDAY, MONDAY, MarketCalendar, THURSDAY, TUESDAY, WEDNESDAY)
 
 # New Year's Eve
 EUREXNewYearsEve = Holiday(

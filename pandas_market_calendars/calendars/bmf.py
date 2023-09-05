@@ -19,7 +19,7 @@ from pandas import Timestamp
 from pandas.tseries.holiday import AbstractHolidayCalendar, Day, Easter, GoodFriday, Holiday
 from pytz import timezone
 
-from .market_calendar import (FRIDAY, MarketCalendar)
+from pandas_market_calendars.market_calendar import (FRIDAY, MarketCalendar)
 
 # Universal Confraternization (new years day)
 ConfUniversal = Holiday(

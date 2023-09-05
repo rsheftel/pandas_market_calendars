@@ -4,9 +4,9 @@ import pandas as pd
 from pandas.testing import assert_index_equal
 
 
-from pandas_market_calendars.exchange_calendar_sifma import (SIFMAUSExchangeCalendar,
-                                                             SIFMAUKExchangeCalendar,
-                                                             SIFMAJPExchangeCalendar)
+from pandas_market_calendars.calendars.sifma import (SIFMAUSExchangeCalendar,
+                                                     SIFMAUKExchangeCalendar,
+                                                     SIFMAJPExchangeCalendar)
 
 
 #########################################################################

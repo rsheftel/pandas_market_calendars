@@ -3,7 +3,7 @@ import pytest
 import pandas as pd
 import pytz
 
-from pandas_market_calendars.exchange_calendar_bmf import BMFExchangeCalendar
+from pandas_market_calendars.calendars.bmf import BMFExchangeCalendar
 
 def test_time_zone():
     assert BMFExchangeCalendar().tz == pytz.timezone("America/Sao_Paulo")

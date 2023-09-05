@@ -1,7 +1,7 @@
 import pandas as pd
 import pytz
 
-from pandas_market_calendars.exchange_calendar_cme import CMEEquityExchangeCalendar
+from pandas_market_calendars.calendars.cme import CMEEquityExchangeCalendar
 
 
 def test_time_zone():

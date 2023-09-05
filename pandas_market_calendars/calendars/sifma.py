@@ -3,8 +3,6 @@ from datetime import time
 from pandas.tseries.holiday import AbstractHolidayCalendar
 from pytz import timezone
 from itertools import chain
-import pandas as pd
-
 
 ########################################################################################################################
 # SIFMA Financial Markets Calendar for US, UK, JP
@@ -22,9 +20,8 @@ import pandas as pd
 ########################################################################################################################
 
 
-from pandas_market_calendars.holidays_sifma import(
+from pandas_market_calendars.holidays.sifma import(
     # US Holidays
-    UKWeekendBoxingDay,
     USNewYearsDay,  # Not observed if a Saturday
     USNewYearsEve2pmEarlyClose,
 
@@ -71,7 +68,7 @@ from pandas_market_calendars.holidays_sifma import(
     UKPlatinumJubilee2022,
 )
 
-from .market_calendar import MarketCalendar
+from pandas_market_calendars.market_calendar import MarketCalendar
 
 #AbstractHolidayCalendar.start_date = '1998-01-01'   
 
@@ -214,11 +211,11 @@ class SIFMAUKExchangeCalendar(MarketCalendar):
 ############################################################
 # Japan
 ############################################################
-from .holidays_jp import (JapanComingOfAgeDay, JapanNationalFoundationDay,JapanEmperorsBirthday, JapanVernalEquinox,JapanShowaDay,
-                          JapanConstitutionMemorialDay, JapanGreeneryDay, JapanChildrensDay, JapanMarineDay, JapanMountainDay,
-                          JapanRespectForTheAgedDay, JapanAutumnalEquinox, 
-                          JapanHealthAndSportsDay2000To2019, JapanSportsDay2020, JapanSportsDay,
-                          JapanCultureDay, JapanLaborThanksgivingDay)
+from pandas_market_calendars.holidays.jp import (JapanComingOfAgeDay, JapanNationalFoundationDay, JapanEmperorsBirthday, JapanVernalEquinox, JapanShowaDay,
+                                                 JapanConstitutionMemorialDay, JapanGreeneryDay, JapanChildrensDay, JapanMarineDay, JapanMountainDay,
+                                                 JapanRespectForTheAgedDay, JapanAutumnalEquinox,
+                                                 JapanHealthAndSportsDay2000To2019, JapanSportsDay2020, JapanSportsDay,
+                                                 JapanCultureDay, JapanLaborThanksgivingDay)
 
 class SIFMAJPExchangeCalendar(MarketCalendar):
     """
