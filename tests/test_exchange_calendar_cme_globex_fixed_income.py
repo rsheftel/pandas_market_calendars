@@ -3,7 +3,7 @@ import pytest
 import pytz
 from pandas.tseries.offsets import Day, Hour, Minute
 
-from pandas_market_calendars.exchange_calendar_cme_globex_fixed_income import CMEGlobexFixedIncomeCalendar
+from pandas_market_calendars.calendars.cme_globex_fixed_income import CMEGlobexFixedIncomeCalendar
 
 TZ = 'America/Chicago'
 

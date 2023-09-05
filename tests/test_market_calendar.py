@@ -25,12 +25,12 @@ from pandas.testing import assert_frame_equal, assert_index_equal, assert_series
 from pandas.tseries.holiday import AbstractHolidayCalendar
 
 from pandas_market_calendars import get_calendar, get_calendar_names
-from pandas_market_calendars.holidays_us import (Christmas, HurricaneSandyClosings, MonTuesThursBeforeIndependenceDay,
+from pandas_market_calendars.holidays.us import (Christmas, HurricaneSandyClosings, MonTuesThursBeforeIndependenceDay,
                                                  USNationalDaysofMourning, USNewYearsDay)
-from pandas_market_calendars.holidays_nyse import Sept11Anniversary12pmLateOpen2002
+from pandas_market_calendars.holidays.nyse import Sept11Anniversary12pmLateOpen2002
 from pandas_market_calendars.market_calendar import MarketCalendar #, clean_dates, days_at_time
-from pandas_market_calendars.exchange_calendars_mirror import TradingCalendar
-from pandas_market_calendars.exchange_calendar_nyse import NYSEExchangeCalendar
+from pandas_market_calendars.calendars.mirror import TradingCalendar
+from pandas_market_calendars.calendars.nyse import NYSEExchangeCalendar
 
 import exchange_calendars as ecal
 
@@ -295,7 +295,7 @@ def test_add_change_remove_time_w_open_close_map():
     assert not "newtime" in cal.open_close_map and "newtime" in cal.regular_market_times
 
     cal.remove_time("newtime")
-    assert not "newtime" in cal.regular_market_times
+    assert "newtime" not in cal.regular_market_times
 
     cal.add_time("newtime", time(10), opens= None)
     assert not "newtime" in cal.open_close_map and "newtime" in cal.regular_market_times
@@ -544,10 +544,13 @@ def test_schedule():
     assert_series_equal(results.iloc[-1], expected)
 
     # one day schedule
-    expected = pd.DataFrame({'market_open': pd.Timestamp('2016-12-01 03:13:00+0000', tz='UTC'),
-                             'market_close': pd.Timestamp('2016-12-01 03:49:00+0000', tz='UTC')},
-                            index=pd.DatetimeIndex([pd.Timestamp('2016-12-01')], freq='C'),
-                            columns=['market_open', 'market_close'])
+    expected = pd.DataFrame(
+        {'market_open': pd.Timestamp('2016-12-01 03:13:00+0000', tz='UTC'),
+         'market_close': pd.Timestamp('2016-12-01 03:49:00+0000', tz='UTC')},
+        index=pd.DatetimeIndex([pd.Timestamp('2016-12-01')], freq='C'),
+        columns=['market_open', 'market_close'],
+        dtype="datetime64[ns, UTC]"
+    )
     actual = cal.schedule('2016-12-01', '2016-12-01')
     if pd.__version__ < '1.1.0':
         assert_frame_equal(actual, expected)
@@ -557,12 +560,15 @@ def test_schedule():
     # start date after end date
     with pytest.raises(ValueError):
         cal.schedule('2016-02-02', '2016-01-01')
-    
+
     # using a different time zone
-    expected = pd.DataFrame({'market_open': pd.Timestamp('2016-11-30 22:13:00-05:00', tz='US/Eastern'),
-                             'market_close': pd.Timestamp('2016-11-30 22:49:00-05:00', tz='US/Eastern')},
-                            index=pd.DatetimeIndex([pd.Timestamp('2016-12-01')]),
-                            columns=['market_open', 'market_close'])
+    expected = pd.DataFrame(
+        {'market_open': pd.Timestamp('2016-11-30 22:13:00-05:00', tz='US/Eastern'),
+         'market_close': pd.Timestamp('2016-11-30 22:49:00-05:00', tz='US/Eastern')},
+        index=pd.DatetimeIndex([pd.Timestamp('2016-12-01')]),
+        columns=['market_open', 'market_close'],
+        dtype="datetime64[ns, US/Eastern]"
+    )
 
     actual = cal.schedule('2016-12-01', '2016-12-01', tz='US/Eastern')
     if pd.__version__ < '1.1.0':
@@ -704,12 +710,15 @@ def test_schedule_w_breaks():
     assert_series_equal(results.iloc[-1], expected)
 
     # using a different time zone
-    expected = pd.DataFrame({'market_open': pd.Timestamp('2016-12-28 09:30:00-05:00', tz='America/New_York'),
-                             'market_close': pd.Timestamp('2016-12-28 12:00:00-05:00', tz='America/New_York'),
-                             'break_start': pd.Timestamp('2016-12-28 10:00:00-05:00', tz='America/New_York'),
-                             'break_end': pd.Timestamp('2016-12-28 11:00:00-05:00', tz='America/New_York')},
-                            index=pd.DatetimeIndex([pd.Timestamp('2016-12-28')]),
-                            columns=['market_open', 'break_start', 'break_end', 'market_close'])
+    expected = pd.DataFrame(
+        {'market_open': pd.Timestamp('2016-12-28 09:30:00-05:00', tz='America/New_York'),
+         'market_close': pd.Timestamp('2016-12-28 12:00:00-05:00', tz='America/New_York'),
+         'break_start': pd.Timestamp('2016-12-28 10:00:00-05:00', tz='America/New_York'),
+         'break_end': pd.Timestamp('2016-12-28 11:00:00-05:00', tz='America/New_York')},
+        index=pd.DatetimeIndex([pd.Timestamp('2016-12-28')]),
+        columns=['market_open', 'break_start', 'break_end', 'market_close'],
+        dtype="datetime64[ns, America/New_York]"
+    )
 
     actual = cal.schedule('2016-12-28', '2016-12-28', tz='America/New_York')
     if pd.__version__ < '1.1.0':

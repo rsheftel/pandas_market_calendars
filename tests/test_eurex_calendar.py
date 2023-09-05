@@ -1,7 +1,7 @@
 import pandas as pd
 import pytz
 
-from pandas_market_calendars.exchange_calendar_eurex import EUREXExchangeCalendar
+from pandas_market_calendars.calendars.eurex import EUREXExchangeCalendar
 
 
 def test_time_zone():

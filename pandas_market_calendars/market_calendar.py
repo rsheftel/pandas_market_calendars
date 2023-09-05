@@ -421,16 +421,40 @@ class MarketCalendar(metaclass=MarketCalendarMeta):
         """
         return []
 
-    def _convert(self, col):
+    def _convert(self, col: pd.Series):
+        """
+        col is a series indexed by dates at which interruptions occurred. The values are either the start or end times
+        of an interruption, represented by either a timedelta or a tuple with a timedelta and day offset of the form
+        (timedelta, offset). _convert produces a new series where the values are replaced by datetimes equal to the
+        index of the original series plus the offset if present, at the timedelta.
+
+        E.g.:
+        >>> self._convert(
+                pd.Series(
+                    [datetime.time(11, 2), (datetime.time(11, 1), 1), datetime.time(10, 0), None],
+                    index=pd.DatetimeIndex(['2002-02-03', '2010-01-11', '2010-01-13', '2011-01-10'])
+                )
+            )
+        2002-02-03   2002-02-03 11:02:00+00:00
+        2010-01-11   2010-01-12 11:01:00+00:00
+        2010-01-13   2010-01-13 10:00:00+00:00
+        2011-01-10                         NaT
+        dtype: datetime64[ns, UTC]
+        """
+        col = col.dropna()  # Python 3.8, pandas 2.0.3 cannot create time deltas from NaT
         try: times = col.str[0]
         except AttributeError: # no tuples, only offset 0
-            return (pd.to_timedelta(col.astype("string"), errors="coerce") + col.index
+            return (pd.to_timedelta(col.astype("string").fillna(""), errors="coerce") + col.index
                     ).dt.tz_localize(self.tz).dt.tz_convert("UTC")
 
-        return (pd.to_timedelta(times.fillna(col).astype("string"), errors="coerce"
+        return (pd.to_timedelta(times.fillna(col).astype("string").fillna(""), errors="coerce"
                                ) + pd.to_timedelta(col.str[1].fillna(0), unit="D"
                                                    ) + col.index
                 ).dt.tz_localize(self.tz).dt.tz_convert("UTC")
+
+    @staticmethod
+    def _col_name(n: int):
+        return f"interruption_start_{n // 2 + 1}" if n % 2 == 1 else f"interruption_end_{n // 2}"
 
     @property
     def interruptions_df(self):
@@ -441,12 +465,7 @@ class MarketCalendar(metaclass=MarketCalendarMeta):
         intr = pd.DataFrame(self.interruptions)
         intr.index = pd.to_datetime(intr.pop(0))
 
-        columns = []
-        for i in range(1, intr.shape[1] // 2 + 1):
-            i = str(i)
-            columns.append("interruption_start_" + i)
-            columns.append("interruption_end_" + i)
-        intr.columns = columns
+        intr.columns = map(self._col_name, intr.columns)
         intr.index.name = None
 
         return intr.apply(self._convert).sort_index()

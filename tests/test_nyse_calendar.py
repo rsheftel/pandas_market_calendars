@@ -5,7 +5,7 @@ import pytest
 import pytz
 from pandas.testing import assert_index_equal, assert_series_equal
 
-from pandas_market_calendars.exchange_calendar_nyse import NYSEExchangeCalendar
+from pandas_market_calendars.calendars.nyse import NYSEExchangeCalendar
 
 
 def test_custom_open_close():
@@ -347,7 +347,7 @@ def test_all_full_day_holidays_since_1928(request):
     assert_index_equal(expected, actual)
 
     # using the holidays method
-    actual = pd.DatetimeIndex(nyse.holidays().holidays).unique().astype('datetime64[ns]')
+    actual = pd.DatetimeIndex(nyse.holidays().holidays, dtype='datetime64[ns]').unique()
     slice_locs = actual.slice_locs(expected[0], expected[-1])
     actual = actual[slice_locs[0]:slice_locs[1]]
     assert_index_equal(expected, actual)

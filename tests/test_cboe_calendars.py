@@ -1,7 +1,6 @@
 import pandas as pd
 
-from pandas_market_calendars.exchange_calendar_cboe import (CFEExchangeCalendar,
-                                                           CBOEEquityOptionsExchangeCalendar)
+from pandas_market_calendars.calendars.cboe import (CFEExchangeCalendar, CBOEEquityOptionsExchangeCalendar)
 
 calendars = (CFEExchangeCalendar, CBOEEquityOptionsExchangeCalendar)
 
@@ -43,7 +42,6 @@ def test_2016_holidays():
 def test_good_friday_rule():
     # Good friday is a holiday unless Christmas Day or New Years Day is on a Friday
     for calendar in calendars:
-
         cal = calendar()
         valid_days = cal.valid_days('2015-04-01', '2016-04-01')
         for day in ["2015-04-03", "2016-03-25"]:
