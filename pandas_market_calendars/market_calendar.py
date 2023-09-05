@@ -422,6 +422,7 @@ class MarketCalendar(metaclass=MarketCalendarMeta):
         return []
 
     def _convert(self, col):
+        col = col.dropna()  # Python 3.8, pandas 2.0.3 cannot create time deltas from NaT
         try: times = col.str[0]
         except AttributeError: # no tuples, only offset 0
             return (pd.to_timedelta(col.astype("string"), errors="coerce") + col.index
