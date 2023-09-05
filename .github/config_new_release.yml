@@ -1,8 +1,11 @@
 
-new_version: '4.1.4'
+new_version: '4.3.0'
 
 change_log: |
-  - Updated TASE Holidays 2022-2025 
+  - Fixed for pandas 2.0 so all tests pass PR #282
+  - Move exchange_calendar*.py files to pandas_market_calendar/exchange_calendars/ PR #284
+  - Move holidays_*.py to pandas_market_calendar/holidays/ PR #284
+  - Major cleanup including unused imports PR #284
 
 
 release_body: |
