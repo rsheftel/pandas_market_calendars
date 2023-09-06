@@ -365,8 +365,8 @@ BSEClosedDay = [
     Timestamp("2023-04-22", tz="UTC"),  # Sat, EID AL FITR
     Timestamp("2023-05-01", tz="UTC"),  # Mon, Maharashtra Din
     Timestamp("2023-06-28", tz="UTC"),  # Wed, Bakri Id / Eid ul-Adha
+    Timestamp("2023-06-29", tz="UTC"),  # GitHub Issue #277
     Timestamp("2023-08-15", tz="UTC"),  # Tue, Independence Day
-    Timestamp("2023-08-29", tz="UTC"),  # Tue, Muharram
     Timestamp("2023-09-19", tz="UTC"),  # Tue, Ganesh Chaturthi
     Timestamp("2023-10-02", tz="UTC"),  # Mon, Gandhi Jayanti
     Timestamp("2023-10-24", tz="UTC"),  # Tue, Dussehra
@@ -388,7 +388,7 @@ class BSEExchangeCalendar(MarketCalendar):
     early closes or late opens.
     """
 
-    aliases = ["BSE", "NSE"]
+    aliases = ["BSE", "NSE", "XNSE"]
     regular_market_times = {
         "market_open": ((None, time(9, 15)),),
         "market_close": ((None, time(15, 30)),),
