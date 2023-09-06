@@ -23,6 +23,18 @@ If you would like to see a new feature in `pandas_market_calendars`, it is proba
 
 ### Pull requests
 
+Please format all code using black.  
+
+If you create an editable install with the dev extras you can get a pre-commit hook set-up.
+
+```
+python -m venv .venv
+. .venv/bin/activate
+python -m pip install --upgrade pip
+pip install -e .[dev]
+pre-commit install
+```
+
 If you would like to fix something in `pandas_market_calendars` -  improvements to documentation, bug fixes, feature implementations, etc - pull requests are welcome!
 
 All pull requests should be opened against the `dev` branch and should include a clear and concise summary of the changes you made. 
