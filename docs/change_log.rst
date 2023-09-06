@@ -3,6 +3,10 @@ Change Log
 
 Updates
 -------
+4.3.1 (09/06/2023)
+~~~~~~~~~~~~~~~~~~
+- Fixed broken build PR #292
+
 4.3.0 (09/05/2023)
 ~~~~~~~~~~~~~~~~~~
 - Fixed for pandas 2.0 so all tests pass PR #282
