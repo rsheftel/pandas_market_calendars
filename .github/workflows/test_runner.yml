@@ -25,9 +25,12 @@ jobs:
       - name: install dependencies
         run: | 
           python -m pip install --upgrade pip
-          pip install pytest coveralls
+          pip install pytest coveralls black===23.7.0
           pip install .
-          
+
+      - name: ensure black format
+        run: python -m black --check pandas_market_calendars tests
+
       - name: run tests
         run: |          
           coverage run --source=pandas_market_calendars -m pytest tests
