@@ -1,10 +1,24 @@
 from datetime import time
 
-from pandas.tseries.holiday import (AbstractHolidayCalendar, Day, Easter, EasterMonday, GoodFriday, Holiday,
-                                    previous_friday)
+from pandas.tseries.holiday import (
+    AbstractHolidayCalendar,
+    Day,
+    Easter,
+    EasterMonday,
+    GoodFriday,
+    Holiday,
+    previous_friday,
+)
 from pytz import timezone
 
-from pandas_market_calendars.market_calendar import (FRIDAY, MONDAY, MarketCalendar, THURSDAY, TUESDAY, WEDNESDAY)
+from pandas_market_calendars.market_calendar import (
+    FRIDAY,
+    MONDAY,
+    MarketCalendar,
+    THURSDAY,
+    TUESDAY,
+    WEDNESDAY,
+)
 
 # New Year's Eve
 NewYearsEve = Holiday(
@@ -36,7 +50,7 @@ MayBank = Holiday(
 )
 # Ascension Day (Auffahrt)
 AscensionDay = Holiday(
-    'Ascension Day',
+    "Ascension Day",
     month=1,
     day=1,
     offset=[Easter(), Day(39)],
@@ -44,7 +58,7 @@ AscensionDay = Holiday(
 )
 # Pentecost Day (Pfingstmontag)
 PentecostMonday = Holiday(
-    'Pentecost Monday',
+    "Pentecost Monday",
     month=1,
     day=1,
     offset=[Easter(), Day(50)],
@@ -59,7 +73,7 @@ SwissNationalDay = Holiday(
 )
 # Christmas Eve
 ChristmasEve = Holiday(
-    'Christmas Eve',
+    "Christmas Eve",
     month=12,
     day=24,
 )
@@ -83,32 +97,36 @@ class SIXExchangeCalendar(MarketCalendar):
     Exchange calendar for SIX
 
     """
-    aliases = ['SIX']
+
+    aliases = ["SIX"]
     regular_market_times = {
         "market_open": ((None, time(9)),),
-        "market_close": ((None, time(17,30)),),
+        "market_close": ((None, time(17, 30)),),
     }
+
     @property
     def name(self):
         return "SIX"
 
     @property
     def tz(self):
-        return timezone('Europe/Zurich')
+        return timezone("Europe/Zurich")
 
     @property
     def regular_holidays(self):
-        return AbstractHolidayCalendar(rules=[
-            NewYearsDay,
-            BertholdsDay,
-            GoodFriday,
-            EasterMonday,
-            MayBank,
-            AscensionDay,
-            PentecostMonday,
-            SwissNationalDay,
-            ChristmasEve,
-            Christmas,
-            BoxingDay,
-            NewYearsEve,
-        ])
+        return AbstractHolidayCalendar(
+            rules=[
+                NewYearsDay,
+                BertholdsDay,
+                GoodFriday,
+                EasterMonday,
+                MayBank,
+                AscensionDay,
+                PentecostMonday,
+                SwissNationalDay,
+                ChristmasEve,
+                Christmas,
+                BoxingDay,
+                NewYearsEve,
+            ]
+        )

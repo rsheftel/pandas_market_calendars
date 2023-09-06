@@ -17,22 +17,33 @@ from .cme_globex_base import CMEGlobexBaseExchangeCalendar
 
 from datetime import time
 
-from pandas.tseries.holiday import AbstractHolidayCalendar #, GoodFriday, USLaborDay, USPresidentsDay, USThanksgivingDay
+from pandas.tseries.holiday import (
+    AbstractHolidayCalendar,
+)  # , GoodFriday, USLaborDay, USPresidentsDay, USThanksgivingDay
 from pytz import timezone
 
-#from .holidays_us import (Christmas, ChristmasEveBefore1993, ChristmasEveInOrAfter1993, USBlackFridayInOrAfter1993,
+# from .holidays_us import (Christmas, ChristmasEveBefore1993, ChristmasEveInOrAfter1993, USBlackFridayInOrAfter1993,
 #                          USIndependenceDay, USMartinLutherKingJrAfter1998, USMemorialDay, USJuneteenthAfter2022,
 #                          USNationalDaysofMourning, USNewYearsDay)
 
-from pandas_market_calendars.holidays.cme_globex import (USMartinLutherKingJrFrom2022, USMartinLutherKingJrPre2022, USNewYearsDay,
-                                                         USPresidentsDayFrom2022, USPresidentsDayPre2022,
-                                                         GoodFriday,
-                                                         USMemorialDayFrom2022, USMemorialDayPre2022,
-                                                         USJuneteenthFrom2022,
-                                                         USIndependenceDayFrom2022, USIndependenceDayPre2022,
-                                                         USLaborDay,
-                                                         USThanksgivingDayFrom2022, USThanksgivingDayPre2022, FridayAfterThanksgiving,
-                                                         ChristmasCME)
+from pandas_market_calendars.holidays.cme_globex import (
+    USMartinLutherKingJrFrom2022,
+    USMartinLutherKingJrPre2022,
+    USNewYearsDay,
+    USPresidentsDayFrom2022,
+    USPresidentsDayPre2022,
+    GoodFriday,
+    USMemorialDayFrom2022,
+    USMemorialDayPre2022,
+    USJuneteenthFrom2022,
+    USIndependenceDayFrom2022,
+    USIndependenceDayPre2022,
+    USLaborDay,
+    USThanksgivingDayFrom2022,
+    USThanksgivingDayPre2022,
+    FridayAfterThanksgiving,
+    ChristmasCME,
+)
 
 
 class CMEGlobexEnergyAndMetalsExchangeCalendar(CMEGlobexBaseExchangeCalendar):
@@ -44,7 +55,7 @@ class CMEGlobexEnergyAndMetalsExchangeCalendar(CMEGlobexBaseExchangeCalendar):
     NOT IMPLEMENTED: Dubai Mercantile Exchange (DME) follows this schedule but with holiday exceptions.
 
     Energy Products:
-      Crude and Refined: https://www.cmegroup.com/trading/energy/crude-and-refined-products.html 
+      Crude and Refined: https://www.cmegroup.com/trading/energy/crude-and-refined-products.html
       - HO NY Harbor ULSD Futures
       - CL Crude Oil Futures
       - RB RBOB Gasoline Futures
@@ -58,7 +69,7 @@ class CMEGlobexEnergyAndMetalsExchangeCalendar(CMEGlobexBaseExchangeCalendar):
       - NGO CBL Nature-based Global Emissionns Offset Futures
       - GEO CBL Global Emissions Offset Futures
 
-    Metals Products: https://www.cmegroup.com/markets/metals.html 
+    Metals Products: https://www.cmegroup.com/markets/metals.html
       Precious Metals
       - GC Gold Futures
       - SI Silver Futures
@@ -74,38 +85,91 @@ class CMEGlobexEnergyAndMetalsExchangeCalendar(CMEGlobexBaseExchangeCalendar):
 
       Sample GLOBEX Trading Times
       https://www.cmegroup.com/markets/energy/crude-oil/light-sweet-crude.contractSpecs.html
-      Sunday - Friday: 5:00pm - 4:00 pm CT 
+      Sunday - Friday: 5:00pm - 4:00 pm CT
 
       Calendar: http://www.cmegroup.com/tools-information/holiday-calendar.html
-     """
+    """
 
-    aliases = [ 'CMEGlobex_EnergyAndMetals',
-                'CMEGlobex_Energy',
-                   'CMEGlobex_CrudeAndRefined', 'CMEGlobex_NYHarbor', 'CMEGlobex_HO', 'HO', 'CMEGlobex_Crude', 'CMEGlobex_CL', 'CL', 'CMEGlobex_Gas', 'CMEGlobex_RB', 'RB', 'CMEGlobex_MicroCrude', 'CMEGlobex_MCL', 'MCL',
-                   'CMEGlobex_NatGas',          'CMEGlobex_NG', 'NG', 'CMEGlobex_Dutch_NatGas', 'CMEGlobex_TTF', 'TTF', 'CMEGlobex_LastDay_NatGas', 'CMEGlobex_NN', 'NN',
-                   'CMEGlobex_CarbonOffset',     'CMEGlobex_CGO', 'CGO', 'C-GEO', 'CMEGlobex_NGO', 'NGO', 'CMEGlobex_GEO', 'GEO',
-                'CMEGlobex_Metals',
-                    'CMEGlobex_PreciousMetals', 'CMEGlobex_Gold', 'CMEGlobex_GC', 'GC', 'CMEGlobex_Silver' 'CMEGlobex_SI', 'SI', 'CMEGlobex_Platinum', 'CMEGlobex_PL', 'PL',
-                    'CMEGlobex_BaseMetals',     'CMEGlobex_Copper', 'CMEGlobex_HG', 'HG', 'CMEGlobex_Aluminum', 'CMEGlobex_ALI', 'ALI', 'CMEGlobex_Copper', 'CMEGlobex_QC', 'QC',
-                    'CMEGlobex_FerrousMetals',  'CMEGlobex_HRC', 'HRC', 'CMEGlobex_BUS', 'BUS', 'CMEGlobex_TIO', 'TIO' ]
+    aliases = [
+        "CMEGlobex_EnergyAndMetals",
+        "CMEGlobex_Energy",
+        "CMEGlobex_CrudeAndRefined",
+        "CMEGlobex_NYHarbor",
+        "CMEGlobex_HO",
+        "HO",
+        "CMEGlobex_Crude",
+        "CMEGlobex_CL",
+        "CL",
+        "CMEGlobex_Gas",
+        "CMEGlobex_RB",
+        "RB",
+        "CMEGlobex_MicroCrude",
+        "CMEGlobex_MCL",
+        "MCL",
+        "CMEGlobex_NatGas",
+        "CMEGlobex_NG",
+        "NG",
+        "CMEGlobex_Dutch_NatGas",
+        "CMEGlobex_TTF",
+        "TTF",
+        "CMEGlobex_LastDay_NatGas",
+        "CMEGlobex_NN",
+        "NN",
+        "CMEGlobex_CarbonOffset",
+        "CMEGlobex_CGO",
+        "CGO",
+        "C-GEO",
+        "CMEGlobex_NGO",
+        "NGO",
+        "CMEGlobex_GEO",
+        "GEO",
+        "CMEGlobex_Metals",
+        "CMEGlobex_PreciousMetals",
+        "CMEGlobex_Gold",
+        "CMEGlobex_GC",
+        "GC",
+        "CMEGlobex_Silver" "CMEGlobex_SI",
+        "SI",
+        "CMEGlobex_Platinum",
+        "CMEGlobex_PL",
+        "PL",
+        "CMEGlobex_BaseMetals",
+        "CMEGlobex_Copper",
+        "CMEGlobex_HG",
+        "HG",
+        "CMEGlobex_Aluminum",
+        "CMEGlobex_ALI",
+        "ALI",
+        "CMEGlobex_Copper",
+        "CMEGlobex_QC",
+        "QC",
+        "CMEGlobex_FerrousMetals",
+        "CMEGlobex_HRC",
+        "HRC",
+        "CMEGlobex_BUS",
+        "BUS",
+        "CMEGlobex_TIO",
+        "TIO",
+    ]
 
     regular_market_times = {
-        "market_open": ((None, time(17), -1),), #Sunday offset. Central Timezone (CT)
-        "market_close": ((None, time(16)),)
+        "market_open": ((None, time(17), -1),),  # Sunday offset. Central Timezone (CT)
+        "market_close": ((None, time(16)),),
     }
 
     @property
     def name(self):
         return "CMEGlobex_EnergyAndMetals"
 
-
     @property
     def regular_holidays(self):
-        return AbstractHolidayCalendar(rules=[
-            USNewYearsDay,
-            GoodFriday,
-            ChristmasCME,            
-         ])
+        return AbstractHolidayCalendar(
+            rules=[
+                USNewYearsDay,
+                GoodFriday,
+                ChristmasCME,
+            ]
+        )
 
     # @property
     # def adhoc_holidays(self):
@@ -114,25 +178,38 @@ class CMEGlobexEnergyAndMetalsExchangeCalendar(CMEGlobexBaseExchangeCalendar):
     @property
     def special_closes(self):
         return [
-            (time(12, tzinfo=timezone('America/Chicago')), AbstractHolidayCalendar(rules=[
-                USMartinLutherKingJrPre2022,
-                USPresidentsDayPre2022,
-                USMemorialDayPre2022,
-                USIndependenceDayPre2022,
-                USLaborDay,
-                USThanksgivingDayPre2022,
-             ])),           
-            (time(12, 45, tzinfo=timezone('America/Chicago')), AbstractHolidayCalendar(rules=[
-                 FridayAfterThanksgiving,
-             ])),           
-             (time(13, 30, tzinfo=timezone('America/Chicago')), AbstractHolidayCalendar(rules=[
-                USMartinLutherKingJrFrom2022,
-                USPresidentsDayFrom2022,
-                USMemorialDayFrom2022,
-                USJuneteenthFrom2022,
-                USIndependenceDayFrom2022,
-                USThanksgivingDayFrom2022,
-             ])),
-         ]
-
-
+            (
+                time(12, tzinfo=timezone("America/Chicago")),
+                AbstractHolidayCalendar(
+                    rules=[
+                        USMartinLutherKingJrPre2022,
+                        USPresidentsDayPre2022,
+                        USMemorialDayPre2022,
+                        USIndependenceDayPre2022,
+                        USLaborDay,
+                        USThanksgivingDayPre2022,
+                    ]
+                ),
+            ),
+            (
+                time(12, 45, tzinfo=timezone("America/Chicago")),
+                AbstractHolidayCalendar(
+                    rules=[
+                        FridayAfterThanksgiving,
+                    ]
+                ),
+            ),
+            (
+                time(13, 30, tzinfo=timezone("America/Chicago")),
+                AbstractHolidayCalendar(
+                    rules=[
+                        USMartinLutherKingJrFrom2022,
+                        USPresidentsDayFrom2022,
+                        USMemorialDayFrom2022,
+                        USJuneteenthFrom2022,
+                        USIndependenceDayFrom2022,
+                        USThanksgivingDayFrom2022,
+                    ]
+                ),
+            ),
+        ]

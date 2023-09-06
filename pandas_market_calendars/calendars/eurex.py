@@ -4,10 +4,23 @@
 
 from datetime import time
 
-from pandas.tseries.holiday import AbstractHolidayCalendar, EasterMonday, GoodFriday, Holiday, previous_friday
+from pandas.tseries.holiday import (
+    AbstractHolidayCalendar,
+    EasterMonday,
+    GoodFriday,
+    Holiday,
+    previous_friday,
+)
 from pytz import timezone
 
-from pandas_market_calendars.market_calendar import (FRIDAY, MONDAY, MarketCalendar, THURSDAY, TUESDAY, WEDNESDAY)
+from pandas_market_calendars.market_calendar import (
+    FRIDAY,
+    MONDAY,
+    MarketCalendar,
+    THURSDAY,
+    TUESDAY,
+    WEDNESDAY,
+)
 
 # New Year's Eve
 EUREXNewYearsEve = Holiday(
@@ -32,14 +45,14 @@ MayBank = Holiday(
 )
 # German National Holiday (Tag der Deutschen Einheit)
 GermanNationalDay = Holiday(
-    'Tag der Deutschen Einheit',
+    "Tag der Deutschen Einheit",
     month=10,
     day=3,
     days_of_week=(MONDAY, TUESDAY, WEDNESDAY, THURSDAY, FRIDAY),
 )
 # Christmas Eve
 ChristmasEve = Holiday(
-    'Christmas Eve',
+    "Christmas Eve",
     month=12,
     day=24,
     observance=previous_friday,
@@ -80,10 +93,11 @@ class EUREXExchangeCalendar(MarketCalendar):
     Exchange calendar for EUREX
 
     """
-    aliases = ['EUREX']
+
+    aliases = ["EUREX"]
     regular_market_times = {
         "market_open": ((None, time(9)),),
-        "market_close": ((None, time(17,30)),)
+        "market_close": ((None, time(17, 30)),),
     }
 
     @property
@@ -92,28 +106,34 @@ class EUREXExchangeCalendar(MarketCalendar):
 
     @property
     def tz(self):
-        return timezone('Europe/Berlin')
+        return timezone("Europe/Berlin")
 
     @property
     def regular_holidays(self):
-        return AbstractHolidayCalendar(rules=[
-            EUREXNewYearsDay,
-            GoodFriday,
-            EasterMonday,
-            MayBank,
-            GermanNationalDay,
-            Christmas,
-            WeekendChristmas,
-            BoxingDay,
-            WeekendBoxingDay
-        ])
+        return AbstractHolidayCalendar(
+            rules=[
+                EUREXNewYearsDay,
+                GoodFriday,
+                EasterMonday,
+                MayBank,
+                GermanNationalDay,
+                Christmas,
+                WeekendChristmas,
+                BoxingDay,
+                WeekendBoxingDay,
+            ]
+        )
 
     @property
     def special_closes(self):
-        return [(
-            time(12, 30),
-            AbstractHolidayCalendar(rules=[
-                ChristmasEve,
-                EUREXNewYearsEve,
-            ])
-        )]
+        return [
+            (
+                time(12, 30),
+                AbstractHolidayCalendar(
+                    rules=[
+                        ChristmasEve,
+                        EUREXNewYearsEve,
+                    ]
+                ),
+            )
+        ]
