@@ -1,12 +1,30 @@
 from datetime import time
 
 import pandas as pd
-from pandas.tseries.holiday import AbstractHolidayCalendar, DateOffset, GoodFriday, Holiday, MO, weekend_to_monday
+from pandas.tseries.holiday import (
+    AbstractHolidayCalendar,
+    DateOffset,
+    GoodFriday,
+    Holiday,
+    MO,
+    weekend_to_monday,
+)
 from pytz import timezone
 from itertools import chain
 
-from pandas_market_calendars.holidays.uk import BoxingDay, WeekendBoxingDay, WeekendChristmas
-from pandas_market_calendars.market_calendar import MarketCalendar, MONDAY, TUESDAY, WEDNESDAY, THURSDAY, FRIDAY
+from pandas_market_calendars.holidays.uk import (
+    BoxingDay,
+    WeekendBoxingDay,
+    WeekendChristmas,
+)
+from pandas_market_calendars.market_calendar import (
+    MarketCalendar,
+    MONDAY,
+    TUESDAY,
+    WEDNESDAY,
+    THURSDAY,
+    FRIDAY,
+)
 
 # New Year's Day
 TSXNewYearsDay = Holiday(
@@ -21,47 +39,47 @@ FamilyDay = Holiday(
     month=2,
     day=1,
     offset=DateOffset(weekday=MO(3)),
-    start_date='2008-01-01',
+    start_date="2008-01-01",
 )
 # Victoria Day
 # https://www.timeanddate.com/holidays/canada/victoria-day
 VictoriaDay = Holiday(
-    'Victoria Day',
+    "Victoria Day",
     month=5,
     day=24,
     offset=DateOffset(weekday=MO(-1)),
 )
 # Canada Day
 CanadaDay = Holiday(
-    'Canada Day',
+    "Canada Day",
     month=7,
     day=1,
     observance=weekend_to_monday,
 )
 # Civic Holiday
 CivicHoliday = Holiday(
-    'Civic Holiday',
+    "Civic Holiday",
     month=8,
     day=1,
     offset=DateOffset(weekday=MO(1)),
 )
 # Labor Day
 LaborDay = Holiday(
-    'Labor Day',
+    "Labor Day",
     month=9,
     day=1,
     offset=DateOffset(weekday=MO(1)),
 )
 # Thanksgiving
 Thanksgiving = Holiday(
-    'Thanksgiving',
+    "Thanksgiving",
     month=10,
     day=1,
     offset=DateOffset(weekday=MO(2)),
 )
 
 Christmas = Holiday(
-    'Christmas',
+    "Christmas",
     month=12,
     day=25,
 )
@@ -75,8 +93,8 @@ ChristmasEveEarlyClose2010Onwards = Holiday(
 )
 
 September11Closings2001 = [
-    pd.Timestamp("2001-09-11", tz='UTC'),
-    pd.Timestamp("2001-09-12", tz='UTC'),
+    pd.Timestamp("2001-09-11", tz="UTC"),
+    pd.Timestamp("2001-09-12", tz="UTC"),
 ]
 
 
@@ -108,13 +126,13 @@ class TSXExchangeCalendar(MarketCalendar):
       closes at 1:00 pm that day. If it falls on a weekend, there is no
       early close.
     """
-    aliases = ['TSX', 'TSXV']
+
+    aliases = ["TSX", "TSXV"]
 
     regular_market_times = {
         "market_open": ((None, time(9, 30)),),
-        "market_close": ((None, time(16)),)
+        "market_close": ((None, time(16)),),
     }
-
 
     @property
     def name(self):
@@ -122,32 +140,36 @@ class TSXExchangeCalendar(MarketCalendar):
 
     @property
     def tz(self):
-        return timezone('Canada/Eastern')
+        return timezone("Canada/Eastern")
 
     regular_early_close = time(13)
 
     @property
     def regular_holidays(self):
-        return AbstractHolidayCalendar(rules=[
-            TSXNewYearsDay,
-            FamilyDay,
-            GoodFriday,
-            VictoriaDay,
-            CanadaDay,
-            CivicHoliday,
-            LaborDay,
-            Thanksgiving,
-            Christmas,
-            WeekendChristmas,
-            BoxingDay,
-            WeekendBoxingDay
-        ])
+        return AbstractHolidayCalendar(
+            rules=[
+                TSXNewYearsDay,
+                FamilyDay,
+                GoodFriday,
+                VictoriaDay,
+                CanadaDay,
+                CivicHoliday,
+                LaborDay,
+                Thanksgiving,
+                Christmas,
+                WeekendChristmas,
+                BoxingDay,
+                WeekendBoxingDay,
+            ]
+        )
 
     @property
     def adhoc_holidays(self):
-        return list(chain(
-            September11Closings2001,
-        ))
+        return list(
+            chain(
+                September11Closings2001,
+            )
+        )
 
     @property
     def special_closes(self):

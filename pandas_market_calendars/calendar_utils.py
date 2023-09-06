@@ -7,7 +7,8 @@ import warnings
 import pandas as pd
 import numpy as np
 
-def merge_schedules(schedules, how='outer'):
+
+def merge_schedules(schedules, how="outer"):
     """
     Given a list of schedules will return a merged schedule. The merge method (how) will either return the superset
     of any datetime when any schedule is open (outer) or only the datetime where all markets are open (inner)
@@ -22,21 +23,31 @@ def merge_schedules(schedules, how='outer'):
     """
     all_cols = [x.columns for x in schedules]
     all_cols = list(itertools.chain(*all_cols))
-    if ('break_start' in all_cols) or ('break_end' in all_cols):
-        warnings.warn('Merge schedules will drop the break_start and break_end from result.')
+    if ("break_start" in all_cols) or ("break_end" in all_cols):
+        warnings.warn(
+            "Merge schedules will drop the break_start and break_end from result."
+        )
 
     result = schedules[0]
     for schedule in schedules[1:]:
         result = result.merge(schedule, how=how, right_index=True, left_index=True)
-        if how == 'outer':
-            result['market_open'] = result.apply(lambda x: min(x.market_open_x, x.market_open_y), axis=1)
-            result['market_close'] = result.apply(lambda x: max(x.market_close_x, x.market_close_y), axis=1)
-        elif how == 'inner':
-            result['market_open'] = result.apply(lambda x: max(x.market_open_x, x.market_open_y), axis=1)
-            result['market_close'] = result.apply(lambda x: min(x.market_close_x, x.market_close_y), axis=1)
+        if how == "outer":
+            result["market_open"] = result.apply(
+                lambda x: min(x.market_open_x, x.market_open_y), axis=1
+            )
+            result["market_close"] = result.apply(
+                lambda x: max(x.market_close_x, x.market_close_y), axis=1
+            )
+        elif how == "inner":
+            result["market_open"] = result.apply(
+                lambda x: max(x.market_open_x, x.market_open_y), axis=1
+            )
+            result["market_close"] = result.apply(
+                lambda x: min(x.market_close_x, x.market_close_y), axis=1
+            )
         else:
             raise ValueError('how argument must be "inner" or "outer"')
-        result = result[['market_open', 'market_close']]
+        result = result[["market_open", "market_close"]]
     return result
 
 
@@ -49,6 +60,7 @@ def convert_freq(index, frequency):
     :return: DateTimeIndex
     """
     return pd.DataFrame(index=index).asfreq(frequency).index
+
 
 class _date_range:
     """
@@ -91,7 +103,7 @@ class _date_range:
 
     """
 
-    def __init__(self, schedule = None, frequency= None, closed='right', force_close=True):
+    def __init__(self, schedule=None, frequency=None, closed="right", force_close=True):
         if not closed in ("left", "right", "both", None):
             raise ValueError("closed must be 'left', 'right', 'both' or None.")
         elif not force_close in (True, False, None):
@@ -100,24 +112,32 @@ class _date_range:
         self.closed = closed
         self.force_close = force_close
         self.has_breaks = False
-        if frequency is None: self.frequency = None
+        if frequency is None:
+            self.frequency = None
         else:
             self.frequency = pd.Timedelta(frequency)
             if self.frequency > pd.Timedelta("1D"):
-                raise ValueError('Frequency must be 1D or higher frequency.')
+                raise ValueError("Frequency must be 1D or higher frequency.")
 
             elif schedule.market_close.lt(schedule.market_open).any():
-                raise ValueError("Schedule contains rows where market_close < market_open,"
-                                 " please correct the schedule")
+                raise ValueError(
+                    "Schedule contains rows where market_close < market_open,"
+                    " please correct the schedule"
+                )
 
             if "break_start" in schedule:
-                if not all([
-                    schedule.market_open.le(schedule.break_start).all(),
-                    schedule.break_start.le(schedule.break_end).all(),
-                    schedule.break_end.le(schedule.market_close).all()]):
-                    raise ValueError("Not all rows match the condition: "
-                                     "market_open <= break_start <= break_end <= market_close, "
-                                     "please correct the schedule")
+                if not all(
+                    [
+                        schedule.market_open.le(schedule.break_start).all(),
+                        schedule.break_start.le(schedule.break_end).all(),
+                        schedule.break_end.le(schedule.market_close).all(),
+                    ]
+                ):
+                    raise ValueError(
+                        "Not all rows match the condition: "
+                        "market_open <= break_start <= break_end <= market_close, "
+                        "please correct the schedule"
+                    )
                 self.has_breaks = True
 
     def _check_overlap(self, schedule):
@@ -131,9 +151,11 @@ class _date_range:
             end_times = schedule.start + num_bars * self.frequency
 
             if end_times.gt(schedule.start.shift(-1)).any():
-                raise ValueError(f"The chosen frequency will lead to overlaps in the calculated index. "
-                                 f"Either choose a higher frequency or avoid setting force_close to None "
-                                 f"when setting closed to 'right', 'both' or None.")
+                raise ValueError(
+                    f"The chosen frequency will lead to overlaps in the calculated index. "
+                    f"Either choose a higher frequency or avoid setting force_close to None "
+                    f"when setting closed to 'right', 'both' or None."
+                )
 
     def _check_disappearing_session(self, schedule):
         """checks if requested frequency and schedule would lead to lost trading sessions.
@@ -142,12 +164,13 @@ class _date_range:
         :param schedule: pd.DataFrame with first column: 'start' and second column: 'end'
         :raises UserWarning:"""
         if self.force_close is False and self.closed == "right":
-
-            if (schedule.end- schedule.start).lt(self.frequency).any():
-                warnings.warn("An interval of the chosen frequency is larger than some of the trading sessions, "
-                          "while closed== 'right' and force_close is False. This will make those trading sessions "
-                          "disappear. Use a higher frequency or change the values of closed/force_close, to "
-                          "keep this from happening.")
+            if (schedule.end - schedule.start).lt(self.frequency).any():
+                warnings.warn(
+                    "An interval of the chosen frequency is larger than some of the trading sessions, "
+                    "while closed== 'right' and force_close is False. This will make those trading sessions "
+                    "disappear. Use a higher frequency or change the values of closed/force_close, to "
+                    "keep this from happening."
+                )
 
     def _calc_num_bars(self, schedule):
         """calculate the number of timestamps needed for each trading session.
@@ -156,25 +179,30 @@ class _date_range:
         :return: pd.Series of float64"""
         return np.ceil((schedule.end - schedule.start) / self.frequency)
 
-
     def _calc_time_series(self, schedule):
         """Method used by date_range to calculate the trading index.
 
-         :param schedule: pd.DataFrame with first column: 'start' and second column: 'end'
-         :return: pd.Series of datetime64[ns, UTC]"""
+        :param schedule: pd.DataFrame with first column: 'start' and second column: 'end'
+        :return: pd.Series of datetime64[ns, UTC]"""
         num_bars = self._calc_num_bars(schedule)
 
         # ---> calculate the desired timeseries:
         if self.closed == "left":
-            opens = schedule.start.repeat(num_bars)   # keep as is
-            time_series = (opens.groupby(opens.index).cumcount()) * self.frequency + opens
+            opens = schedule.start.repeat(num_bars)  # keep as is
+            time_series = (
+                opens.groupby(opens.index).cumcount()
+            ) * self.frequency + opens
         elif self.closed == "right":
-            opens = schedule.start.repeat(num_bars)   # dont add row but shift up
-            time_series = (opens.groupby(opens.index).cumcount()+ 1) * self.frequency + opens
+            opens = schedule.start.repeat(num_bars)  # dont add row but shift up
+            time_series = (
+                opens.groupby(opens.index).cumcount() + 1
+            ) * self.frequency + opens
         else:
             num_bars += 1
-            opens = schedule.start.repeat(num_bars)   # add row but dont shift up
-            time_series = (opens.groupby(opens.index).cumcount()) * self.frequency + opens
+            opens = schedule.start.repeat(num_bars)  # add row but dont shift up
+            time_series = (
+                opens.groupby(opens.index).cumcount()
+            ) * self.frequency + opens
 
         if not self.force_close is None:
             time_series = time_series[time_series.le(schedule.end.repeat(num_bars))]
@@ -183,8 +211,7 @@ class _date_range:
 
         return time_series
 
-
-    def __call__(self, schedule, frequency, closed='right', force_close=True, **kwargs):
+    def __call__(self, schedule, frequency, closed="right", force_close=True, **kwargs):
         """
         See class docstring for more information.
 
@@ -205,15 +232,23 @@ class _date_range:
         self.__init__(schedule, frequency, closed, force_close)
         if self.has_breaks:
             # rearrange the schedule, to make every row one session
-            before = schedule[["market_open", "break_start"]].set_index(schedule["market_open"])
-            after = schedule[["break_end", "market_close"]].set_index(schedule["break_end"])
+            before = schedule[["market_open", "break_start"]].set_index(
+                schedule["market_open"]
+            )
+            after = schedule[["break_end", "market_close"]].set_index(
+                schedule["break_end"]
+            )
             before.columns = after.columns = ["start", "end"]
             schedule = pd.concat([before, after]).sort_index()
 
         else:
-            schedule = schedule.rename(columns= {"market_open": "start", "market_close": "end"})
+            schedule = schedule.rename(
+                columns={"market_open": "start", "market_close": "end"}
+            )
 
-        schedule = schedule[schedule.start.ne(schedule.end)] # drop the 'no-trading sessions'
+        schedule = schedule[
+            schedule.start.ne(schedule.end)
+        ]  # drop the 'no-trading sessions'
         self._check_overlap(schedule)
         self._check_disappearing_session(schedule)
 
@@ -221,5 +256,6 @@ class _date_range:
 
         time_series.name = None
         return pd.DatetimeIndex(time_series.drop_duplicates())
+
 
 date_range = _date_range()

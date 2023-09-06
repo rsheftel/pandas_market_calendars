@@ -32,7 +32,7 @@ MayBank_pre_1995 = Holiday(
     month=5,
     offset=DateOffset(weekday=MO(1)),
     day=1,
-    end_date=Timestamp('1994-12-31'),
+    end_date=Timestamp("1994-12-31"),
 )
 
 # Early May bank holiday post-1995 and pre-2020
@@ -41,8 +41,8 @@ MayBank_post_1995_pre_2020 = Holiday(
     month=5,
     offset=DateOffset(weekday=MO(1)),
     day=1,
-    start_date=Timestamp('1996-01-01'),
-    end_date=Timestamp('2019-12-31'),
+    start_date=Timestamp("1996-01-01"),
+    end_date=Timestamp("2019-12-31"),
 )
 
 # Early May bank holiday post 2020
@@ -51,7 +51,7 @@ MayBank_post_2020 = Holiday(
     month=5,
     offset=DateOffset(weekday=MO(1)),
     day=1,
-    start_date=Timestamp('2021-01-01')
+    start_date=Timestamp("2021-01-01"),
 )
 
 # Spring bank holiday has two exceptions based on the Golden & Diamond Jubilee
@@ -65,7 +65,7 @@ SpringBank_pre_2002 = Holiday(
     month=5,
     day=31,
     offset=DateOffset(weekday=MO(-1)),
-    end_date=Timestamp('2001-12-31'),
+    end_date=Timestamp("2001-12-31"),
 )
 
 SpringBank_post_2002_pre_2012 = Holiday(
@@ -73,8 +73,8 @@ SpringBank_post_2002_pre_2012 = Holiday(
     month=5,
     day=31,
     offset=DateOffset(weekday=MO(-1)),
-    start_date=Timestamp('2003-01-01'),
-    end_date=Timestamp('2011-12-31'),
+    start_date=Timestamp("2003-01-01"),
+    end_date=Timestamp("2011-12-31"),
 )
 
 SpringBank_post_2012_pre_2022 = Holiday(
@@ -82,8 +82,8 @@ SpringBank_post_2012_pre_2022 = Holiday(
     month=5,
     day=31,
     offset=DateOffset(weekday=MO(-1)),
-    start_date=Timestamp('2013-01-01'),
-    end_date=Timestamp('2021-12-31'),
+    start_date=Timestamp("2013-01-01"),
+    end_date=Timestamp("2021-12-31"),
 )
 
 SpringBank_post_2022 = Holiday(
@@ -91,7 +91,7 @@ SpringBank_post_2022 = Holiday(
     month=5,
     day=31,
     offset=DateOffset(weekday=MO(-1)),
-    start_date=Timestamp('2022-01-01'),
+    start_date=Timestamp("2022-01-01"),
 )
 
 # Summer bank holiday
@@ -104,7 +104,7 @@ SummerBank = Holiday(
 
 # Christmas Eve
 ChristmasEve = Holiday(
-    'Christmas Eve',
+    "Christmas Eve",
     month=12,
     day=24,
     observance=previous_friday,
@@ -146,35 +146,41 @@ WeekendBoxingDay = Holiday(
 
 UniqueCloses = []
 # VE-Day Anniversary
-UniqueCloses.append(pd.Timestamp("1995-05-08", tz='UTC'))  # 50th Anniversary
-UniqueCloses.append(pd.Timestamp("2020-05-08", tz='UTC'))  # 75th Anniversary
+UniqueCloses.append(pd.Timestamp("1995-05-08", tz="UTC"))  # 50th Anniversary
+UniqueCloses.append(pd.Timestamp("2020-05-08", tz="UTC"))  # 75th Anniversary
 
 # Queen Elizabeth II Jubilees
 # Silver Jubilee
-UniqueCloses.append(pd.Timestamp("1977-06-07", tz='UTC'))
+UniqueCloses.append(pd.Timestamp("1977-06-07", tz="UTC"))
 
 # Golden Jubilee
-UniqueCloses.append(pd.Timestamp("2002-06-03", tz='UTC'))
-UniqueCloses.append(pd.Timestamp("2002-06-04", tz='UTC'))
+UniqueCloses.append(pd.Timestamp("2002-06-03", tz="UTC"))
+UniqueCloses.append(pd.Timestamp("2002-06-04", tz="UTC"))
 
 # Diamond Jubilee
-UniqueCloses.append(pd.Timestamp("2012-06-04", tz='UTC'))
-UniqueCloses.append(pd.Timestamp("2012-06-05", tz='UTC'))
+UniqueCloses.append(pd.Timestamp("2012-06-04", tz="UTC"))
+UniqueCloses.append(pd.Timestamp("2012-06-05", tz="UTC"))
 
 # Platinum Jubilee
-UniqueCloses.append(pd.Timestamp("2022-06-02", tz='UTC'))
-UniqueCloses.append(pd.Timestamp("2022-06-03", tz='UTC'))
+UniqueCloses.append(pd.Timestamp("2022-06-02", tz="UTC"))
+UniqueCloses.append(pd.Timestamp("2022-06-03", tz="UTC"))
 
 # State Funeral of Queen Elizabeth II
-UniqueCloses.append(pd.Timestamp("2022-09-19", tz='UTC'))
+UniqueCloses.append(pd.Timestamp("2022-09-19", tz="UTC"))
 
 # Royal Weddings
-UniqueCloses.append(pd.Timestamp("1973-11-14", tz='UTC'))     # Wedding Day of Princess Anne and Mark Phillips
-UniqueCloses.append(pd.Timestamp("1981-07-29", tz='UTC'))     # Wedding Day of Prince Charles and Diana Spencer
-UniqueCloses.append(pd.Timestamp("2011-04-29", tz='UTC'))     # Wedding Day of Prince William and Catherine Middleton
+UniqueCloses.append(
+    pd.Timestamp("1973-11-14", tz="UTC")
+)  # Wedding Day of Princess Anne and Mark Phillips
+UniqueCloses.append(
+    pd.Timestamp("1981-07-29", tz="UTC")
+)  # Wedding Day of Prince Charles and Diana Spencer
+UniqueCloses.append(
+    pd.Timestamp("2011-04-29", tz="UTC")
+)  # Wedding Day of Prince William and Catherine Middleton
 
 # Coronation of King Charles III
-UniqueCloses.append(pd.Timestamp("2023-05-08", tz='UTC'))
+UniqueCloses.append(pd.Timestamp("2023-05-08", tz="UTC"))
 
 # Miscellaneous
-UniqueCloses.append(pd.Timestamp("1999-12-31", tz='UTC'))     # Eve of 3rd Millenium A.D.
+UniqueCloses.append(pd.Timestamp("1999-12-31", tz="UTC"))  # Eve of 3rd Millenium A.D.

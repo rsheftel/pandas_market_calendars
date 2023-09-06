@@ -15,12 +15,26 @@
 
 from abc import ABC, abstractmethod
 
-from pandas.tseries.holiday import AbstractHolidayCalendar, GoodFriday, USLaborDay, USPresidentsDay, USThanksgivingDay
+from pandas.tseries.holiday import (
+    AbstractHolidayCalendar,
+    GoodFriday,
+    USLaborDay,
+    USPresidentsDay,
+    USThanksgivingDay,
+)
 from pytz import timezone
 
-from pandas_market_calendars.holidays.us import (Christmas, ChristmasEveBefore1993, ChristmasEveInOrAfter1993, USBlackFridayInOrAfter1993,
-                                                 USIndependenceDay, USMartinLutherKingJrAfter1998, USMemorialDay, USJuneteenthAfter2022,
-                                                 USNewYearsDay)
+from pandas_market_calendars.holidays.us import (
+    Christmas,
+    ChristmasEveBefore1993,
+    ChristmasEveInOrAfter1993,
+    USBlackFridayInOrAfter1993,
+    USIndependenceDay,
+    USMartinLutherKingJrAfter1998,
+    USMemorialDay,
+    USJuneteenthAfter2022,
+    USNewYearsDay,
+)
 from pandas_market_calendars.market_calendar import MarketCalendar
 
 
@@ -52,6 +66,7 @@ class CMEGlobexBaseExchangeCalendar(MarketCalendar, ABC):
     - US Labor Day
     - US Thanksgiving Day
     """
+
     @property
     @abstractmethod
     def name(self):
@@ -64,40 +79,41 @@ class CMEGlobexBaseExchangeCalendar(MarketCalendar, ABC):
 
     @property
     def tz(self):
-        return timezone('America/Chicago')
+        return timezone("America/Chicago")
 
     @property
     def regular_holidays(self):
-         return AbstractHolidayCalendar(rules=[
-            USNewYearsDay,
-            GoodFriday,
-            Christmas,
-        ])
+        return AbstractHolidayCalendar(
+            rules=[
+                USNewYearsDay,
+                GoodFriday,
+                Christmas,
+            ]
+        )
 
     # I can't find any reference to these special closings onther than NYSE
     # @property
     # def adhoc_holidays(self):
     #     return USNationalDaysofMourning
- 
+
     @property
     def special_closes(self):
-        return [(
-            self.special_close_time,
-            AbstractHolidayCalendar(rules=[
-                USMartinLutherKingJrAfter1998,
-                USPresidentsDay,
-                USMemorialDay,
-                USJuneteenthAfter2022,
-                USLaborDay,
-                USIndependenceDay,
-                USThanksgivingDay,
-                USBlackFridayInOrAfter1993,
-                ChristmasEveBefore1993,
-                ChristmasEveInOrAfter1993,
-            ])
-        )]
-
-
-
-
-
+        return [
+            (
+                self.special_close_time,
+                AbstractHolidayCalendar(
+                    rules=[
+                        USMartinLutherKingJrAfter1998,
+                        USPresidentsDay,
+                        USMemorialDay,
+                        USJuneteenthAfter2022,
+                        USLaborDay,
+                        USIndependenceDay,
+                        USThanksgivingDay,
+                        USBlackFridayInOrAfter1993,
+                        ChristmasEveBefore1993,
+                        ChristmasEveInOrAfter1993,
+                    ]
+                ),
+            )
+        ]

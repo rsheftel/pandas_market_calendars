@@ -5,8 +5,8 @@ from pandas_market_calendars.calendars.cme import CMEAgricultureExchangeCalendar
 
 
 def test_time_zone():
-    assert CMEAgricultureExchangeCalendar().tz == pytz.timezone('America/Chicago')
-    assert CMEAgricultureExchangeCalendar().name == 'CME_Agriculture'
+    assert CMEAgricultureExchangeCalendar().tz == pytz.timezone("America/Chicago")
+    assert CMEAgricultureExchangeCalendar().name == "CME_Agriculture"
 
 
 def test_2020_holidays():
@@ -25,7 +25,7 @@ def test_2020_holidays():
     # - 2020-04-03
     # - 2020-11-25
     cme = CMEAgricultureExchangeCalendar()
-    good_dates = cme.valid_days('2020-01-01', '2021-01-10')
+    good_dates = cme.valid_days("2020-01-01", "2021-01-10")
     for date in [
         "2020-01-20",
         "2020-02-17",
@@ -37,13 +37,17 @@ def test_2020_holidays():
         "2020-12-27",
         "2021-01-01",
     ]:
-        assert pd.Timestamp(date, tz='UTC') not in good_dates
+        assert pd.Timestamp(date, tz="UTC") not in good_dates
 
 
 def test_dec_jan():
     cme = CMEAgricultureExchangeCalendar()
-    schedule = cme.schedule('2020-12-30', '2021-01-10')
+    schedule = cme.schedule("2020-12-30", "2021-01-10")
 
     print(schedule)
-    assert schedule['market_open'].iloc[0] == pd.Timestamp('2020-12-29 23:01:00', tz='UTC')
-    assert schedule['market_close'].iloc[6] == pd.Timestamp('2021-01-08 23:00:00', tz='UTC')
+    assert schedule["market_open"].iloc[0] == pd.Timestamp(
+        "2020-12-29 23:01:00", tz="UTC"
+    )
+    assert schedule["market_close"].iloc[6] == pd.Timestamp(
+        "2021-01-08 23:00:00", tz="UTC"
+    )

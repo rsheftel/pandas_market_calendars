@@ -1,14 +1,28 @@
 from datetime import time
 
-from pandas.tseries.holiday import AbstractHolidayCalendar, \
-    GoodFriday, USLaborDay, USPresidentsDay, USThanksgivingDay, Holiday
+from pandas.tseries.holiday import (
+    AbstractHolidayCalendar,
+    GoodFriday,
+    USLaborDay,
+    USPresidentsDay,
+    USThanksgivingDay,
+    Holiday,
+)
 from pytz import timezone
 from itertools import chain
 import pandas as pd
 
-from pandas_market_calendars.holidays.us import (Christmas, USBlackFridayInOrAfter1993, USIndependenceDay, USMartinLutherKingJrAfter1998,
-                                                 USMemorialDay, USNewYearsDay, HurricaneSandyClosings, USNationalDaysofMourning,
-                                                 USJuneteenthAfter2022)
+from pandas_market_calendars.holidays.us import (
+    Christmas,
+    USBlackFridayInOrAfter1993,
+    USIndependenceDay,
+    USMartinLutherKingJrAfter1998,
+    USMemorialDay,
+    USNewYearsDay,
+    HurricaneSandyClosings,
+    USNationalDaysofMourning,
+    USJuneteenthAfter2022,
+)
 from pandas_market_calendars.market_calendar import MarketCalendar
 
 
@@ -23,10 +37,17 @@ def good_friday_unless_christmas_nye_friday(dt):
         raise NotImplementedError()
 
     year = dt.year
-    christmas_weekday = Christmas.observance(pd.Timestamp(year=year, month=12, day=25)).weekday()
-    nyd_weekday = USNewYearsDay.observance(pd.Timestamp(year=year, month=1, day=1)).weekday()
+    christmas_weekday = Christmas.observance(
+        pd.Timestamp(year=year, month=12, day=25)
+    ).weekday()
+    nyd_weekday = USNewYearsDay.observance(
+        pd.Timestamp(year=year, month=1, day=1)
+    ).weekday()
     if christmas_weekday != 4 and nyd_weekday != 4:
-        return GoodFriday.dates(pd.Timestamp(year=year, month=1, day=1), pd.Timestamp(year=year, month=12, day=31))[0]
+        return GoodFriday.dates(
+            pd.Timestamp(year=year, month=1, day=1),
+            pd.Timestamp(year=year, month=12, day=31),
+        )[0]
     else:
         # Not a holiday so use NaT to ensure it gets removed
         return pd.NaT
@@ -51,10 +72,11 @@ class CFEExchangeCalendar(MarketCalendar):
 
     (We are ignoring extended trading hours for now)
     """
-    aliases = ['CFE', "CBOE_Futures"]
+
+    aliases = ["CFE", "CBOE_Futures"]
     regular_market_times = {
         "market_open": ((None, time(8, 30)),),
-        "market_close": ((None, time(15, 15)),)
+        "market_close": ((None, time(15, 15)),),
     }
 
     @property
@@ -67,34 +89,42 @@ class CFEExchangeCalendar(MarketCalendar):
 
     @property
     def regular_holidays(self):
-        return AbstractHolidayCalendar(rules=[
-            USNewYearsDay,
-            USMartinLutherKingJrAfter1998,
-            USPresidentsDay,
-            GoodFridayUnlessChristmasNYEFriday,
-            USJuneteenthAfter2022,
-            USIndependenceDay,
-            USMemorialDay,
-            USLaborDay,
-            USThanksgivingDay,
-            Christmas
-        ])
+        return AbstractHolidayCalendar(
+            rules=[
+                USNewYearsDay,
+                USMartinLutherKingJrAfter1998,
+                USPresidentsDay,
+                GoodFridayUnlessChristmasNYEFriday,
+                USJuneteenthAfter2022,
+                USIndependenceDay,
+                USMemorialDay,
+                USLaborDay,
+                USThanksgivingDay,
+                Christmas,
+            ]
+        )
 
     @property
     def special_closes(self):
-        return [(
-            time(12, 15),
-            AbstractHolidayCalendar(rules=[
-                USBlackFridayInOrAfter1993,
-            ])
-        )]
+        return [
+            (
+                time(12, 15),
+                AbstractHolidayCalendar(
+                    rules=[
+                        USBlackFridayInOrAfter1993,
+                    ]
+                ),
+            )
+        ]
 
     @property
     def adhoc_holidays(self):
-        return list(chain(
-            HurricaneSandyClosings,
-            USNationalDaysofMourning,
-        ))
+        return list(
+            chain(
+                HurricaneSandyClosings,
+                USNationalDaysofMourning,
+            )
+        )
 
 
 class CBOEEquityOptionsExchangeCalendar(CFEExchangeCalendar):
@@ -102,7 +132,7 @@ class CBOEEquityOptionsExchangeCalendar(CFEExchangeCalendar):
     aliases = [name]
     regular_market_times = {
         "market_open": ((None, time(8, 30)),),
-        "market_close": ((None, time(15)),)
+        "market_close": ((None, time(15)),),
     }
 
 
@@ -111,5 +141,5 @@ class CBOEIndexOptionsExchangeCalendar(CFEExchangeCalendar):
     aliases = [name]
     regular_market_times = {
         "market_open": ((None, time(8, 30)),),
-        "market_close": ((None, time(15, 15)),)
+        "market_close": ((None, time(15, 15)),),
     }

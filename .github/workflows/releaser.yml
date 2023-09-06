@@ -73,7 +73,7 @@ jobs:
           
       - name: build package
         run: python -m build
-          
+
       - uses: pypa/gh-action-pypi-publish@release/v1
         with:
           user: __token__
