@@ -22,6 +22,7 @@ Exchange  TASE   TASEExchangeCalendar               gabglus
 Exchange  HKEX   HKEXExchangeCalendar    Yes        1dot75cm
 Exchange  ASX    ASXExchangeCalendar                pulledlamb
 Exchange  BSE    BSEExchangeCalendar                rakesh1988
+Exchange  IEX    IEXExchangeCalendar     Yes        carterjfulcher
 ========= ====== ===================== ============ ==========
 
 Futures Calendars
