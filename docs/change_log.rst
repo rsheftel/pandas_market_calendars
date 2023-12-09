@@ -3,6 +3,14 @@ Change Log
 
 Updates
 -------
+4.3.2 (12/09/2023)
+~~~~~~~~~~~~~~~~~~
+- Reformat all code using Black and make black a standard PR #290
+- Add XNSE as a name for BSE calendar
+- Update holidays for BSE # 277
+- Update holidays for CN # 305
+- Add IEX to list of exchanges
+
 4.3.1 (09/06/2023)
 ~~~~~~~~~~~~~~~~~~
 - Fixed broken build PR #292

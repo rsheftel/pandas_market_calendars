@@ -38,7 +38,7 @@ def test_2017_calendar():
     ose = OSEExchangeCalendar()
     ose_schedule = ose.schedule(
         start_date=pd.Timestamp("2017-04-11", tz=TIMEZONE),
-        end_date=pd.Timestamp("2017-04-13", tz=TIMEZONE)
+        end_date=pd.Timestamp("2017-04-13", tz=TIMEZONE),
     )
 
     regular_holidays_2017 = [
@@ -50,12 +50,10 @@ def test_2017_calendar():
         pd.Timestamp("2017-05-25", tz=TIMEZONE),
         pd.Timestamp("2017-06-05", tz=TIMEZONE),
         pd.Timestamp("2017-12-25", tz=TIMEZONE),
-        pd.Timestamp("2017-12-26", tz=TIMEZONE)
+        pd.Timestamp("2017-12-26", tz=TIMEZONE),
     ]
 
-    half_trading_days_2017 = [
-        pd.Timestamp("2017-04-12", tz=TIMEZONE)
-    ]
+    half_trading_days_2017 = [pd.Timestamp("2017-04-12", tz=TIMEZONE)]
 
     valid_market_dates = ose.valid_days("2017-01-01", "2017-12-31", tz=TIMEZONE)
 
@@ -66,21 +64,19 @@ def test_2017_calendar():
         assert half_trading_day in valid_market_dates
 
     assert ose.open_at_time(
-        schedule=ose_schedule,
-        timestamp=pd.Timestamp("2017-04-12 12PM", tz=TIMEZONE)
+        schedule=ose_schedule, timestamp=pd.Timestamp("2017-04-12 12PM", tz=TIMEZONE)
     )
     with pytest.raises(ValueError):
         ose.open_at_time(
-        schedule=ose_schedule,
-        timestamp=pd.Timestamp("2017-04-12 2PM", tz=TIMEZONE)
-    )
+            schedule=ose_schedule, timestamp=pd.Timestamp("2017-04-12 2PM", tz=TIMEZONE)
+        )
 
 
 def test_2018_calendar():
     ose = OSEExchangeCalendar()
     ose_schedule = ose.schedule(
         start_date=pd.Timestamp("2018-03-27", tz=TIMEZONE),
-        end_date=pd.Timestamp("2018-03-29", tz=TIMEZONE)
+        end_date=pd.Timestamp("2018-03-29", tz=TIMEZONE),
     )
 
     regular_holidays_2018 = [
@@ -94,12 +90,10 @@ def test_2018_calendar():
         pd.Timestamp("2018-12-24", tz=TIMEZONE),
         pd.Timestamp("2018-12-25", tz=TIMEZONE),
         pd.Timestamp("2018-12-26", tz=TIMEZONE),
-        pd.Timestamp("2018-12-31", tz=TIMEZONE)
+        pd.Timestamp("2018-12-31", tz=TIMEZONE),
     ]
 
-    half_trading_days_2018 = [
-        pd.Timestamp("2018-03-28", tz=TIMEZONE)
-    ]
+    half_trading_days_2018 = [pd.Timestamp("2018-03-28", tz=TIMEZONE)]
 
     valid_market_dates = ose.valid_days("2018-01-01", "2018-12-31", tz=TIMEZONE)
 
@@ -110,21 +104,20 @@ def test_2018_calendar():
         assert half_trading_day in valid_market_dates
 
     assert ose.open_at_time(
-        schedule=ose_schedule,
-        timestamp=pd.Timestamp("2018-03-28 12PM", tz=TIMEZONE)
+        schedule=ose_schedule, timestamp=pd.Timestamp("2018-03-28 12PM", tz=TIMEZONE)
     )
     with pytest.raises(ValueError):
         ose.open_at_time(
-        schedule=ose_schedule,
-        timestamp=pd.Timestamp("2018-03-28 1:10PM", tz=TIMEZONE)
-    )
+            schedule=ose_schedule,
+            timestamp=pd.Timestamp("2018-03-28 1:10PM", tz=TIMEZONE),
+        )
 
 
 def test_2019_calendar():
     ose = OSEExchangeCalendar()
     ose_schedule = ose.schedule(
         start_date=pd.Timestamp("2019-04-16", tz=TIMEZONE),
-        end_date=pd.Timestamp("2019-04-18", tz=TIMEZONE)
+        end_date=pd.Timestamp("2019-04-18", tz=TIMEZONE),
     )
 
     regular_holidays_2019 = [
@@ -139,12 +132,10 @@ def test_2019_calendar():
         pd.Timestamp("2019-12-24", tz=TIMEZONE),
         pd.Timestamp("2019-12-25", tz=TIMEZONE),
         pd.Timestamp("2019-12-26", tz=TIMEZONE),
-        pd.Timestamp("2019-12-31", tz=TIMEZONE)
+        pd.Timestamp("2019-12-31", tz=TIMEZONE),
     ]
 
-    half_trading_days_2019 = [
-        pd.Timestamp("2019-04-17", tz=TIMEZONE)
-    ]
+    half_trading_days_2019 = [pd.Timestamp("2019-04-17", tz=TIMEZONE)]
 
     valid_market_dates = ose.valid_days("2019-01-01", "2019-12-31", tz=TIMEZONE)
 
@@ -155,11 +146,10 @@ def test_2019_calendar():
         assert half_trading_day in valid_market_dates
 
     assert ose.open_at_time(
-        schedule=ose_schedule,
-        timestamp=pd.Timestamp("2019-04-17 12PM", tz=TIMEZONE)
+        schedule=ose_schedule, timestamp=pd.Timestamp("2019-04-17 12PM", tz=TIMEZONE)
     )
     with pytest.raises(ValueError):
         ose.open_at_time(
-        schedule=ose_schedule,
-        timestamp=pd.Timestamp("2019-04-17 1:10PM", tz=TIMEZONE)
-    )
+            schedule=ose_schedule,
+            timestamp=pd.Timestamp("2019-04-17 1:10PM", tz=TIMEZONE),
+        )

@@ -1,12 +1,9 @@
 
-new_version: '4.3.0'
+new_version: '4.3.2'
 
 change_log: |
-  - Fixed for pandas 2.0 so all tests pass PR #282
-  - Move exchange_calendar*.py files to pandas_market_calendar/exchange_calendars/ PR #284
-  - Move holidays_*.py to pandas_market_calendar/holidays/ PR #284
-  - Major cleanup including unused imports PR #284
-
+  - Reformat all code using Black and make black a standard PR #290
+  - Add XNSE as a name for BSE calendar # 277
 
 release_body: |
 

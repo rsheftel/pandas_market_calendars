@@ -1,6 +1,7 @@
 import inspect
 from pprint import pformat
 
+
 def _regmeta_instance_factory(cls, name, *args, **kwargs):
     """
     :param cls(RegisteryMeta): registration meta class
@@ -13,8 +14,12 @@ def _regmeta_instance_factory(cls, name, *args, **kwargs):
         class_ = cls._regmeta_class_registry[name]
     except KeyError:
         raise RuntimeError(
-            'Class {} is not one of the registered classes: {}'.format(name, cls._regmeta_class_registry.keys()))
+            "Class {} is not one of the registered classes: {}".format(
+                name, cls._regmeta_class_registry.keys()
+            )
+        )
     return class_(*args, **kwargs)
+
 
 def _regmeta_register_class(cls, regcls, name):
     """
@@ -22,7 +27,7 @@ def _regmeta_register_class(cls, regcls, name):
     :param regcls(class): class to be registered
     :param name(str): name of the class to be registered
     """
-    if hasattr(regcls, 'aliases'):
+    if hasattr(regcls, "aliases"):
         if regcls.aliases:
             for alias in regcls.aliases:
                 cls._regmeta_class_registry[alias] = regcls
@@ -39,7 +44,7 @@ class RegisteryMeta(type):
 
     def __new__(mcs, name, bases, attr):
         cls = super(RegisteryMeta, mcs).__new__(mcs, name, bases, attr)
-        if not hasattr(cls, '_regmeta_class_registry'):
+        if not hasattr(cls, "_regmeta_class_registry"):
             cls._regmeta_class_registry = {}
             cls.factory = classmethod(_regmeta_instance_factory)
 
@@ -49,7 +54,7 @@ class RegisteryMeta(type):
         if not inspect.isabstract(cls):
             _regmeta_register_class(cls, cls, name)
             for b in bases:
-                if hasattr(b, '_regmeta_class_registry'):
+                if hasattr(b, "_regmeta_class_registry"):
                     _regmeta_register_class(b, cls, name)
 
         super(RegisteryMeta, cls).__init__(name, bases, attr)
@@ -65,7 +70,6 @@ class RegisteryMeta(type):
 
 
 class ProtectedDict(dict):
-
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         # __init__ is bypassed when unpickling, which causes __setitem__ to fail
@@ -82,30 +86,32 @@ class ProtectedDict(dict):
         if not hasattr(self, "_INIT_RAN_NORMALLY"):
             return self._set(key, value)
 
-        raise TypeError("You cannot set a value directly, you can change regular_market_times "
-                        "using .change_time, .add_time or .remove_time.")
+        raise TypeError(
+            "You cannot set a value directly, you can change regular_market_times "
+            "using .change_time, .add_time or .remove_time."
+        )
 
     def __delitem__(self, key):
         if not hasattr(self, "_INIT_RAN_NORMALLY"):
             return self._del(key)
 
-        raise TypeError("You cannot delete an item directly. You can change regular_market_times "
-                        "using .change_time, .add_time or .remove_time")
+        raise TypeError(
+            "You cannot delete an item directly. You can change regular_market_times "
+            "using .change_time, .add_time or .remove_time"
+        )
 
     def __repr__(self):
-        return self.__class__.__name__+ "(" + super().__repr__() + ")"
+        return self.__class__.__name__ + "(" + super().__repr__() + ")"
 
     def __str__(self):
         try:
-            formatted = pformat(dict(self), sort_dicts= False) # sort_dicts apparently not available < python3.8
+            formatted = pformat(
+                dict(self), sort_dicts=False
+            )  # sort_dicts apparently not available < python3.8
         except TypeError:
             formatted = pformat(dict(self))
 
-        return self.__class__.__name__+ "(\n" + formatted + "\n)"
+        return self.__class__.__name__ + "(\n" + formatted + "\n)"
 
     def copy(self):
         return self.__class__(super().copy())
-
-
-
-

@@ -22,119 +22,159 @@ from pytz import timezone
 
 from pandas_market_calendars.holidays.nyse import (
     # Always Celebrated Holidays
-    USNewYearsDayNYSEpost1952, USNewYearsDayNYSEpre1952, SatBeforeNewYearsAdhoc,
-    
-    USPresidentsDay, USWashingtonsBirthDay1964to1970, 
-    USWashingtonsBirthDayBefore1952, USWashingtonsBirthDay1952to1963,
-    USLincolnsBirthDayBefore1954, LincolnsBirthDayAdhoc, 
-    SatBeforeWashingtonsBirthdayAdhoc, SatAfterWashingtonsBirthdayAdhoc, 
-    SatBeforeAfterLincolnsBirthdayAdhoc,  GrantsBirthDayAdhoc,  
-    
+    USNewYearsDayNYSEpost1952,
+    USNewYearsDayNYSEpre1952,
+    SatBeforeNewYearsAdhoc,
+    USPresidentsDay,
+    USWashingtonsBirthDay1964to1970,
+    USWashingtonsBirthDayBefore1952,
+    USWashingtonsBirthDay1952to1963,
+    USLincolnsBirthDayBefore1954,
+    LincolnsBirthDayAdhoc,
+    SatBeforeWashingtonsBirthdayAdhoc,
+    SatAfterWashingtonsBirthdayAdhoc,
+    SatBeforeAfterLincolnsBirthdayAdhoc,
+    GrantsBirthDayAdhoc,
     USMartinLutherKingJrAfter1998,
-
-    GoodFriday, GoodFridayPre1898, GoodFriday1899to1905, SatAfterGoodFridayAdhoc,
-    
-    USMemorialDay, USMemorialDayBefore1952, USMemorialDay1952to1964, USMemorialDay1964to1969,
-    SatBeforeDecorationAdhoc, SatAfterDecorationAdhoc,
+    GoodFriday,
+    GoodFridayPre1898,
+    GoodFriday1899to1905,
+    SatAfterGoodFridayAdhoc,
+    USMemorialDay,
+    USMemorialDayBefore1952,
+    USMemorialDay1952to1964,
+    USMemorialDay1964to1969,
+    SatBeforeDecorationAdhoc,
+    SatAfterDecorationAdhoc,
     DayBeforeDecorationAdhoc,
-
     USJuneteenthAfter2022,
-
-    USIndependenceDay, USIndependenceDayPre1952, USIndependenceDay1952to1954,
-    SatBeforeIndependenceDayAdhoc, SatAfterIndependenceDayAdhoc,
-    MonTuesThursBeforeIndependenceDay, FridayAfterIndependenceDayNYSEpre2013,
+    USIndependenceDay,
+    USIndependenceDayPre1952,
+    USIndependenceDay1952to1954,
+    SatBeforeIndependenceDayAdhoc,
+    SatAfterIndependenceDayAdhoc,
+    MonTuesThursBeforeIndependenceDay,
+    FridayAfterIndependenceDayNYSEpre2013,
     WednesdayBeforeIndependenceDayPost2013,
-    MonBeforeIndependenceDayAdhoc, DaysAfterIndependenceDayAdhoc,
+    MonBeforeIndependenceDayAdhoc,
+    DaysAfterIndependenceDayAdhoc,
     # DaysBeforeIndependenceDay1pmEarlyCloseAdhoc,
-    
-    USColumbusDayBefore1954, USElectionDay1848to1967, 
-    
-    USLaborDayStarting1887, SatBeforeLaborDayAdhoc,
-    
-    USThanksgivingDay, USThanksgivingDay1939to1941,
-    USThanksgivingDayBefore1939, 
-    DayAfterThanksgiving2pmEarlyCloseBefore1993, 
+    USColumbusDayBefore1954,
+    USElectionDay1848to1967,
+    USLaborDayStarting1887,
+    SatBeforeLaborDayAdhoc,
+    USThanksgivingDay,
+    USThanksgivingDay1939to1941,
+    USThanksgivingDayBefore1939,
+    DayAfterThanksgiving2pmEarlyCloseBefore1993,
     DayAfterThanksgiving1pmEarlyCloseInOrAfter1993,
-    FridayAfterThanksgivingAdHoc, 
-    
+    FridayAfterThanksgivingAdHoc,
     USElectionDay1968to1980Adhoc,
-    
-    ChristmasNYSE, Christmas54to98NYSE, ChristmasBefore1954, 
-    ChristmasEvesAdhoc, DayAfterChristmasAdhoc, DayAfterChristmas1pmEarlyCloseAdhoc,
+    ChristmasNYSE,
+    Christmas54to98NYSE,
+    ChristmasBefore1954,
+    ChristmasEvesAdhoc,
+    DayAfterChristmasAdhoc,
+    DayAfterChristmas1pmEarlyCloseAdhoc,
     ChristmasEvePost1999Early1pmClose,
-    ChristmasEve1pmEarlyCloseAdhoc, ChristmasEve2pmEarlyCloseAdhoc,
-    SatBeforeChristmasAdhoc, SatAfterChristmasAdhoc,
-    
+    ChristmasEve1pmEarlyCloseAdhoc,
+    ChristmasEve2pmEarlyCloseAdhoc,
+    SatBeforeChristmasAdhoc,
+    SatAfterChristmasAdhoc,
     # Retired Holidays
-    USVetransDayAdHoc, SatAfterColumbusDayAdHoc, USVeteransDay1934to1953,
-    
+    USVetransDayAdHoc,
+    SatAfterColumbusDayAdHoc,
+    USVeteransDay1934to1953,
     # Adhoc Holidays
-    # 1885    
+    # 1885
     UlyssesGrantFuneral1885,
     # 1892
-    ColumbianCelebration1892, 
+    ColumbianCelebration1892,
     # 1888
     GreatBlizzardOf1888,
     # 1889
     WashingtonInaugurationCentennialCelebration1889,
     # 1898
-    CharterDay1898, WelcomeNavalCommander1898, 
+    CharterDay1898,
+    WelcomeNavalCommander1898,
     # 1899
-    AdmiralDeweyCelebration1899, GarretHobartFuneral1899,
+    AdmiralDeweyCelebration1899,
+    GarretHobartFuneral1899,
     # 1901
-    McKinleyDeathAndFuneral1901, QueenVictoriaFuneral1901, 
-    MovedToProduceExchange1901, EnlargedProduceExchange1901,
+    McKinleyDeathAndFuneral1901,
+    QueenVictoriaFuneral1901,
+    MovedToProduceExchange1901,
+    EnlargedProduceExchange1901,
     # 1902
-    KingEdwardVIIcoronation1902, 
+    KingEdwardVIIcoronation1902,
     # 1903
-    NYSEnewBuildingOpen1903, 
+    NYSEnewBuildingOpen1903,
     # 1908
     GroverClevelandFuneral1pmClose1908,
     # 1909
-    HudsonFultonCelebration1909, 
+    HudsonFultonCelebration1909,
     # 1910
-    KingEdwardDeath11amyClose1910, KingEdwardFuneral12pmOpen1910,
+    KingEdwardDeath11amyClose1910,
+    KingEdwardFuneral12pmOpen1910,
     # 1912
     JamesShermanFuneral1912,
     # 1913
-    JPMorganFuneral12pmOpen1913, WilliamGaynorFuneral12pmOpen1913,
+    JPMorganFuneral12pmOpen1913,
+    WilliamGaynorFuneral12pmOpen1913,
     # 1914
-    OnsetOfWWI1914, 
+    OnsetOfWWI1914,
     # 1917
-    WeatherHeatClosing1917, ParadeOfNationalGuardEarlyClose1917,
-    LibertyDay12pmEarlyClose1917,  DraftRegistrationDay1917, 
+    WeatherHeatClosing1917,
+    ParadeOfNationalGuardEarlyClose1917,
+    LibertyDay12pmEarlyClose1917,
+    DraftRegistrationDay1917,
     # 1918
-    WeatherNoHeatClosing1918, DraftRegistrationDay1918, 
-    LibertyDay12pmEarlyClose1918, FalseArmisticeReport1430EarlyClose1918, 
+    WeatherNoHeatClosing1918,
+    DraftRegistrationDay1918,
+    LibertyDay12pmEarlyClose1918,
+    FalseArmisticeReport1430EarlyClose1918,
     ArmisticeSigned1918,
     # 1919
-    RooseveltFuneral1230EarlyClose1919, Homecoming27Division1919, 
-    ParadeOf77thDivision1919,  BacklogRelief1919, GeneralPershingReturn1919,
-    TrafficBlockLateOpen1919, 
+    RooseveltFuneral1230EarlyClose1919,
+    Homecoming27Division1919,
+    ParadeOf77thDivision1919,
+    BacklogRelief1919,
+    GeneralPershingReturn1919,
+    TrafficBlockLateOpen1919,
     # 1920
-    TrafficBlockLateOpen1920, OfficeLocationChange1920, 
+    TrafficBlockLateOpen1920,
+    OfficeLocationChange1920,
     WallStreetExplosionEarlyClose1920,
     # 1921
     AnnunciatorBoardFire1pmLateOpen1921,
     # 1923
-    HardingDeath1923, HardingFuneral1923,
+    HardingDeath1923,
+    HardingFuneral1923,
     # 1924
-    WoodrowWilsonFuneral1230EarlyClose1924, 
+    WoodrowWilsonFuneral1230EarlyClose1924,
     # 1925
-    EclipseOfSunLateOpen1925, CromwellFuneral1430EarlyClose1925,
+    EclipseOfSunLateOpen1925,
+    CromwellFuneral1430EarlyClose1925,
     # 1927
     LindberghParade1927,
     # 1928
-    BacklogRelief1928, BacklogRelief2pmEarlyClose1928,
+    BacklogRelief1928,
+    BacklogRelief2pmEarlyClose1928,
     # 1929
-    BacklogRelief1929, BacklogRelief1pmEarlyClose1929, BacklogRelief12pmLateOpen1929,
+    BacklogRelief1929,
+    BacklogRelief1pmEarlyClose1929,
+    BacklogRelief12pmLateOpen1929,
     # 1930
     TaftFuneral1230EarlyClose1930,
     # 1933
     CoolidgeFuneral1933,
-    BankHolidays1933, GasFumesOnTradingFloor1230EarlyClose1933,
-    HeavyVolume1933, HeavyVolume12pmLateOpen1933, HeavyVolume11amLateOpen1933, 
-    HeavyVolume2pmEarlyClose1933, NRAdemonstration12pmEarlyClose1933,
+    BankHolidays1933,
+    GasFumesOnTradingFloor1230EarlyClose1933,
+    HeavyVolume1933,
+    HeavyVolume12pmLateOpen1933,
+    HeavyVolume11amLateOpen1933,
+    HeavyVolume2pmEarlyClose1933,
+    NRAdemonstration12pmEarlyClose1933,
     # 1924
     Snow11amLateOpen1934,
     # 1936
@@ -142,19 +182,24 @@ from pandas_market_calendars.holidays.nyse import (
     # 1944
     SatClosings1944,
     # 1945
-    RooseveltDayOfMourning1945, SatClosings1945, VJday1945, NavyDay1945,
+    RooseveltDayOfMourning1945,
+    SatClosings1945,
+    VJday1945,
+    NavyDay1945,
     # 1946
-    RailroadStrike1946, SatClosings1946,
+    RailroadStrike1946,
+    SatClosings1946,
     # 1947
-    SatClosings1947, 
+    SatClosings1947,
     # 1948
-    SatClosings1948, SevereWeather1948,
+    SatClosings1948,
+    SevereWeather1948,
     # 1949
-    SatClosings1949, 
+    SatClosings1949,
     # 1950
-    SatClosings1950, 
+    SatClosings1950,
     # 1951
-    SatClosings1951, 
+    SatClosings1951,
     # 1952
     SatClosings1952,
     # 1960
@@ -178,9 +223,12 @@ from pandas_market_calendars.holidays.nyse import (
     PaperworkCrisis1968,
     # 1969 - 1970
     PaperworkCrisis2pmEarlyCloses1969,
-    SnowClosing1969, Snow11amLateOpen1969,
-    EisenhowerFuneral1969, Storm1045LateOpen1969,
-    PaperworkCrisis230pmEarlyCloses1969, FirstLunarLandingClosing1969,
+    SnowClosing1969,
+    Snow11amLateOpen1969,
+    EisenhowerFuneral1969,
+    Storm1045LateOpen1969,
+    PaperworkCrisis230pmEarlyCloses1969,
+    FirstLunarLandingClosing1969,
     PaperworkCrisis3pmEarlyCloses1969to1970,
     # 1972
     TrumanFuneral1972,
@@ -188,24 +236,30 @@ from pandas_market_calendars.holidays.nyse import (
     JohnsonFuneral1973,
     Ice11amLateOpen1973,
     # 1974
-    MerrillLynchComputer1015LateOpen1974, FireDrill1015LateOpen1974,
+    MerrillLynchComputer1015LateOpen1974,
+    FireDrill1015LateOpen1974,
     # 1975
     Snow230EarlyClose1975,
     # 1976
-    Storm1115LateOpen1976, FireDrill1015LateOpen1976,
+    Storm1115LateOpen1976,
+    FireDrill1015LateOpen1976,
     HurricaneWatch3pmEarlyClose1976,
     # 1977
     NewYorkCityBlackout77,
     # 1978
-    Snow12pmLateOpen1978, Snow2pmEarlyClose1978, Snow11amLateOpen1978,
+    Snow12pmLateOpen1978,
+    Snow2pmEarlyClose1978,
+    Snow11amLateOpen1978,
     # 1981
     ReaganAssassAttempt317pmEarlyClose1981,
     ConEdPowerFail328pmEarlyClose1981,
     # 1985
     HurricaneGloriaClosings1985,
     # 1987
-    Backlog2pmEarlyCloses1987, Backlog230pmEarlyCloses1987,
-    Backlog3pmEarlyCloses1987, Backlog330pmEarlyCloses1987,
+    Backlog2pmEarlyCloses1987,
+    Backlog230pmEarlyCloses1987,
+    Backlog3pmEarlyCloses1987,
+    Backlog330pmEarlyCloses1987,
     # 1989
     Fire11amLateOpen1989,
     # 1990
@@ -239,10 +293,10 @@ from pandas_market_calendars.holidays.nyse import (
     FordMomentSilence932amLateOpen2006,
     # 2007
     FordMourning2007,
-    # 2012  
+    # 2012
     HurricaneSandyClosings2012,
     # 2018
-    GeorgeHWBushDeath2018
+    GeorgeHWBushDeath2018,
 )
 from pandas_market_calendars.market_calendar import MarketCalendar
 
@@ -250,8 +304,9 @@ from pandas_market_calendars.market_calendar import MarketCalendar
 # http://www.nyse.com/pdfs/closings.pdf
 # http://www.stevemorse.org/jcal/whendid.html
 
-# Overwrite the default holiday calendar start_date of 1/1/70 
-AbstractHolidayCalendar.start_date = '1885-01-01'   
+# Overwrite the default holiday calendar start_date of 1/1/70
+AbstractHolidayCalendar.start_date = "1885-01-01"
+
 
 class NYSEExchangeCalendar(MarketCalendar):
     """
@@ -262,14 +317,14 @@ class NYSEExchangeCalendar(MarketCalendar):
     - https://web.archive.org/web/20141224054812/http://www.nyse.com/about/history/timeline_trading.html
     - https://www.marketwatch.com/story/a-brief-history-of-trading-hours-on-wall-street-2015-05-29
     - http://www.ltadvisors.net/Info/research/closings.pdf
-    - https://github.com/rsheftel/pandas_market_calendars/files/6827110/Stocks.NYSE-Closings.pdf 
-    
+    - https://github.com/rsheftel/pandas_market_calendars/files/6827110/Stocks.NYSE-Closings.pdf
+
     NYSE OVERVIEW:
     - 1792: 5 securities traded
     - 1871: Continuous trading begins
     - 1885 to 1887: trading hours Mon-Sat 10am to variable 2pm thru 4pm (coded as 3pm)
     - 1887: trading hours Mon-Fri 10am-3pm Sat 10am-noon
-    - 1952-09-29: trading hours Mon-Fri 10am-3:30pm, 
+    - 1952-09-29: trading hours Mon-Fri 10am-3:30pm,
         - Sat trading removed after Sept 27
         - Last effective Saturday traded was May 24, 1952
     - 1974: trading hours Mon-Fri 10am-4pm
@@ -277,7 +332,7 @@ class NYSEExchangeCalendar(MarketCalendar):
 
     #######################################
     Regularly-Observed Holidays as of 2021:
-    #######################################    
+    #######################################
     - New Years Day (observed on monday when Jan 1 is a Sunday)
     - Martin Luther King Jr. Day (3rd Monday in January, only after 1998)
     - Lincoln's Birthday (February 12th, only before 1954 starting in 1896)
@@ -319,7 +374,7 @@ class NYSEExchangeCalendar(MarketCalendar):
     #################################
     Irregularities Openings/Closings:
     #################################
-    begin reference: https://github.com/rsheftel/pandas_market_calendars/files/6827110/Stocks.NYSE-Closings.pdf 
+    begin reference: https://github.com/rsheftel/pandas_market_calendars/files/6827110/Stocks.NYSE-Closings.pdf
     - Closed on Aug 8, 1885 (Sat): President Ulysses S. Grant funeral
     - Closed on Jul 2, 1887 (Sat): Saturday before Independence Day
     - Closed on Dec 24, 1887 (Sat): Christmas Eve
@@ -335,7 +390,7 @@ class NYSEExchangeCalendar(MarketCalendar):
     - Closed on Apr 27, 1893 (Thu): Columbian Celebration
     - Closed on Dec 26, 1896 (Sat): Saturday after Christmas
     - Closed on Apr 27, 1897 (Tue): Grant's birthday
-    - Closed on May 4, 1898 (Wed): NYC Charter Day 
+    - Closed on May 4, 1898 (Wed): NYC Charter Day
     - Closed on Jul 2, 1898 (Sat): Saturday before Independence Day
     - Closed on Aug 20, 1898 (Sat): Welcome of naval commanders
     - Closed on Sep 3, 1898 (Sat): Saturday before Labor Day
@@ -387,7 +442,7 @@ class NYSEExchangeCalendar(MarketCalendar):
     - Closed on Sep 25, 1909 (Sat): Reception Day of the Hudson-Fulton Celebration
     - Closed on Mar 26, 1910 (Sat): Saturday after Good Friday
     - Early Close 11am on May 7, 1910 (Sat): King Edward VII of England Death
-    - Late Open 12pm on May 20, 1910 (Fri): King Edward VII of England Funeral 
+    - Late Open 12pm on May 20, 1910 (Fri): King Edward VII of England Funeral
     - Closed on May 28, 1910 (Sat): Saturday before Decoration Day
     - Closed on Jul 2, 1910 (Sat): Saturday before Independence Day
     - Closed on Sep 3, 1910 (Sat): Saturday before Labor Day
@@ -403,7 +458,7 @@ class NYSEExchangeCalendar(MarketCalendar):
     - Closed on Jul 5, 1913 (Sat): Saturday after Independence Day
     - Closed on Aug 30, 1913 (Sat): Saturday before Labor Day
     - Late Open 12pm on Sep 22, 1913 (Mon): Mayor William J. Gaynor funeral
-    - Closed on Jul 31-Dec 11, 1914: Pending outbreak of World War I. 
+    - Closed on Jul 31-Dec 11, 1914: Pending outbreak of World War I.
         - Bonds reopn Nov 28, 1914 for limited trading with restrictions
         - Stocks (limited in number) reopen Dec 12, 1914 with restrictions
         - Stocks (all stocks) reopen Dec 14, 1914 with restrictions
@@ -513,11 +568,11 @@ class NYSEExchangeCalendar(MarketCalendar):
     - Closed on Sep 2, 1944 (Sat)
     - Closed on Apr 14, 1945 (Sat): President Franklin D. Roosevelt National Day of mourning
     - NOT IMPLEMENTED Break 11:00-13:00 on Jun 19, 1945 (Tue): Parade for General Eisenhower
-    - Closed on Saturdays Jul 7-Sep 1, 1945 
+    - Closed on Saturdays Jul 7-Sep 1, 1945
     - Closed on Aug 15-16, 1945 (Wed-Thu): VJ Day. End of World War II
     - Closed on Oct 13, 1945 (Sat): Saturday after Columbus Day
     - Closed on Oct 27, 1945 (Sat): Navy Day
-    - Closed on Dec 24, 1945 (Mon): Christmas Eve 
+    - Closed on Dec 24, 1945 (Mon): Christmas Eve
     - Closed on Feb 23, 1946 (Sat): Saturday after Washington's birthday
     - Closed on May 25, 1946 (Sat): Railroad strike
     - Closed on Saturdays Jun 1-Sep 28, 1946 (Sat-Sat)
@@ -554,7 +609,7 @@ class NYSEExchangeCalendar(MarketCalendar):
     - Closed on Dec 24, 1965 (Fri): Christmas Eve
     - Early Closes 14:00 on Jan 6-14, 1966 (Thu-Fri): Transit strike
     - NOT IMPLEMENTED Break 13:00-13:01 on Feb 3, 1967 (Fri): Apollo I disaster moment of silence
-    - Late Open 10:15 AND Early Close 14:00 on Feb 7, 1967 (Tue): snowstorm 
+    - Late Open 10:15 AND Early Close 14:00 on Feb 7, 1967 (Tue): snowstorm
     - NOT IMPLEMENTED Break 12:58-13:13 on May 17, 1967 (Wed): Vice President Humphrey spoke in honor of NYSE's 175th anniversary
     - Early Closes 14:00 on Aug 8-18, 1967 (Tue-Fri): Backlog catch up
     - Early Closes 14:00 on Jan 22-Mar 1, 1968 (Mon-Fri): Backlog catch up
@@ -587,7 +642,7 @@ class NYSEExchangeCalendar(MarketCalendar):
     - NOT IMPLEMENTED Break 10:24-11:00 on Feb 7, 1975 (Fri): Computer failure
     - Early Close 14:30 on Feb 12, 1975 (Wed): snowstorm
     - NOT IMPLEMENTED Break 10:09-10:35 on Apr 9, 1975 (Wed): Computer stopped
-    - Early Close 14:00 on Dec 24, 1975 (Wed): Christmas Eve    
+    - Early Close 14:00 on Dec 24, 1975 (Wed): Christmas Eve
     - Late Open 11:15 on Feb 2, 1976 (Mon): storm
     - Late Open UNKNOWN (coded as 10:15) on Jun 8, 1976 (Tue): fire drill
     - Early Close 15:00 on Aug 9, 1976 (Mon): hurricane watch
@@ -598,7 +653,7 @@ class NYSEExchangeCalendar(MarketCalendar):
     - Late Open 12pm on Jan 20, 1978 (Fri): snowstorm
     - Early Close 2pm on Feb 6, 1978 (Mon): snowstorm
     - Late Open 11am on Feb 7, 1978 (Tue): snowstorm
-    - NOT IMPLEMENTED Break 1 minute time UNKNOWN on Dec 13, 1979 (Thu): Former NYSE Chair Robert L. Stott minute of silence    
+    - NOT IMPLEMENTED Break 1 minute time UNKNOWN on Dec 13, 1979 (Thu): Former NYSE Chair Robert L. Stott minute of silence
     - NOT IMPLEMENTED Break 11:11-12:04 on Oct 13, 1980 (Mon): Computer malfunction
     - NOT IMPLEMENTED Break 1 minute time UNKNOWN on Dec 30, 1980 (Tue): Former NYSE Chair James Crane Kellogg III moment of silence
     - Early Close 3:17pm on Mar 30, 1981 (Mon): President Reagan assassination attempt
@@ -606,30 +661,30 @@ class NYSEExchangeCalendar(MarketCalendar):
     - NOT IMPLEMENTED Break 12:26-12:45pm on Sep 16, 1981 (Wed): Fire alarm malfunction
     - NOT IMPLEMENTED Break 10:25-11:00am on Dec 28, 1982 (Tue): small fire
     - NOT IMPLEMENTED Break 13:51-15:30 on Oct 13, 1983 (Thu): low speed ticker malfunction
-    - Closed on Sep 27, 1985 (Fri): Hurricane Gloria    
-    - NOT IMPLEMENTED Break 11:00-11:01 on Jan 29, 1986 (Wed): Challenger space crew moment of silence    
+    - Closed on Sep 27, 1985 (Fri): Hurricane Gloria
+    - NOT IMPLEMENTED Break 11:00-11:01 on Jan 29, 1986 (Wed): Challenger space crew moment of silence
     - Early Closes 2pm on Oct 23-30, 1987 (Fri-Fri): October 19th break volume
     - Early Closes 2:30pm on Nov 2-4, 1987 (Mon-Wed): reason not given volume assumed
     - Early Closes 3pm on Nov 5-6, 1987 (Thu-Fri): reason not given volume assumed
     - Early Closes 3:30pm on Nov 9-11, 1987 (Mon-Wed): Trading floor and clerical staff strike
-    - Late Open 11am on Nov 10, 1989 (Fri): Electrical fire    
-    - NOT IMPLEMENTED Break 9:41-11:15 on Nov 23, 1990 (Fri): Internal power failure    
+    - Late Open 11am on Nov 10, 1989 (Fri): Electrical fire
+    - NOT IMPLEMENTED Break 9:41-11:15 on Nov 23, 1990 (Fri): Internal power failure
     - Early Close 2pm on Dec 24, 1990 (Mon): Christmas Eve
-    - Late Open 11am on Dec 27, 1990 (Thu): explosion of Con Edison transformer    
+    - Late Open 11am on Dec 27, 1990 (Thu): explosion of Con Edison transformer
     - Late Open 9:31am on Jan 17, 1991 (Thu): American troops in Persian Gulf moment of silence
     - Late Open 9:31am on Feb 25, 1991 (Thu): American troops in Persian Gulf moment of silence
     - NOT IMPLEMENTED Break 10:21-10:45am on Oct 22, 1991 (Tue): power dip
-    - Early Close 2pm on Dec 24, 1991 (Tue): Christmas Eve   
+    - Early Close 2pm on Dec 24, 1991 (Tue): Christmas Eve
     - NOT IMPLEMENTED Break 1 minute time UNKNOWN on Mar 19, 1992 (Thu): Former NYSE Chair Bernard J. Lasker moment of silence
     - NOT IMPLEMENTED Break 1 minute time UNKNOWN on May 15, 1992 (Fri): Former NYSE President G. Keith Funston moment of silence
-    - NOT IMPELMENTED Break 1 minute time UNKNOWN on Jun 15, 1992 (Mon): Former NYSE President Robert W. Haack moment of silence      
+    - NOT IMPELMENTED Break 1 minute time UNKNOWN on Jun 15, 1992 (Mon): Former NYSE President Robert W. Haack moment of silence
     - Early Close 2pm on Nov 27, 1992 (Fri): Day after Thanksgiving
-    - Early Close 2pm on Dec 24, 1992 (Thu): Christmas Eve           
+    - Early Close 2pm on Dec 24, 1992 (Thu): Christmas Eve
     - Early Close 1pm on Nov 26, 1993 (Fri): Day after Thanksgiving
     - Early Close 14:30 on Feb 11, 1994 (Fri): snowstorm
     - NOT IMPLEMENTED Break 12:00-12:02 on Apr 25, 1994 (Mon): Former President Richard M. Nixon moment of silence
     - Closed on Apr 27, 1994 (Wed): Former President Richard M. Nixon funderal
-    - Early Close 1pm on Nov 25, 1994 (Fri): Day after Thanksgiving          
+    - Early Close 1pm on Nov 25, 1994 (Fri): Day after Thanksgiving
     - NOT IMPLEMENTED Break 10:02-10:03 on Apr 26, 1995 (Wed): Oklahoma City bombing victims moment of silence
     - Early Close 1pm on Jul 3, 1995 (Mon): Day before Independence Day
     - Early Close 1pm on Nov 24, 1995 (Fri): Day after Thanksgiving
@@ -638,128 +693,130 @@ class NYSEExchangeCalendar(MarketCalendar):
     - NOT IMPLEMENTED Break time UNKNOWN on Apr 4, 1996 (Thu): Commerce Secretary Ron Brown and others killed in Balkans plane crash
     - Early Close 1pm on July 5, 1996 (Fri): Day after Independence Day
     - Early Close 1pm on Nov 29, 1996 (Fri): Day after Thanksgiving
-    - Early Close 1pm on Dec 24, 1996 (Tue): Christmas Eve        
+    - Early Close 1pm on Dec 24, 1996 (Tue): Christmas Eve
     - Early Close 1pm on Jul 3, 1997 (Thu): Day before Independence Day
     - NOT IMPLEMENTED Break 14:35-15:05 on Oct 27, 1997 (Mon): Circuit breaker triggered
     - Early Close 3:30pm on Oct 27, 1997 (Mon): Circuit breaker triggered
     - Early Close 1pm on Nov 28, 1997 (Fri): Day after Thanksgiving
     - Early Close 1pm on Dec 24, 1997 (Wed): Christmas Eve
-    - Early Close 1pm on Dec 26, 1997 (Fri): Friday after Christmas        
+    - Early Close 1pm on Dec 26, 1997 (Fri): Friday after Christmas
     - NOT IMPLEMENTED Break time UNKNOWN on Jul 29, 1998 (Wed): Former NYSE President William McChesney Marting, Jr. moment of silence
     - NOT IMPLEMENTED Break 13:16-14:15 on Oct 26, 1998 (Mon): Computer switch malfunction
     - Early Close 1pm on Nov 27, 1998 (Fri): Day after Thanksgiving
-    - Early Close 1pm on Dec 24, 1998 (Thu): Christmas Eve   
+    - Early Close 1pm on Dec 24, 1998 (Thu): Christmas Eve
     - NOT IMPLEMENTED Break 10:00-10:02 on Mar 25, 1999 (Thu): NATO troops in Kosovo minute of silence
     - NOT IMPLEMENTED Break 12:00-12:02 on Apr 26, 1999 (Mon): Columbine High School killings moment of silence
     - Early Close 1pm on Nov 26, 1999 (Fri): Day after Thanksgiving
-    - Early Close 1pm on Dec 24, 1999 (Fri): Christmas Eve       
+    - Early Close 1pm on Dec 24, 1999 (Fri): Christmas Eve
     - NOT IMPLEMENTED Break 12:00-12:01 on Feb 16, 2000 (Wed): Former NYSE Chair Walter N. Frank moment of silence
     - NOT IMPLEMENTED Break 12:00-12:01 on May 4, 2000 (Thu): Archbishop of NY Cardinal John O'Connor moment of silence
     - Early Close 1pm on Jul 3, 2000 (Mon): Day before Independence Day
-    - Early Close 1pm on Nov 24, 2000 (Fri): Day after Thanksgiving        
+    - Early Close 1pm on Nov 24, 2000 (Fri): Day after Thanksgiving
     - NOT IMPLEMENTED Break 10:10-11:35 on Jun 8, 2001 (Fri): computer systems connectivity problem
     - Early Close 1pm on Jul 3, 2001 (Tue): Day before Independence Day
     - Closed on Sep 11-14, 2001 (Tue-Fri): Terrorist attack on World Trade Center
     - Late Open 9:33am on Sep 17, 2001 (Mon): 2 minutes silence in honor of lives lost on 9/11
     - Late Open 9:31am on Oct 8, 2001 (Mon): 1 minute silence for troops engaged in Operation Enduring Freedom
     - Early Close 1pm on Nov 23, 2001 (Fri): Day after Thanksgiving
-    - Early Close 1pm on Dec 24, 2001 (Mon): Christmas Eve    
+    - Early Close 1pm on Dec 24, 2001 (Mon): Christmas Eve
     - NOT IMPLEMENTED Break 10:29-10:31 on May 30, 2002 (Thu): Commemorate end of recovery work at Ground Zero
-    - Early Close 1pm on Jul 5, 2002 (Fri): Day after Independence Day    
-    - Late Opening 12:00pm on Sep 11, 2002 (Wed): 1 year anniversary of 9/11 attack    
+    - Early Close 1pm on Jul 5, 2002 (Fri): Day after Independence Day
+    - Late Opening 12:00pm on Sep 11, 2002 (Wed): 1 year anniversary of 9/11 attack
     - Early Close 1pm on Nov 29, 2002 (Fri): Day after Thanksgiving
     - Early Close 1pm on Dec 24, 2002 (Tue): Christmas Eve
-    - NOT IMPLEMENTED Break 11:00-11:02 on Feb 3, 2002 (Mon): Columbia Space Shuttle lives lost moment of silence        
+    - NOT IMPLEMENTED Break 11:00-11:02 on Feb 3, 2002 (Mon): Columbia Space Shuttle lives lost moment of silence
     - Late Opening 9:32am on Mar 20, 2003 (Thu): Operation Iraqi Freedom Troops moment of silence
     - Early Close 1pm on Jul 3, 2003 (Thu): Day before Independence Day
     - NOT IMPLEMENTED multiple 1-minute Breaks 9:59 and 10:29 on Sep 11, 2003 (Thu): 9/11 Commemoration
     - Early Close 1pm on Nov 28, 2003 (Fri): Day after Thanksgiving
     - Early Close 1pm on Dec 24, 2003 (Wed): Christmas Eve
-    - Early Close 1pm on Dec 26, 2003 (Fri): Friday after Christmas        
+    - Early Close 1pm on Dec 26, 2003 (Fri): Friday after Christmas
     - Late Open 9:32am on Jun 7, 2004 (Mon): Former President Ronald Reagan death moment of silence
     - Closed on Jun 11, 2004 (Fri): Former President Ronald Reagan National Day of Mourning
-    - Early Close 1pm on Nov 26, 2004 (Fri): Day after Thanksgiving    
+    - Early Close 1pm on Nov 26, 2004 (Fri): Day after Thanksgiving
     - Early Close 3:56pm on Jun 1, 2005 (Wed): Systems communication problem
-    - Early Close 1pm on Nov 25, 2005 (Fri): Day after Thanksgiving       
-    - Early Close 1pm on Jul 3, 2006 (Mon): Day before Independence Day        
+    - Early Close 1pm on Nov 25, 2005 (Fri): Day after Thanksgiving
+    - Early Close 1pm on Jul 3, 2006 (Mon): Day before Independence Day
     - Early Close 1pm on Nov 24, 2006 (Fri): Day after Thanksgiving
-    - Late Open 9:32am on Dec 27, 2006 (Wed): Former President Gerald Ford moment of silence        
+    - Late Open 9:32am on Dec 27, 2006 (Wed): Former President Gerald Ford moment of silence
     - Closed on Jan 2, 2007 (Tue): Former President Gerald Ford National Day of Mourning
     - Early Close 1pm on Jul 3, 2007 (Tue): Day before Independence Day
     - Early Close 1pm on Nov 23, 2007 (Fri): Day after Thanksgiving
-    - Early Close 1pm on Dec 24, 2007 (Mon): Christmas Eve        
+    - Early Close 1pm on Dec 24, 2007 (Mon): Christmas Eve
     - Early Close 1pm on Jul 4, 2008 (Thu): Day before Independence Day
     - Early Close 1pm on Nov 28, 2008 (Fri): Day after Thanksgiving
-    - Early Close 1pm on Dec 24, 2008 (Wed): Christmas Eve        
+    - Early Close 1pm on Dec 24, 2008 (Wed): Christmas Eve
     - NOT IMPLEMENTED Extended Close 4:15pm on Jul 2, 2009 (Thu): Execute customer orders impacted by system irregularities
     - Early Close 1pm on Nov 27, 2009 (Fri): Day after Thanksgiving
     - Early Close 1pm on Dec 24, 2009 (Thu): Christmas Eve
-    - Early Close 1pm on Nov 26, 2010 (Fri): Day after Thanksgiving    
-    - NOT IMPLEMENTED Break 11:00-11:01 on Jan 10, 2011 (Mon): Arizona shooting victims moment of silence    
+    - Early Close 1pm on Nov 26, 2010 (Fri): Day after Thanksgiving
+    - NOT IMPLEMENTED Break 11:00-11:01 on Jan 10, 2011 (Mon): Arizona shooting victims moment of silence
 
-    end of reference: https://github.com/rsheftel/pandas_market_calendars/files/6827110/Stocks.NYSE-Closings.pdf 
+    end of reference: https://github.com/rsheftel/pandas_market_calendars/files/6827110/Stocks.NYSE-Closings.pdf
     *******************************************************************
-    
+
     https://www.streetinsider.com/Insiders+Blog/NYSE+Releases+2010+and+2011+Holiday+Calendar/4915576.html
-    - Early Close 1pm on Nov 25, 2011 (Fri): Day after Thanksgiving    
+    - Early Close 1pm on Nov 25, 2011 (Fri): Day after Thanksgiving
 
     https://holidaystracker.com/stock-market/new-york-stock-exchange-holidays-2012/
     - Early Close 1pm on Jul 4, 2012 (Tue): Day before Independence Day
     - Closed on 10/29/2012 and 10/30/2012 due to Hurricane Sandy.
-    - Early Close 1pm on Nov 23, 2012 (Fri): Day after Thanksgiving    
+    - Early Close 1pm on Nov 23, 2012 (Fri): Day after Thanksgiving
     - Early Close 1pm on Dec 24, 2012 (Mon): Christmas Eve
 
-    https://holidaystracker.com/stock-market/new-york-stock-exchange-nyse-holidays-2013/    
+    https://holidaystracker.com/stock-market/new-york-stock-exchange-nyse-holidays-2013/
     - Early Close 1pm on Jul 3, 2013 (Wed): Day before Independence Day
-    - Early Close 1pm on Nov 29, 2013 (Fri): Day after Thanksgiving    
+    - Early Close 1pm on Nov 29, 2013 (Fri): Day after Thanksgiving
     - Early Close 1pm on Dec 24, 2013 (Tue): Christmas Eve
-   
+
     https://www.streetinsider.com/Insiders+Blog/NYSE+2014+and+2015+Holiday+Hours/8999575.html    - Early Close 1pm on Jul 3, 2014 (Thu): Day before Independence Day
     - Early Close 1pm on Jul 3, 2014 (Thu): Day before Independence Day
-    - Early Close 1pm on Nov 28, 2014 (Fri): Day after Thanksgiving    
+    - Early Close 1pm on Nov 28, 2014 (Fri): Day after Thanksgiving
     - Early Close 1pm on Dec 24, 2014 (Wed): Christmas Eve
 
     https://www.businesswire.com/news/home/20141208006349/en/NYSE-Group-2016-Holiday-Calendar-and-Early-Closings
-    - Early Close 1pm on Nov 27, 2015 (Fri): Day after Thanksgiving    
+    - Early Close 1pm on Nov 27, 2015 (Fri): Day after Thanksgiving
     - Early Close 1pm on Dec 24, 2015 (Thu): Christmas Eve
-    - Early Close 1pm on Nov 25, 2016 (Fri): Day after Thanksgiving    
+    - Early Close 1pm on Nov 25, 2016 (Fri): Day after Thanksgiving
 
     https://www.stockinvestor.com/30380/stock-market-holidays-2017/
     - Early Close 1pm on Jul 3, 2017 (Mon): Day before Independence Day
-    - Early Close 1pm on Nov 24, 2017 (Fri): Day after Thanksgiving    
+    - Early Close 1pm on Nov 24, 2017 (Fri): Day after Thanksgiving
     - Early Close 1pm on Jul 3, 2018 (Tue): Day before Independence Day
-    - Early Close 1pm on Nov 23, 2018 (Fri): Day after Thanksgiving    
+    - Early Close 1pm on Nov 23, 2018 (Fri): Day after Thanksgiving
     - Closed on 12/5/2018 due to George H.W. Bush's death.
     - Early Close 1pm on Dec 24, 2018 (Tue): Christmas Eve
     - Early Close 1pm on Jul 3, 2019 (Wed): Day before Independence Day
-    - Early Close 1pm on Nov 29, 2019 (Fri): Day after Thanksgiving    
+    - Early Close 1pm on Nov 29, 2019 (Fri): Day after Thanksgiving
     - Early Close 1pm on Dec 24, 2019 (Wed): Christmas Eve
 
     https://holidaystracker.com/stock-market/new-york-stock-exchange-nyse-holidays-2020/
-    - Early Close 1pm on Nov 27, 2020 (Fri): Day after Thanksgiving    
+    - Early Close 1pm on Nov 27, 2020 (Fri): Day after Thanksgiving
     - Early Close 1pm on Dec 24, 2020 (Thu): Christmas Eve
-    
+
 
     NOTE: The exchange was **not** closed early on Friday December 26, 2008,
     nor was it closed on Friday December 26, 2014. The next Thursday Christmas
     will be in 2025.  If someone is still maintaining this code in 2025, then
     we've done alright...and we should check if it's a half day.
-    
+
     """
-    aliases = ['NYSE', 'stock', 'NASDAQ', 'BATS', 'DJIA', 'DOW']
+
+    aliases = ["NYSE", "stock", "NASDAQ", "BATS", "DJIA", "DOW"]
 
     regular_market_times = {
         "pre": ((None, time(4)),),
-        "market_open": ((None, time(10)),
-                        ("1985-01-01", time(9, 30))),
-        "market_close":((None, time(15)),
-                        ("1952-09-29", time(15, 30)),
-                        ("1974-01-01", time(16))),
-        "post": ((None, time(20)),)
+        "market_open": ((None, time(10)), ("1985-01-01", time(9, 30))),
+        "market_close": (
+            (None, time(15)),
+            ("1952-09-29", time(15, 30)),
+            ("1974-01-01", time(16)),
+        ),
+        "post": ((None, time(20)),),
     }
 
     _saturday_close = time(12)
-    _saturday_end = pd.Timestamp('1952-09-29', tz='UTC')
+    _saturday_end = pd.Timestamp("1952-09-29", tz="UTC")
 
     @property
     def name(self):
@@ -771,198 +828,264 @@ class NYSEExchangeCalendar(MarketCalendar):
 
     @property
     def weekmask(self):
-        return "Mon Tue Wed Thu Fri Sat"    #Market open on Saturdays thru 5/24/1952
+        return "Mon Tue Wed Thu Fri Sat"  # Market open on Saturdays thru 5/24/1952
 
     @property
     def regular_holidays(self):
-        return AbstractHolidayCalendar(rules=[
-            USNewYearsDayNYSEpost1952,
-            USNewYearsDayNYSEpre1952,
-            USMartinLutherKingJrAfter1998,
-            USPresidentsDay,
-            USWashingtonsBirthDayBefore1952,
-            USWashingtonsBirthDay1952to1963,
-            USWashingtonsBirthDay1964to1970,
-            USLincolnsBirthDayBefore1954,
-            GoodFriday,
-            GoodFridayPre1898,
-            GoodFriday1899to1905,
-            USMemorialDay,
-            USMemorialDayBefore1952,
-            USMemorialDay1952to1964,
-            USMemorialDay1964to1969,
-            USIndependenceDay,
-            USIndependenceDayPre1952,
-            USIndependenceDay1952to1954,
-            USLaborDayStarting1887,
-            USColumbusDayBefore1954,
-            USElectionDay1848to1967,
-            USVeteransDay1934to1953,
-            USThanksgivingDay,
-            USThanksgivingDayBefore1939,
-            USThanksgivingDay1939to1941,
-            ChristmasNYSE,
-            Christmas54to98NYSE,
-            ChristmasBefore1954,
-            USJuneteenthAfter2022,
-        ])
+        return AbstractHolidayCalendar(
+            rules=[
+                USNewYearsDayNYSEpost1952,
+                USNewYearsDayNYSEpre1952,
+                USMartinLutherKingJrAfter1998,
+                USPresidentsDay,
+                USWashingtonsBirthDayBefore1952,
+                USWashingtonsBirthDay1952to1963,
+                USWashingtonsBirthDay1964to1970,
+                USLincolnsBirthDayBefore1954,
+                GoodFriday,
+                GoodFridayPre1898,
+                GoodFriday1899to1905,
+                USMemorialDay,
+                USMemorialDayBefore1952,
+                USMemorialDay1952to1964,
+                USMemorialDay1964to1969,
+                USIndependenceDay,
+                USIndependenceDayPre1952,
+                USIndependenceDay1952to1954,
+                USLaborDayStarting1887,
+                USColumbusDayBefore1954,
+                USElectionDay1848to1967,
+                USVeteransDay1934to1953,
+                USThanksgivingDay,
+                USThanksgivingDayBefore1939,
+                USThanksgivingDay1939to1941,
+                ChristmasNYSE,
+                Christmas54to98NYSE,
+                ChristmasBefore1954,
+                USJuneteenthAfter2022,
+            ]
+        )
 
     @property
     def adhoc_holidays(self):
-        return list(chain(
-            # Recurring Holidays
-            SatAfterGoodFridayAdhoc,
-            MonBeforeIndependenceDayAdhoc,
-            SatBeforeIndependenceDayAdhoc,
-            SatAfterIndependenceDayAdhoc,
-            DaysAfterIndependenceDayAdhoc,
-            SatBeforeLaborDayAdhoc,
-            USElectionDay1968to1980Adhoc,
-            FridayAfterThanksgivingAdHoc,
-            SatBeforeChristmasAdhoc,
-            SatAfterChristmasAdhoc,
-            ChristmasEvesAdhoc,
-            DayAfterChristmasAdhoc,
-            # Retired
-            USVetransDayAdHoc,
-            SatAfterColumbusDayAdHoc,
-            LincolnsBirthDayAdhoc,
-            GrantsBirthDayAdhoc,
-            SatBeforeNewYearsAdhoc,
-            SatBeforeWashingtonsBirthdayAdhoc,
-            SatAfterWashingtonsBirthdayAdhoc,
-            SatBeforeAfterLincolnsBirthdayAdhoc,
-            SatBeforeDecorationAdhoc,
-            SatAfterDecorationAdhoc,
-            DayBeforeDecorationAdhoc,
-           # Irregularities
-            UlyssesGrantFuneral1885,
-            ColumbianCelebration1892,
-            GreatBlizzardOf1888,
-            WashingtonInaugurationCentennialCelebration1889,
-            CharterDay1898,
-            WelcomeNavalCommander1898,
-            AdmiralDeweyCelebration1899,
-            GarretHobartFuneral1899,
-            QueenVictoriaFuneral1901,
-            MovedToProduceExchange1901,
-            EnlargedProduceExchange1901,
-            McKinleyDeathAndFuneral1901,
-            KingEdwardVIIcoronation1902,
-            NYSEnewBuildingOpen1903,
-            HudsonFultonCelebration1909,
-            JamesShermanFuneral1912,
-            OnsetOfWWI1914,
-            WeatherHeatClosing1917,
-            DraftRegistrationDay1917,
-            WeatherNoHeatClosing1918,
-            DraftRegistrationDay1918,
-            ArmisticeSigned1918,
-            Homecoming27Division1919,
-            ParadeOf77thDivision1919,
-            BacklogRelief1919,
-            GeneralPershingReturn1919,
-            OfficeLocationChange1920,
-            HardingDeath1923,
-            HardingFuneral1923,
-            LindberghParade1927,
-            BacklogRelief1928,
-            BacklogRelief1929,
-            CoolidgeFuneral1933,
-            BankHolidays1933,
-            HeavyVolume1933,
-            SatClosings1944,
-            RooseveltDayOfMourning1945,
-            SatClosings1945,
-            VJday1945,
-            NavyDay1945,
-            RailroadStrike1946,
-            SatClosings1946,
-            SatClosings1947,
-            SatClosings1948,
-            SevereWeather1948,
-            SatClosings1949,
-            SatClosings1950,
-            SatClosings1951,
-            SatClosings1952,
-            KennedyFuneral1963,
-            MLKdayOfMourning1968,
-            PaperworkCrisis1968,
-            SnowClosing1969,
-            EisenhowerFuneral1969,
-            FirstLunarLandingClosing1969,
-            TrumanFuneral1972,
-            JohnsonFuneral1973,
-            NewYorkCityBlackout77,
-            HurricaneGloriaClosings1985,
-            NixonFuneral1994,
-            ReaganMourning2004,
-            FordMourning2007,
-            September11Closings2001,
-            HurricaneSandyClosings2012,
-            GeorgeHWBushDeath2018,
-        ))
-#
+        return list(
+            chain(
+                # Recurring Holidays
+                SatAfterGoodFridayAdhoc,
+                MonBeforeIndependenceDayAdhoc,
+                SatBeforeIndependenceDayAdhoc,
+                SatAfterIndependenceDayAdhoc,
+                DaysAfterIndependenceDayAdhoc,
+                SatBeforeLaborDayAdhoc,
+                USElectionDay1968to1980Adhoc,
+                FridayAfterThanksgivingAdHoc,
+                SatBeforeChristmasAdhoc,
+                SatAfterChristmasAdhoc,
+                ChristmasEvesAdhoc,
+                DayAfterChristmasAdhoc,
+                # Retired
+                USVetransDayAdHoc,
+                SatAfterColumbusDayAdHoc,
+                LincolnsBirthDayAdhoc,
+                GrantsBirthDayAdhoc,
+                SatBeforeNewYearsAdhoc,
+                SatBeforeWashingtonsBirthdayAdhoc,
+                SatAfterWashingtonsBirthdayAdhoc,
+                SatBeforeAfterLincolnsBirthdayAdhoc,
+                SatBeforeDecorationAdhoc,
+                SatAfterDecorationAdhoc,
+                DayBeforeDecorationAdhoc,
+                # Irregularities
+                UlyssesGrantFuneral1885,
+                ColumbianCelebration1892,
+                GreatBlizzardOf1888,
+                WashingtonInaugurationCentennialCelebration1889,
+                CharterDay1898,
+                WelcomeNavalCommander1898,
+                AdmiralDeweyCelebration1899,
+                GarretHobartFuneral1899,
+                QueenVictoriaFuneral1901,
+                MovedToProduceExchange1901,
+                EnlargedProduceExchange1901,
+                McKinleyDeathAndFuneral1901,
+                KingEdwardVIIcoronation1902,
+                NYSEnewBuildingOpen1903,
+                HudsonFultonCelebration1909,
+                JamesShermanFuneral1912,
+                OnsetOfWWI1914,
+                WeatherHeatClosing1917,
+                DraftRegistrationDay1917,
+                WeatherNoHeatClosing1918,
+                DraftRegistrationDay1918,
+                ArmisticeSigned1918,
+                Homecoming27Division1919,
+                ParadeOf77thDivision1919,
+                BacklogRelief1919,
+                GeneralPershingReturn1919,
+                OfficeLocationChange1920,
+                HardingDeath1923,
+                HardingFuneral1923,
+                LindberghParade1927,
+                BacklogRelief1928,
+                BacklogRelief1929,
+                CoolidgeFuneral1933,
+                BankHolidays1933,
+                HeavyVolume1933,
+                SatClosings1944,
+                RooseveltDayOfMourning1945,
+                SatClosings1945,
+                VJday1945,
+                NavyDay1945,
+                RailroadStrike1946,
+                SatClosings1946,
+                SatClosings1947,
+                SatClosings1948,
+                SevereWeather1948,
+                SatClosings1949,
+                SatClosings1950,
+                SatClosings1951,
+                SatClosings1952,
+                KennedyFuneral1963,
+                MLKdayOfMourning1968,
+                PaperworkCrisis1968,
+                SnowClosing1969,
+                EisenhowerFuneral1969,
+                FirstLunarLandingClosing1969,
+                TrumanFuneral1972,
+                JohnsonFuneral1973,
+                NewYorkCityBlackout77,
+                HurricaneGloriaClosings1985,
+                NixonFuneral1994,
+                ReaganMourning2004,
+                FordMourning2007,
+                September11Closings2001,
+                HurricaneSandyClosings2012,
+                GeorgeHWBushDeath2018,
+            )
+        )
+
+    #
     @property
     def special_closes(self):
         return [
-             (time(11, tzinfo=timezone('America/New_York')), AbstractHolidayCalendar(rules=[
-                KingEdwardDeath11amyClose1910,
-            ])),
-            (time(12, tzinfo=timezone('America/New_York')), AbstractHolidayCalendar(rules=[
-                ParadeOfNationalGuardEarlyClose1917,
-                LibertyDay12pmEarlyClose1917,
-                LibertyDay12pmEarlyClose1918,
-                WallStreetExplosionEarlyClose1920,
-                NRAdemonstration12pmEarlyClose1933,
-            ])),
-            (time(hour=12, minute=30, tzinfo=timezone('America/New_York')), AbstractHolidayCalendar(rules=[
-                RooseveltFuneral1230EarlyClose1919,
-                WoodrowWilsonFuneral1230EarlyClose1924,
-                TaftFuneral1230EarlyClose1930,
-                GasFumesOnTradingFloor1230EarlyClose1933,
-            ])),
-            (time(13, tzinfo=timezone('America/New_York')), AbstractHolidayCalendar(rules=[
-                FridayAfterIndependenceDayNYSEpre2013,
-                MonTuesThursBeforeIndependenceDay,
-                WednesdayBeforeIndependenceDayPost2013,
-                DayAfterThanksgiving1pmEarlyCloseInOrAfter1993,
-                ChristmasEvePost1999Early1pmClose,
-                GroverClevelandFuneral1pmClose1908,
-            ])),
-            (time(14, tzinfo=timezone('America/New_York')), AbstractHolidayCalendar(rules=[
-                DayAfterThanksgiving2pmEarlyCloseBefore1993,
-                HooverFuneral1400EarlyClose1964,
-                Snow2pmEarlyClose1967,
-                Snow2pmEarlyClose1978,
-                Snow2pmEarlyClose1996,
-            ])),
-            (time(14, 7, tzinfo=timezone('America/New_York')), AbstractHolidayCalendar(rules=[
-                KennedyAssassination1407EarlyClose,
-            ])),
-            (time(hour=14, minute=30, tzinfo=timezone('America/New_York')), AbstractHolidayCalendar(rules=[
-                FalseArmisticeReport1430EarlyClose1918,
-                CromwellFuneral1430EarlyClose1925,
-                Snow230EarlyClose1975,
-                Snow230pmEarlyClose1994,
-            ])),
-            (time(15, tzinfo=timezone('America/New_York')), AbstractHolidayCalendar(rules=[
-                HurricaneWatch3pmEarlyClose1976,
-            ])),
-            (time(15, 17, tzinfo=timezone('America/New_York')), AbstractHolidayCalendar(rules=[
-                ReaganAssassAttempt317pmEarlyClose1981,
-            ])),
-            (time(15, 28, tzinfo=timezone('America/New_York')), AbstractHolidayCalendar(rules=[
-               ConEdPowerFail328pmEarlyClose1981,
-            ])),
-            (time(15, 30, tzinfo=timezone('America/New_York')), AbstractHolidayCalendar(rules=[
-               CircuitBreakerTriggered330pmEarlyClose1997,
-            ])),
-            (time(15, 56, tzinfo=timezone('America/New_York')), AbstractHolidayCalendar(rules=[
-               SystemProb356pmEarlyClose2005,
-            ])),
+            (
+                time(11, tzinfo=timezone("America/New_York")),
+                AbstractHolidayCalendar(
+                    rules=[
+                        KingEdwardDeath11amyClose1910,
+                    ]
+                ),
+            ),
+            (
+                time(12, tzinfo=timezone("America/New_York")),
+                AbstractHolidayCalendar(
+                    rules=[
+                        ParadeOfNationalGuardEarlyClose1917,
+                        LibertyDay12pmEarlyClose1917,
+                        LibertyDay12pmEarlyClose1918,
+                        WallStreetExplosionEarlyClose1920,
+                        NRAdemonstration12pmEarlyClose1933,
+                    ]
+                ),
+            ),
+            (
+                time(hour=12, minute=30, tzinfo=timezone("America/New_York")),
+                AbstractHolidayCalendar(
+                    rules=[
+                        RooseveltFuneral1230EarlyClose1919,
+                        WoodrowWilsonFuneral1230EarlyClose1924,
+                        TaftFuneral1230EarlyClose1930,
+                        GasFumesOnTradingFloor1230EarlyClose1933,
+                    ]
+                ),
+            ),
+            (
+                time(13, tzinfo=timezone("America/New_York")),
+                AbstractHolidayCalendar(
+                    rules=[
+                        FridayAfterIndependenceDayNYSEpre2013,
+                        MonTuesThursBeforeIndependenceDay,
+                        WednesdayBeforeIndependenceDayPost2013,
+                        DayAfterThanksgiving1pmEarlyCloseInOrAfter1993,
+                        ChristmasEvePost1999Early1pmClose,
+                        GroverClevelandFuneral1pmClose1908,
+                    ]
+                ),
+            ),
+            (
+                time(14, tzinfo=timezone("America/New_York")),
+                AbstractHolidayCalendar(
+                    rules=[
+                        DayAfterThanksgiving2pmEarlyCloseBefore1993,
+                        HooverFuneral1400EarlyClose1964,
+                        Snow2pmEarlyClose1967,
+                        Snow2pmEarlyClose1978,
+                        Snow2pmEarlyClose1996,
+                    ]
+                ),
+            ),
+            (
+                time(14, 7, tzinfo=timezone("America/New_York")),
+                AbstractHolidayCalendar(
+                    rules=[
+                        KennedyAssassination1407EarlyClose,
+                    ]
+                ),
+            ),
+            (
+                time(hour=14, minute=30, tzinfo=timezone("America/New_York")),
+                AbstractHolidayCalendar(
+                    rules=[
+                        FalseArmisticeReport1430EarlyClose1918,
+                        CromwellFuneral1430EarlyClose1925,
+                        Snow230EarlyClose1975,
+                        Snow230pmEarlyClose1994,
+                    ]
+                ),
+            ),
+            (
+                time(15, tzinfo=timezone("America/New_York")),
+                AbstractHolidayCalendar(
+                    rules=[
+                        HurricaneWatch3pmEarlyClose1976,
+                    ]
+                ),
+            ),
+            (
+                time(15, 17, tzinfo=timezone("America/New_York")),
+                AbstractHolidayCalendar(
+                    rules=[
+                        ReaganAssassAttempt317pmEarlyClose1981,
+                    ]
+                ),
+            ),
+            (
+                time(15, 28, tzinfo=timezone("America/New_York")),
+                AbstractHolidayCalendar(
+                    rules=[
+                        ConEdPowerFail328pmEarlyClose1981,
+                    ]
+                ),
+            ),
+            (
+                time(15, 30, tzinfo=timezone("America/New_York")),
+                AbstractHolidayCalendar(
+                    rules=[
+                        CircuitBreakerTriggered330pmEarlyClose1997,
+                    ]
+                ),
+            ),
+            (
+                time(15, 56, tzinfo=timezone("America/New_York")),
+                AbstractHolidayCalendar(
+                    rules=[
+                        SystemProb356pmEarlyClose2005,
+                    ]
+                ),
+            ),
         ]
-#
+
+    #
     @property
     def special_closes_adhoc(self):
         def _union_many(indexes):
@@ -973,114 +1096,184 @@ class NYSEExchangeCalendar(MarketCalendar):
             return union_index
 
         return [
-            (time(13, tzinfo=timezone('America/New_York')),
+            (
+                time(13, tzinfo=timezone("America/New_York")),
                 # DaysBeforeIndependenceDay1pmEarlyCloseAdhoc # list
                 ChristmasEve1pmEarlyCloseAdhoc
                 + DayAfterChristmas1pmEarlyCloseAdhoc
-                + BacklogRelief1pmEarlyClose1929
+                + BacklogRelief1pmEarlyClose1929,
             ),
-            (time(14, tzinfo=timezone('America/New_York')), _union_many(
-                [pd.DatetimeIndex(
-                 ChristmasEve2pmEarlyCloseAdhoc
-                 + HeavyVolume2pmEarlyClose1933)] +
-                                      
-                [BacklogRelief2pmEarlyClose1928,
-                 TransitStrike2pmEarlyClose1966, # index
-                 Backlog2pmEarlyCloses1967, # index
-                 Backlog2pmEarlyCloses1968, # index
-                 PaperworkCrisis2pmEarlyCloses1969, # index
-                 Backlog2pmEarlyCloses1987 ])# index
+            (
+                time(14, tzinfo=timezone("America/New_York")),
+                _union_many(
+                    [
+                        pd.DatetimeIndex(
+                            ChristmasEve2pmEarlyCloseAdhoc
+                            + HeavyVolume2pmEarlyClose1933
+                        )
+                    ]
+                    + [
+                        BacklogRelief2pmEarlyClose1928,
+                        TransitStrike2pmEarlyClose1966,  # index
+                        Backlog2pmEarlyCloses1967,  # index
+                        Backlog2pmEarlyCloses1968,  # index
+                        PaperworkCrisis2pmEarlyCloses1969,  # index
+                        Backlog2pmEarlyCloses1987,
+                    ]
+                ),  # index
             ),
-            (time(14, 30, tzinfo=timezone('America/New_York')), _union_many(
-                                      
-                [PaperworkCrisis230pmEarlyCloses1969,
-                 Backlog230pmEarlyCloses1987]) # index
+            (
+                time(14, 30, tzinfo=timezone("America/New_York")),
+                _union_many(
+                    [PaperworkCrisis230pmEarlyCloses1969, Backlog230pmEarlyCloses1987]
+                ),  # index
             ),
-            (time(15, tzinfo=timezone('America/New_York')), _union_many(
-                                      
-                [PaperworkCrisis3pmEarlyCloses1969to1970,
-                 Backlog3pmEarlyCloses1987]) # index
+            (
+                time(15, tzinfo=timezone("America/New_York")),
+                _union_many(
+                    [PaperworkCrisis3pmEarlyCloses1969to1970, Backlog3pmEarlyCloses1987]
+                ),  # index
             ),
-            (time(15, 30, tzinfo=timezone('America/New_York')),
-                Backlog330pmEarlyCloses1987 # index
+            (
+                time(15, 30, tzinfo=timezone("America/New_York")),
+                Backlog330pmEarlyCloses1987,  # index
             ),
         ]
 
-#
+    #
     @property
     def special_opens(self):
         return [
-            (time(hour=9, minute=31, tzinfo=timezone('America/New_York')), AbstractHolidayCalendar(rules=[
-                ConEdXformer931amLateOpen1990,
-                EnduringFreedomMomentSilence931amLateOpen2001,
-            ])),
-            (time(hour=9, minute=32, tzinfo=timezone('America/New_York')), AbstractHolidayCalendar(rules=[
-                IraqiFreedom932amLateOpen2003,
-                ReaganMomentSilence932amLateOpen2004,
-                FordMomentSilence932amLateOpen2006,
-            ])),
-            (time(hour=9, minute=33, tzinfo=timezone('America/New_York')), AbstractHolidayCalendar(rules=[
-                Sept11MomentSilence933amLateOpen2001,
-            ])),
-            (time(hour=10, minute=15, tzinfo=timezone('America/New_York')), AbstractHolidayCalendar(rules=[
-                Snow1015LateOpen1967,
-                MerrillLynchComputer1015LateOpen1974,
-                FireDrill1015LateOpen1974,
-                FireDrill1015LateOpen1976,
-            ])),
-            (time(hour=10, minute=30, tzinfo=timezone('America/New_York')), AbstractHolidayCalendar(rules=[
-                TrafficBlockLateOpen1919,
-                TrafficBlockLateOpen1920,
-                Computer1030LateOpen1995,
-            ])),
-            (time(hour=10, minute=45, tzinfo=timezone('America/New_York')), AbstractHolidayCalendar(rules=[
-                EclipseOfSunLateOpen1925,
-                Storm1045LateOpen1969,
-            ])),
-            (time(11, tzinfo=timezone('America/New_York')), AbstractHolidayCalendar(rules=[
-                Snow11amLateOpen1934,
-                KingGeorgeVFuneral11amLateOpen1936,
-                Snow11amLateOpening1960,
-                Snow11amLateOpen1969,
-                Ice11amLateOpen1973,
-                Snow11amLateOpen1978,
-                Fire11amLateOpen1989,
-                Snow11amLateOpen1996,
-            ])),
-            (time(11, 5, tzinfo=timezone('America/New_York')), AbstractHolidayCalendar(rules=[
-                PowerFail1105LateOpen,
-            ])),
-            (time(11, 15, tzinfo=timezone('America/New_York')), AbstractHolidayCalendar(rules=[
-                Storm1115LateOpen1976,
-            ])),
-            (time(12, tzinfo=timezone('America/New_York')), AbstractHolidayCalendar(rules=[
-                KingEdwardFuneral12pmOpen1910,
-                JPMorganFuneral12pmOpen1913,
-                WilliamGaynorFuneral12pmOpen1913,
-                Snow12pmLateOpen1978,
-                Sept11Anniversary12pmLateOpen2002,
-            ])),
-            (time(13, tzinfo=timezone('America/New_York')), AbstractHolidayCalendar(rules=[
-                AnnunciatorBoardFire1pmLateOpen1921,
-            ])),
-            ]
+            (
+                time(hour=9, minute=31, tzinfo=timezone("America/New_York")),
+                AbstractHolidayCalendar(
+                    rules=[
+                        ConEdXformer931amLateOpen1990,
+                        EnduringFreedomMomentSilence931amLateOpen2001,
+                    ]
+                ),
+            ),
+            (
+                time(hour=9, minute=32, tzinfo=timezone("America/New_York")),
+                AbstractHolidayCalendar(
+                    rules=[
+                        IraqiFreedom932amLateOpen2003,
+                        ReaganMomentSilence932amLateOpen2004,
+                        FordMomentSilence932amLateOpen2006,
+                    ]
+                ),
+            ),
+            (
+                time(hour=9, minute=33, tzinfo=timezone("America/New_York")),
+                AbstractHolidayCalendar(
+                    rules=[
+                        Sept11MomentSilence933amLateOpen2001,
+                    ]
+                ),
+            ),
+            (
+                time(hour=10, minute=15, tzinfo=timezone("America/New_York")),
+                AbstractHolidayCalendar(
+                    rules=[
+                        Snow1015LateOpen1967,
+                        MerrillLynchComputer1015LateOpen1974,
+                        FireDrill1015LateOpen1974,
+                        FireDrill1015LateOpen1976,
+                    ]
+                ),
+            ),
+            (
+                time(hour=10, minute=30, tzinfo=timezone("America/New_York")),
+                AbstractHolidayCalendar(
+                    rules=[
+                        TrafficBlockLateOpen1919,
+                        TrafficBlockLateOpen1920,
+                        Computer1030LateOpen1995,
+                    ]
+                ),
+            ),
+            (
+                time(hour=10, minute=45, tzinfo=timezone("America/New_York")),
+                AbstractHolidayCalendar(
+                    rules=[
+                        EclipseOfSunLateOpen1925,
+                        Storm1045LateOpen1969,
+                    ]
+                ),
+            ),
+            (
+                time(11, tzinfo=timezone("America/New_York")),
+                AbstractHolidayCalendar(
+                    rules=[
+                        Snow11amLateOpen1934,
+                        KingGeorgeVFuneral11amLateOpen1936,
+                        Snow11amLateOpening1960,
+                        Snow11amLateOpen1969,
+                        Ice11amLateOpen1973,
+                        Snow11amLateOpen1978,
+                        Fire11amLateOpen1989,
+                        Snow11amLateOpen1996,
+                    ]
+                ),
+            ),
+            (
+                time(11, 5, tzinfo=timezone("America/New_York")),
+                AbstractHolidayCalendar(
+                    rules=[
+                        PowerFail1105LateOpen,
+                    ]
+                ),
+            ),
+            (
+                time(11, 15, tzinfo=timezone("America/New_York")),
+                AbstractHolidayCalendar(
+                    rules=[
+                        Storm1115LateOpen1976,
+                    ]
+                ),
+            ),
+            (
+                time(12, tzinfo=timezone("America/New_York")),
+                AbstractHolidayCalendar(
+                    rules=[
+                        KingEdwardFuneral12pmOpen1910,
+                        JPMorganFuneral12pmOpen1913,
+                        WilliamGaynorFuneral12pmOpen1913,
+                        Snow12pmLateOpen1978,
+                        Sept11Anniversary12pmLateOpen2002,
+                    ]
+                ),
+            ),
+            (
+                time(13, tzinfo=timezone("America/New_York")),
+                AbstractHolidayCalendar(
+                    rules=[
+                        AnnunciatorBoardFire1pmLateOpen1921,
+                    ]
+                ),
+            ),
+        ]
 
-#
+    #
     @property
     def special_opens_adhoc(self):
         return [
-            (time(9, 31, tzinfo=timezone('America/New_York')), TroopsInGulf931LateOpens1991
+            (
+                time(9, 31, tzinfo=timezone("America/New_York")),
+                TroopsInGulf931LateOpens1991,
             ),
-            (time(11, tzinfo=timezone('America/New_York')), HeavyVolume11amLateOpen1933
+            (
+                time(11, tzinfo=timezone("America/New_York")),
+                HeavyVolume11amLateOpen1933,
             ),
-            (time(12, tzinfo=timezone('America/New_York')),
-                BacklogRelief12pmLateOpen1929
-                + HeavyVolume12pmLateOpen1933
+            (
+                time(12, tzinfo=timezone("America/New_York")),
+                BacklogRelief12pmLateOpen1929 + HeavyVolume12pmLateOpen1933,
             ),
         ]
 
     # Override market_calendar.py
-    def valid_days(self, start_date, end_date, tz='UTC'):
+    def valid_days(self, start_date, end_date, tz="UTC"):
         """
         Get a DatetimeIndex of valid open business days.
 
@@ -1089,11 +1282,13 @@ class NYSEExchangeCalendar(MarketCalendar):
         :param tz: time zone in either string or pytz.timezone
         :return: DatetimeIndex of valid business days
         """
-        trading_days = super().valid_days(start_date, end_date, tz= tz)
+        trading_days = super().valid_days(start_date, end_date, tz=tz)
 
         # Starting Monday Sept. 29, 1952, no more saturday trading days
-        if tz is None: saturday_end = self._saturday_end.tz_localize(None)
-        else: saturday_end = self._saturday_end
+        if tz is None:
+            saturday_end = self._saturday_end.tz_localize(None)
+        else:
+            saturday_end = self._saturday_end
 
         above_cut_off = trading_days >= saturday_end
         if above_cut_off.any():
@@ -1102,13 +1297,15 @@ class NYSEExchangeCalendar(MarketCalendar):
 
         return trading_days
 
-
     def days_at_time(self, days, market_time, day_offset=0):
-        days = super().days_at_time(days, market_time, day_offset= day_offset)
+        days = super().days_at_time(days, market_time, day_offset=day_offset)
 
         if market_time == "market_close" and not self.is_custom(market_time):
             days = days.dt.tz_convert(self.tz)
-            days = days.where(days.dt.weekday != 5, days.dt.normalize()+ self._tdelta(self._saturday_close))
+            days = days.where(
+                days.dt.weekday != 5,
+                days.dt.normalize() + self._tdelta(self._saturday_close),
+            )
             days = days.dt.tz_convert("UTC")
         return days
 

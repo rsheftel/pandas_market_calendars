@@ -1,61 +1,37 @@
 from datetime import time
 
-from pandas.tseries.holiday import AbstractHolidayCalendar, EasterMonday, GoodFriday, Holiday
+from pandas.tseries.holiday import (
+    AbstractHolidayCalendar,
+    EasterMonday,
+    GoodFriday,
+    Holiday,
+)
 from pandas.tseries.offsets import Day, Easter
 from pytz import timezone
 
 from pandas_market_calendars.market_calendar import MarketCalendar
 
-OSENewYearsDay = Holiday(
-    "New Year's Day",
-    month=1,
-    day=1
-)
+OSENewYearsDay = Holiday("New Year's Day", month=1, day=1)
 
 OSEWednesdayBeforeEaster = Holiday(
-    "Wednesday before Easter",
-    month=1,
-    day=1,
-    offset=[Easter(), Day(-4)]
-
+    "Wednesday before Easter", month=1, day=1, offset=[Easter(), Day(-4)]
 )
 
 OSEMaundyThursday = Holiday(
-    "Maundy Thursday",
-    month=1,
-    day=1,
-    offset=[Easter(), Day(-3)]
+    "Maundy Thursday", month=1, day=1, offset=[Easter(), Day(-3)]
 )
 
 OSEGoodFriday = GoodFriday
 
 OSEEasterMonday = EasterMonday
 
-OSELabourDay = Holiday(
-    "Labour Day",
-    month=5,
-    day=1
-)
+OSELabourDay = Holiday("Labour Day", month=5, day=1)
 
-OSEConstitutionDay = Holiday(
-    "Constitution Day",
-    month=5,
-    day=17
-)
+OSEConstitutionDay = Holiday("Constitution Day", month=5, day=17)
 
-OSEWhitMonday = Holiday(
-    "Whit Monday",
-    month=1,
-    day=1,
-    offset=[Easter(), Day(50)]
-)
+OSEWhitMonday = Holiday("Whit Monday", month=1, day=1, offset=[Easter(), Day(50)])
 
-OSEAscensionDay = Holiday(
-    "Ascension Day",
-    month=1,
-    day=1,
-    offset=[Easter(), Day(39)]
-)
+OSEAscensionDay = Holiday("Ascension Day", month=1, day=1, offset=[Easter(), Day(39)])
 
 OSEChristmasEve = Holiday(
     "Christmas Eve",
@@ -63,23 +39,11 @@ OSEChristmasEve = Holiday(
     day=24,
 )
 
-OSEChristmasDay = Holiday(
-    "Christmas Day",
-    month=12,
-    day=25
-)
+OSEChristmasDay = Holiday("Christmas Day", month=12, day=25)
 
-OSEBoxingDay = Holiday(
-    "Boxing Day",
-    month=12,
-    day=26
-)
+OSEBoxingDay = Holiday("Boxing Day", month=12, day=26)
 
-OSENewYearsEve = Holiday(
-    "New Year's Eve",
-    month=12,
-    day=31
-)
+OSENewYearsEve = Holiday("New Year's Eve", month=12, day=31)
 
 
 class OSEExchangeCalendar(MarketCalendar):
@@ -109,10 +73,10 @@ class OSEExchangeCalendar(MarketCalendar):
     - New Year's Eve
     """
 
-    aliases = ['OSE']
+    aliases = ["OSE"]
     regular_market_times = {
         "market_open": ((None, time(9)),),
-        "market_close": ((None, time(16,20)),)
+        "market_close": ((None, time(16, 20)),),
     }
 
     @property
@@ -125,26 +89,28 @@ class OSEExchangeCalendar(MarketCalendar):
 
     @property
     def regular_holidays(self):
-        return AbstractHolidayCalendar(rules=[
-            OSENewYearsDay,
-            OSEMaundyThursday,
-            OSEGoodFriday,
-            OSEEasterMonday,
-            OSELabourDay,
-            OSEConstitutionDay,
-            OSEWhitMonday,
-            OSEAscensionDay,
-            OSEChristmasEve,
-            OSEChristmasDay,
-            OSEBoxingDay,
-            OSENewYearsEve
-        ])
+        return AbstractHolidayCalendar(
+            rules=[
+                OSENewYearsDay,
+                OSEMaundyThursday,
+                OSEGoodFriday,
+                OSEEasterMonday,
+                OSELabourDay,
+                OSEConstitutionDay,
+                OSEWhitMonday,
+                OSEAscensionDay,
+                OSEChristmasEve,
+                OSEChristmasDay,
+                OSEBoxingDay,
+                OSENewYearsEve,
+            ]
+        )
 
     @property
     def special_closes(self):
-        return [(
-            time(13, 0, tzinfo=self.tz),
-            AbstractHolidayCalendar(rules=[
-                OSEWednesdayBeforeEaster
-            ])
-        )]
+        return [
+            (
+                time(13, 0, tzinfo=self.tz),
+                AbstractHolidayCalendar(rules=[OSEWednesdayBeforeEaster]),
+            )
+        ]

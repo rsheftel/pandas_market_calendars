@@ -19,10 +19,22 @@ from pandas.tseries.holiday import AbstractHolidayCalendar, EasterMonday, GoodFr
 from pytz import timezone
 
 from pandas_market_calendars.holidays.uk import (
-    BoxingDay, Christmas, ChristmasEve, LSENewYearsDay, LSENewYearsEve,
-    MayBank_pre_1995, MayBank_post_1995_pre_2020, MayBank_post_2020,
-    SpringBank_pre_2002, SpringBank_post_2002_pre_2012, SpringBank_post_2012_pre_2022, SpringBank_post_2022,
-    SummerBank, WeekendBoxingDay, WeekendChristmas, UniqueCloses,
+    BoxingDay,
+    Christmas,
+    ChristmasEve,
+    LSENewYearsDay,
+    LSENewYearsEve,
+    MayBank_pre_1995,
+    MayBank_post_1995_pre_2020,
+    MayBank_post_2020,
+    SpringBank_pre_2002,
+    SpringBank_post_2002_pre_2012,
+    SpringBank_post_2012_pre_2022,
+    SpringBank_post_2022,
+    SummerBank,
+    WeekendBoxingDay,
+    WeekendChristmas,
+    UniqueCloses,
 )
 from pandas_market_calendars.market_calendar import MarketCalendar
 
@@ -46,11 +58,11 @@ class LSEExchangeCalendar(MarketCalendar):
     - Boxing Day
     - Dec. 28th (if Boxing Day is on a weekend)
     """
-    aliases = ['LSE']
+
+    aliases = ["LSE"]
     regular_market_times = {
         "market_open": ((None, time(8)),),
-        "market_close": ((None, time(16,30)),),
-
+        "market_close": ((None, time(16, 30)),),
     }
 
     @property
@@ -59,22 +71,29 @@ class LSEExchangeCalendar(MarketCalendar):
 
     @property
     def tz(self):
-        return timezone('Europe/London')
+        return timezone("Europe/London")
 
     @property
     def regular_holidays(self):
-        return AbstractHolidayCalendar(rules=[
-            LSENewYearsDay,
-            GoodFriday,
-            EasterMonday,
-            MayBank_pre_1995, MayBank_post_1995_pre_2020, MayBank_post_2020,
-            SpringBank_pre_2002, SpringBank_post_2002_pre_2012, SpringBank_post_2012_pre_2022, SpringBank_post_2022,
-            SummerBank,
-            Christmas,
-            WeekendChristmas,
-            BoxingDay,
-            WeekendBoxingDay
-        ])
+        return AbstractHolidayCalendar(
+            rules=[
+                LSENewYearsDay,
+                GoodFriday,
+                EasterMonday,
+                MayBank_pre_1995,
+                MayBank_post_1995_pre_2020,
+                MayBank_post_2020,
+                SpringBank_pre_2002,
+                SpringBank_post_2002_pre_2012,
+                SpringBank_post_2012_pre_2022,
+                SpringBank_post_2022,
+                SummerBank,
+                Christmas,
+                WeekendChristmas,
+                BoxingDay,
+                WeekendBoxingDay,
+            ]
+        )
 
     @property
     def adhoc_holidays(self):
@@ -82,10 +101,14 @@ class LSEExchangeCalendar(MarketCalendar):
 
     @property
     def special_closes(self):
-        return [(
-            time(12, 30),
-            AbstractHolidayCalendar(rules=[
-                ChristmasEve,
-                LSENewYearsEve,
-            ])
-        )]
+        return [
+            (
+                time(12, 30),
+                AbstractHolidayCalendar(
+                    rules=[
+                        ChristmasEve,
+                        LSENewYearsEve,
+                    ]
+                ),
+            )
+        ]

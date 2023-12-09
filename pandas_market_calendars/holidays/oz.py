@@ -62,4 +62,4 @@ BoxingDay = Holiday(
 UniqueCloses = []
 
 # National Day of Mourning for Her Majesty the Queen
-UniqueCloses.append(Timestamp("2022-09-22", tz='UTC'))
+UniqueCloses.append(Timestamp("2022-09-22", tz="UTC"))
