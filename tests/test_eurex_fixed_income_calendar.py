@@ -6,7 +6,7 @@ from pandas_market_calendars.calendars.eurex_fixed_income import EUREXFixedIncom
 
 def test_time_zone():
     assert EUREXFixedIncomeCalendar().tz == pytz.timezone("Europe/Berlin")
-    assert EUREXFixedIncomeCalendar().name == "EUREX Fixed Income"
+    assert EUREXFixedIncomeCalendar().name == "EUREX_Bond"
 
 def _test_year_holiday(year, bad_dates):
     eurex = EUREXFixedIncomeCalendar()

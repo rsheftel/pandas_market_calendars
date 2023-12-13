@@ -34,6 +34,7 @@ CME        CME_Equity         CMEEquityExchangeCalendar           Yes         rs
 CME        CME_Bond           CMEBondExchangeCalendar             Yes         rsheftel
 CME        CME_Agricultural   CMEAgriculturalExchangeCalendar     Yes         lionelyoung
 CME        CME Globex Crypto  CMEGlobexCryptoExchangeCalendar     Yes         Coinbase Asset Management
+EUREX      EUREX_Bond         EUREXFixedIncomeCalendar            Yes         rundef
 ========== ================= =================================== ============ ============
 
 Bond Market Calendars

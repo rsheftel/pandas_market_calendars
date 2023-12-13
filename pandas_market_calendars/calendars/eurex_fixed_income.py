@@ -68,7 +68,7 @@ class EUREXFixedIncomeCalendar(MarketCalendar):
     Trading calendar available here:
     https://www.eurex.com/resource/blob/3378814/910cf372738890f691bc1bfbccfd3aef/data/tradingcalendar_2023_en.pdf
     """
-    aliases = ["EUREX Fixed Income"]
+    aliases = ["EUREX_Bond"]
 
     regular_market_times = {
         "market_open": ((None, time(1, 10)), ("2018-12-10", time(8, 0))),
@@ -77,7 +77,7 @@ class EUREXFixedIncomeCalendar(MarketCalendar):
 
     @property
     def name(self):
-        return "EUREX Fixed Income"
+        return "EUREX_Bond"
 
     @property
     def tz(self):
