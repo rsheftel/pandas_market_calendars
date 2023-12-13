@@ -71,7 +71,7 @@ class EUREXFixedIncomeCalendar(MarketCalendar):
     aliases = ["EUREX Fixed Income"]
 
     regular_market_times = {
-        "market_open": ((None, time(1, 10)), ("2019-01-01", time(8, 0))),
+        "market_open": ((None, time(1, 10)), ("2018-12-10", time(8, 0))),
         "market_close": ((None, time(22)),),
     }
 
