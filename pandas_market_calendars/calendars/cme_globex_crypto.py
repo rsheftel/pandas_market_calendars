@@ -6,7 +6,8 @@ import pytz
 from .cme_globex_base import CMEGlobexBaseExchangeCalendar
 from pandas_market_calendars.holidays.cme import (
     GoodFriday2021,
-    GoodFridayAfter2021,
+    GoodFriday2022,
+    GoodFridayAfter2022,
     GoodFridayBefore2021,
     USIndependenceDayBefore2022PreviousDay,
 )
@@ -87,7 +88,7 @@ class CMEGlobexCryptoExchangeCalendar(CMEGlobexBaseExchangeCalendar):
         return AbstractHolidayCalendar(
             rules=[
                 GoodFridayBefore2021,
-                GoodFridayAfter2021,
+                GoodFriday2022,
                 ChristmasCME,
                 USNewYearsDay,
             ]
@@ -100,7 +101,15 @@ class CMEGlobexCryptoExchangeCalendar(CMEGlobexBaseExchangeCalendar):
         return [
             (
                 dt.time(8, 15, tzinfo=pytz.timezone("America/Chicago")),
-                AbstractHolidayCalendar(rules=[GoodFriday2021]),
+                AbstractHolidayCalendar(rules=[
+                    GoodFriday2021,
+                ]),
+            ),
+            (
+                dt.time(10, 15, tzinfo=pytz.timezone("America/Chicago")),
+                AbstractHolidayCalendar(rules=[
+                    GoodFridayAfter2022,
+                ]),
             ),
             (
                 dt.time(12, tzinfo=pytz.timezone("America/Chicago")),

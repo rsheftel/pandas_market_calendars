@@ -144,6 +144,21 @@ GoodFridayAfter2021 = Holiday(
     offset=[Easter(), Day(-2)],
     start_date=Timestamp("2022-01-01"),
 )
+GoodFriday2022 = Holiday(
+    "Good Friday",
+    month=1,
+    day=1,
+    offset=[Easter(), Day(-2)],
+    start_date=Timestamp("2022-01-01"),
+    end_date=Timestamp("2022-12-31"),
+)
+GoodFridayAfter2022 = Holiday(
+    "Good Friday",
+    month=1,
+    day=1,
+    offset=[Easter(), Day(-2)],
+    start_date=Timestamp("2023-01-01"),
+)
 # Dates when equities closed at 08:15
 GoodFriday2010 = Holiday(
     "Good Friday",
