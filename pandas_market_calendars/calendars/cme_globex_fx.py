@@ -10,7 +10,8 @@ from pandas_market_calendars.holidays.cme import (
     USPresidentsDayBefore2022,
     GoodFridayBefore2021,
     GoodFriday2021,
-    GoodFridayAfter2021,
+    GoodFriday2022,
+    GoodFridayAfter2022,
     USMemorialDay2021AndPrior,
     USIndependenceDayBefore2022,
     USLaborDayStarting1887Before2022,
@@ -55,7 +56,7 @@ class CMEGlobexFXExchangeCalendar(CMEGlobexBaseExchangeCalendar):
             rules=[
                 USNewYearsDay,
                 GoodFridayBefore2021,
-                GoodFridayAfter2021,
+                GoodFriday2022,
                 Christmas,
             ]
         )
@@ -69,7 +70,15 @@ class CMEGlobexFXExchangeCalendar(CMEGlobexBaseExchangeCalendar):
         """
         # Source https://www.cmegroup.com/tools-information/holiday-calendar.html
         return [
-            (_1015, AbstractHolidayCalendar(rules=[GoodFriday2021])),
+            (
+                _1015,
+                AbstractHolidayCalendar(
+                    rules=[
+                        GoodFriday2021,
+                        GoodFridayAfter2022,
+                    ]
+                ),
+            ),
             (
                 _1200,
                 AbstractHolidayCalendar(
