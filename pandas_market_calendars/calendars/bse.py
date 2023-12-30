@@ -2,11 +2,12 @@
 Bombay Stock Exchnage
 """
 
+from datetime import time
+
 from pandas import Timestamp
 from pytz import timezone
-from datetime import time
-from pandas_market_calendars.market_calendar import MarketCalendar
 
+from pandas_market_calendars.market_calendar import MarketCalendar
 
 BSEClosedDay = [
     Timestamp("1997-01-23", tz="UTC"),
@@ -364,8 +365,7 @@ BSEClosedDay = [
     Timestamp("2023-04-14", tz="UTC"),  # Fri, Ambedkar Jayanti
     Timestamp("2023-04-22", tz="UTC"),  # Sat, EID AL FITR
     Timestamp("2023-05-01", tz="UTC"),  # Mon, Maharashtra Din
-    Timestamp("2023-06-28", tz="UTC"),  # Wed, Bakri Id / Eid ul-Adha
-    Timestamp("2023-06-29", tz="UTC"),  # GitHub Issue #277
+    Timestamp("2023-06-29", tz="UTC"),  # Wed, Bakri Id / Eid ul-Adha
     Timestamp("2023-08-15", tz="UTC"),  # Tue, Independence Day
     Timestamp("2023-09-19", tz="UTC"),  # Tue, Ganesh Chaturthi
     Timestamp("2023-10-02", tz="UTC"),  # Mon, Gandhi Jayanti

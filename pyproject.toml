@@ -1,31 +1,28 @@
 [project]
 name = "pandas_market_calendars"
-version = "4.3.2"
+version = "4.4.0"
 authors = [
-  { name="Ryan Sheftel", email="rsheftel@alumni.upenn.edu" },
+    { name = "Ryan Sheftel", email = "rsheftel@alumni.upenn.edu" },
 ]
 description = "Market and exchange trading calendars for pandas"
 readme = "README.rst"
 requires-python = ">=3.8"
 keywords = ["trading", "exchanges", "markets", "OTC", "datetime", "holiday", "business days"]
-license = { text="MIT" }
+license = { text = "MIT" }
 classifiers = [
-        'Development Status :: 5 - Production/Stable',
-
-        # Indicate who your project is intended for
-        'Intended Audience :: Developers',
-        'Topic :: Software Development',
-
-        # Pick your license as you wish (should match "license" above)
-        'License :: OSI Approved :: MIT License',
-
-        # Specify the Python versions you support here.
-        'Programming Language :: Python :: 3.8',
-        'Programming Language :: Python :: 3.9',
-        'Programming Language :: Python :: 3.10',
-        'Programming Language :: Python :: 3.11',
+    'Development Status :: 5 - Production/Stable',
+    # Indicate who your project is intended for
+    'Intended Audience :: Developers',
+    'Topic :: Software Development',
+    # Pick your license as you wish (should match "license" above)
+    'License :: OSI Approved :: MIT License',
+    # Specify the Python versions you support here.
+    'Programming Language :: Python :: 3.8',
+    'Programming Language :: Python :: 3.9',
+    'Programming Language :: Python :: 3.10',
+    'Programming Language :: Python :: 3.11',
 ]
-dependencies = ['pandas>=1.1', 'pytz', 'python-dateutil', 'exchange_calendars>=3.3']
+dependencies = ['pandas>=1.1, <2.0', 'pytz', 'python-dateutil', 'exchange_calendars>=3.3']
 
 [project.optional-dependencies]
 dev = ['pytest', 'black==23.7.0', 'pre-commit']
@@ -52,17 +49,14 @@ exclude_also = [
     # Don't complain about missing debug-only code:
     "def __repr__",
     "if self\\.debug",
-
     # Don't complain if tests don't hit defensive assertion code:
     "raise AssertionError",
     "raise NotImplementedError",
-
     # Don't complain if non-runnable code isn't run:
     "if 0:",
     "if __name__ == .__main__.:",
-
     # Don't complain about abstract methods, they aren't run:
     "@(abc\\.)?abstractmethod",
-    ]
+]
 
 ignore_errors = true
