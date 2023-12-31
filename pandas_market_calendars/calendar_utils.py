@@ -4,8 +4,8 @@ Utilities to use with market_calendars
 import itertools
 import warnings
 
-import pandas as pd
 import numpy as np
+import pandas as pd
 
 
 def merge_schedules(schedules, how="outer"):
@@ -104,9 +104,9 @@ class _date_range:
     """
 
     def __init__(self, schedule=None, frequency=None, closed="right", force_close=True):
-        if not closed in ("left", "right", "both", None):
+        if closed not in ("left", "right", "both", None):
             raise ValueError("closed must be 'left', 'right', 'both' or None.")
-        elif not force_close in (True, False, None):
+        elif force_close not in (True, False, None):
             raise ValueError("force_close must be True, False or None.")
 
         self.closed = closed
@@ -127,11 +127,11 @@ class _date_range:
 
             if "break_start" in schedule:
                 if not all(
-                    [
-                        schedule.market_open.le(schedule.break_start).all(),
-                        schedule.break_start.le(schedule.break_end).all(),
-                        schedule.break_end.le(schedule.market_close).all(),
-                    ]
+                        [
+                            schedule.market_open.le(schedule.break_start).all(),
+                            schedule.break_start.le(schedule.break_end).all(),
+                            schedule.break_end.le(schedule.market_close).all(),
+                        ]
                 ):
                     raise ValueError(
                         "Not all rows match the condition: "
@@ -190,21 +190,21 @@ class _date_range:
         if self.closed == "left":
             opens = schedule.start.repeat(num_bars)  # keep as is
             time_series = (
-                opens.groupby(opens.index).cumcount()
-            ) * self.frequency + opens
+                              opens.groupby(opens.index).cumcount()
+                          ) * self.frequency + opens
         elif self.closed == "right":
             opens = schedule.start.repeat(num_bars)  # dont add row but shift up
             time_series = (
-                opens.groupby(opens.index).cumcount() + 1
-            ) * self.frequency + opens
+                                  opens.groupby(opens.index).cumcount() + 1
+                          ) * self.frequency + opens
         else:
             num_bars += 1
             opens = schedule.start.repeat(num_bars)  # add row but dont shift up
             time_series = (
-                opens.groupby(opens.index).cumcount()
-            ) * self.frequency + opens
+                              opens.groupby(opens.index).cumcount()
+                          ) * self.frequency + opens
 
-        if not self.force_close is None:
+        if self.force_close is not None:
             time_series = time_series[time_series.le(schedule.end.repeat(num_bars))]
             if self.force_close:
                 time_series = pd.concat([time_series, schedule.end]).sort_values()

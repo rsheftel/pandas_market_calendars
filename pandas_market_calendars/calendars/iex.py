@@ -1,6 +1,6 @@
 from datetime import time
 from itertools import chain
-from .nyse import NYSEExchangeCalendar
+
 from pandas.tseries.holiday import AbstractHolidayCalendar
 from pytz import timezone
 
@@ -18,6 +18,7 @@ from pandas_market_calendars.holidays.nyse import (
     DaysBeforeIndependenceDay1pmEarlyCloseAdhoc,
     ChristmasEvesAdhoc,
 )
+from .nyse import NYSEExchangeCalendar
 
 
 class IEXExchangeCalendar(NYSEExchangeCalendar):

@@ -1,4 +1,5 @@
 from datetime import time
+from itertools import chain
 
 import pandas as pd
 from pandas.tseries.holiday import (
@@ -10,7 +11,6 @@ from pandas.tseries.holiday import (
     weekend_to_monday,
 )
 from pytz import timezone
-from itertools import chain
 
 from pandas_market_calendars.holidays.uk import (
     BoxingDay,

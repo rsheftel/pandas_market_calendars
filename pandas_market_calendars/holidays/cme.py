@@ -2,10 +2,8 @@ import datetime
 
 from dateutil.relativedelta import MO, TH, FR
 from pandas import DateOffset, Timestamp
-from pandas.tseries.holiday import Holiday, Easter
-from pandas.tseries.holiday import nearest_workday
+from pandas.tseries.holiday import Holiday, Easter, nearest_workday
 from pandas.tseries.offsets import Day
-
 
 #########
 # Martin Luther King
@@ -119,7 +117,7 @@ GoodFridayBefore2021NotEarlyClose = Holiday(
     end_date=Timestamp("2020-12-31"),
 )
 
-## CME Interest Rate Products have this odd close
+# CME Interest Rate Products have this odd close
 GoodFriday2009 = Holiday(
     "Good Friday",
     month=1,
@@ -197,7 +195,7 @@ USMemorialDay2021AndPrior = Holiday(
     start_date=Timestamp("1971-01-01"),
     end_date=Timestamp("2021-12-31"),
     offset=DateOffset(weekday=MO(1)),
-)  #### Equity Products
+)  # Equity Products
 USMemorialDay2013AndPrior = Holiday(
     "Memorial Day",
     month=5,
@@ -303,7 +301,6 @@ USLaborDayStarting1887After2014 = Holiday(
     offset=DateOffset(weekday=MO(1)),
 )
 
-
 #########
 # Thanksgiving
 #########
@@ -332,8 +329,9 @@ USThanksgivingAfter2014 = Holiday(
     offset=DateOffset(weekday=TH(4)),
 )
 
-######## The following Holidays shouldn't be set with the FR offset
-## In 2013, Nov 1st is a friday, so the 4th Friday is before the 4th Thursday...
+
+# The following Holidays shouldn't be set with the FR offset
+# In 2013, Nov 1st is a friday, so the 4th Friday is before the 4th Thursday...
 # the observance rule defined herafter fixes this
 
 # USThanksgivingFridayBefore2022 = Holiday(

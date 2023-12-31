@@ -1,5 +1,6 @@
-import os
 import datetime as dt
+import os
+
 import pandas as pd
 import pytest
 import pytz
@@ -21,12 +22,12 @@ def test_custom_open_close():
     "dates, results",
     [
         (
-            ("1984-12-30", "1985-01-03"),
-            ["1984-12-31 10:00:00", "1985-01-02 09:30:00", "1985-01-03 09:30:00"],
+                ("1984-12-30", "1985-01-03"),
+                ["1984-12-31 10:00:00", "1985-01-02 09:30:00", "1985-01-03 09:30:00"],
         ),
         (
-            ("1901-12-13", "1901-12-16"),
-            ["1901-12-13 10:00:00", "1901-12-14 10:00:00", "1901-12-16 10:00:00"],
+                ("1901-12-13", "1901-12-16"),
+                ["1901-12-13 10:00:00", "1901-12-14 10:00:00", "1901-12-16 10:00:00"],
         ),
     ],
 )
@@ -51,20 +52,20 @@ def test_days_at_time_open(dates, results):
     "dates, results",
     [
         (
-            ("1952-09-26", "1952-09-30"),
-            ["1952-09-26 15:00:00", "1952-09-29 15:30:00", "1952-09-30 15:30:00"],
+                ("1952-09-26", "1952-09-30"),
+                ["1952-09-26 15:00:00", "1952-09-29 15:30:00", "1952-09-30 15:30:00"],
         ),
         (
-            ("1973-12-28", "1974-01-02"),
-            ["1973-12-28 15:30:00", "1973-12-31 15:30:00", "1974-01-02 16:00:00"],
+                ("1973-12-28", "1974-01-02"),
+                ["1973-12-28 15:30:00", "1973-12-31 15:30:00", "1974-01-02 16:00:00"],
         ),
         (
-            ("1952-05-23", "1952-05-26"),
-            ["1952-05-23 15:00:00", "1952-05-24 12:00:00", "1952-05-26 15:00:00"],
+                ("1952-05-23", "1952-05-26"),
+                ["1952-05-23 15:00:00", "1952-05-24 12:00:00", "1952-05-26 15:00:00"],
         ),
         (
-            ("1901-12-13", "1901-12-16"),
-            ["1901-12-13 15:00:00", "1901-12-14 12:00:00", "1901-12-16 15:00:00"],
+                ("1901-12-13", "1901-12-16"),
+                ["1901-12-13 15:00:00", "1901-12-14 12:00:00", "1901-12-16 15:00:00"],
         ),
     ],
 )
@@ -401,7 +402,7 @@ def test_all_full_day_holidays_since_1928(request):
     nyse = NYSEExchangeCalendar()
     actual = pd.DatetimeIndex(nyse.adhoc_holidays).tz_convert(None).sort_values()
     slice_locs = actual.slice_locs(expected[0], expected[-1])
-    actual = actual[slice_locs[0] : slice_locs[1]]
+    actual = actual[slice_locs[0]: slice_locs[1]]
     actual = actual.append(nyse.regular_holidays.holidays(expected[0], expected[-1]))
     actual = actual.sort_values().unique()
     assert_index_equal(expected, actual)
@@ -409,7 +410,7 @@ def test_all_full_day_holidays_since_1928(request):
     # using the holidays method
     actual = pd.DatetimeIndex(nyse.holidays().holidays, dtype="datetime64[ns]").unique()
     slice_locs = actual.slice_locs(expected[0], expected[-1])
-    actual = actual[slice_locs[0] : slice_locs[1]]
+    actual = actual[slice_locs[0]: slice_locs[1]]
     assert_index_equal(expected, actual)
 
 

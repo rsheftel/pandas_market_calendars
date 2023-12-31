@@ -1,6 +1,5 @@
-from .cme_globex_base import CMEGlobexBaseExchangeCalendar
-
 from datetime import time
+
 from pandas.tseries.holiday import AbstractHolidayCalendar
 from pytz import timezone
 
@@ -10,7 +9,6 @@ from pandas_market_calendars.holidays.cme import (
     USPresidentsDayBefore2015,
     USPresidentsDayAfter2015,
     GoodFridayBefore2021NotEarlyClose,
-    GoodFridayAfter2021,
     GoodFriday2010,
     GoodFriday2012,
     GoodFriday2015,
@@ -34,6 +32,7 @@ from pandas_market_calendars.holidays.us import (
     Christmas,
     USJuneteenthAfter2022,
 )
+from .cme_globex_base import CMEGlobexBaseExchangeCalendar
 
 
 class CMEGlobexEquitiesExchangeCalendar(CMEGlobexBaseExchangeCalendar):

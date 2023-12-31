@@ -1,6 +1,5 @@
-import pytz
-
 import pandas as pd
+import pytz
 from pandas.testing import assert_index_equal
 from pandas.tseries.offsets import CustomBusinessDay
 
@@ -3984,7 +3983,7 @@ def test_2024():
     early_closes = [
         pd.Timestamp(
             "2024-07-03 1:00PM", tz="America/New_York"
-        ),  #  Day before July 4th
+        ),  # Day before July 4th
         pd.Timestamp(
             "2024-11-29 1:00PM", tz="America/New_York"
         ),  # Day after Thanksgiving
@@ -4015,7 +4014,7 @@ def test_2025():
     early_closes = [
         pd.Timestamp(
             "2025-07-03 1:00PM", tz="America/New_York"
-        ),  #  Day before July 4th
+        ),  # Day before July 4th
         pd.Timestamp(
             "2025-11-28 1:00PM", tz="America/New_York"
         ),  # Day after Thanksgiving

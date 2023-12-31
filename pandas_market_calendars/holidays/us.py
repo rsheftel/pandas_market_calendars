@@ -1,4 +1,4 @@
-from dateutil.relativedelta import MO, TH, TU, FR
+from dateutil.relativedelta import MO, TH, TU
 from pandas import DateOffset, Timestamp, date_range
 from pandas.tseries.holiday import Holiday, nearest_workday, sunday_to_monday
 from pandas.tseries.offsets import Day
@@ -363,7 +363,6 @@ USNationalDaysofMourning = [
     Timestamp("2007-01-02", tz="UTC"),
     Timestamp("2018-12-05", tz="UTC"),
 ]
-
 
 #######################################
 # US Juneteenth (June 19th)

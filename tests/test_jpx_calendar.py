@@ -259,7 +259,7 @@ def test_jpx_trading_days_since_1949(request):
     adhoc_dates = map(lambda dt: dt.tz_localize(None), jpx_calendar.adhoc_holidays)
     adhoc_index = pd.DatetimeIndex(adhoc_dates).sort_values()
     slice_locs = adhoc_index.slice_locs(start_date, end_date)
-    adhoc_holidays = adhoc_index[slice_locs[0] : slice_locs[1]]
+    adhoc_holidays = adhoc_index[slice_locs[0]: slice_locs[1]]
     holidays = reg_holidays
     holidays = holidays.append(adhoc_holidays)
     holidays = holidays.sort_values().unique()

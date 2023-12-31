@@ -1,5 +1,5 @@
 .. pandas_market_calendars documentation master file, created by
-   sphinx-quickstart on Tue Dec 27 08:02:38 2016.
+sphinx-quickstart on Tue Dec 27 08:02:38 2016.
 
 .. include:: ../README.rst
 

@@ -8,6 +8,7 @@ def test_time_zone():
     assert EUREXFixedIncomeCalendar().tz == pytz.timezone("Europe/Berlin")
     assert EUREXFixedIncomeCalendar().name == "EUREX_Bond"
 
+
 def _test_year_holiday(year, bad_dates):
     eurex = EUREXFixedIncomeCalendar()
     good_dates = eurex.valid_days(f"{year}-01-01", f"{year}-12-31")
@@ -25,6 +26,7 @@ def _test_year_holiday(year, bad_dates):
     for date in expected_good_dates:
         assert pd.Timestamp(date, tz="UTC") in good_dates
 
+
 def test_2017_holidays():
     """
     Eurex is closed for trading and clearing (exercise, settlement and cash)
@@ -32,6 +34,7 @@ def test_2017_holidays():
     """
     bad_dates = ["2017-04-14", "2017-04-17", "2017-05-01", "2017-12-25", "2017-12-26"]
     _test_year_holiday(2017, bad_dates)
+
 
 def test_2018_holidays():
     """
@@ -43,6 +46,7 @@ def test_2018_holidays():
                  "2018-12-31"]
     _test_year_holiday(2018, bad_dates)
 
+
 def test_2019_holidays():
     """
     Eurex is closed for trading and clearing (exercise, settlement and cash)
@@ -53,6 +57,7 @@ def test_2019_holidays():
                  "2019-12-31"]
     _test_year_holiday(2019, bad_dates)
 
+
 def test_2020_holidays():
     """
     Eurex is closed for trading and clearing (exercise, settlement and cash)
@@ -61,6 +66,7 @@ def test_2020_holidays():
     """
     bad_dates = ["2020-01-01", "2020-04-10", "2020-04-13", "2020-05-01", "2020-12-24", "2020-12-25", "2020-12-31"]
     _test_year_holiday(2020, bad_dates)
+
 
 def test_2021_holidays():
     """
@@ -91,5 +97,6 @@ def test_2023_holidays():
 
 
 def test_2024_holidays():
-    bad_dates = ["2024-01-01", "2024-03-29", "2024-04-01", "2024-05-01", "2024-12-24", "2024-12-25", "2024-12-26", "2024-12-31"]
+    bad_dates = ["2024-01-01", "2024-03-29", "2024-04-01", "2024-05-01", "2024-12-24", "2024-12-25", "2024-12-26",
+                 "2024-12-31"]
     _test_year_holiday(2024, bad_dates)

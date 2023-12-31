@@ -1,5 +1,3 @@
-from .cme_globex_base import CMEGlobexBaseExchangeCalendar
-
 from datetime import time
 
 from pandas.tseries.holiday import (
@@ -18,7 +16,6 @@ from pandas_market_calendars.market_calendar import (
     TUESDAY,
     WEDNESDAY,
 )
-
 
 # New Year's Day
 EUREXNewYearsDay = Holiday(
@@ -62,6 +59,7 @@ NewYearsEve = Holiday(
     day=31,
     days_of_week=(MONDAY, TUESDAY, WEDNESDAY, THURSDAY, FRIDAY),
 )
+
 
 class EUREXFixedIncomeCalendar(MarketCalendar):
     """

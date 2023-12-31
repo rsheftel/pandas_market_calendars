@@ -198,7 +198,8 @@ JapanMarineDay2020 = Holiday(
 )
 
 JapanMarineDay2021 = Holiday(
-    name="Marine Day",  # shift for Olympics (Olympics and Paralympics postponed until 2021 due to the COVID-19 pandemic)
+    name="Marine Day",
+    # shift for Olympics (Olympics and Paralympics postponed until 2021 due to the COVID-19 pandemic)
     year=2021,
     month=7,
     day=22,
@@ -229,14 +230,16 @@ JapanMountainDay2020 = Holiday(
 )
 
 JapanMountainDay2021 = Holiday(
-    name="Mountain Day",  # shift for Olympics (Olympics and Paralympics postponed until 2021 due to the COVID-19 pandemic)
+    name="Mountain Day",
+    # shift for Olympics (Olympics and Paralympics postponed until 2021 due to the COVID-19 pandemic)
     year=2021,
     month=8,
     day=8,
 )
 
 JapanMountainDay2021NextDay = Holiday(
-    name="Mountain Day",  # shift for Olympics (Olympics and Paralympics postponed until 2021 due to the COVID-19 pandemic)
+    name="Mountain Day",
+    # shift for Olympics (Olympics and Paralympics postponed until 2021 due to the COVID-19 pandemic)
     year=2021,
     month=8,
     day=9,
@@ -318,7 +321,8 @@ JapanSportsDay2020 = Holiday(
 )
 
 JapanSportsDay2021 = Holiday(
-    name="Sports Day",  # shift for Olympics (Olympics and Paralympics postponed until 2021 due to the COVID-19 pandemic)
+    name="Sports Day",
+    # shift for Olympics (Olympics and Paralympics postponed until 2021 due to the COVID-19 pandemic)
     year=2021,
     month=7,
     day=23,

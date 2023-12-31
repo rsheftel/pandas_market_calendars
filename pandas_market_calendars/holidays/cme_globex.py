@@ -1,8 +1,7 @@
-from dateutil.relativedelta import MO, TU, WE, TH, FR, SA, SU
-from pandas import DateOffset, Timestamp, date_range
-from datetime import timedelta
-from pandas.tseries.holiday import Holiday, nearest_workday, sunday_to_monday, Easter
-from pandas.tseries.offsets import Day, CustomBusinessDay
+from dateutil.relativedelta import MO, TH
+from pandas import DateOffset, Timestamp
+from pandas.tseries.holiday import Holiday, nearest_workday, Easter
+from pandas.tseries.offsets import Day
 
 from pandas_market_calendars.market_calendar import (
     MONDAY,
@@ -10,10 +9,7 @@ from pandas_market_calendars.market_calendar import (
     WEDNESDAY,
     THURSDAY,
     FRIDAY,
-    SATURDAY,
-    SUNDAY,
 )
-
 
 ####################################################
 # US New Years Day Jan 1
@@ -32,7 +28,6 @@ USNewYearsDay = Holiday(
         FRIDAY,
     ),
 )
-
 
 #########################################################################
 # Martin Luther King Jr.
@@ -62,7 +57,6 @@ USMartinLutherKingJrPre2022 = Holiday(
     offset=DateOffset(weekday=MO(3)),
 )
 
-
 #########################################################################
 # US Presidents Day Feb
 ##########################################################################
@@ -81,7 +75,6 @@ USPresidentsDayPre2022 = Holiday(
     day=1,
     offset=DateOffset(weekday=MO(3)),
 )
-
 
 ############################################################
 # Good Friday
@@ -142,7 +135,6 @@ USIndependenceDayPre2022 = Holiday(
     observance=nearest_workday,
 )
 
-
 #################################################
 # US Labor Day Starting 1887
 #################################################
@@ -167,7 +159,6 @@ USLaborDay = Holiday(
     start_date=Timestamp("1887-01-01"),
     offset=DateOffset(weekday=MO(1)),
 )
-
 
 ################################################
 # US Thanksgiving Nov 30

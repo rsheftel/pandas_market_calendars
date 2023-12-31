@@ -190,7 +190,6 @@ def test_protected_dict():
     s = "ProtectedDict(\n" + pformat(dict(dct), sort_dicts=False) + "\n)"
     assert str(dct) == s
 
-
 # if __name__ == '__main__':
 #
 #     for ref, obj in locals().copy().items():

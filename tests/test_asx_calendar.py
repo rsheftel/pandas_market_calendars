@@ -1,7 +1,7 @@
 from itertools import chain
 
-import pytz
 import pandas as pd
+import pytz
 
 from pandas_market_calendars.calendars.asx import ASXExchangeCalendar
 

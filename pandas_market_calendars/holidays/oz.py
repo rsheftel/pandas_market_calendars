@@ -47,7 +47,6 @@ Christmas = Holiday(
     observance=weekend_to_monday,
 )
 
-
 # Boxing day
 BoxingDay = Holiday(
     "Boxing Day",
@@ -55,7 +54,6 @@ BoxingDay = Holiday(
     day=26,
     observance=next_monday_or_tuesday,
 )
-
 
 # One-off holiday additions and removals in Australia
 

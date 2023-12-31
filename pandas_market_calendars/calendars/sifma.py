@@ -59,8 +59,23 @@ from pandas_market_calendars.holidays.sifma import (
     UKWeekendBoxingDay,
     UKPlatinumJubilee2022,
 )
-
 from pandas_market_calendars.market_calendar import MarketCalendar
+
+
+########################################################################################################################
+# SIFMA Financial Markets Calendar for US, UK, JP
+#
+# https://www.sifma.com/
+#
+# US: SIFMAUSExchangeCalendar() ['SIFMAUS', 'SIFMA_US', "Capital_Markets_US", "Financial_Markets_US", "Bond_Markets_US"]
+# UK: SIFMAUKExchangeCalendar() ['SIFMAUK', 'SIFMA_UK', "Capital_Markets_UK", "Financial_Markets_UK", "Bond_Markets_UK"]
+# JP: SIFMAJPExchangeCalendar() ['SIFMAJP', 'SIFMA_JP', "Capital_Markets_JP", "Financial_Markets_JP", "Bond_Markets_JP"]
+#
+# Trading Hours:
+# US: 7:00 to 17:30
+# UK: 8:00 to 17:00
+# JP: 8:30 to 18:30
+########################################################################################################################
 
 # AbstractHolidayCalendar.start_date = '1998-01-01'
 
