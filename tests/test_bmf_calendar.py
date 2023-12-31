@@ -1,5 +1,5 @@
 import datetime
-import pytest
+
 import pandas as pd
 import pytz
 
@@ -27,13 +27,13 @@ def test_post_2022_regulation_change():
     for year in [2017, 2018, 2019, 2021]:  # skip 2020 due to test above
         for month, day in [(1, 25), (7, 9), (11, 20)]:
             assert (
-                pd.Timestamp(datetime.date(year, month, day), tz="UTC").to_datetime64()
-                in holidays
+                    pd.Timestamp(datetime.date(year, month, day), tz="UTC").to_datetime64()
+                    in holidays
             )
 
     for year in range(2022, 2040):
         for month, day in [(1, 25), (7, 9), (11, 20)]:
             assert (
-                pd.Timestamp(datetime.date(year, month, day), tz="UTC").to_datetime64()
-                not in holidays
+                    pd.Timestamp(datetime.date(year, month, day), tz="UTC").to_datetime64()
+                    not in holidays
             )

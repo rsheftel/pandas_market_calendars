@@ -12,7 +12,6 @@ from pandas.tseries.holiday import (
 from pandas.tseries.offsets import LastWeekOfMonth, WeekOfMonth
 from pytz import timezone
 
-from pandas_market_calendars.holidays.us import USNewYearsDay
 from pandas_market_calendars.holidays.cn import (
     bsd_mapping,
     dbf_mapping,
@@ -21,6 +20,7 @@ from pandas_market_calendars.holidays.cn import (
     sf_mapping,
     tsd_mapping,
 )
+from pandas_market_calendars.holidays.us import USNewYearsDay
 from pandas_market_calendars.market_calendar import MarketCalendar
 
 

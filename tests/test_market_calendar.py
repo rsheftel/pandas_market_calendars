@@ -12,19 +12,22 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
+import pickle
 from datetime import time
 from itertools import chain
-from pytz import timezone
-import pickle
 
-
-import pandas as pd
+import exchange_calendars as ecal
 import numpy as np
+import pandas as pd
 import pytest
 from pandas.testing import assert_frame_equal, assert_index_equal, assert_series_equal
 from pandas.tseries.holiday import AbstractHolidayCalendar
+from pytz import timezone
 
 from pandas_market_calendars import get_calendar, get_calendar_names
+from pandas_market_calendars.calendars.mirror import TradingCalendar
+from pandas_market_calendars.calendars.nyse import NYSEExchangeCalendar
+from pandas_market_calendars.holidays.nyse import Sept11Anniversary12pmLateOpen2002
 from pandas_market_calendars.holidays.us import (
     Christmas,
     HurricaneSandyClosings,
@@ -32,14 +35,9 @@ from pandas_market_calendars.holidays.us import (
     USNationalDaysofMourning,
     USNewYearsDay,
 )
-from pandas_market_calendars.holidays.nyse import Sept11Anniversary12pmLateOpen2002
 from pandas_market_calendars.market_calendar import (
     MarketCalendar,
 )  # , clean_dates, days_at_time
-from pandas_market_calendars.calendars.mirror import TradingCalendar
-from pandas_market_calendars.calendars.nyse import NYSEExchangeCalendar
-
-import exchange_calendars as ecal
 
 
 class FakeCalendar(MarketCalendar):
@@ -159,17 +157,17 @@ def patch_get_current_time(monkeypatch):
 def test_protected_dictionary(cal=None):
     cal = FakeCalendar() if cal is None else cal
     # shouldn't be able to add
-    with pytest.raises(TypeError) as e:
+    with pytest.raises(TypeError):
         cal.regular_market_times["market_open"] = time(12)
 
-    with pytest.raises(TypeError) as e:
+    with pytest.raises(TypeError):
         cal.open_close_map["anything"] = time(12)
 
     # nor delete
-    with pytest.raises(TypeError) as e:
+    with pytest.raises(TypeError):
         del cal.regular_market_times["market_open"]
 
-    with pytest.raises(TypeError) as e:
+    with pytest.raises(TypeError):
         del cal.open_close_map["break_start"]
 
 
@@ -186,7 +184,7 @@ def test_market_time_names():
         }
 
     with pytest.raises(ValueError) as e:
-        cal = WrongCal()
+        WrongCal()
 
     assert "'interruption_' prefix is reserved" in e.exconly(), e.exconly()
 
@@ -231,10 +229,10 @@ def test_get_time():
 
     cal.remove_time("market_open")
     with pytest.raises(NotImplementedError):
-        t = cal.open_time
+        cal.open_time
 
     with pytest.raises(KeyError):
-        t = cal.get_time_on("pre", "1900-01-01")
+        cal.get_time_on("pre", "1900-01-01")
 
 
 def test_get_offset():
@@ -334,13 +332,13 @@ def test_add_change_remove_time_w_open_close_map():
     ## Non standard time
 
     cal.add_time("newtime", time(10))
-    assert not "newtime" in cal.open_close_map and "newtime" in cal.regular_market_times
+    assert "newtime" not in cal.open_close_map and "newtime" in cal.regular_market_times
 
     cal.remove_time("newtime")
     assert "newtime" not in cal.regular_market_times
 
     cal.add_time("newtime", time(10), opens=None)
-    assert not "newtime" in cal.open_close_map and "newtime" in cal.regular_market_times
+    assert "newtime" not in cal.open_close_map and "newtime" in cal.regular_market_times
 
     cal.change_time("newtime", time(11), opens=False)
     assert cal.open_close_map["newtime"] is False
@@ -355,8 +353,8 @@ def test_add_change_remove_time_w_open_close_map():
 
     cal.remove_time("market_close")
     assert (
-        not "market_close" in cal.open_close_map
-        and not "market_close" in cal.regular_market_times
+            "market_close" not in cal.open_close_map
+            and "market_close" not in cal.regular_market_times
     )
 
     cal.add_time("market_close", time(15))
@@ -368,7 +366,7 @@ def test_add_change_remove_time_w_open_close_map():
     cal.remove_time("market_close")
     cal.add_time("market_close", time(15), opens=None)
     assert (
-        not "market_close" in cal.open_close_map
+            "market_close" not in cal.open_close_map
         and "market_close" in cal.regular_market_times
     )
 
@@ -397,14 +395,14 @@ def test_open_close_map():
         "pre": True,
         "post": False,
     }
-    assert not cal.open_close_map is FakeCalendar.open_close_map
+    assert cal.open_close_map is not FakeCalendar.open_close_map
     assert cal.open_close_map == FakeCalendar.open_close_map
 
     class WrongCal(FakeCalendar):
         open_close_map = {**FakeCalendar.open_close_map, "pre": None, "post": "string"}
 
     with pytest.raises(AssertionError) as e:
-        cal = WrongCal()
+        WrongCal()
 
     assert "Values in open_close_map need to be True or False" in str(e)
 
@@ -429,7 +427,7 @@ def test_dunder_methods():
 
 
 def test_default_calendars():
-    for name in filter(lambda n: not n[:4] in ("Test", "_Tst"), get_calendar_names()):
+    for name in filter(lambda n: n[:4] not in ("Test", "_Tst"), get_calendar_names()):
         # XKRX has discontinued market times, which should raise a warning
         if name == "XKRX":
             with pytest.warns(UserWarning):
@@ -1618,7 +1616,7 @@ def test_ec_property():
     mcaliepa = get_calendar("IEPA")
 
     assert mcaliepa._EC_NOT_INITIALIZED
-    ec = mcaliepa.ec
+    mcaliepa.ec
     assert not mcaliepa._EC_NOT_INITIALIZED
 
     assert test_cal._EC_NOT_INITIALIZED

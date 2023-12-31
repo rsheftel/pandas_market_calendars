@@ -1,6 +1,5 @@
 import pandas as pd
 import pytest
-import pytz
 from pandas.tseries.offsets import Day, Hour, Minute
 
 from pandas_market_calendars.calendars.cme_globex_fixed_income import (
@@ -558,6 +557,7 @@ TZ = "America/Chicago"
         ("2022-12-30", "open"),
         ("2023-01-02", "closed"),
         ("2023-01-03", "open"),
+        ("2023-04-07", "1015"),
     ],
     ids=lambda x: f"{x[0]} {x[1]}",
 )
@@ -568,7 +568,7 @@ def test_2020_through_2022_and_prior_holidays(day_status):
 
     year = int(day_str.split("-")[0])
     under_test = CMEGlobexFixedIncomeCalendar()
-    schedule = under_test.schedule(f"{year}-01-01", f"{year+1}-01-01", tz=TZ)
+    schedule = under_test.schedule(f"{year}-01-01", f"{year + 1}-01-01", tz=TZ)
 
     if expected_status == "open":
         s = schedule.loc[day_str]

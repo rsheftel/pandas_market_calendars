@@ -1,7 +1,6 @@
-import pytz
 import pandas as pd
+import pytz
 from pandas.testing import assert_index_equal
-
 
 from pandas_market_calendars.calendars.sifma import (
     SIFMAUSExchangeCalendar,
@@ -52,7 +51,7 @@ def _test_has_late_opens(cal, late_opens, start, end):
     expected = cal.late_opens(schedule)
     assert len(expected) == len(late_opens)
     for ts in late_opens:
-        assert _test_verify_late_open_time(schedule, ts) == True
+        assert _test_verify_late_open_time(schedule, ts) is True
 
 
 def _test_verify_early_close_time(schedule, timestamp):
@@ -68,7 +67,7 @@ def _test_has_early_closes(cal, early_closes, start, end):
     expected = cal.early_closes(schedule)
     assert len(expected) == len(early_closes)
     for ts in early_closes:
-        assert _test_verify_early_close_time(schedule, ts) == True
+        assert _test_verify_early_close_time(schedule, ts) is True
 
 
 #########################################################################

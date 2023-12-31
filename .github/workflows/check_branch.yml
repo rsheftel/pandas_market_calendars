@@ -1,19 +1,19 @@
-  name: check_branch
-  on:
-    pull_request_target:
-      branches:
-        - master
-      
-    workflow_dispatch:
+name: check_branch
+on:
+  pull_request_target:
+    branches:
+      - master
 
-  jobs:  
-    wrong_branch:
-      runs-on: ubuntu-latest
-      if: ${{ github.event.pull_request.head.repo.fork || github.head_ref != 'dev' }}
-      
-      steps:
-        - uses: superbrothers/close-pull-request@v3
-          with:
-            comment: Please re-open this PR against the dev branch. For more information, consult CONTRIBUTING.md.
-        - run: echo PR against master that is not based on dev && exit 1
+  workflow_dispatch:
+
+jobs:
+  wrong_branch:
+    runs-on: ubuntu-latest
+    if: ${{ github.event.pull_request.head.repo.fork || github.head_ref != 'dev' }}
+
+    steps:
+      - uses: superbrothers/close-pull-request@v3
+        with:
+          comment: Please re-open this PR against the dev branch. For more information, consult CONTRIBUTING.md.
+      - run: echo PR against master that is not based on dev && exit 1
         

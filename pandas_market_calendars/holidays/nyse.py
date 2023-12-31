@@ -1,7 +1,7 @@
-import pandas as pd
+from datetime import timedelta
+
 from dateutil.relativedelta import MO, TH, TU
 from pandas import DateOffset, Timestamp, date_range
-from datetime import timedelta
 from pandas.tseries.holiday import Holiday, nearest_workday, sunday_to_monday, Easter
 from pandas.tseries.offsets import Day, CustomBusinessDay
 
@@ -14,6 +14,7 @@ from pandas_market_calendars.market_calendar import (
     SATURDAY,
     SUNDAY,
 )
+
 
 ################################################################################################
 # main reference:
@@ -584,7 +585,7 @@ ChristmasEve2pmEarlyCloseAdhoc = [
     Timestamp("1975-12-24", tz="UTC"),
     Timestamp(
         "1990-12-24", tz="UTC"
-    ),  #### This one was also in the 1pm list, in the tests you check for 2pm
+    ),  # This one was also in the 1pm list, in the tests you check for 2pm
     Timestamp("1991-12-24", tz="UTC"),
     Timestamp("1992-12-24", tz="UTC"),
 ]
@@ -610,7 +611,6 @@ SatAfterChristmasAdhoc = [
     Timestamp("1931-12-26", tz="UTC"),
     Timestamp("1936-12-26", tz="UTC"),
 ]
-
 
 #####################################
 # Retired holidays
@@ -644,7 +644,6 @@ SatAfterColumbusDayAdHoc = [
     Timestamp("1945-10-13", tz="UTC"),
 ]
 
-
 ##########################
 # Non-recurring holidays
 ##########################
@@ -664,7 +663,6 @@ WashingtonInaugurationCentennialCelebration1889 = [
     Timestamp("1889-04-30", tz="UTC"),
     Timestamp("1889-05-01", tz="UTC"),
 ]
-
 
 # 1892
 ColumbianCelebration1892 = [
@@ -993,7 +991,6 @@ GasFumesOnTradingFloor1230EarlyClose1933 = Holiday(
     end_date=Timestamp("1933-08-04"),
 )
 
-
 HeavyVolume1933 = [
     Timestamp("1933-07-29", tz="UTC"),
     Timestamp("1933-08-05", tz="UTC"),
@@ -1002,7 +999,6 @@ HeavyVolume1933 = [
     Timestamp("1933-08-26", tz="UTC"),
     Timestamp("1933-09-02", tz="UTC"),
 ]
-
 
 HeavyVolume12pmLateOpen1933 = [
     Timestamp("1933-07-24", tz="UTC"),
@@ -1176,11 +1172,9 @@ Backlog2pmEarlyCloses1968 = date_range(
     tz="UTC",
 )
 
-
 MLKdayOfMourning1968 = [
     Timestamp("1968-04-09", tz="UTC"),
 ]
-
 
 PaperworkCrisis1968 = [
     Timestamp("1968-06-12", tz="UTC"),
@@ -1207,7 +1201,6 @@ PaperworkCrisis1968 = [
     Timestamp("1968-12-11", tz="UTC"),
     Timestamp("1968-12-18", tz="UTC"),
 ]
-
 
 # 1969
 PaperworkCrisis2pmEarlyCloses1969 = date_range(
@@ -1370,7 +1363,6 @@ ConEdPowerFail328pmEarlyClose1981 = Holiday(
 
 # http://en.wikipedia.org/wiki/Hurricane_Gloria
 HurricaneGloriaClosings1985 = [Timestamp("1985-09-27", tz="UTC")]
-
 
 # 1987
 Backlog2pmEarlyCloses1987 = date_range("1987-10-23", "1987-10-30", tz="UTC")

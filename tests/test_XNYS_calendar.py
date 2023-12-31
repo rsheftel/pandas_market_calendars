@@ -1,7 +1,6 @@
 """
 This tests the NYSE calendar from the exchange_calendars package that is brought in via the mirror
 """
-import os
 
 import pandas as pd
 import pytz

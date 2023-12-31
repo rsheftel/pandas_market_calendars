@@ -104,10 +104,10 @@ class MarketCalendar(metaclass=MarketCalendarMeta):
         self.open_close_map = self.open_close_map.copy()
         self._customized_market_times = []
 
-        if not open_time is None:
+        if open_time is not None:
             self.change_time("market_open", open_time)
 
-        if not close_time is None:
+        if close_time is not None:
             self.change_time("market_close", close_time)
 
         if not hasattr(self, "_market_times"):
@@ -257,7 +257,7 @@ class MarketCalendar(metaclass=MarketCalendarMeta):
         :param opens: see .change_time docstring
         :return: None
         """
-        assert not market_time in self.regular_market_times, (
+        assert market_time not in self.regular_market_times, (
             f"{market_time} is already in regular_market_times:"
             f"\n{self._market_times}"
         )
@@ -715,7 +715,7 @@ class MarketCalendar(metaclass=MarketCalendarMeta):
             )
 
         _adj_others = force_special_times is True
-        _adj_col = not force_special_times is None
+        _adj_col = force_special_times is not None
         _open_adj = _close_adj = []
 
         schedule = pd.DataFrame()

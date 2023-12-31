@@ -1,6 +1,5 @@
-import pytz
-
 import pandas as pd
+import pytz
 from pandas.testing import assert_index_equal
 from pandas.tseries.offsets import CustomBusinessDay
 
@@ -65,7 +64,7 @@ def _test_has_late_opens(late_opens, start, end):
     expected = nyse.late_opens(schedule)
     assert len(expected) == len(late_opens)
     for ts in late_opens:
-        assert _test_verify_late_open_time(schedule, ts) == True
+        assert _test_verify_late_open_time(schedule, ts) is True
 
 
 def _test_verify_early_close_time(schedule, timestamp):
@@ -81,7 +80,7 @@ def _test_has_early_closes(early_closes, start, end):
     expected = nyse.early_closes(schedule)
     assert len(expected) == len(early_closes)
     for ts in early_closes:
-        assert _test_verify_early_close_time(schedule, ts) == True
+        assert _test_verify_early_close_time(schedule, ts) is True
 
 
 #########################################################################
@@ -3982,9 +3981,7 @@ def test_2024():
 
     # early closes we expect:
     early_closes = [
-        pd.Timestamp(
-            "2024-07-03 1:00PM", tz="America/New_York"
-        ),  #  Day before July 4th
+        pd.Timestamp("2024-07-03 1:00PM", tz="America/New_York"),  # Day before July 4th
         pd.Timestamp(
             "2024-11-29 1:00PM", tz="America/New_York"
         ),  # Day after Thanksgiving
@@ -4013,12 +4010,10 @@ def test_2025():
 
     # early closes we expect:
     early_closes = [
-        pd.Timestamp(
-            "2025-07-03 1:00PM", tz="America/New_York"
-        ),  #  Day before July 4th
+        pd.Timestamp("2025-07-03 1:00PM", tz="America/New_York"),  # Day before July 4th
         pd.Timestamp(
             "2025-11-28 1:00PM", tz="America/New_York"
         ),  # Day after Thanksgiving
-        pd.Timestamp("2025-12-24 1:00PM", tz="America/New_York"),  # Christmas eve
+        pd.Timestamp("2025-12-24 1:00PM", tz="America/New_York"),  # Christmas Eve
     ]
     _test_has_early_closes(early_closes, start, end)

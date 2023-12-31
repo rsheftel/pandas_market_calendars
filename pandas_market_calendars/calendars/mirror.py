@@ -4,8 +4,9 @@ Imported calendars from the exchange_calendars project
 GitHub: https://github.com/gerrymanoim/exchange_calendars
 """
 
-from pandas_market_calendars.market_calendar import MarketCalendar
 import exchange_calendars
+
+from pandas_market_calendars.market_calendar import MarketCalendar
 
 
 class TradingCalendar(MarketCalendar):

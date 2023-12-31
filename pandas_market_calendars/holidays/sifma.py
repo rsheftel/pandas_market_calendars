@@ -1,6 +1,5 @@
 from dateutil.relativedelta import MO, TH
 from pandas import DateOffset, Timestamp
-from datetime import timedelta
 from pandas.tseries.holiday import (
     Holiday,
     nearest_workday,
@@ -17,10 +16,7 @@ from pandas_market_calendars.market_calendar import (
     WEDNESDAY,
     THURSDAY,
     FRIDAY,
-    SATURDAY,
-    SUNDAY,
 )
-
 
 ####################################################
 # US New Years Day Jan 1
@@ -90,7 +86,6 @@ USPresidentsDay = Holiday(
     offset=DateOffset(weekday=MO(3)),
 )
 
-
 ############################################################
 # Good Friday
 ############################################################
@@ -113,7 +108,6 @@ GoodFriday2pmEarlyCloseAdHoc = [
     Timestamp("2021-04-02", tz="UTC"),
     Timestamp("2023-04-07", tz="UTC"),
 ]
-
 
 DayBeforeGoodFriday2pmEarlyCloseThru2020 = Holiday(
     "Day Before Good Friday Thru 2020",
@@ -187,12 +181,10 @@ ThursdayBeforeUSIndependenceDay2pmEarlyClose = Holiday(
     days_of_week=(THURSDAY,),
 )
 
-
 #################################################
 # US Labor Day
 #################################################
 USLaborDay = Holiday("Labor Day", month=9, day=1, offset=DateOffset(weekday=MO(1)))
-
 
 #################################################
 # Columbus Day
@@ -225,14 +217,12 @@ USThanksgivingDay = Holiday(
     "Thanksgiving", month=11, day=1, offset=DateOffset(weekday=TH(4))
 )
 
-
 DayAfterThanksgiving2pmEarlyClose = Holiday(
     "Black Friday",
     month=11,
     day=1,
     offset=[DateOffset(weekday=TH(4)), Day(1)],
 )
-
 
 ################################
 # Christmas Dec 25
@@ -259,7 +249,6 @@ ChristmasEveThursday2pmEarlyClose = Holiday(
     day=23,
     days_of_week=(THURSDAY,),
 )
-
 
 ############################################################################
 # UK Specific Holidays
@@ -305,7 +294,6 @@ UKSummerBank = Holiday(
     day=30,
     offset=DateOffset(weekday=MO(-1)),
 )
-
 
 # UK observes Christmas on Tuesday when Boxing Day is on Monday
 # UK observes Christmas on Monday when Christmas is on Saturday

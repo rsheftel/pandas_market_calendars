@@ -1,6 +1,5 @@
-from .cme_globex_base import CMEGlobexBaseExchangeCalendar
-
 from datetime import time
+
 from pandas.tseries.holiday import AbstractHolidayCalendar
 
 from pandas_market_calendars.holidays.cme import (
@@ -11,12 +10,13 @@ from pandas_market_calendars.holidays.cme import (
     USPresidentsDayBefore2015,
     USPresidentsDayAfter2015,
     GoodFridayBefore2021NotEarlyClose,
-    GoodFridayAfter2021,
     GoodFriday2009,
     GoodFriday2010,
     GoodFriday2012,
     GoodFriday2015,
     GoodFriday2021,
+    GoodFriday2022,
+    GoodFridayAfter2022,
     USMemorialDay2013AndPrior,
     USMemorialDayAfter2013,
     USMemorialDay2015AndPriorFridayBefore,
@@ -35,6 +35,7 @@ from pandas_market_calendars.holidays.us import (
     Christmas,
     USJuneteenthAfter2022,
 )
+from .cme_globex_base import CMEGlobexBaseExchangeCalendar
 
 
 class CMEGlobexFixedIncomeCalendar(CMEGlobexBaseExchangeCalendar):
@@ -63,7 +64,7 @@ class CMEGlobexFixedIncomeCalendar(CMEGlobexBaseExchangeCalendar):
             rules=[
                 USNewYearsDay,
                 GoodFridayBefore2021NotEarlyClose,
-                GoodFridayAfter2021,
+                GoodFriday2022,
                 Christmas,
             ]
         )
@@ -128,6 +129,7 @@ class CMEGlobexFixedIncomeCalendar(CMEGlobexBaseExchangeCalendar):
                         GoodFriday2012,
                         GoodFriday2015,
                         GoodFriday2021,
+                        GoodFridayAfter2022,
                     ]
                 ),
             ),

@@ -14,8 +14,6 @@
 # limitations under the License.
 
 from abc import abstractmethod
-from .cme_globex_base import CMEGlobexBaseExchangeCalendar
-
 from datetime import time
 
 from pandas.tseries.holiday import (
@@ -36,6 +34,7 @@ from pandas_market_calendars.holidays.us import (
     USMemorialDay,
     USNewYearsDay,
 )
+from .cme_globex_base import CMEGlobexBaseExchangeCalendar
 
 
 class CMEGlobexAgricultureExchangeCalendar(CMEGlobexBaseExchangeCalendar):
