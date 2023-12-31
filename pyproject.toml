@@ -60,3 +60,6 @@ exclude_also = [
 ]
 
 ignore_errors = true
+
+[tool.ruff.lint]
+ignore = ["F403", "F405"]

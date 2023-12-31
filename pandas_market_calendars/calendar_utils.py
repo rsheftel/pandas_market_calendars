@@ -152,9 +152,9 @@ class _date_range:
 
             if end_times.gt(schedule.start.shift(-1)).any():
                 raise ValueError(
-                    f"The chosen frequency will lead to overlaps in the calculated index. "
-                    f"Either choose a higher frequency or avoid setting force_close to None "
-                    f"when setting closed to 'right', 'both' or None."
+                    "The chosen frequency will lead to overlaps in the calculated index. "
+                    "Either choose a higher frequency or avoid setting force_close to None "
+                    "when setting closed to 'right', 'both' or None."
                 )
 
     def _check_disappearing_session(self, schedule):
