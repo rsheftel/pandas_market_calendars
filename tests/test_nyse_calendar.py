@@ -134,11 +134,11 @@ def test_valid_days():
     assert cal.valid_days("1999-01-01", "2014-01-01", tz=None) is not None
 
     assert (
-            cal.special_dates("market_close", "1999-01-01", "2014-01-01", False) is not None
+        cal.special_dates("market_close", "1999-01-01", "2014-01-01", False) is not None
     )
     # calls valid_days internally
     assert (
-            cal.special_dates("market_close", "1999-01-01", "2014-01-01", True) is not None
+        cal.special_dates("market_close", "1999-01-01", "2014-01-01", True) is not None
     )
 
     start, end = "2000-01-01", "2000-01-30"
