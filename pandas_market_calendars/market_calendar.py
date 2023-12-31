@@ -85,7 +85,7 @@ class MarketCalendar(metaclass=MarketCalendarMeta):
 
     @classmethod
     def factory(
-            cls, name, *args, **kwargs
+        cls, name, *args, **kwargs
     ):  # Will be set by Meta, keeping it there for tests
         """
         :param name: The name of the MarketCalendar to be retrieved.
@@ -191,12 +191,12 @@ class MarketCalendar(metaclass=MarketCalendarMeta):
         for i, t in enumerate(times):
             try:
                 assert (
-                        t[0] is None
-                        or isinstance(t[0], str)
-                        or isinstance(t[0], pd.Timestamp)
+                    t[0] is None
+                    or isinstance(t[0], str)
+                    or isinstance(t[0], pd.Timestamp)
                 )
                 assert isinstance(t[1], time) or (
-                        ln > 1 and i == ln - 1 and t[1] is None
+                    ln > 1 and i == ln - 1 and t[1] is None
                 )
                 assert isinstance(self._off(t), int)
             except AssertionError:
@@ -498,8 +498,8 @@ class MarketCalendar(metaclass=MarketCalendarMeta):
         except AttributeError:  # no tuples, only offset 0
             return (
                 (
-                        pd.to_timedelta(col.astype("string").fillna(""), errors="coerce")
-                        + col.index
+                    pd.to_timedelta(col.astype("string").fillna(""), errors="coerce")
+                    + col.index
                 )
                 .dt.tz_localize(self.tz)
                 .dt.tz_convert("UTC")
@@ -507,11 +507,11 @@ class MarketCalendar(metaclass=MarketCalendarMeta):
 
         return (
             (
-                    pd.to_timedelta(
-                        times.fillna(col).astype("string").fillna(""), errors="coerce"
-                    )
-                    + pd.to_timedelta(col.str[1].fillna(0), unit="D")
-                    + col.index
+                pd.to_timedelta(
+                    times.fillna(col).astype("string").fillna(""), errors="coerce"
+                )
+                + pd.to_timedelta(col.str[1].fillna(0), unit="D")
+                + col.index
             )
             .dt.tz_localize(self.tz)
             .dt.tz_convert("UTC")
@@ -572,7 +572,7 @@ class MarketCalendar(metaclass=MarketCalendarMeta):
 
     def _get_market_times(self, start, end):
         mts = self._market_times
-        return mts[mts.index(start): mts.index(end) + 1]
+        return mts[mts.index(start) : mts.index(end) + 1]
 
     def days_at_time(self, days, market_time, day_offset=0):
         """
@@ -599,7 +599,7 @@ class MarketCalendar(metaclass=MarketCalendarMeta):
         days = pd.DatetimeIndex(days).tz_localize(None).to_series()
 
         if isinstance(
-                market_time, str
+            market_time, str
         ):  # if string, assume its a reference to saved market times
             timedeltas = self._regular_market_timedeltas[market_time]
             datetimes = days + timedeltas[0][1]
@@ -627,12 +627,12 @@ class MarketCalendar(metaclass=MarketCalendarMeta):
         (This is shared logic for computing special opens and special closes.)
         """
         indexes = [
-                      self.days_at_time(self._tryholidays(calendar, start, end), time_)
-                      for time_, calendar in calendars
-                  ] + [self.days_at_time(dates, time_) for time_, dates in ad_hoc_dates]
+            self.days_at_time(self._tryholidays(calendar, start, end), time_)
+            for time_, calendar in calendars
+        ] + [self.days_at_time(dates, time_) for time_, dates in ad_hoc_dates]
         if indexes:
             dates = pd.concat(indexes).sort_index().drop_duplicates()
-            return dates.loc[start: end.replace(hour=23, minute=59, second=59)]
+            return dates.loc[start : end.replace(hour=23, minute=59, second=59)]
 
         return pd.Series([], dtype="datetime64[ns, UTC]", index=pd.DatetimeIndex([]))
 
@@ -660,15 +660,15 @@ class MarketCalendar(metaclass=MarketCalendarMeta):
         return special
 
     def schedule(
-            self,
-            start_date,
-            end_date,
-            tz="UTC",
-            start="market_open",
-            end="market_close",
-            force_special_times=True,
-            market_times=None,
-            interruptions=False,
+        self,
+        start_date,
+        end_date,
+        tz="UTC",
+        start="market_open",
+        end="market_close",
+        force_special_times=True,
+        market_times=None,
+        interruptions=False,
     ):
         """
         Generates the schedule DataFrame. The resulting DataFrame will have all the valid business days as the index

@@ -32,10 +32,10 @@ def test_is_different():
     different = cal.is_different(sched.market_open)
     different = different[different].index
     assert (
-            different.shape == (6,)
-            and (
-                    different
-                    == pd.DatetimeIndex(
+        different.shape == (6,)
+        and (
+            different
+            == pd.DatetimeIndex(
                 [
                     "2020-01-20",
                     "2020-01-27",
@@ -47,7 +47,7 @@ def test_is_different():
                 dtype="datetime64[ns]",
                 freq=None,
             )
-            ).all()
+        ).all()
     )
 
 

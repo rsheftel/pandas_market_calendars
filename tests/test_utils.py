@@ -47,9 +47,9 @@ def test_date_range_exceptions():
     with pytest.raises(ValueError) as e:
         mcal.date_range(schedule, "15min", closed="right", force_close=True)
     assert (
-            e.exconly()
-            == "ValueError: Schedule contains rows where market_close < market_open,"
-               " please correct the schedule"
+        e.exconly()
+        == "ValueError: Schedule contains rows where market_close < market_open,"
+        " please correct the schedule"
     )
 
     # Overlap -
@@ -72,10 +72,10 @@ def test_date_range_exceptions():
 
     for e in (e1, e2, e3):
         assert (
-                e.exconly()
-                == "ValueError: The chosen frequency will lead to overlaps in the calculated index. "
-                   "Either choose a higher frequency or avoid setting force_close to None "
-                   "when setting closed to 'right', 'both' or None."
+            e.exconly()
+            == "ValueError: The chosen frequency will lead to overlaps in the calculated index. "
+            "Either choose a higher frequency or avoid setting force_close to None "
+            "when setting closed to 'right', 'both' or None."
         )
 
     try:
@@ -200,11 +200,11 @@ def test_date_range_daily():
         [
             pd.Timestamp(x, tz=cal.tz).tz_convert("UTC")
             for x in [
-            "2015-12-31 12:00",
-            "2016-01-04 12:00",
-            "2016-01-05 12:00",
-            "2016-01-06 12:00",
-        ]
+                "2015-12-31 12:00",
+                "2016-01-04 12:00",
+                "2016-01-05 12:00",
+                "2016-01-06 12:00",
+            ]
         ]
     )
     schedule = cal.schedule("2015-12-31", "2016-01-06")
@@ -253,13 +253,13 @@ def test_date_range_daily():
         [
             pd.Timestamp(x, tz=cal.tz).tz_convert("UTC")
             for x in [
-            "2016-12-13 11:20",
-            "2016-12-13 12:00",
-            "2016-12-14 09:00",
-            "2016-12-14 11:40",
-            "2016-12-15 09:00",
-            "2016-12-15 12:00",
-        ]
+                "2016-12-13 11:20",
+                "2016-12-13 12:00",
+                "2016-12-14 09:00",
+                "2016-12-14 11:40",
+                "2016-12-15 09:00",
+                "2016-12-15 12:00",
+            ]
         ]
     )
     schedule = cal.schedule("2016-12-13", "2016-12-15")
@@ -307,15 +307,15 @@ def test_date_range_hour():
         [
             pd.Timestamp(x, tz=cal.tz).tz_convert("UTC")
             for x in [
-            "2015-12-31 10:00",
-            "2015-12-31 10:30",
-            "2016-01-04 10:00",
-            "2016-01-04 10:30",
-            "2016-01-05 10:00",
-            "2016-01-05 10:30",
-            "2016-01-06 10:00",
-            "2016-01-06 10:30",
-        ]
+                "2015-12-31 10:00",
+                "2015-12-31 10:30",
+                "2016-01-04 10:00",
+                "2016-01-04 10:30",
+                "2016-01-05 10:00",
+                "2016-01-05 10:30",
+                "2016-01-06 10:00",
+                "2016-01-06 10:30",
+            ]
         ]
     )
     schedule = cal.schedule("2015-12-31", "2016-01-06")
@@ -328,11 +328,11 @@ def test_date_range_hour():
         [
             pd.Timestamp(x, tz=cal.tz).tz_convert("UTC")
             for x in [
-            "2015-12-31 10:00",
-            "2016-01-04 10:00",
-            "2016-01-05 10:00",
-            "2016-01-06 10:00",
-        ]
+                "2015-12-31 10:00",
+                "2016-01-04 10:00",
+                "2016-01-05 10:00",
+                "2016-01-06 10:00",
+            ]
         ]
     )
     schedule = cal.schedule("2015-12-31", "2016-01-06")
@@ -346,14 +346,14 @@ def test_date_range_hour():
         [
             pd.Timestamp(x, tz=cal.tz).tz_convert("UTC")
             for x in [
-            "2012-07-02 10:00",
-            "2012-07-02 11:00",
-            "2012-07-02 12:00",
-            "2012-07-03 11:30",
-            "2012-07-04 10:00",
-            "2012-07-04 11:00",
-            "2012-07-04 12:00",
-        ]
+                "2012-07-02 10:00",
+                "2012-07-02 11:00",
+                "2012-07-02 12:00",
+                "2012-07-03 11:30",
+                "2012-07-04 10:00",
+                "2012-07-04 11:00",
+                "2012-07-04 12:00",
+            ]
         ]
     )
     schedule = cal.schedule("2012-07-02", "2012-07-04")
@@ -366,13 +366,13 @@ def test_date_range_hour():
         [
             pd.Timestamp(x, tz=cal.tz).tz_convert("UTC")
             for x in [
-            "2016-12-14 10:00",
-            "2016-12-14 11:00",
-            "2016-12-14 11:40",
-            "2016-12-15 10:00",
-            "2016-12-15 11:00",
-            "2016-12-15 12:00",
-        ]
+                "2016-12-14 10:00",
+                "2016-12-14 11:00",
+                "2016-12-14 11:40",
+                "2016-12-15 10:00",
+                "2016-12-15 11:00",
+                "2016-12-15 12:00",
+            ]
         ]
     )
     schedule = cal.schedule("2016-12-14", "2016-12-15")
@@ -385,13 +385,13 @@ def test_date_range_hour():
         [
             pd.Timestamp(x, tz=cal.tz).tz_convert("UTC")
             for x in [
-            "2016-12-13 11:20",
-            "2016-12-13 12:00",
-            "2016-12-14 09:00",
-            "2016-12-14 10:00",
-            "2016-12-14 11:00",
-            "2016-12-14 11:40",
-        ]
+                "2016-12-13 11:20",
+                "2016-12-13 12:00",
+                "2016-12-14 09:00",
+                "2016-12-14 10:00",
+                "2016-12-14 11:00",
+                "2016-12-14 11:40",
+            ]
         ]
     )
     schedule = cal.schedule("2016-12-13", "2016-12-14")
@@ -657,8 +657,8 @@ def test_merge_schedules_w_break():
     with pytest.warns(Warning) as w:
         result = mcal.merge_schedules([schedule, schedule_breaks])
     assert (
-            w[0].message.args[0]
-            == "Merge schedules will drop the break_start and break_end from result."
+        w[0].message.args[0]
+        == "Merge schedules will drop the break_start and break_end from result."
     )
 
     assert "break_start" not in result.columns

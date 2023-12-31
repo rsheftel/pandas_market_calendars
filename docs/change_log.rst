@@ -3,7 +3,7 @@ Change Log
 
 Updates
 -------
-4.4.0 (12/30/2023)
+4.3.3 (12/30/2023)
 ~~~~~~~~~~~~~~~~~~
 - PR #310 to add EUREX Fixed Income calendars
 - PR #311 to add good friday special closes for CME Globex

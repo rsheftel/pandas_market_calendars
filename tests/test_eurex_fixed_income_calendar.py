@@ -1,7 +1,9 @@
 import pandas as pd
 import pytz
 
-from pandas_market_calendars.calendars.eurex_fixed_income import EUREXFixedIncomeCalendar
+from pandas_market_calendars.calendars.eurex_fixed_income import (
+    EUREXFixedIncomeCalendar,
+)
 
 
 def test_time_zone():
@@ -42,8 +44,16 @@ def test_2018_holidays():
     in all derivatives: 1 January, 30 March, 2 April, 1 May, 25 December, 26 December
     Eurex is closed for trading in all derivatives: 24 December, 31 December
     """
-    bad_dates = ["2018-01-01", "2018-03-30", "2018-04-02", "2018-05-01", "2018-12-24", "2018-12-25", "2018-12-26",
-                 "2018-12-31"]
+    bad_dates = [
+        "2018-01-01",
+        "2018-03-30",
+        "2018-04-02",
+        "2018-05-01",
+        "2018-12-24",
+        "2018-12-25",
+        "2018-12-26",
+        "2018-12-31",
+    ]
     _test_year_holiday(2018, bad_dates)
 
 
@@ -53,8 +63,16 @@ def test_2019_holidays():
     in all derivatives: 1 January, 19 April, 22 April, 1 May, 25 December, 26 December
     Eurex is closed for trading in all derivatives: 24 December, 31 December
     """
-    bad_dates = ["2019-01-01", "2019-04-19", "2019-04-22", "2019-05-01", "2019-12-24", "2019-12-25", "2019-12-26",
-                 "2019-12-31"]
+    bad_dates = [
+        "2019-01-01",
+        "2019-04-19",
+        "2019-04-22",
+        "2019-05-01",
+        "2019-12-24",
+        "2019-12-25",
+        "2019-12-26",
+        "2019-12-31",
+    ]
     _test_year_holiday(2019, bad_dates)
 
 
@@ -64,7 +82,15 @@ def test_2020_holidays():
     in all derivatives: 1 January, 10 April, 13 April, 1 May, 25 December
     Eurex is closed for trading in all derivatives: 24 December, 31 December
     """
-    bad_dates = ["2020-01-01", "2020-04-10", "2020-04-13", "2020-05-01", "2020-12-24", "2020-12-25", "2020-12-31"]
+    bad_dates = [
+        "2020-01-01",
+        "2020-04-10",
+        "2020-04-13",
+        "2020-05-01",
+        "2020-12-24",
+        "2020-12-25",
+        "2020-12-31",
+    ]
     _test_year_holiday(2020, bad_dates)
 
 
@@ -74,7 +100,14 @@ def test_2021_holidays():
     in all derivatives: 1 January, 2 April, 5 April
     Eurex is closed for trading in all derivatives: 24 December, 31 December
     """
-    bad_dates = ["2021-01-01", "2021-04-02", "2021-04-05", "2021-05-01", "2021-12-24", "2021-12-31"]
+    bad_dates = [
+        "2021-01-01",
+        "2021-04-02",
+        "2021-04-05",
+        "2021-05-01",
+        "2021-12-24",
+        "2021-12-31",
+    ]
     _test_year_holiday(2021, bad_dates)
 
 
@@ -97,6 +130,14 @@ def test_2023_holidays():
 
 
 def test_2024_holidays():
-    bad_dates = ["2024-01-01", "2024-03-29", "2024-04-01", "2024-05-01", "2024-12-24", "2024-12-25", "2024-12-26",
-                 "2024-12-31"]
+    bad_dates = [
+        "2024-01-01",
+        "2024-03-29",
+        "2024-04-01",
+        "2024-05-01",
+        "2024-12-24",
+        "2024-12-25",
+        "2024-12-26",
+        "2024-12-31",
+    ]
     _test_year_holiday(2024, bad_dates)

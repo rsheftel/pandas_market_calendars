@@ -101,15 +101,19 @@ class CMEGlobexCryptoExchangeCalendar(CMEGlobexBaseExchangeCalendar):
         return [
             (
                 dt.time(8, 15, tzinfo=pytz.timezone("America/Chicago")),
-                AbstractHolidayCalendar(rules=[
-                    GoodFriday2021,
-                ]),
+                AbstractHolidayCalendar(
+                    rules=[
+                        GoodFriday2021,
+                    ]
+                ),
             ),
             (
                 dt.time(10, 15, tzinfo=pytz.timezone("America/Chicago")),
-                AbstractHolidayCalendar(rules=[
-                    GoodFridayAfter2022,
-                ]),
+                AbstractHolidayCalendar(
+                    rules=[
+                        GoodFridayAfter2022,
+                    ]
+                ),
             ),
             (
                 dt.time(12, tzinfo=pytz.timezone("America/Chicago")),

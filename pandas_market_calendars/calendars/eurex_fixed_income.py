@@ -66,6 +66,7 @@ class EUREXFixedIncomeCalendar(MarketCalendar):
     Trading calendar available here:
     https://www.eurex.com/resource/blob/3378814/910cf372738890f691bc1bfbccfd3aef/data/tradingcalendar_2023_en.pdf
     """
+
     aliases = ["EUREX_Bond"]
 
     regular_market_times = {

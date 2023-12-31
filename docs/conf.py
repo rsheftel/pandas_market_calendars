@@ -2,9 +2,9 @@
 # -*- coding: utf-8 -*-
 
 # -- Project information -----------------------------------------------------
-project = 'pandas_market_calendars'
-copyright = '2016, Ryan Sheftel'
-author = 'Ryan Sheftel'
+project = "pandas_market_calendars"
+copyright = "2016, Ryan Sheftel"
+author = "Ryan Sheftel"
 
 # -- General configuration ------------------------------------------------
 
@@ -12,26 +12,26 @@ author = 'Ryan Sheftel'
 # extensions coming with Sphinx (named 'sphinx.ext.*') or your custom
 # ones.
 extensions = [
-    'sphinx.ext.autodoc',
-    'sphinx.ext.autosummary',
-    'sphinx.ext.todo',
+    "sphinx.ext.autodoc",
+    "sphinx.ext.autosummary",
+    "sphinx.ext.todo",
 ]
 
 # Add any paths that contain templates here, relative to this directory.
-templates_path = ['_templates']
+templates_path = ["_templates"]
 
 # The suffix of source filenames.
-source_suffix = '.rst'
+source_suffix = ".rst"
 
 # The master toctree document.
-master_doc = 'index'
+master_doc = "index"
 
 # generate docstring for __init__
-autoclass_content = 'both'
+autoclass_content = "both"
 
 # List of patterns, relative to source directory, that match files and
 # directories to ignore when looking for source files.
-exclude_patterns = ['_build', '**.ipynb_checkpoints']
+exclude_patterns = ["_build", "**.ipynb_checkpoints"]
 
 # If true, `todo` and `todoList` produce output, else they produce nothing.
 todo_include_todos = True
