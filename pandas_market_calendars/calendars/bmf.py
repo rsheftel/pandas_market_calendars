@@ -122,6 +122,13 @@ AnoNovoSabado = Holiday(
     day=30,
     days_of_week=(FRIDAY,),
 )
+# New Year's Eve falls on Sunday
+AnoNovoDomingo = Holiday(
+    "Ano Novo Domingo",
+    month=12,
+    day=29,
+    days_of_week=(FRIDAY,),
+)
 
 ##########################
 # Non-recurring holidays
@@ -154,7 +161,7 @@ class BMFExchangeCalendar(MarketCalendar):
     - Proclamation of the Republic (November 15)
     - Day of Black Awareness (November 20 after 2004 until 2021, skipping 2020)
     - Christmas (December 24 and 25)
-    - Day before New Year's Eve (December 30 if NYE falls on a Saturday)
+    - Friday before New Year's Eve (December 30 or 29 if NYE falls on a Saturday or Sunday)
     - New Year's Eve (December 31)
     """
 
@@ -194,6 +201,7 @@ class BMFExchangeCalendar(MarketCalendar):
                 Natal,
                 AnoNovo,
                 AnoNovoSabado,
+                AnoNovoDomingo,
             ]
         )
 
