@@ -27,15 +27,15 @@ def test_post_2022_regulation_change():
     for year in [2017, 2018, 2019, 2021]:  # skip 2020 due to test above
         for month, day in [(1, 25), (7, 9), (11, 20)]:
             assert (
-                    pd.Timestamp(datetime.date(year, month, day), tz="UTC").to_datetime64()
-                    in holidays
+                pd.Timestamp(datetime.date(year, month, day), tz="UTC").to_datetime64()
+                in holidays
             )
 
     for year in range(2022, 2040):
         for month, day in [(1, 25), (7, 9), (11, 20)]:
             assert (
-                    pd.Timestamp(datetime.date(year, month, day), tz="UTC").to_datetime64()
-                    not in holidays
+                pd.Timestamp(datetime.date(year, month, day), tz="UTC").to_datetime64()
+                not in holidays
             )
 
 
@@ -47,7 +47,4 @@ def test_sunday_new_years_eve():
         date = pd.Timestamp(datetime.date(year, 12, 29), tz="UTC")
         if date.day_of_week == 4:
             # December 29th on a Friday
-            assert (
-                    date.to_datetime64()
-                    not in holidays
-            )
+            assert date.to_datetime64() not in holidays

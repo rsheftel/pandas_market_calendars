@@ -112,7 +112,10 @@ JapanVernalEquinox = Holiday(
 )
 
 JapanShowaDayUntil1972 = Holiday(
-    name="Showa Day", month=4, day=29, end_date=Timestamp(1972, 12, 31)  # 1965
+    name="Showa Day",
+    month=4,
+    day=29,
+    end_date=Timestamp(1972, 12, 31),  # 1965
 )
 
 JapanShowaDay = Holiday(

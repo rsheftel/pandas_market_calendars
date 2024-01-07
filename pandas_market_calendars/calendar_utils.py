@@ -127,11 +127,11 @@ class _date_range:
 
             if "break_start" in schedule:
                 if not all(
-                        [
-                            schedule.market_open.le(schedule.break_start).all(),
-                            schedule.break_start.le(schedule.break_end).all(),
-                            schedule.break_end.le(schedule.market_close).all(),
-                        ]
+                    [
+                        schedule.market_open.le(schedule.break_start).all(),
+                        schedule.break_start.le(schedule.break_end).all(),
+                        schedule.break_end.le(schedule.market_close).all(),
+                    ]
                 ):
                     raise ValueError(
                         "Not all rows match the condition: "
@@ -190,19 +190,19 @@ class _date_range:
         if self.closed == "left":
             opens = schedule.start.repeat(num_bars)  # keep as is
             time_series = (
-                              opens.groupby(opens.index).cumcount()
-                          ) * self.frequency + opens
+                opens.groupby(opens.index).cumcount()
+            ) * self.frequency + opens
         elif self.closed == "right":
             opens = schedule.start.repeat(num_bars)  # dont add row but shift up
             time_series = (
-                                  opens.groupby(opens.index).cumcount() + 1
-                          ) * self.frequency + opens
+                opens.groupby(opens.index).cumcount() + 1
+            ) * self.frequency + opens
         else:
             num_bars += 1
             opens = schedule.start.repeat(num_bars)  # add row but dont shift up
             time_series = (
-                              opens.groupby(opens.index).cumcount()
-                          ) * self.frequency + opens
+                opens.groupby(opens.index).cumcount()
+            ) * self.frequency + opens
 
         if self.force_close is not None:
             time_series = time_series[time_series.le(schedule.end.repeat(num_bars))]

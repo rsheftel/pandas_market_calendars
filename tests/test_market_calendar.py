@@ -353,8 +353,8 @@ def test_add_change_remove_time_w_open_close_map():
 
     cal.remove_time("market_close")
     assert (
-            "market_close" not in cal.open_close_map
-            and "market_close" not in cal.regular_market_times
+        "market_close" not in cal.open_close_map
+        and "market_close" not in cal.regular_market_times
     )
 
     cal.add_time("market_close", time(15))
@@ -366,7 +366,7 @@ def test_add_change_remove_time_w_open_close_map():
     cal.remove_time("market_close")
     cal.add_time("market_close", time(15), opens=None)
     assert (
-            "market_close" not in cal.open_close_map
+        "market_close" not in cal.open_close_map
         and "market_close" in cal.regular_market_times
     )
 
