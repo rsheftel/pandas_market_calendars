@@ -37,3 +37,17 @@ def test_post_2022_regulation_change():
                     pd.Timestamp(datetime.date(year, month, day), tz="UTC").to_datetime64()
                     not in holidays
             )
+
+
+def test_sunday_new_years_eve():
+    # All instances of December 29th on a Friday should be holidays
+    holidays = BMFExchangeCalendar().holidays().holidays
+
+    for year in range(1994, 2040):
+        date = pd.Timestamp(datetime.date(year, 12, 29), tz="UTC")
+        if date.day_of_week == 4:
+            # December 29th on a Friday
+            assert (
+                    date.to_datetime64()
+                    not in holidays
+            )
