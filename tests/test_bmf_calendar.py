@@ -48,3 +48,18 @@ def test_sunday_new_years_eve():
         if date.day_of_week == 4:
             # December 29th on a Friday
             assert date.to_datetime64() not in holidays
+
+
+
+def test_post_2022_nov20():
+    # November 20th municipal holiday should be missing in 2022 and 2023 (ended in 2021)
+    # November 20th national holiday should be present from 2024
+    holidays = BMFExchangeCalendar().holidays().holidays
+
+    for date in ["2022-11-20", "2023-11-20"]:
+        assert pd.Timestamp(date, tz="UTC").to_datetime64() not in holidays
+
+    for year in range(2024, 2040):
+        assert (
+            pd.Timestamp(datetime.date(year, 11, 20), tz="UTC").to_datetime64() not in holidays
+        )
