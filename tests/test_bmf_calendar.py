@@ -22,6 +22,7 @@ def test_2020_holidays_skip():
 
 def test_post_2022_regulation_change():
     # Regional holidays no longer observed: January 25th, July 9th, November 20th
+    # November 20th was reinstated as a national holiday starting in 2024
     holidays = BMFExchangeCalendar().holidays().holidays
 
     for year in [2017, 2018, 2019, 2021]:  # skip 2020 due to test above
@@ -32,7 +33,14 @@ def test_post_2022_regulation_change():
             )
 
     for year in range(2022, 2040):
-        for month, day in [(1, 25), (7, 9), (11, 20)]:
+        for month, day in [(1, 25), (7, 9)]:
+            assert (
+                pd.Timestamp(datetime.date(year, month, day), tz="UTC").to_datetime64()
+                not in holidays
+            )
+
+    for year in range(2022, 2024):
+        for month, day in [(11, 20)]:
             assert (
                 pd.Timestamp(datetime.date(year, month, day), tz="UTC").to_datetime64()
                 not in holidays
@@ -52,12 +60,8 @@ def test_sunday_new_years_eve():
 
 
 def test_post_2022_nov20():
-    # November 20th municipal holiday should be missing in 2022 and 2023 (ended in 2021)
     # November 20th national holiday should be present from 2024
     holidays = BMFExchangeCalendar().holidays().holidays
-
-    for date in ["2022-11-20", "2023-11-20"]:
-        assert pd.Timestamp(date, tz="UTC").to_datetime64() not in holidays
 
     for year in range(2024, 2040):
         assert (
