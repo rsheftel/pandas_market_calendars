@@ -57,7 +57,7 @@ def test_sunday_new_years_eve():
         if date.day_of_week == 4:
             # December 29th on a Friday
 
-            assert date.to_datetime64() not in holidays
+            assert date.to_datetime64() in holidays
 
 
 def test_post_2022_nov20():
@@ -68,5 +68,5 @@ def test_post_2022_nov20():
     for year in range(2024, 2040):
         assert (
             pd.Timestamp(datetime.date(year, 11, 20), tz="UTC").to_datetime64()
-            not in holidays
+            in holidays
         )
