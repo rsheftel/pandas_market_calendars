@@ -92,6 +92,26 @@ def test_us_close_time_tz():
 def test_us_weekmask():
     assert sifma_us.weekmask == "Mon Tue Wed Thu Fri"
 
+def test_us_2024():
+    start = "2024-01-01"
+    end = "2024-12-31"
+    holidays = [
+        pd.Timestamp("2024-01-01", tz="UTC"),  # New Year's Day
+        pd.Timestamp("2024-01-15", tz="UTC"),  # MLK
+        pd.Timestamp("2024-02-19", tz="UTC"),  # Presidents Day
+        pd.Timestamp("2024-03-29", tz="UTC"),  # Good Friday
+        pd.Timestamp("2024-05-27", tz="UTC"),  # Memorial Day
+        pd.Timestamp("2024-06-19", tz="UTC"),  # Juneteenth
+        pd.Timestamp("2024-07-04", tz="UTC"),  # Independence Day
+        pd.Timestamp("2024-09-02", tz="UTC"),  # Labor Day
+        pd.Timestamp("2024-10-14", tz="UTC"),  # Columbus Day
+        pd.Timestamp("2024-11-11", tz="UTC"),  # Veterans Day
+        pd.Timestamp("2024-11-28", tz="UTC"),  # Thanksgiving
+        pd.Timestamp("2024-12-25", tz="UTC"),  # Christmas
+    ]
+    _test_holidays(sifma_us, holidays, start, end)
+    _test_no_special_opens(sifma_us, start, end)
+
 
 def test_us_2023():
     start = "2023-01-01"
