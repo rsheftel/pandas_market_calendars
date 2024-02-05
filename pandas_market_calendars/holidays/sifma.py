@@ -121,6 +121,7 @@ DayBeforeGoodFriday2pmEarlyCloseThru2020 = Holiday(
 
 DayBeforeGoodFriday2pmEarlyCloseAdHoc = [
     Timestamp("2022-04-14", tz="UTC"),
+    Timestamp("2024-03-28", tz="UTC"),
 ]
 
 ##################################################
