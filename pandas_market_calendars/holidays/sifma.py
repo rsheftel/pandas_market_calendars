@@ -217,6 +217,7 @@ USVeteransDay = Holiday(
     "Veterans Day",
     month=11,
     day=11,
+    start_date=Timestamp("2023-12-31"),
     days_of_week=(MONDAY, TUESDAY, WEDNESDAY, THURSDAY, FRIDAY),
     observance=sunday_to_monday,
 )
