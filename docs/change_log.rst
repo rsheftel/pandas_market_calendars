@@ -3,6 +3,15 @@ Change Log
 
 Updates
 -------
+4.4.0 (02/10/2024)
+~~~~~~~~~~~~~~~~~~
+- Verified to work on pandas 2.2.0, max version changed in pyproject.toml
+- Updated minimum version of Python to 3.9
+- Corrected 2024 us sifma holidays & early closes #326
+- Added national holiday for BMF calendar (Black Awareness Day, Nov 20th) #321
+- Added BMF calendar holiday for New Year's Eve on Sunday #318
+- BSE/NSE trading holidays 2024 updated #316
+
 4.3.3 (12/30/2023)
 ~~~~~~~~~~~~~~~~~~
 - PR #310 to add EUREX Fixed Income calendars
