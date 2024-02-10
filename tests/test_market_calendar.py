@@ -23,6 +23,7 @@ import pytest
 from pandas.testing import assert_frame_equal, assert_index_equal, assert_series_equal
 from pandas.tseries.holiday import AbstractHolidayCalendar
 from pytz import timezone
+from zoneinfo import ZoneInfo
 
 from pandas_market_calendars import get_calendar, get_calendar_names
 from pandas_market_calendars.calendars.mirror import TradingCalendar
@@ -1586,7 +1587,7 @@ def test_mirror():
 
 def test_basic_information():
     assert mcal_iepa._EC_NOT_INITIALIZED
-    assert mcal_iepa.tz == timezone("America/New_York") == ecal_iepa.tz
+    assert mcal_iepa.tz == ZoneInfo("America/New_York") == ecal_iepa.tz
     assert mcal_iepa.open_offset == -1 == ecal_iepa.open_offset
     assert mcal_iepa.open_time == time(20)
     assert mcal_iepa.close_time == time(18)

@@ -1,8 +1,7 @@
-new_version: '4.3.2'
+new_version: '4.4.0'
 
 change_log: |
-  - Reformat all code using Black and make black a standard PR #290
-  - Add XNSE as a name for BSE calendar # 277
+  - Now works with pandas 2.2.0
 
 release_body: |
 

@@ -374,6 +374,20 @@ BSEClosedDay = [
     Timestamp("2023-11-14", tz="UTC"),  # Tue, Diwali
     Timestamp("2023-11-27", tz="UTC"),  # Mon, Guru Nanak's Birthday
     Timestamp("2023-12-25", tz="UTC"),  # Mon, Christmas
+    Timestamp("2024-01-26", tz="UTC"),  # Fri, Republic Day
+    Timestamp("2024-03-08", tz="UTC"),  # Fri, Mahashivratri
+    Timestamp("2024-03-25", tz="UTC"),  # Mon, Holi
+    Timestamp("2024-03-29", tz="UTC"),  # Fri, Good Friday
+    Timestamp("2024-04-11", tz="UTC"),  # Thu, Id-Ul-Fitr (Ramadan Eid)
+    Timestamp("2024-04-17", tz="UTC"),  # Wed, Shri Ram Navmi
+    Timestamp("2024-05-01", tz="UTC"),  # Wed, Maharashtra Din
+    Timestamp("2024-06-17", tz="UTC"),  # Mon, Bakri Id / Eid ul-Adha
+    Timestamp("2024-07-17", tz="UTC"),  # Wed, Moharram
+    Timestamp("2024-08-15", tz="UTC"),  # Thu, Independence Day
+    Timestamp("2024-10-02", tz="UTC"),  # Wed, Mahatma Gandhi Jayanti
+    Timestamp("2024-11-01", tz="UTC"),  # Fri, Diwali
+    Timestamp("2024-11-15", tz="UTC"),  # Fri, Guru Nanak's Birthday
+    Timestamp("2024-12-25", tz="UTC"),  # Wed, Christmas
 ]
 
 

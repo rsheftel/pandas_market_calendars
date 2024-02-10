@@ -100,8 +100,10 @@ GoodFridayThru2020 = Holiday(
 # 2021 is early close.
 # 2022 is a full holiday.
 # 2023 is early close.
+# 2024 is a full holiday
 GoodFridayAdHoc = [
     Timestamp("2022-04-15", tz="UTC"),
+    Timestamp("2024-03-29", tz="UTC"),
 ]
 
 GoodFriday2pmEarlyCloseAdHoc = [
@@ -119,6 +121,7 @@ DayBeforeGoodFriday2pmEarlyCloseThru2020 = Holiday(
 
 DayBeforeGoodFriday2pmEarlyCloseAdHoc = [
     Timestamp("2022-04-14", tz="UTC"),
+    Timestamp("2024-03-28", tz="UTC"),
 ]
 
 ##################################################
@@ -201,11 +204,20 @@ USColumbusDay = Holiday(
 # When falls on Saturday, no holiday is observed.
 # When falls on Sunday, the Monday following is a holiday.
 ##########################################################
+USVeteransDay2022 = Holiday(
+    "Veterans Day Prior to 2023",
+    month=11,
+    day=11,
+    end_date=Timestamp("2022-12-31"),
+    days_of_week=(MONDAY, TUESDAY, WEDNESDAY, THURSDAY, FRIDAY),
+    observance=sunday_to_monday,
+)
+
 USVeteransDay = Holiday(
     "Veterans Day",
     month=11,
     day=11,
-    end_date=Timestamp("2022-12-31"),
+    start_date=Timestamp("2023-12-31"),
     days_of_week=(MONDAY, TUESDAY, WEDNESDAY, THURSDAY, FRIDAY),
     observance=sunday_to_monday,
 )
