@@ -565,6 +565,7 @@ all_holidays = [
     Timestamp("2023-10-05"),
     Timestamp("2023-10-06"),
     Timestamp("2024-01-01"),
+    Timestamp("2024-02-09"),
     Timestamp("2024-02-12"),
     Timestamp("2024-02-13"),
     Timestamp("2024-02-14"),
