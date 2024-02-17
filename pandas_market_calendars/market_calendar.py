@@ -812,7 +812,7 @@ class MarketCalendar(metaclass=MarketCalendarMeta):
 
         # When post follows market_close, market_close should not be considered a close
         day.loc[day.eq("market_close") & day.shift(-1).eq("post")] = "market_open"
-        day = day.replace(self.open_close_map)
+        day = day.map(lambda x : self.open_close_map.get(x) if x in self.open_close_map.keys() else x)
 
         if include_close:
             below = day.index < timestamp
