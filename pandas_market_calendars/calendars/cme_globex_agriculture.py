@@ -124,3 +124,49 @@ class CMEGlobexLivestockExchangeCalendar(CMEGlobexAgricultureExchangeCalendar):
                 ),
             )
         ]
+
+
+class CMEGlobexGrainsAndOilseedsExchangeCalendar(CMEGlobexAgricultureExchangeCalendar):
+    """
+    Exchange calendar for CME for Grains & Oilseeds
+
+    https://www.cmegroup.com/trading/agricultural/grain-and-oilseed.html
+
+    GLOBEX Trading Times
+    https://www.cmegroup.com/markets/agriculture/oilseeds/soybean.contractSpecs.html
+    https://www.cmegroup.com/markets/agriculture/grains/corn.contractSpecs.html
+    https://www.cmegroup.com/markets/agriculture/grains/wheat.contractSpecs.html
+    Sunday - Friday: 7:00 p.m. - 7:45 a.m. CT and Monday - Friday: 8:30 a.m. - 1:20 p.m. CT
+    """
+
+    aliases = [
+        "CMEGlobex_Grains",
+        "CMEGlobex_Oilseeds",
+    ]
+
+    regular_market_times = {
+        "market_open": ((None, time(19), -1),),  # offset by -1 day
+        "market_close": ((None, time(13, 20)),),
+        "break_start": ((None, time(7, 45)),),
+        "break_end": ((None, time(8, 30)),),
+    }
+
+    @property
+    def name(self):
+        return "CMEGlobex_GrainsAndOilseeds"
+
+    @property
+    def regular_holidays(self):
+        return AbstractHolidayCalendar(
+            rules=[
+                USNewYearsDay,
+                USMartinLutherKingJrAfter1998,
+                USPresidentsDay,
+                GoodFriday,
+                USMemorialDay,
+                USIndependenceDay,
+                USLaborDay,
+                USThanksgivingDay,
+                Christmas,
+            ]
+        )
