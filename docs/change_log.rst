@@ -3,6 +3,10 @@ Change Log
 
 Updates
 -------
+4.4.1 ()
+~~~~~~~~~~~~~~~~~~
+- Added CME Grains calendar (CMEGlobexGrainsExchangeCalendar) from PR #333
+
 4.4.0 (02/10/2024)
 ~~~~~~~~~~~~~~~~~~
 - Verified to work on pandas 2.2.0, max version changed in pyproject.toml
