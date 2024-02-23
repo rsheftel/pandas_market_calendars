@@ -44,7 +44,6 @@ def test_dec_jan():
     cme = CMEAgricultureExchangeCalendar()
     schedule = cme.schedule("2020-12-30", "2021-01-10")
 
-    print(schedule)
     assert schedule["market_open"].iloc[0] == pd.Timestamp(
         "2020-12-29 23:01:00", tz="UTC"
     )

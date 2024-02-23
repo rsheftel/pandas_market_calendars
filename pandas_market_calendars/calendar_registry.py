@@ -5,7 +5,11 @@ from .calendars.bse import BSEExchangeCalendar
 from .calendars.cboe import CFEExchangeCalendar
 from .calendars.cme import CMEEquityExchangeCalendar, CMEBondExchangeCalendar
 from .calendars.cme_globex_base import CMEGlobexBaseExchangeCalendar
-from .calendars.cme_globex_agriculture import CMEGlobexAgricultureExchangeCalendar
+from .calendars.cme_globex_agriculture import (
+    CMEGlobexAgricultureExchangeCalendar,
+    CMEGlobexLivestockExchangeCalendar,
+    CMEGlobexGrainsAndOilseedsExchangeCalendar,
+)
 from .calendars.cme_globex_crypto import CMEGlobexCryptoExchangeCalendar
 from .calendars.cme_globex_energy_and_metals import (
     CMEGlobexEnergyAndMetalsExchangeCalendar,
