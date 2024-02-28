@@ -43,13 +43,6 @@ MayBank = Holiday(
     day=1,
     days_of_week=(MONDAY, TUESDAY, WEDNESDAY, THURSDAY, FRIDAY),
 )
-# German National Holiday (Tag der Deutschen Einheit)
-GermanNationalDay = Holiday(
-    "Tag der Deutschen Einheit",
-    month=10,
-    day=3,
-    days_of_week=(MONDAY, TUESDAY, WEDNESDAY, THURSDAY, FRIDAY),
-)
 # Christmas Eve
 ChristmasEve = Holiday(
     "Christmas Eve",
@@ -116,7 +109,6 @@ class EUREXExchangeCalendar(MarketCalendar):
                 GoodFriday,
                 EasterMonday,
                 MayBank,
-                GermanNationalDay,
                 Christmas,
                 WeekendChristmas,
                 BoxingDay,
