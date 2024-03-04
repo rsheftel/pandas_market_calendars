@@ -160,6 +160,7 @@ class CMEAgricultureExchangeCalendar(MarketCalendar):
                 USPresidentsDay,
                 GoodFriday,
                 USMemorialDay,
+                USJuneteenthAfter2022,
                 USIndependenceDay,
                 USLaborDay,
                 USThanksgivingDay,
