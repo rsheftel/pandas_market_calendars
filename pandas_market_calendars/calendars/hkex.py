@@ -354,6 +354,9 @@ HKClosedDay = [
     Timestamp("2016-10-21", tz="UTC"),  # 台风海马1622
     # Timestamp(2017-06-12', tz='UTC'),  # 台风苗柏1702,期货夜盘17:35休市
     Timestamp("2017-08-23", tz="UTC"),  # 台风天鸽1713
+    Timestamp("2023-07-17", tz="UTC"),   # Typhoon closure
+    Timestamp("2023-09-01", tz="UTC"),  # Typhoon closure
+    Timestamp("2023-09-08", tz="UTC"),   # Typhoon closure
 ]
 
 
