@@ -11,6 +11,7 @@ from the Tokyo exchange inauguration through 2099,
 using pyephem (http://rhodesmill.org/pyephem/quick.html#equinoxes-solstices).
 For a double check, see:  https://aa.usno.navy.mil/data/docs/EarthSeasons.php
 """
+
 import pandas as pd
 from pandas.tseries.holiday import sunday_to_monday
 

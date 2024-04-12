@@ -1,6 +1,7 @@
 """
 Utilities to use with market_calendars
 """
+
 import itertools
 import warnings
 
