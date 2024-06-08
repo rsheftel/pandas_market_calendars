@@ -98,6 +98,8 @@ class TradingCalendar(MarketCalendar):
         return self._ec.special_closes_adhoc
 
 
+DAYMASKS = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"]
+
 calendars = exchange_calendars.calendar_utils._default_calendar_factories  # noqa
 
 time_props = dict(
@@ -118,6 +120,19 @@ for exchange in calendars:
             continue
         regular_market_times[new] = times
 
+    weekmask = "Mon Tue Wed Thu Fri"
+
+    if hasattr(cal, "weekmask"):
+        mask_prop = getattr(cal, "weekmask")
+        if isinstance(mask_prop, property) and mask_prop.fget is not None:
+            weekmask = " ".join(
+                [DAYMASKS[i] for i, x in enumerate(mask_prop.fget(cal)) if x == "1"]
+            )
+        elif isinstance(mask_prop, str):
+            weekmask = " ".join(
+                [DAYMASKS[i] for i, x in enumerate(mask_prop) if x == "1"]
+            )
+
     cal = type(
         exchange,
         (TradingCalendar,),
@@ -125,6 +140,7 @@ for exchange in calendars:
             "_ec_class": calendars[exchange],
             "alias": [exchange],
             "regular_market_times": regular_market_times,
+            "weekmask": weekmask,
         },
     )
     locals()[f"{exchange}ExchangeCalendar"] = cal
