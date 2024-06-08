@@ -8,6 +8,8 @@ import exchange_calendars
 
 from pandas_market_calendars.market_calendar import MarketCalendar
 
+DAYMASKS = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"]
+
 
 class TradingCalendar(MarketCalendar):
     """
@@ -97,8 +99,23 @@ class TradingCalendar(MarketCalendar):
     def special_closes_adhoc(self):
         return self._ec.special_closes_adhoc
 
+    @property
+    def weekmask(self):
+        if hasattr(self._ec, "weekmask"):
+            if "1" in self._ec.weekmask or "0" in self._ec.weekmask:
+                # Convert 1s & 0s to Day Abbreviations
+                return " ".join(
+                    [
+                        DAYMASKS[i]
+                        for i, val in enumerate(self._ec.weekmask)
+                        if val == "1"
+                    ]
+                )
+            else:
+                return self._ec.weekmask
+        else:
+            return "Mon Tue Wed Thu Fri"
 
-DAYMASKS = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"]
 
 calendars = exchange_calendars.calendar_utils._default_calendar_factories  # noqa
 
@@ -120,19 +137,6 @@ for exchange in calendars:
             continue
         regular_market_times[new] = times
 
-    weekmask = "Mon Tue Wed Thu Fri"
-
-    if hasattr(cal, "weekmask"):
-        mask_prop = getattr(cal, "weekmask")
-        if isinstance(mask_prop, property) and mask_prop.fget is not None:
-            weekmask = " ".join(
-                [DAYMASKS[i] for i, x in enumerate(mask_prop.fget(cal)) if x == "1"]
-            )
-        elif isinstance(mask_prop, str):
-            weekmask = " ".join(
-                [DAYMASKS[i] for i, x in enumerate(mask_prop) if x == "1"]
-            )
-
     cal = type(
         exchange,
         (TradingCalendar,),
@@ -140,7 +144,6 @@ for exchange in calendars:
             "_ec_class": calendars[exchange],
             "alias": [exchange],
             "regular_market_times": regular_market_times,
-            "weekmask": weekmask,
         },
     )
     locals()[f"{exchange}ExchangeCalendar"] = cal
