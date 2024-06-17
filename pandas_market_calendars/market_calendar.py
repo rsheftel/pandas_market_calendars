@@ -24,6 +24,16 @@ from .class_registry import RegisteryMeta, ProtectedDict
 
 MONDAY, TUESDAY, WEDNESDAY, THURSDAY, FRIDAY, SATURDAY, SUNDAY = range(7)
 
+WEEKMASK_ABBR = {
+    MONDAY: "Mon",
+    TUESDAY: "Tue",
+    WEDNESDAY: "Wed",
+    THURSDAY: "Thu",
+    FRIDAY: "Fri",
+    SATURDAY: "Sat",
+    SUNDAY: "Sun",
+}
+
 
 class DEFAULT:
     pass
@@ -621,15 +631,28 @@ class MarketCalendar(metaclass=MarketCalendarMeta):
 
     def _special_dates(self, calendars, ad_hoc_dates, start, end):
         """
-        Union an iterable of pairs of the form (time, calendar)
-        and an iterable of pairs of the form (time, [dates])
+        Union an iterable of pairs of the forms (time, calendar),
+        (time, [dates]), and (time, int). If the second item in the pair
+        is an int it will be interpreted as a specific day of the week.
 
         (This is shared logic for computing special opens and special closes.)
         """
-        indexes = [
-            self.days_at_time(self._tryholidays(calendar, start, end), time_)
-            for time_, calendar in calendars
-        ] + [self.days_at_time(dates, time_) for time_, dates in ad_hoc_dates]
+        indexes = []
+        for time_, calendar in calendars:
+            if isinstance(calendar, int):
+                day_of_week = CustomBusinessDay(weekmask=WEEKMASK_ABBR[calendar])
+                indexes.append(
+                    self.days_at_time(
+                        pd.date_range(start, end, freq=day_of_week), time_
+                    )
+                )
+            else:
+                indexes.append(
+                    self.days_at_time(self._tryholidays(calendar, start, end), time_)
+                )
+
+        indexes += [self.days_at_time(dates, time_) for time_, dates in ad_hoc_dates]
+
         if indexes:
             dates = pd.concat(indexes).sort_index().drop_duplicates()
             return dates.loc[start : end.replace(hour=23, minute=59, second=59)]
@@ -813,9 +836,9 @@ class MarketCalendar(metaclass=MarketCalendarMeta):
         # When post follows market_close, market_close should not be considered a close
         day.loc[day.eq("market_close") & day.shift(-1).eq("post")] = "market_open"
         day = day.map(
-            lambda x: self.open_close_map.get(x)
-            if x in self.open_close_map.keys()
-            else x
+            lambda x: (
+                self.open_close_map.get(x) if x in self.open_close_map.keys() else x
+            )
         )
 
         if include_close:

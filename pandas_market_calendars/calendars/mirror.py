@@ -8,6 +8,8 @@ import exchange_calendars
 
 from pandas_market_calendars.market_calendar import MarketCalendar
 
+DAYMASKS = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"]
+
 
 class TradingCalendar(MarketCalendar):
     """
@@ -96,6 +98,23 @@ class TradingCalendar(MarketCalendar):
     @property
     def special_closes_adhoc(self):
         return self._ec.special_closes_adhoc
+
+    @property
+    def weekmask(self):
+        if hasattr(self._ec, "weekmask"):
+            if "1" in self._ec.weekmask or "0" in self._ec.weekmask:
+                # Convert 1s & 0s to Day Abbreviations
+                return " ".join(
+                    [
+                        DAYMASKS[i]
+                        for i, val in enumerate(self._ec.weekmask)
+                        if val == "1"
+                    ]
+                )
+            else:
+                return self._ec.weekmask
+        else:
+            return "Mon Tue Wed Thu Fri"
 
 
 calendars = exchange_calendars.calendar_utils._default_calendar_factories  # noqa
