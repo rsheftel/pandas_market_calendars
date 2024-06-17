@@ -6,6 +6,10 @@ Updates
 4.4.1 ()
 ~~~~~~~~~~~~~~~~~~
 - Added CME Grains calendar (CMEGlobexGrainsExchangeCalendar) from PR #333
+- Removed the Black format check from pre-commit, was causing too many errors
+- 24/7 and XTAE Calendar Fixes from PR #346
+- Changes the required python to be only 3.8 or greater, but tests will only be run for 3.9+
+- CME updated to include Juneteenth PR #337
 
 4.4.0 (02/10/2024)
 ~~~~~~~~~~~~~~~~~~

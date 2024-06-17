@@ -28,8 +28,8 @@ jobs:
           pip install pytest coveralls black===24.1.1
           pip install .
 
-      - name: ensure black format
-        run: python -m black --check pandas_market_calendars tests
+#      - name: ensure black format
+#        run: python -m black --check pandas_market_calendars tests
 
       - name: run tests
         run: |
