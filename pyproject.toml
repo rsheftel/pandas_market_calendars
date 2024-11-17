@@ -1,6 +1,6 @@
 [project]
 name = "pandas_market_calendars"
-version = "4.4.1"
+version = "4.4.2"
 authors = [
     { name = "Ryan Sheftel", email = "rsheftel@alumni.upenn.edu" },
 ]
@@ -21,6 +21,7 @@ classifiers = [
     'Programming Language :: Python :: 3.10',
     'Programming Language :: Python :: 3.11',
     'Programming Language :: Python :: 3.12',
+    'Programming Language :: Python :: 3.13',
 ]
 dependencies = ['pandas>=1.1', 'pytz', 'python-dateutil', 'exchange-calendars>=3.3']
 
