@@ -267,3 +267,37 @@ def test_jpx_trading_days_since_1949(request):
     actual = pd.date_range(start_date, end_date, freq=day_generator)
 
     assert_index_equal(expected, actual)
+
+
+def test_jpx_change_in_market_close():
+    """
+    The market close of Japan changed from 3:00 PM to 3:30 PM on November 5, 2024, make sure the
+    calendar reflects this change.
+    """
+    jpx_calendar = JPXExchangeCalendar()
+    jpx_schedule = jpx_calendar.schedule(start_date="2024-10-28", end_date="2024-11-08")
+
+    business_dates_before_change = [
+        "2024-10-28",
+        "2024-10-29",
+        "2024-10-30",
+        "2024-10-31",
+        "2024-11-01",
+    ]
+
+    business_dates_after_change = [
+        "2024-11-05",
+        "2024-11-06",
+        "2024-11-07",
+        "2024-11-08",
+    ]
+
+    for date in business_dates_before_change:
+        assert jpx_schedule.loc[date, "market_close"] == pd.Timestamp(
+            f"{date} 15:00", tz="Asia/Tokyo"
+        )
+
+    for date in business_dates_after_change:
+        assert jpx_schedule.loc[date, "market_close"] == pd.Timestamp(
+            f"{date} 15:30", tz="Asia/Tokyo"
+        )
