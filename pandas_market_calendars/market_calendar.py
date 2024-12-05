@@ -625,7 +625,15 @@ class MarketCalendar(metaclass=MarketCalendarMeta):
 
     def _tryholidays(self, cal, s, e):
         try:
-            return cal.holidays(s, e)
+            # If the Calendar is all single Observance Holidays then it is far
+            # more efficient to extract and return those dates
+            observed_dates = _all_single_observance_rules(cal)
+            if observed_dates is not None:
+                return pd.DatetimeIndex(
+                    [date for date in observed_dates if s <= date <= e]
+                )
+            else:
+                return cal.holidays(s, e)
         except ValueError:
             return pd.DatetimeIndex([])
 
@@ -920,3 +928,14 @@ class MarketCalendar(metaclass=MarketCalendarMeta):
 
     def __delitem__(self, key):
         return self.remove_time(key)
+
+
+def _is_single_observance(holiday):
+    "Returns the Date of the Holiday if it is only observed once, None otherwise."
+    return holiday.start_date if holiday.start_date == holiday.end_date else None
+
+
+def _all_single_observance_rules(calendar):
+    "Returns a list of timestamps if the Calendar's Rules are all single observance holidays, None Otherwise"
+    observances = [_is_single_observance(rule) for rule in calendar.rules]
+    return observances if all(observances) else None
