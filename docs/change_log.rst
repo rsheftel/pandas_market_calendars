@@ -3,6 +3,10 @@ Change Log
 
 Updates
 -------
+4.5.0 ()
+~~~~~~~~~~~~~~~~~~
+- Speed up improvement from PR #357
+
 4.4.2 (06/17/2024)
 ~~~~~~~~~~~~~~~~~~
 - Update close time on JPX to 15:30 from PR #351
