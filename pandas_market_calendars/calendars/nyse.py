@@ -297,6 +297,8 @@ from pandas_market_calendars.holidays.nyse import (
     HurricaneSandyClosings2012,
     # 2018
     GeorgeHWBushDeath2018,
+    # 2025
+    JimmyCarterDeath2025,
 )
 from pandas_market_calendars.market_calendar import MarketCalendar
 
@@ -961,6 +963,7 @@ class NYSEExchangeCalendar(MarketCalendar):
                 September11Closings2001,
                 HurricaneSandyClosings2012,
                 GeorgeHWBushDeath2018,
+                JimmyCarterDeath2025,
             )
         )
 
