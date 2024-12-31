@@ -3,9 +3,10 @@ Change Log
 
 Updates
 -------
-4.5.0 ()
+4.5.0 (12/20/2024)
 ~~~~~~~~~~~~~~~~~~
 - Speed up improvement from PR #357
+- Add Jimmy Carter NYSE close PR #361
 
 4.4.2 (06/17/2024)
 ~~~~~~~~~~~~~~~~~~
