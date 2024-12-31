@@ -1529,3 +1529,8 @@ HurricaneSandyClosings2012 = [
 GeorgeHWBushDeath2018 = [
     Timestamp("2018-12-05", tz="UTC"),
 ]
+
+# 2025
+JimmyCarterDeath2025 = [
+    Timestamp("2025-01-09", tz="UTC"),
+]

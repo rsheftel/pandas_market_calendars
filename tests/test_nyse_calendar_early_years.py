@@ -3995,6 +3995,7 @@ def test_2025():
     end = "2025-12-31"
     holidays = [
         pd.Timestamp("2025-01-01", tz="UTC"),
+        pd.Timestamp("2025-01-09", tz="UTC"),
         pd.Timestamp("2025-01-20", tz="UTC"),
         pd.Timestamp("2025-02-17", tz="UTC"),
         pd.Timestamp("2025-04-18", tz="UTC"),
