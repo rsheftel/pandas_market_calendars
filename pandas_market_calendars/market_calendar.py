@@ -771,15 +771,26 @@ class MarketCalendar(metaclass=MarketCalendarMeta):
 
             schedule[market_time] = temp
 
-        if _adj_others:
-            adjusted = schedule.loc[_open_adj].apply(
-                lambda x: x.where(x.ge(x["market_open"]), x["market_open"]), axis=1
-            )
+        cols = schedule.columns
+        if _adj_others and len(_open_adj) > 0:
+            mkt_open_ind = cols.get_loc("market_open")
+
+            # Can't use Lambdas here since numpy array assignment doesn't return the array.
+            def adjust_opens(x):  # x is an np.Array.
+                x[x <= x[mkt_open_ind]] = x[mkt_open_ind]
+                return x
+
+            adjusted = schedule.loc[_open_adj].apply(adjust_opens, axis=1, raw=True)
             schedule.loc[_open_adj] = adjusted
 
-            adjusted = schedule.loc[_close_adj].apply(
-                lambda x: x.where(x.le(x["market_close"]), x["market_close"]), axis=1
-            )
+        if _adj_others and len(_close_adj) > 0:
+            mkt_close_ind = cols.get_loc("market_close")
+
+            def adjust_closes(x):
+                x[x >= x[mkt_close_ind]] = x[mkt_close_ind]
+                return x
+
+            adjusted = schedule.loc[_close_adj].apply(adjust_closes, axis=1, raw=True)
             schedule.loc[_close_adj] = adjusted
 
         if interruptions:
