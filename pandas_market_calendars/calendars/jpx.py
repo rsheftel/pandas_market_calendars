@@ -21,13 +21,17 @@ class JPXExchangeCalendar(MarketCalendar):
 
     Open Time: 9:31 AM, Asia/Tokyo
     LUNCH BREAK :facepalm: : 11:30 AM - 12:30 PM Asia/Tokyo
-    Close Time: 4:00 PM, Asia/Tokyo
+    Close Time: 3:30 PM, Asia/Tokyo
+
+    Market close of Japan changed from 3:00 PM to 3:30 PM on November 5, 2024
+    Reference:
+    https://www.jpx.co.jp/english/equities/trading/domestic/tvdivq0000006blj-att/tradinghours_eg.pdf
     """
 
     aliases = ["JPX", "XJPX"]
     regular_market_times = {
         "market_open": ((None, time(9)),),
-        "market_close": ((None, time(15)),),
+        "market_close": ((None, time(15)), ("2024-11-05", time(15, 30))),
         "break_start": ((None, time(11, 30)),),
         "break_end": ((None, time(12, 30)),),
     }
