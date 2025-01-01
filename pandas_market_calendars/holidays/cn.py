@@ -584,6 +584,26 @@ all_holidays = [
     Timestamp("2024-10-03"),
     Timestamp("2024-10-04"),
     Timestamp("2024-10-07"),
+    # 2025 holidays
+    Timestamp("2025-01-01"),  # New Year
+    Timestamp("2025-01-28"),  # Spring Festival
+    Timestamp("2025-01-29"),
+    Timestamp("2025-01-30"),
+    Timestamp("2025-01-31"),
+    Timestamp("2025-02-03"),
+    Timestamp("2025-02-04"),
+    Timestamp("2025-04-04"),  # Tomb-sweeping Day
+    Timestamp("2025-04-05"),
+    Timestamp("2025-05-01"),  # Labor Day
+    Timestamp("2025-05-02"),
+    Timestamp("2025-05-05"),
+    Timestamp("2025-06-02"),  # Dragon Boat Festival
+    Timestamp("2025-10-01"),  # National Day & Mid-autumn Festival
+    Timestamp("2025-10-02"),
+    Timestamp("2025-10-03"),
+    Timestamp("2025-10-06"),
+    Timestamp("2025-10-07"),
+    Timestamp("2025-10-08"),
 ]
 
 # The following holidays are based on Solar terms or Chinese lunisolar calendar,
