@@ -3,6 +3,10 @@ Change Log
 
 Updates
 -------
+4.5.1 (01/01/2025)
+~~~~~~~~~~~~~~~~~~
+- Update Chinese holidays from PR #362
+
 4.5.0 (12/20/2024)
 ~~~~~~~~~~~~~~~~~~
 - Speed up improvement from PR #357
