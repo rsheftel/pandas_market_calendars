@@ -3,8 +3,10 @@ Utilities to use with market_calendars
 """
 
 import itertools
+from typing import Iterable, Literal, Optional, Tuple, Union
 import warnings
 
+from re import split
 import numpy as np
 import pandas as pd
 
@@ -63,7 +65,115 @@ def convert_freq(index, frequency):
     return pd.DataFrame(index=index).asfreq(frequency).index
 
 
-def date_range(schedule, frequency, closed="right", force_close=True, **_):
+def date_range_htf():
+    "Returns a Datetime Index from the start-date to End-Date for Timeperiods of 1D and Higher"
+
+
+# region ---- ---- ---- Date Range Warning Types ---- ---- ----
+class DateRangeWarning(UserWarning):
+    "Super Class to all Date_range Warning Types"
+
+
+class OverlappingSessionWarning(DateRangeWarning):
+    """
+    Warning thrown when date_range is called with a timestep that is larger than an entire session
+    resulting in the session disappearing from the DatetimeIndex.
+
+    Only an issue when closed='right' and force_close = False/None
+    """
+
+
+class DisappearingSessionWarning(DateRangeWarning):
+    """
+    Warning thrown when date_range is called with a timestep that is larger than an entire session
+    resulting in the session disappearing from the DatetimeIndex.
+
+    Only an issue when closed='right', 'both' or None and force_close = False/None
+    """
+
+
+class MissingSessionWarning(DateRangeWarning):
+    """
+    Warning thrown when a date_range() call is made with a requested session,
+    but lacks the necessary columns.
+
+    e.g. 'pre' Session requested and schedule lacks 'pre' and/or 'market_open' column
+    """
+
+
+class InsufficientScheduleWarning(DateRangeWarning):
+    """
+    Warning thrown when a date_range() call is made with a requested number of periods,
+    or start-date / end-date that exceed what was provided in the given schedule
+    """
+
+
+# endregion
+
+
+def filter_date_range_warnings(
+    action: Literal["error", "ignore", "always", "default", "once"],
+    source: Union[
+        Iterable[type[DateRangeWarning]], type[DateRangeWarning]
+    ] = DateRangeWarning,
+):
+    """
+    Adjust the behavior of the date_range() warnings to the desired action.
+
+    :param action: - The desired change to the warning behavior
+        'error': Escalate Warnings into Errors
+        'ignore': Silence Warning Messages
+        'once': Only display a message of the given category once
+        'default': Reset the behavior of the given warning category
+        'always': Always show the Warning of a given category
+
+    :param source: - The Category/Categories to apply the action to. Can be a single Warning or a list of warnings
+        default: DateRangeWarning (All Warnings)
+        Warning Types: MissingSessionWarning, OverlappingSessionWarning,
+            DisappearingSessionWarning, InsufficientScheduleWarning
+    """
+    if not isinstance(source, Iterable):
+        warnings.filterwarnings(action, category=source)
+        return
+
+    for src in source:
+        warnings.filterwarnings(action, category=src)
+
+
+SESSIONS = Literal[
+    "pre",
+    "post",
+    "RTH",
+    "pre_break",
+    "post_break",
+    "ETH",
+    "break",
+    "closed",
+    "closed_masked",
+]
+MKT_TIMES = Literal[
+    "pre", "post", "market_open", "market_close", "break_start", "break_end"
+]
+
+
+def missing_sessions(err: MissingSessionWarning) -> set[SESSIONS]:
+    "Return the Missing Sessions from a 'MissingSessionWarning' Error Message"
+    return set(split(r"[{|}]", err.args[0].replace("'", ""))[1].split(", "))  # type: ignore
+
+
+def missing_columns(err: MissingSessionWarning) -> set[MKT_TIMES]:
+    "Return the Missing Columns from a 'MissingSessionWarning' Error Message"
+    return set(split(r"[{|}]", err.args[0].replace("'", ""))[3].split(", "))  # type: ignore
+
+
+def date_range(
+    schedule: pd.DataFrame,
+    frequency: Union[str, pd.Timedelta, int],
+    closed: Optional[Literal["left", "right", "both"]] = "right",
+    force_close: Optional[bool] = True,
+    session: Union[SESSIONS, Iterable[SESSIONS]] = {"RTH"},
+    merge_adjacent: bool = True,
+) -> pd.DatetimeIndex:
     """
     Returns a DatetimeIndex from the Start-Date to End-Date of the schedule at the desired frequency.
 
@@ -77,7 +187,7 @@ def date_range(schedule, frequency, closed="right", force_close=True, **_):
         of the frequency, closed= "right" and force_close = False, the whole session will disappear.
         This will also raise a warning.
 
-    :param schedule: Schedule of a calendar, which may or may not include break_start and break_end columns
+    :param schedule: Schedule of a calendar, which may or may not include break_start, break_end, pre, or post columns
 
     :param frequency: frequency string that is used by pd.Timedelta to calculate the timestamps
         this must be "1D" or higher frequency
@@ -94,145 +204,250 @@ def date_range(schedule, frequency, closed="right", force_close=True, **_):
 
     :return: pd.DatetimeIndex of datetime64[ns, UTC]
     """
-    _error_check(schedule, closed, force_close)
+    # ---- ---- Error Check Inputs ---- ----
+    if closed not in ("left", "right", "both", None):
+        raise ValueError("closed must be 'left', 'right', 'both' or None.")
+    if force_close not in (True, False, None):
+        raise ValueError("force_close must be True, False or None.")
+    if merge_adjacent not in (True, False):
+        raise ValueError("merge_adjacent must be True or False")
 
-    frequency = _check_frequency(frequency)
-    if frequency is None:
+    # ---- ---- Standardize Frequency Param ---- ----
+    try:
+        frequency = pd.Timedelta(frequency)
+    except ValueError as e:
+        raise ValueError(f"Market Calendar Date_range Timeframe Error: {e}") from e
+    if frequency <= pd.Timedelta("0s"):
+        raise ValueError("Market Calendar Date_Range Frequency must be Positive.")
+    if frequency > pd.Timedelta("1D"):
+        raise ValueError(
+            "Market Calendar Date_Range Frequency Cannot Be longer than '1D'."
+        )
+
+    session_list, mask = _make_session_list(
+        set(schedule.columns), session, merge_adjacent
+    )
+    if len(session_list) == 0:
         return pd.DatetimeIndex([], dtype="datetime64[ns, UTC]")
 
-    if _check_breaks(schedule):
-        before = schedule[["market_open", "break_start"]].set_index(
-            schedule["market_open"]
-        )
-        after = schedule[["break_end", "market_close"]].set_index(schedule["break_end"])
-        before.columns = after.columns = ["start", "end"]
-        schedule = pd.concat([before, after]).sort_index()
-    else:
-        schedule = schedule.rename(
-            columns={"market_open": "start", "market_close": "end"}
-        )
+    session_times = _reconfigure_schedule(schedule, session_list, mask)
+    # Trim off all 0 length sessions
+    session_times = session_times[session_times.start.ne(session_times.end)]
 
-    if force_close is None and closed != "left":
-        _check_overlapping_session(schedule, frequency, closed)
+    _error_check_sessions(session_times, frequency, closed, force_close)
 
-    if force_close is False and closed == "right":
-        _check_disappearing_session(schedule, frequency)
-
-    # Drop any zero length trading sessions
-    schedule = schedule[schedule.start.ne(schedule.end)]
-
-    time_series = _calc_time_series(schedule, frequency, closed, force_close)
-
+    time_series = _calc_time_series(session_times, frequency, closed, force_close)
     time_series.name = None
-    return pd.DatetimeIndex(time_series.drop_duplicates())
+
+    first_col = schedule[session_list[0][0]]  # copy dtype info from schedule
+    return pd.DatetimeIndex(
+        time_series.drop_duplicates(), tz=first_col.dt.tz, dtype=first_col.dtype
+    )
 
 
 # region ------------------ Date Range Support Functions ------------------
 
 
-def _error_check(schedule, closed, force_close):
-    if closed not in ("left", "right", "both", None):
-        raise ValueError("closed must be 'left', 'right', 'both' or None.")
-    if force_close not in (True, False, None):
-        raise ValueError("force_close must be True, False or None.")
+def _make_session_list(
+    columns: set, sessions: Union[str, Iterable], merge_adjacent: bool
+) -> Tuple[list, bool]:
+    "Create a list of (Session Start, Session End) Tuples"
+    session_times = []
+    missing_cols = set()
+    missing_sess = set()
+    sessions = {sessions} if isinstance(sessions, str) else set(sessions)
 
-    if schedule.market_close.lt(schedule.market_open).any():
-        raise ValueError(
-            "Schedule contains rows where market_close < market_open,"
-            " please correct the schedule"
+    if len(extras := sessions.difference(set(SESSIONS.__args__))) > 0:  # type: ignore
+        raise ValueError(f"Unknown Date_Range Market Session: {extras}")
+
+    if "ETH" in sessions:  # Standardize ETH to 'pre' and 'post'
+        sessions = sessions - {"ETH"} | {"pre", "post"}
+    if "closed_masked" in sessions:  # closed_masked == 'closed' for this step
+        sessions |= {"closed"}
+    if "pre" in columns:  # Add wrap-around sessions
+        columns |= {"pre_wrap"}
+    if "market_open" in columns:
+        columns |= {"market_open_wrap"}
+
+    def _extend_statement(session, parts):
+        if session not in sessions:
+            return
+        if columns.issuperset(parts):
+            session_times.extend(parts)
+        else:
+            missing_sess.update({session})
+            missing_cols.update(set(parts) - columns)
+
+    # Append session_start, session_end for each desired session *in session order*
+    _extend_statement("pre", ("pre", "market_open"))
+    if {"break_start", "break_end"}.issubset(columns):
+        # If the schedule has breaks then sub-divide RTH into pre & post break sessions
+        if "RTH" in sessions:
+            sessions = sessions - {"RTH"} | {"pre_break", "post_break"}
+        _extend_statement("pre_break", ("market_open", "break_start"))
+        _extend_statement("break", ("break_start", "break_end"))
+        _extend_statement("post_break", ("break_end", "market_close"))
+    else:
+        _extend_statement("RTH", ("market_open", "market_close"))
+    _extend_statement("post", ("market_close", "post"))
+
+    # Closed can mean [close, open], [close, pre], [pre, post], or [post, open] Adjust accordingly
+    s_start = "post" if "post" in columns else "market_close"
+    s_end = "pre_wrap" if "pre" in columns else "market_open_wrap"
+    _extend_statement("closed", (s_start, s_end))
+
+    if len(missing_sess) > 0:
+        warnings.warn(
+            f"Requested Sessions: {missing_sess}, but schedule is missing columns: {missing_cols}."
+            "\nResulting DatetimeIndex will lack those sessions. ",
+            category=MissingSessionWarning,
         )
 
+    if merge_adjacent:
+        drop_set = set()
+        for i in range(1, len(session_times) - 1, 2):
+            if session_times[i] == session_times[i + 1]:
+                drop_set |= {session_times[i]}
 
-def _check_frequency(frequency):
-    frequency = pd.Timedelta(frequency)
-    if frequency > pd.Timedelta("1D"):
-        raise ValueError("Frequency must be 1D or higher frequency.")
-    return frequency
+        # Guaranteed to drop in pairs => no check needed before zipping
+        session_times = [t for t in session_times if t not in drop_set]
+
+    # Zip the flat list into a list of pairs
+    session_pairs = list(zip(*(iter(session_times),) * 2))
+
+    return session_pairs, "closed_masked" in sessions
 
 
-def _check_breaks(schedule) -> bool:
-    if "break_start" not in schedule:
-        return False
+def _reconfigure_schedule(schedule, session_list, mask_close) -> pd.DataFrame:
+    "Reconfigure a schedule into a sorted dataframe of [start, end] times for each session"
 
-    if not all(
-        [
-            schedule.market_open.le(schedule.break_start).all(),
-            schedule.break_start.le(schedule.break_end).all(),
-            schedule.break_end.le(schedule.market_close).all(),
-        ]
-    ):
+    sessions = []
+
+    for start, end in session_list:
+        if not end.endswith("_wrap"):
+            # Simple Session where 'start' occurs before 'end'
+            sessions.append(
+                schedule[[start, end]]
+                .rename(columns={start: "start", end: "end"})
+                .set_index("start", drop=False)
+            )
+            continue
+
+        # 'closed' Session that wraps around midnight. Shift the 'end' col by 1 Day
+        end = end.rstrip("_wrap")
+        tmp = pd.DataFrame(
+            {
+                "start": schedule[start],
+                "end": schedule[end].shift(-1),
+            }
+        ).set_index("start", drop=False)
+
+        # Shift(-1) leaves last index of 'end' as 'NaT'
+        # Set the [-1, 'end' ('end' === 1)] cell to Midnight of the 'start' time of that row.
+        tmp.iloc[-1, 1] = tmp.iloc[-1, 0].normalize() + pd.Timedelta("1D")  # type: ignore
+
+        if mask_close:
+            # Do some additional work to split 'closed' sessions that span weekends/holidays
+            sessions_to_split = tmp["end"] - tmp["start"] > pd.Timedelta("1D")
+
+            split_strt = tmp[sessions_to_split]["start"]
+            split_end = tmp[sessions_to_split]["end"]
+
+            sessions.append(
+                pd.DataFrame(  # From start of the long close to Midnight
+                    {
+                        "start": split_strt,
+                        "end": split_strt.dt.normalize() + pd.Timedelta("1D"),
+                    }
+                ).set_index("start", drop=False)
+            )
+            sessions.append(
+                pd.DataFrame(  # From Midnight to the end of the long close
+                    {
+                        "start": split_end.dt.normalize(),
+                        "end": split_end,
+                    }
+                ).set_index("start", drop=False)
+            )
+
+            # leave tmp as all the sessions that were not split
+            tmp = tmp[~sessions_to_split]
+
+        sessions.append(tmp)
+
+    return pd.concat(sessions).sort_index()
+
+
+def _error_check_sessions(session_times, timestep, closed, force_close):
+    if session_times.start.gt(session_times.end).any():
         raise ValueError(
-            "Not all rows match the condition: "
-            "market_open <= break_start <= break_end <= market_close, "
+            "Desired Sessions from the Schedule contain rows where session start < session end, "
             "please correct the schedule"
         )
-    return True
+
+    # Disappearing Session
+    if force_close is False and closed == "right":
+        # only check if needed
+        if (session_times.end - session_times.start).lt(timestep).any():
+            warnings.warn(
+                "An interval of the chosen frequency is larger than some of the trading sessions, "
+                "while closed = 'right' and force_close = False. This will make those trading sessions "
+                "disappear. Use a higher frequency or change the values of closed/force_close, to "
+                "keep this from happening.",
+                category=DisappearingSessionWarning,
+            )
+
+    # Overlapping Session
+    if force_close is None and closed != "left":
+        num_bars = _num_bars_ltf(session_times, timestep, closed)
+        end_times = session_times.start + num_bars * timestep
+
+        if end_times.gt(session_times.start.shift(-1)).any():
+            warnings.warn(
+                "The desired frequency results in date_range() generating overlapping sessions. "
+                "This can happen when the timestep is larger than a session, or when "
+                "merge_session = False and a session is not evenly divisible by the timestep. "
+                "The overlapping timestep can be deleted with force_close = True or False",
+                category=OverlappingSessionWarning,
+            )
 
 
-def _check_overlapping_session(schedule, frequency, closed):
-    """
-    Checks if any end time would occur after a the next session's start time.
-    Only an issue when force_close is None and closed != left.
-
-    :param schedule: pd.DataFrame with first column: 'start' and second column: 'end'
-    :raises ValueError:
-    """
-    num_bars = _num_bars_ltf(schedule, frequency, closed)
-    end_times = schedule.start + num_bars * frequency
-
-    if end_times.gt(schedule.start.shift(-1)).any():
-        raise ValueError(
-            "The chosen frequency will lead to overlaps in the calculated index. "
-            "Either choose a higher frequency or avoid setting force_close to None "
-            "when setting closed to 'right', 'both' or None."
-        )
-
-
-def _check_disappearing_session(schedule, frequency):
-    """checks if requested frequency and schedule would lead to lost trading sessions.
-    Only necessary when force_close = False and closed = "right".
-
-    :param schedule: pd.DataFrame with first column: 'start' and second column: 'end'
-    :raises UserWarning:"""
-
-    if (schedule.end - schedule.start).lt(frequency).any():
+def _check_disappearing_session(session_times, timestep):
+    if (session_times.end - session_times.start).lt(timestep).any():
         warnings.warn(
             "An interval of the chosen frequency is larger than some of the trading sessions, "
             "while closed == 'right' and force_close is False. This will make those trading sessions "
             "disappear. Use a higher frequency or change the values of closed/force_close, to "
-            "keep this from happening."
+            "keep this from happening.",
+            category=DisappearingSessionWarning,
         )
 
 
-def _num_bars_ltf(schedule, frequency, closed):
-    """calculate the number of timestamps needed for each trading session.
-
-    :param schedule: pd.DataFrame with first column: 'start' and second column: 'end'
-    :return: pd.Series of float64"""
+def _num_bars_ltf(session_times, timestep, closed) -> pd.Series:
+    "Calculate the number of timestamps needed for each trading session."
     if closed in ("both", None):
-        return np.ceil((schedule.end - schedule.start) / frequency) + 1
+        return np.ceil((session_times.end - session_times.start) / timestep) + 1
     else:
-        return np.ceil((schedule.end - schedule.start) / frequency)
+        return np.ceil((session_times.end - session_times.start) / timestep)
 
 
-def _calc_time_series(schedule, frequency, closed, force_close):
-    """Method used by date_range to calculate the trading index.
-
-    :param schedule: pd.DataFrame with first column: 'start' and second column: 'end'
-    :return: pd.Series of datetime64[ns, UTC]"""
-
-    num_bars = _num_bars_ltf(schedule, frequency, closed)
-    opens = schedule.start.repeat(num_bars)
+def _calc_time_series(session_times, timestep, closed, force_close) -> pd.Series:
+    "Interpolate each session into a datetime series at the desired frequency."
+    num_bars = _num_bars_ltf(session_times, timestep, closed)
+    starts = session_times.start.repeat(num_bars)
 
     if closed == "right":
-        time_series = (opens.groupby(opens.index).cumcount() + 1) * frequency + opens
+        # Right side of addition is cumulative time since session start in multiples of timestep
+        time_series = starts + (starts.groupby(starts.index).cumcount() + 1) * timestep
     else:
-        time_series = (opens.groupby(opens.index).cumcount()) * frequency + opens
+        time_series = starts + (starts.groupby(starts.index).cumcount()) * timestep
 
     if force_close is not None:
-        time_series = time_series[time_series.le(schedule.end.repeat(num_bars))]
+        # Trim off all timestamps that stretched beyond their intended session
+        time_series = time_series[time_series.le(session_times.end.repeat(num_bars))]
+
         if force_close:
-            time_series = pd.concat([time_series, schedule.end]).sort_values()
+            time_series = pd.concat([time_series, session_times.end]).sort_values()  # type: ignore
 
     return time_series
 

@@ -7,6 +7,16 @@ from pandas.testing import assert_index_equal
 import pandas_market_calendars as mcal
 from tests.test_market_calendar import FakeCalendar, FakeBreakCalendar
 
+from pandas_market_calendars.calendar_utils import (
+    MissingSessionWarning,
+    _make_session_list,
+    DisappearingSessionWarning,
+    OverlappingSessionWarning,
+    filter_date_range_warnings,
+    missing_columns,
+    missing_sessions,
+)
+
 
 def test_date_range_exceptions():
     cal = FakeCalendar(open_time=datetime.time(9), close_time=datetime.time(11, 30))
@@ -32,56 +42,78 @@ def test_date_range_exceptions():
         mcal.date_range(schedule, "15min", closed="right", force_close=True)
     assert (
         e.exconly()
-        == "ValueError: Schedule contains rows where market_close < market_open,"
-        " please correct the schedule"
+        == "ValueError: Desired Sessions from the Schedule contain rows where session start < session end, "
+        "please correct the schedule"
     )
 
     # Overlap -
     # the end of the last bar goes over the next start time
     bcal = FakeBreakCalendar()
     bschedule = bcal.schedule("2021-01-05", "2021-01-05")
-    with pytest.raises(ValueError) as e1:
+
+    # ** Was a Value Error, Was Changed to a Warning. Escalate and test**
+    filter_date_range_warnings("error", OverlappingSessionWarning)
+
+    with pytest.raises(OverlappingSessionWarning) as e1:
         # this frequency overlaps
-        mcal.date_range(bschedule, "2H", closed="right", force_close=None)
+        mcal.date_range(bschedule, "2h", closed="right", force_close=None)
     # this doesn't
-    mcal.date_range(bschedule, "1H", closed="right", force_close=None)
+    mcal.date_range(bschedule, "1h", closed="right", force_close=None)
 
-    with pytest.raises(ValueError) as e2:
-        mcal.date_range(bschedule, "2H", closed="both", force_close=None)
-    mcal.date_range(bschedule, "1H", closed="right", force_close=None)
+    with pytest.raises(OverlappingSessionWarning) as e2:
+        mcal.date_range(bschedule, "2h", closed="both", force_close=None)
+    mcal.date_range(bschedule, "1h", closed="right", force_close=None)
 
-    with pytest.raises(ValueError) as e3:
-        mcal.date_range(bschedule, "2H", closed=None, force_close=None)
-    mcal.date_range(bschedule, "1H", closed="right", force_close=None)
+    with pytest.raises(OverlappingSessionWarning) as e3:
+        mcal.date_range(bschedule, "2h", closed=None, force_close=None)
+    mcal.date_range(bschedule, "1h", closed="right", force_close=None)
 
     for e in (e1, e2, e3):
         assert (
             e.exconly()
-            == "ValueError: The chosen frequency will lead to overlaps in the calculated index. "
-            "Either choose a higher frequency or avoid setting force_close to None "
-            "when setting closed to 'right', 'both' or None."
+            == "pandas_market_calendars.calendar_utils.OverlappingSessionWarning: "
+            "The desired frequency results in date_range() generating overlapping sessions. "
+            "This can happen when the timestep is larger than a session, or when "
+            "merge_session = False and a session is not evenly divisible by the timestep. "
+            "The overlapping timestep can be deleted with force_close = True or False"
         )
+
+    # de-escalate and re-test
+    filter_date_range_warnings("default", OverlappingSessionWarning)
+
+    with pytest.warns(OverlappingSessionWarning) as w1:
+        mcal.date_range(bschedule, "2h", closed="right", force_close=None)
+
+    with pytest.warns(OverlappingSessionWarning) as w2:
+        mcal.date_range(bschedule, "2h", closed="both", force_close=None)
+
+    with pytest.warns(OverlappingSessionWarning) as w3:
+        mcal.date_range(bschedule, "2h", closed=None, force_close=None)
+
+    assert all([w1, w2, w3])
 
     try:
         # should all be fine, since force_close cuts the overlapping interval
-        mcal.date_range(bschedule, "2H", closed="right", force_close=True)
+        mcal.date_range(bschedule, "2h", closed="right", force_close=True)
 
-        with pytest.warns(UserWarning):  # should also warn about lost sessions
-            mcal.date_range(bschedule, "2H", closed="right", force_close=False)
+        with pytest.warns(
+            DisappearingSessionWarning
+        ):  # should also warn about lost sessions
+            mcal.date_range(bschedule, "2h", closed="right", force_close=False)
 
-        mcal.date_range(bschedule, "2H", closed="both", force_close=True)
-        mcal.date_range(bschedule, "2H", closed="both", force_close=False)
+        mcal.date_range(bschedule, "2h", closed="both", force_close=True)
+        mcal.date_range(bschedule, "2h", closed="both", force_close=False)
         # closed = "left" should never be a problem since it won't go outside market hours anyway
-        mcal.date_range(bschedule, "2H", closed="left", force_close=True)
-        mcal.date_range(bschedule, "2H", closed="left", force_close=False)
-        mcal.date_range(bschedule, "2H", closed="left", force_close=None)
+        mcal.date_range(bschedule, "2h", closed="left", force_close=True)
+        mcal.date_range(bschedule, "2h", closed="left", force_close=False)
+        mcal.date_range(bschedule, "2h", closed="left", force_close=None)
     except ValueError as e:
         pytest.fail(f"Unexpected Error: \n{e}")
 
 
 @pytest.mark.parametrize("tz", ["America/New_York", "Asia/Ulaanbaatar", "UTC"])
 def test_date_range_permutations(tz):
-    # open_time = 9, close_time = 11.30, freq = "1H"
+    # open_time = 9, close_time = 11.30, freq = "1h"
     cal = FakeCalendar(open_time=datetime.time(9), close_time=datetime.time(11, 30))
     schedule = cal.schedule("2021-01-05", "2021-01-05", tz=tz)
 
@@ -95,13 +127,13 @@ def test_date_range_permutations(tz):
         ],
         tz=tz,
     )
-    actual = mcal.date_range(schedule, "1H", closed="left", force_close=False)
+    actual = mcal.date_range(schedule, "1h", closed="left", force_close=False)
     assert_index_equal(actual, expected)
-    actual = mcal.date_range(schedule, "1H", closed="left", force_close=None)
+    actual = mcal.date_range(schedule, "1h", closed="left", force_close=None)
     assert_index_equal(actual, expected)
-    actual = mcal.date_range(schedule, "1H", closed="both", force_close=False)
+    actual = mcal.date_range(schedule, "1h", closed="both", force_close=False)
     assert_index_equal(actual, expected)
-    actual = mcal.date_range(schedule, "1H", closed=None, force_close=False)
+    actual = mcal.date_range(schedule, "1h", closed=None, force_close=False)
     assert_index_equal(actual, expected)
 
     # 9 10 11 11.30  left True/ both True/ None True
@@ -114,18 +146,18 @@ def test_date_range_permutations(tz):
         ],
         tz=tz,
     )
-    actual = mcal.date_range(schedule, "1H", closed="left", force_close=True)
+    actual = mcal.date_range(schedule, "1h", closed="left", force_close=True)
     assert_index_equal(actual, expected)
-    actual = mcal.date_range(schedule, "1H", closed="both", force_close=True)
+    actual = mcal.date_range(schedule, "1h", closed="both", force_close=True)
     assert_index_equal(actual, expected)
-    actual = mcal.date_range(schedule, "1H", closed=None, force_close=True)
+    actual = mcal.date_range(schedule, "1h", closed=None, force_close=True)
     assert_index_equal(actual, expected)
 
     # 10 11          right False
     expected = pd.DatetimeIndex(
         ["2021-01-05 02:00:00+00:00", "2021-01-05 03:00:00+00:00"], tz=tz
     )
-    actual = mcal.date_range(schedule, "1H", closed="right", force_close=False)
+    actual = mcal.date_range(schedule, "1h", closed="right", force_close=False)
     assert_index_equal(actual, expected)
 
     # 10 11 11.30    right True
@@ -137,7 +169,7 @@ def test_date_range_permutations(tz):
         ],
         tz=tz,
     )
-    actual = mcal.date_range(schedule, "1H", closed="right", force_close=True)
+    actual = mcal.date_range(schedule, "1h", closed="right", force_close=True)
     assert_index_equal(actual, expected)
 
     # 10 11 12       right None
@@ -149,7 +181,7 @@ def test_date_range_permutations(tz):
         ],
         tz=tz,
     )
-    actual = mcal.date_range(schedule, "1H", closed="right", force_close=None)
+    actual = mcal.date_range(schedule, "1h", closed="right", force_close=None)
     assert_index_equal(actual, expected)
 
     # 9 10 11 12     both None/ None None
@@ -162,9 +194,9 @@ def test_date_range_permutations(tz):
         ],
         tz=tz,
     )
-    actual = mcal.date_range(schedule, "1H", closed="both", force_close=None)
+    actual = mcal.date_range(schedule, "1h", closed="both", force_close=None)
     assert_index_equal(actual, expected)
-    actual = mcal.date_range(schedule, "1H", closed=None, force_close=None)
+    actual = mcal.date_range(schedule, "1h", closed=None, force_close=None)
     assert_index_equal(actual, expected)
 
 
@@ -266,7 +298,10 @@ def test_date_range_lower_freq():
     # cannot get date range of frequency lower than 1D
     with pytest.raises(ValueError) as e:
         mcal.date_range(schedule, frequency="3D")
-    assert e.exconly() == "ValueError: Frequency must be 1D or higher frequency."
+    assert (
+        e.exconly()
+        == "ValueError: Market Calendar Date_Range Frequency Cannot Be longer than '1D'."
+    )
 
     # instead get for 1D and convert to lower frequency
     short = mcal.date_range(schedule, frequency="1D")
@@ -303,7 +338,7 @@ def test_date_range_hour():
         ]
     )
     schedule = cal.schedule("2015-12-31", "2016-01-06")
-    actual = mcal.date_range(schedule, "1H", force_close=True)
+    actual = mcal.date_range(schedule, "1h", force_close=True)
 
     assert_index_equal(actual, expected)
 
@@ -320,7 +355,7 @@ def test_date_range_hour():
         ]
     )
     schedule = cal.schedule("2015-12-31", "2016-01-06")
-    actual = mcal.date_range(schedule, "1H", force_close=False)
+    actual = mcal.date_range(schedule, "1h", force_close=False)
 
     assert_index_equal(actual, expected)
 
@@ -341,7 +376,7 @@ def test_date_range_hour():
         ]
     )
     schedule = cal.schedule("2012-07-02", "2012-07-04")
-    actual = mcal.date_range(schedule, "1H")
+    actual = mcal.date_range(schedule, "1h")
 
     assert_index_equal(actual, expected)
 
@@ -360,7 +395,7 @@ def test_date_range_hour():
         ]
     )
     schedule = cal.schedule("2016-12-14", "2016-12-15")
-    actual = mcal.date_range(schedule, "1H")
+    actual = mcal.date_range(schedule, "1h")
 
     assert_index_equal(actual, expected)
 
@@ -379,7 +414,7 @@ def test_date_range_hour():
         ]
     )
     schedule = cal.schedule("2016-12-13", "2016-12-14")
-    actual = mcal.date_range(schedule, "1H", closed=None)
+    actual = mcal.date_range(schedule, "1h", closed=None)
 
     assert_index_equal(actual, expected)
 
@@ -463,7 +498,7 @@ def test_date_range_w_breaks():
     schedule = cal.schedule("2016-12-28", "2016-12-28")
 
     with pytest.warns(UserWarning):
-        mcal.date_range(schedule, "1H", closed="right", force_close=False)
+        mcal.date_range(schedule, "1h", closed="right", force_close=False)
 
     expected = [
         "2016-12-28 14:30:00+00:00",
@@ -564,3 +599,188 @@ def test_date_range_w_breaks():
     assert len(actual) == len(expected)
     for x in expected:
         assert pd.Timestamp(x) in actual
+
+
+@pytest.mark.parametrize("merge", [True, False])
+def test_session_list_gen(merge: bool):
+
+    schedule = pd.DataFrame(
+        [
+            {
+                "pre": pd.Timestamp("2021-01-05T7:00"),
+                "market_open": pd.Timestamp("2021-01-05T9:00"),
+                "break_start": pd.Timestamp("2021-01-05T1:30"),
+                "break_end": pd.Timestamp("2021-01-05T2:00"),
+                "market_close": pd.Timestamp("2021-01-05T3:00"),
+                "post": pd.Timestamp("2021-01-05T7:00"),
+            }
+        ],
+        index=[pd.Timestamp("2021-01-05")],
+    )
+    cols = set(schedule.columns)
+
+    # region ---- ---- Regular Trading Hours w/ Breaks ---- ----
+    # Leaves breaks when they are in schedule
+    assert _make_session_list(cols, "RTH", merge)[0] == [
+        ("market_open", "break_start"),
+        ("break_end", "market_close"),
+    ]
+    assert _make_session_list(cols, ["pre_break", "post_break"], merge)[0] == [
+        ("market_open", "break_start"),
+        ("break_end", "market_close"),
+    ]
+    assert _make_session_list(cols, ["pre_break"], merge)[0] == [
+        ("market_open", "break_start"),
+    ]
+    assert _make_session_list(cols, ["post_break"], merge)[0] == [
+        ("break_end", "market_close"),
+    ]
+
+    # ignores breaks when they aren't in the schedule
+    assert _make_session_list(cols - {"break_start", "break_end"}, "RTH", merge)[0] == [
+        ("market_open", "market_close"),
+    ]
+    # endregion
+
+    # region ---- ---- Extended Trading Hours ---- ----
+    assert _make_session_list(cols, "ETH", merge)[0] == [
+        ("pre", "market_open"),
+        ("market_close", "post"),
+    ]
+    assert _make_session_list(cols, ["pre", "post"], merge)[0] == [
+        ("pre", "market_open"),
+        ("market_close", "post"),
+    ]
+
+    # Drop 'pre' / 'post' individually when those aren't present
+    with pytest.warns(MissingSessionWarning) as w4:
+        assert _make_session_list(cols - {"pre"}, "ETH", merge)[0] == [
+            ("market_close", "post"),
+        ]
+    with pytest.warns(MissingSessionWarning) as w5:
+        assert _make_session_list(cols - {"post"}, "ETH", merge)[0] == [
+            ("pre", "market_open"),
+        ]
+    assert w4 and w5
+    # endregion
+
+    # region ---- ---- Closed Hours ---- ----
+    assert _make_session_list(cols, "closed", merge) == (
+        [
+            ("post", "pre_wrap"),
+        ],
+        False,
+    )
+    assert _make_session_list(cols - {"post", "pre"}, "closed", merge) == (
+        [
+            ("market_close", "market_open_wrap"),
+        ],
+        False,
+    )
+    assert _make_session_list(cols, "closed_masked", merge) == (
+        [
+            ("post", "pre_wrap"),
+        ],
+        True,
+    )
+    assert _make_session_list(cols - {"post", "pre"}, "closed_masked", merge) == (
+        [
+            ("market_close", "market_open_wrap"),
+        ],
+        True,
+    )
+    # endregion
+
+    # region ---- ---- Error and Warnings on Missing sessions ---- ----
+    # escalate missing sessions to errors
+    filter_date_range_warnings("error", MissingSessionWarning)
+    with pytest.raises(MissingSessionWarning) as e1:
+        _ = _make_session_list(cols - {"market_open"}, ["RTH", "pre"], merge)
+    # Commented direct check out since the actual order of the missing values can change
+    # since sets are not ordered. plus, this tests the 'missing' functions
+    # assert e1.exconly() == (
+    #     "pandas_market_calendars.calendar_utils.MissingSessionWarning: Requested Sessions: "
+    #     "['pre', 'pre_break'], but schedule is missing columns: ['market_open']."
+    #     "\nResulting DatetimeIndex will lack those sessions."
+    # )
+    assert missing_columns(e1.value) == {"market_open"}
+    assert missing_sessions(e1.value) == {"pre", "pre_break"}
+
+    with pytest.raises(MissingSessionWarning) as e2:
+        _ = _make_session_list(cols - {"market_close"}, "RTH", merge)
+    assert missing_columns(e2.value) == {"market_close"}
+    assert missing_sessions(e2.value) == {"post_break"}
+
+    with pytest.raises(MissingSessionWarning) as e3:
+        _ = _make_session_list(cols - {"market_open", "market_close"}, "RTH", merge)
+    assert missing_columns(e3.value) == {"market_close", "market_open"}
+    assert missing_sessions(e3.value) == {"post_break", "pre_break"}
+
+    # Deescalate errors and check warnings are thrown
+    filter_date_range_warnings("default", MissingSessionWarning)
+    with pytest.warns(MissingSessionWarning) as w1:
+        _ = _make_session_list(cols - {"market_open"}, ["RTH", "pre"], merge)
+    with pytest.warns(MissingSessionWarning) as w2:
+        _ = _make_session_list(cols - {"market_close"}, "RTH", merge)
+    with pytest.warns(MissingSessionWarning) as w3:
+        _ = _make_session_list(cols - {"market_open", "market_close"}, "RTH", merge)
+    assert all((w1, w2, w3))
+    # endregion
+
+
+def test_session_list_merge_adj():
+    schedule = pd.DataFrame(
+        [
+            {
+                "pre": pd.Timestamp("2021-01-05T7:00"),
+                "market_open": pd.Timestamp("2021-01-05T9:00"),
+                "break_start": pd.Timestamp("2021-01-05T1:30"),
+                "break_end": pd.Timestamp("2021-01-05T2:00"),
+                "market_close": pd.Timestamp("2021-01-05T3:00"),
+                "post": pd.Timestamp("2021-01-05T7:00"),
+            }
+        ],
+        index=[pd.Timestamp("2021-01-05")],
+    )
+    cols = set(schedule.columns)
+
+    # ETH Post sessions merge/split
+    assert _make_session_list(cols - {"pre"}, ["closed", "post_break"], True)[0] == [
+        ("break_end", "market_close"),
+        ("post", "market_open_wrap"),
+    ]
+    assert _make_session_list(cols - {"post", "pre"}, ["closed", "post_break"], True)[
+        0
+    ] == [
+        ("break_end", "market_open_wrap"),
+    ]
+
+    # Break Merge/Split
+    assert _make_session_list(cols, ["RTH"], True)[0] == [
+        ("market_open", "break_start"),
+        ("break_end", "market_close"),
+    ]
+    assert _make_session_list(cols, ["RTH", "break"], True)[0] == [
+        ("market_open", "market_close"),
+    ]
+
+    # 'ETH' & 'RTH' Merge /split
+    assert _make_session_list(cols, ["RTH", "ETH"], True)[0] == [
+        ("pre", "break_start"),
+        ("break_end", "post"),
+    ]
+    assert _make_session_list(
+        cols - {"break_start", "break_end"}, ["RTH", "ETH"], True
+    )[0] == [
+        ("pre", "post"),
+    ]
+
+    # all sessions: pd.daterange equivalent
+    assert _make_session_list(cols, ["RTH", "ETH", "break", "closed"], True)[0] == [
+        ("pre", "pre_wrap"),
+    ]
+    assert _make_session_list(cols - {"pre", "post"}, ["RTH", "break", "closed"], True)[
+        0
+    ] == [
+        ("market_open", "market_open_wrap"),
+    ]
