@@ -5,16 +5,17 @@ import pytest
 from pandas.testing import assert_index_equal
 
 import pandas_market_calendars as mcal
-from tests.test_market_calendar import FakeCalendar, FakeBreakCalendar
+from tests.test_market_calendar import FakeCalendar, FakeBreakCalendar, FakeETHCalendar
 
 from pandas_market_calendars.calendar_utils import (
+    InsufficientScheduleWarning,
     MissingSessionWarning,
     _make_session_list,
     DisappearingSessionWarning,
     OverlappingSessionWarning,
     filter_date_range_warnings,
-    missing_columns,
-    missing_sessions,
+    parse_missing_session_warning,
+    parse_insufficient_schedule_warning,
 )
 
 
@@ -52,7 +53,9 @@ def test_date_range_exceptions():
     bschedule = bcal.schedule("2021-01-05", "2021-01-05")
 
     # ** Was a Value Error, Was Changed to a Warning. Escalate and test**
-    filter_date_range_warnings("error", OverlappingSessionWarning)
+    filter_date_range_warnings(
+        "error", [OverlappingSessionWarning, InsufficientScheduleWarning]
+    )
 
     with pytest.raises(OverlappingSessionWarning) as e1:
         # this frequency overlaps
@@ -92,6 +95,40 @@ def test_date_range_exceptions():
 
     assert all([w1, w2, w3])
 
+    filter_date_range_warnings("error", InsufficientScheduleWarning)
+
+    # Insuffient Schedule. (start/end times exceed values in the schedule)
+    with pytest.raises(InsufficientScheduleWarning) as e4:
+        mcal.date_range(bschedule, "2h", start="2021-01-03", end="2021-01-05")
+    assert parse_insufficient_schedule_warning(e4.value) == (
+        True,
+        pd.Timestamp("2021-01-03"),
+        pd.Timestamp("2021-01-04"),
+    )
+
+    with pytest.raises(InsufficientScheduleWarning) as e5:
+        mcal.date_range(bschedule, "2h", start="2021-01-05", end="2021-01-07")
+    assert parse_insufficient_schedule_warning(e5.value) == (
+        False,
+        pd.Timestamp("2021-01-06"),
+        pd.Timestamp("2021-01-06"),
+    )
+
+    filter_date_range_warnings("default", OverlappingSessionWarning)
+    # Insuffient Schedule again, but as a warning
+    with pytest.warns(InsufficientScheduleWarning) as w4:
+        mcal.date_range(bschedule, "2h", start="2021-01-03", end="2021-01-05")
+
+    with pytest.warns(InsufficientScheduleWarning) as w5:
+        mcal.date_range(bschedule, "2h", start="2021-01-05", end="2021-01-07")
+
+    assert all([w4, w5])
+
+    with pytest.raises(ValueError) as e3:
+        mcal.date_range(bschedule, "2h", start="2021-01-06", end="2021-01-03")
+    # should't raise a value error
+    mcal.date_range(bschedule, "2h", start="2021-01-05", end="2021-01-05")
+
     try:
         # should all be fine, since force_close cuts the overlapping interval
         mcal.date_range(bschedule, "2h", closed="right", force_close=True)
@@ -109,6 +146,195 @@ def test_date_range_exceptions():
         mcal.date_range(bschedule, "2h", closed="left", force_close=None)
     except ValueError as e:
         pytest.fail(f"Unexpected Error: \n{e}")
+
+
+@pytest.mark.parametrize("merge", [True, False])
+def test_session_list_gen(merge: bool):
+    # Only Generating Session Lists to test a sub component of date_range to ease de-bugging
+    schedule = pd.DataFrame(
+        [
+            {
+                "pre": pd.Timestamp("2021-01-05T7:00"),
+                "market_open": pd.Timestamp("2021-01-05T9:00"),
+                "break_start": pd.Timestamp("2021-01-05T1:30"),
+                "break_end": pd.Timestamp("2021-01-05T2:00"),
+                "market_close": pd.Timestamp("2021-01-05T3:00"),
+                "post": pd.Timestamp("2021-01-05T7:00"),
+            }
+        ],
+        index=[pd.Timestamp("2021-01-05")],
+    )
+    cols = set(schedule.columns)
+
+    # region ---- ---- Regular Trading Hours w/ Breaks ---- ----
+    # Leaves breaks when they are in schedule
+    assert _make_session_list(cols, "RTH", merge)[0] == [
+        ("market_open", "break_start"),
+        ("break_end", "market_close"),
+    ]
+    assert _make_session_list(cols, ["pre_break", "post_break"], merge)[0] == [
+        ("market_open", "break_start"),
+        ("break_end", "market_close"),
+    ]
+    assert _make_session_list(cols, ["pre_break"], merge)[0] == [
+        ("market_open", "break_start"),
+    ]
+    assert _make_session_list(cols, ["post_break"], merge)[0] == [
+        ("break_end", "market_close"),
+    ]
+
+    # ignores breaks when they aren't in the schedule
+    assert _make_session_list(cols - {"break_start", "break_end"}, "RTH", merge)[0] == [
+        ("market_open", "market_close"),
+    ]
+    # endregion
+
+    # region ---- ---- Extended Trading Hours ---- ----
+    assert _make_session_list(cols, "ETH", merge)[0] == [
+        ("pre", "market_open"),
+        ("market_close", "post"),
+    ]
+    assert _make_session_list(cols, ["pre", "post"], merge)[0] == [
+        ("pre", "market_open"),
+        ("market_close", "post"),
+    ]
+
+    # Drop 'pre' / 'post' individually when those aren't present
+    with pytest.warns(MissingSessionWarning) as w4:
+        assert _make_session_list(cols - {"pre"}, "ETH", merge)[0] == [
+            ("market_close", "post"),
+        ]
+    with pytest.warns(MissingSessionWarning) as w5:
+        assert _make_session_list(cols - {"post"}, "ETH", merge)[0] == [
+            ("pre", "market_open"),
+        ]
+    assert w4 and w5
+    # endregion
+
+    # region ---- ---- Closed Hours ---- ----
+    assert _make_session_list(cols, "closed", merge) == (
+        [
+            ("post", "pre_wrap"),
+        ],
+        False,
+    )
+    assert _make_session_list(cols - {"post", "pre"}, "closed", merge) == (
+        [
+            ("market_close", "market_open_wrap"),
+        ],
+        False,
+    )
+    assert _make_session_list(cols, "closed_masked", merge) == (
+        [
+            ("post", "pre_wrap"),
+        ],
+        True,
+    )
+    assert _make_session_list(cols - {"post", "pre"}, "closed_masked", merge) == (
+        [
+            ("market_close", "market_open_wrap"),
+        ],
+        True,
+    )
+    # endregion
+
+    # region ---- ---- Error and Warnings on Missing sessions ---- ----
+    # escalate missing sessions to errors
+    filter_date_range_warnings("error", MissingSessionWarning)
+    with pytest.raises(MissingSessionWarning) as e1:
+        _ = _make_session_list(cols - {"market_open"}, ["RTH", "pre"], merge)
+    # Commented direct check out since the actual order of the missing values can change
+    # since sets are not ordered. plus, this tests the 'missing' functions
+    # assert e1.exconly() == (
+    #     "pandas_market_calendars.calendar_utils.MissingSessionWarning: Requested Sessions: "
+    #     "['pre', 'pre_break'], but schedule is missing columns: ['market_open']."
+    #     "\nResulting DatetimeIndex will lack those sessions."
+    # )
+    assert parse_missing_session_warning(e1.value) == (
+        {"pre", "pre_break"},
+        {"market_open"},
+    )
+
+    with pytest.raises(MissingSessionWarning) as e2:
+        _ = _make_session_list(cols - {"market_close"}, "RTH", merge)
+    assert parse_missing_session_warning(e2.value) == ({"post_break"}, {"market_close"})
+
+    with pytest.raises(MissingSessionWarning) as e3:
+        _ = _make_session_list(cols - {"market_open", "market_close"}, "RTH", merge)
+    assert parse_missing_session_warning(e3.value) == (
+        {"post_break", "pre_break"},
+        {"market_close", "market_open"},
+    )
+
+    # Deescalate errors and check warnings are thrown
+    filter_date_range_warnings("default", MissingSessionWarning)
+    with pytest.warns(MissingSessionWarning) as w1:
+        _ = _make_session_list(cols - {"market_open"}, ["RTH", "pre"], merge)
+    with pytest.warns(MissingSessionWarning) as w2:
+        _ = _make_session_list(cols - {"market_close"}, "RTH", merge)
+    with pytest.warns(MissingSessionWarning) as w3:
+        _ = _make_session_list(cols - {"market_open", "market_close"}, "RTH", merge)
+    assert all((w1, w2, w3))
+    # endregion
+
+
+def test_session_list_merge_adj():
+    # Only Generating Session Lists and Making sure adjacent sessions merge
+    schedule = pd.DataFrame(
+        [
+            {
+                "pre": pd.Timestamp("2021-01-05T7:00"),
+                "market_open": pd.Timestamp("2021-01-05T9:00"),
+                "break_start": pd.Timestamp("2021-01-05T1:30"),
+                "break_end": pd.Timestamp("2021-01-05T2:00"),
+                "market_close": pd.Timestamp("2021-01-05T3:00"),
+                "post": pd.Timestamp("2021-01-05T7:00"),
+            }
+        ],
+        index=[pd.Timestamp("2021-01-05")],
+    )
+    cols = set(schedule.columns)
+
+    # ETH Post sessions merge/split
+    assert _make_session_list(cols - {"pre"}, ["closed", "post_break"], True)[0] == [
+        ("break_end", "market_close"),
+        ("post", "market_open_wrap"),
+    ]
+    assert _make_session_list(cols - {"post", "pre"}, ["closed", "post_break"], True)[
+        0
+    ] == [
+        ("break_end", "market_open_wrap"),
+    ]
+
+    # Break Merge/Split
+    assert _make_session_list(cols, ["RTH"], True)[0] == [
+        ("market_open", "break_start"),
+        ("break_end", "market_close"),
+    ]
+    assert _make_session_list(cols, ["RTH", "break"], True)[0] == [
+        ("market_open", "market_close"),
+    ]
+
+    # 'ETH' & 'RTH' Merge /split
+    assert _make_session_list(cols, ["RTH", "ETH"], True)[0] == [
+        ("pre", "break_start"),
+        ("break_end", "post"),
+    ]
+    assert _make_session_list(
+        cols - {"break_start", "break_end"}, ["RTH", "ETH"], True
+    )[0] == [
+        ("pre", "post"),
+    ]
+
+    # all sessions: pd.daterange equivalent
+    assert _make_session_list(cols, ["RTH", "ETH", "break", "closed"], True)[0] == [
+        ("pre", "pre_wrap"),
+    ]
+    assert _make_session_list(cols - {"pre", "post"}, ["RTH", "break", "closed"], True)[
+        0
+    ] == [
+        ("market_open", "market_open_wrap"),
+    ]
 
 
 @pytest.mark.parametrize("tz", ["America/New_York", "Asia/Ulaanbaatar", "UTC"])
@@ -601,186 +827,618 @@ def test_date_range_w_breaks():
         assert pd.Timestamp(x) in actual
 
 
-@pytest.mark.parametrize("merge", [True, False])
-def test_session_list_gen(merge: bool):
+@pytest.mark.parametrize("tz", ["America/New_York", "Asia/Ulaanbaatar", "UTC"])
+def test_date_range_ETH(tz):
 
-    schedule = pd.DataFrame(
-        [
-            {
-                "pre": pd.Timestamp("2021-01-05T7:00"),
-                "market_open": pd.Timestamp("2021-01-05T9:00"),
-                "break_start": pd.Timestamp("2021-01-05T1:30"),
-                "break_end": pd.Timestamp("2021-01-05T2:00"),
-                "market_close": pd.Timestamp("2021-01-05T3:00"),
-                "post": pd.Timestamp("2021-01-05T7:00"),
-            }
-        ],
-        index=[pd.Timestamp("2021-01-05")],
+    cal = FakeETHCalendar()
+    schedule = cal.schedule("2016-12-30", "2017-01-03", market_times="all", tz=tz)
+
+    # Merges Sessions, Keeps all timestamps at Hour mark
+    assert_index_equal(
+        mcal.date_range(schedule, "1h", "left", False, {"RTH", "ETH"}),
+        pd.DatetimeIndex(
+            [
+                "2016-12-30 08:00:00-05:00",
+                "2016-12-30 09:00:00-05:00",
+                "2016-12-30 10:00:00-05:00",
+                "2016-12-30 11:00:00-05:00",
+                "2016-12-30 12:00:00-05:00",
+                "2017-01-03 08:00:00-05:00",
+                "2017-01-03 09:00:00-05:00",
+                "2017-01-03 10:00:00-05:00",
+                "2017-01-03 11:00:00-05:00",
+                "2017-01-03 12:00:00-05:00",
+            ],
+            tz=tz,
+        ),
     )
-    cols = set(schedule.columns)
 
-    # region ---- ---- Regular Trading Hours w/ Breaks ---- ----
-    # Leaves breaks when they are in schedule
-    assert _make_session_list(cols, "RTH", merge)[0] == [
-        ("market_open", "break_start"),
-        ("break_end", "market_close"),
-    ]
-    assert _make_session_list(cols, ["pre_break", "post_break"], merge)[0] == [
-        ("market_open", "break_start"),
-        ("break_end", "market_close"),
-    ]
-    assert _make_session_list(cols, ["pre_break"], merge)[0] == [
-        ("market_open", "break_start"),
-    ]
-    assert _make_session_list(cols, ["post_break"], merge)[0] == [
-        ("break_end", "market_close"),
-    ]
-
-    # ignores breaks when they aren't in the schedule
-    assert _make_session_list(cols - {"break_start", "break_end"}, "RTH", merge)[0] == [
-        ("market_open", "market_close"),
-    ]
-    # endregion
-
-    # region ---- ---- Extended Trading Hours ---- ----
-    assert _make_session_list(cols, "ETH", merge)[0] == [
-        ("pre", "market_open"),
-        ("market_close", "post"),
-    ]
-    assert _make_session_list(cols, ["pre", "post"], merge)[0] == [
-        ("pre", "market_open"),
-        ("market_close", "post"),
-    ]
-
-    # Drop 'pre' / 'post' individually when those aren't present
-    with pytest.warns(MissingSessionWarning) as w4:
-        assert _make_session_list(cols - {"pre"}, "ETH", merge)[0] == [
-            ("market_close", "post"),
-        ]
-    with pytest.warns(MissingSessionWarning) as w5:
-        assert _make_session_list(cols - {"post"}, "ETH", merge)[0] == [
-            ("pre", "market_open"),
-        ]
-    assert w4 and w5
-    # endregion
-
-    # region ---- ---- Closed Hours ---- ----
-    assert _make_session_list(cols, "closed", merge) == (
-        [
-            ("post", "pre_wrap"),
-        ],
-        False,
+    # Splits Sessions, Adjusts timestamps to align with sessions
+    assert_index_equal(
+        mcal.date_range(schedule, 3600, "left", False, {"RTH", "ETH"}, False),
+        pd.DatetimeIndex(
+            [
+                "2016-12-30 08:00:00-05:00",
+                "2016-12-30 09:00:00-05:00",
+                "2016-12-30 09:30:00-05:00",
+                "2016-12-30 10:30:00-05:00",
+                "2016-12-30 11:30:00-05:00",
+                "2016-12-30 12:30:00-05:00",
+                "2017-01-03 08:00:00-05:00",
+                "2017-01-03 09:00:00-05:00",
+                "2017-01-03 09:30:00-05:00",
+                "2017-01-03 10:30:00-05:00",
+                "2017-01-03 11:30:00-05:00",
+                "2017-01-03 12:30:00-05:00",
+            ],
+            tz=tz,
+        ),
     )
-    assert _make_session_list(cols - {"post", "pre"}, "closed", merge) == (
-        [
-            ("market_close", "market_open_wrap"),
-        ],
-        False,
+
+    # ETH Hours only
+    assert_index_equal(
+        mcal.date_range(schedule, 3600, "left", False, "ETH", False),
+        pd.DatetimeIndex(
+            [
+                "2016-12-30 08:00:00-05:00",
+                "2016-12-30 09:00:00-05:00",
+                "2016-12-30 11:30:00-05:00",
+                "2016-12-30 12:30:00-05:00",
+                "2017-01-03 08:00:00-05:00",
+                "2017-01-03 09:00:00-05:00",
+                "2017-01-03 11:30:00-05:00",
+                "2017-01-03 12:30:00-05:00",
+            ],
+            tz=tz,
+        ),
     )
-    assert _make_session_list(cols, "closed_masked", merge) == (
-        [
-            ("post", "pre_wrap"),
-        ],
-        True,
+
+    # Pre Hours only
+    assert_index_equal(
+        mcal.date_range(schedule, pd.Timedelta("1h"), "left", False, "pre"),
+        pd.DatetimeIndex(
+            [
+                "2016-12-30 08:00:00-05:00",
+                "2016-12-30 09:00:00-05:00",
+                "2017-01-03 08:00:00-05:00",
+                "2017-01-03 09:00:00-05:00",
+            ],
+            tz=tz,
+        ),
     )
-    assert _make_session_list(cols - {"post", "pre"}, "closed_masked", merge) == (
-        [
-            ("market_close", "market_open_wrap"),
-        ],
-        True,
+
+    # Post Hours only
+    assert_index_equal(
+        mcal.date_range(schedule, pd.Timedelta("1h"), "left", False, "post"),
+        pd.DatetimeIndex(
+            [
+                "2016-12-30 11:30:00-05:00",
+                "2016-12-30 12:30:00-05:00",
+                "2017-01-03 11:30:00-05:00",
+                "2017-01-03 12:30:00-05:00",
+            ],
+            tz=tz,
+        ),
     )
-    # endregion
-
-    # region ---- ---- Error and Warnings on Missing sessions ---- ----
-    # escalate missing sessions to errors
-    filter_date_range_warnings("error", MissingSessionWarning)
-    with pytest.raises(MissingSessionWarning) as e1:
-        _ = _make_session_list(cols - {"market_open"}, ["RTH", "pre"], merge)
-    # Commented direct check out since the actual order of the missing values can change
-    # since sets are not ordered. plus, this tests the 'missing' functions
-    # assert e1.exconly() == (
-    #     "pandas_market_calendars.calendar_utils.MissingSessionWarning: Requested Sessions: "
-    #     "['pre', 'pre_break'], but schedule is missing columns: ['market_open']."
-    #     "\nResulting DatetimeIndex will lack those sessions."
-    # )
-    assert missing_columns(e1.value) == {"market_open"}
-    assert missing_sessions(e1.value) == {"pre", "pre_break"}
-
-    with pytest.raises(MissingSessionWarning) as e2:
-        _ = _make_session_list(cols - {"market_close"}, "RTH", merge)
-    assert missing_columns(e2.value) == {"market_close"}
-    assert missing_sessions(e2.value) == {"post_break"}
-
-    with pytest.raises(MissingSessionWarning) as e3:
-        _ = _make_session_list(cols - {"market_open", "market_close"}, "RTH", merge)
-    assert missing_columns(e3.value) == {"market_close", "market_open"}
-    assert missing_sessions(e3.value) == {"post_break", "pre_break"}
-
-    # Deescalate errors and check warnings are thrown
-    filter_date_range_warnings("default", MissingSessionWarning)
-    with pytest.warns(MissingSessionWarning) as w1:
-        _ = _make_session_list(cols - {"market_open"}, ["RTH", "pre"], merge)
-    with pytest.warns(MissingSessionWarning) as w2:
-        _ = _make_session_list(cols - {"market_close"}, "RTH", merge)
-    with pytest.warns(MissingSessionWarning) as w3:
-        _ = _make_session_list(cols - {"market_open", "market_close"}, "RTH", merge)
-    assert all((w1, w2, w3))
-    # endregion
 
 
-def test_session_list_merge_adj():
-    schedule = pd.DataFrame(
+@pytest.mark.parametrize("tz", ["America/New_York", "Asia/Ulaanbaatar", "UTC"])
+def test_date_range_start_end(tz):
+    cal = FakeETHCalendar()
+    schedule = cal.schedule("2016-12-30", "2017-01-03", market_times="all", tz=tz)
+
+    # Trim the Start to the desired timestamp
+    actual1 = pd.DatetimeIndex(
         [
-            {
-                "pre": pd.Timestamp("2021-01-05T7:00"),
-                "market_open": pd.Timestamp("2021-01-05T9:00"),
-                "break_start": pd.Timestamp("2021-01-05T1:30"),
-                "break_end": pd.Timestamp("2021-01-05T2:00"),
-                "market_close": pd.Timestamp("2021-01-05T3:00"),
-                "post": pd.Timestamp("2021-01-05T7:00"),
-            }
+            "2016-12-30 10:00:00-05:00",
+            "2016-12-30 10:30:00-05:00",
+            "2016-12-30 11:00:00-05:00",
+            "2016-12-30 11:30:00-05:00",
+            "2017-01-03 09:30:00-05:00",
+            "2017-01-03 10:00:00-05:00",
+            "2017-01-03 10:30:00-05:00",
+            "2017-01-03 11:00:00-05:00",
+            "2017-01-03 11:30:00-05:00",
         ],
-        index=[pd.Timestamp("2021-01-05")],
+        tz=tz,
     )
-    cols = set(schedule.columns)
 
-    # ETH Post sessions merge/split
-    assert _make_session_list(cols - {"pre"}, ["closed", "post_break"], True)[0] == [
-        ("break_end", "market_close"),
-        ("post", "market_open_wrap"),
-    ]
-    assert _make_session_list(cols - {"post", "pre"}, ["closed", "post_break"], True)[
-        0
-    ] == [
-        ("break_end", "market_open_wrap"),
-    ]
+    # trims off the 9:30 Timestamp
+    assert_index_equal(
+        mcal.date_range(schedule, "30m", "left", True, start="2016-12-30T10:00-5:00"),
+        actual1,
+    )
+    assert_index_equal(
+        mcal.date_range(schedule, "30m", "left", True, start="2016-12-30T9:59-5:00"),
+        actual1,
+    )
+    # trims off the 10am timestamp too
+    assert_index_equal(
+        mcal.date_range(schedule, "30m", "left", True, start="2016-12-30T10:01-5:00"),
+        actual1[1 : len(actual1)],
+    )
+    assert_index_equal(
+        mcal.date_range(
+            schedule, "30m", "left", True, start="2016-12-30T10:00-5:00", periods=3
+        ),
+        actual1[0:-6],
+    )
 
-    # Break Merge/Split
-    assert _make_session_list(cols, ["RTH"], True)[0] == [
-        ("market_open", "break_start"),
-        ("break_end", "market_close"),
-    ]
-    assert _make_session_list(cols, ["RTH", "break"], True)[0] == [
-        ("market_open", "market_close"),
-    ]
+    # Check both start and end work in conjunction and periods are ignored
+    assert_index_equal(
+        mcal.date_range(
+            schedule,
+            "30m",
+            "left",
+            True,
+            start="2016-12-30T11:00-5:00",
+            end="2017-01-03 11:00:00-05:00",
+            periods=2,
+        ),
+        actual1[2:-1],
+    )
 
-    # 'ETH' & 'RTH' Merge /split
-    assert _make_session_list(cols, ["RTH", "ETH"], True)[0] == [
-        ("pre", "break_start"),
-        ("break_end", "post"),
-    ]
-    assert _make_session_list(
-        cols - {"break_start", "break_end"}, ["RTH", "ETH"], True
-    )[0] == [
-        ("pre", "post"),
-    ]
+    # Trim the End to the desired timestamp
+    actual2 = pd.DatetimeIndex(
+        [
+            "2016-12-30 09:30:00-05:00",
+            "2016-12-30 10:00:00-05:00",
+            "2016-12-30 10:30:00-05:00",
+            "2016-12-30 11:00:00-05:00",
+        ],
+        tz=tz,
+    )
 
-    # all sessions: pd.daterange equivalent
-    assert _make_session_list(cols, ["RTH", "ETH", "break", "closed"], True)[0] == [
-        ("pre", "pre_wrap"),
-    ]
-    assert _make_session_list(cols - {"pre", "post"}, ["RTH", "break", "closed"], True)[
-        0
-    ] == [
-        ("market_open", "market_open_wrap"),
-    ]
+    # trims off the 11:30 Timestamp
+    assert_index_equal(
+        mcal.date_range(schedule, "30m", "left", True, end="2016-12-30T11:01-5:00"),
+        actual2,
+    )
+    assert_index_equal(
+        mcal.date_range(schedule, "30m", "left", True, end="2016-12-30T11:00-5:00"),
+        actual2,
+    )
+    # trims off the 11am timestamp too
+    assert_index_equal(
+        mcal.date_range(schedule, "30m", "left", True, end="2016-12-30T10:59-5:00"),
+        actual2[0:-1],
+    )
+    assert_index_equal(
+        mcal.date_range(
+            schedule, "30m", "left", True, end="2016-12-30T11:00-5:00", periods=2
+        ),
+        actual2[2 : len(actual2)],
+    )
+
+    # Start / End are interpreted in the Schedule's Timezone
+    schedule = cal.schedule("2016-12-30", "2017-01-03", market_times="all", tz=cal.tz)
+    assert_index_equal(
+        mcal.date_range(schedule, "30m", "left", True, start="2016-12-30T10:00"),
+        actual1.tz_convert(cal.tz),
+    )
+    assert_index_equal(
+        mcal.date_range(schedule, "30m", "left", True, end="2016-12-30T11:00"),
+        actual2.tz_convert(cal.tz),
+    )
+
+
+@pytest.mark.parametrize("tz", ["America/New_York", "Asia/Ulaanbaatar", "UTC"])
+def test_date_range_catch_periods_err(tz):
+    cal = FakeETHCalendar()
+    # ---- ---- Attempt to throw an warning, catch it, then recover. ---- ----
+    filter_date_range_warnings("error", InsufficientScheduleWarning)
+
+    schedule = cal.schedule("2016-12-30", "2017-01-03", market_times="all", tz=tz)
+    with pytest.raises(InsufficientScheduleWarning) as e1:
+        mcal.date_range(schedule, "30m", "left", True, start="2016-12-29T10:00")
+
+    # Update the Schedule to what is needed in a recovery attempt
+    _bool, t1, t2 = parse_insufficient_schedule_warning(e1.value)
+    if _bool:
+        schedule = pd.concat(
+            [cal.schedule(t1, t2, market_times="all", tz=tz), schedule]
+        )
+    else:
+        assert False
+
+    # Retest with the updated schedule
+    assert_index_equal(
+        mcal.date_range(
+            schedule, "30m", "left", True, start="2016-12-29T10:00:00-5:00"
+        ),
+        pd.DatetimeIndex(
+            [
+                "2016-12-29 10:00:00-05:00",
+                "2016-12-29 10:30:00-05:00",
+                "2016-12-29 11:00:00-05:00",
+                "2016-12-29 11:30:00-05:00",
+                "2016-12-30 09:30:00-05:00",
+                "2016-12-30 10:00:00-05:00",
+                "2016-12-30 10:30:00-05:00",
+                "2016-12-30 11:00:00-05:00",
+                "2016-12-30 11:30:00-05:00",
+                "2017-01-03 09:30:00-05:00",
+                "2017-01-03 10:00:00-05:00",
+                "2017-01-03 10:30:00-05:00",
+                "2017-01-03 11:00:00-05:00",
+                "2017-01-03 11:30:00-05:00",
+            ],
+            tz=tz,
+        ),
+    )
+
+    #  ---- ---- Attempt To Throw and catch an error on End Time ---- ----
+    schedule = cal.schedule("2016-12-30", "2017-01-03", market_times="all", tz=tz)
+    with pytest.raises(InsufficientScheduleWarning) as e1:
+        mcal.date_range(schedule, "30m", "left", True, end="2017-01-04T11:00-5:00")
+
+    # Update the Schedule to what is needed in a recovery attempt
+    _bool, t1, t2 = parse_insufficient_schedule_warning(e1.value)
+    if _bool:
+        assert False
+    else:
+        schedule = pd.concat(
+            [schedule, cal.schedule(t1, t2, market_times="all", tz=tz)]
+        )
+
+    # Retest with the updated schedule
+    assert_index_equal(
+        mcal.date_range(schedule, "30m", "left", True, end="2017-01-04T11:00-5:00"),
+        pd.DatetimeIndex(
+            [
+                "2016-12-30 09:30:00-05:00",
+                "2016-12-30 10:00:00-05:00",
+                "2016-12-30 10:30:00-05:00",
+                "2016-12-30 11:00:00-05:00",
+                "2016-12-30 11:30:00-05:00",
+                "2017-01-03 09:30:00-05:00",
+                "2017-01-03 10:00:00-05:00",
+                "2017-01-03 10:30:00-05:00",
+                "2017-01-03 11:00:00-05:00",
+                "2017-01-03 11:30:00-05:00",
+                "2017-01-04 09:30:00-05:00",
+                "2017-01-04 10:00:00-05:00",
+                "2017-01-04 10:30:00-05:00",
+                "2017-01-04 11:00:00-05:00",
+            ],
+            tz=tz,
+        ),
+    )
+
+    # ---- ---- Attempt To Throw and catch an insufficient # of periods from start ---- ----
+    schedule = cal.schedule("2016-12-30", "2017-01-03", market_times="all", tz=tz)
+    with pytest.raises(InsufficientScheduleWarning) as e1:
+        mcal.date_range(
+            schedule, "30m", "left", True, start="2017-01-03T10:00-5:00", periods=8
+        )
+
+    # Update the Schedule to what is needed in a recovery attempt
+    _bool, t1, t2 = parse_insufficient_schedule_warning(e1.value)
+    if _bool:
+        assert False
+    else:
+        schedule = pd.concat(
+            [schedule, cal.schedule(t1, t2, market_times="all", tz=tz)]
+        )
+
+    # Retest with the updated schedule
+    assert_index_equal(
+        mcal.date_range(
+            schedule, "30m", "left", True, start="2017-01-03T10:00-5:00", periods=8
+        ),
+        pd.DatetimeIndex(
+            [
+                "2017-01-03 10:00:00-05:00",
+                "2017-01-03 10:30:00-05:00",
+                "2017-01-03 11:00:00-05:00",
+                "2017-01-03 11:30:00-05:00",
+                "2017-01-04 09:30:00-05:00",
+                "2017-01-04 10:00:00-05:00",
+                "2017-01-04 10:30:00-05:00",
+                "2017-01-04 11:00:00-05:00",
+            ],
+            tz=tz,
+        ),
+    )
+
+    # ---- ---- Attempt To Throw and catch an insufficient # of periods from end ---- ----
+    schedule = cal.schedule("2016-12-30", "2017-01-03", market_times="all", tz=tz)
+    with pytest.raises(InsufficientScheduleWarning) as e1:
+        mcal.date_range(
+            schedule, "30m", "left", True, end="2016-12-30T11:00-5:00", periods=8
+        )
+
+    # Update the Schedule to what is needed in a recovery attempt
+    _bool, t1, t2 = parse_insufficient_schedule_warning(e1.value)
+    if _bool:
+        schedule = pd.concat(
+            [cal.schedule(t1, t2, market_times="all", tz=tz), schedule]
+        )
+    else:
+        assert False
+
+    # Retest with the updated schedule
+    assert_index_equal(
+        mcal.date_range(
+            schedule, "30m", "left", True, end="2016-12-30T11:00-5:00", periods=8
+        ),
+        pd.DatetimeIndex(
+            [
+                "2016-12-29 10:00:00-05:00",
+                "2016-12-29 10:30:00-05:00",
+                "2016-12-29 11:00:00-05:00",
+                "2016-12-29 11:30:00-05:00",
+                "2016-12-30 09:30:00-05:00",
+                "2016-12-30 10:00:00-05:00",
+                "2016-12-30 10:30:00-05:00",
+                "2016-12-30 11:00:00-05:00",
+            ],
+            tz=tz,
+        ),
+    )
+
+    filter_date_range_warnings("default")
+
+
+def test_date_range_closed():
+    # This section cannot be parameterized because the results are not consitant
+    # across TZs. This is the result of the sessions ending at midnight of the
+    # TZ of the schedule, not the TZ of the exchange. The TZ of the exchange is
+    # not known by date_range and thus the results cannot be made consistent.
+    cal = FakeETHCalendar()
+    schedule = cal.schedule("2016-12-30", "2017-01-03", market_times="all", tz=cal.tz)
+
+    # Post-to-Pre Keeping all The Time closed
+    assert_index_equal(
+        mcal.date_range(schedule, "4h", "left", None, "closed"),
+        pd.DatetimeIndex(
+            [
+                "2016-12-30 13:00:00-05:00",
+                "2016-12-30 17:00:00-05:00",
+                "2016-12-30 21:00:00-05:00",
+                "2016-12-31 01:00:00-05:00",
+                "2016-12-31 05:00:00-05:00",
+                "2016-12-31 09:00:00-05:00",
+                "2016-12-31 13:00:00-05:00",
+                "2016-12-31 17:00:00-05:00",
+                "2016-12-31 21:00:00-05:00",
+                "2017-01-01 01:00:00-05:00",
+                "2017-01-01 05:00:00-05:00",
+                "2017-01-01 09:00:00-05:00",
+                "2017-01-01 13:00:00-05:00",
+                "2017-01-01 17:00:00-05:00",
+                "2017-01-01 21:00:00-05:00",
+                "2017-01-02 01:00:00-05:00",
+                "2017-01-02 05:00:00-05:00",
+                "2017-01-02 09:00:00-05:00",
+                "2017-01-02 13:00:00-05:00",
+                "2017-01-02 17:00:00-05:00",
+                "2017-01-02 21:00:00-05:00",
+                "2017-01-03 01:00:00-05:00",
+                "2017-01-03 05:00:00-05:00",
+                "2017-01-03 13:00:00-05:00",
+                "2017-01-03 17:00:00-05:00",
+                "2017-01-03 21:00:00-05:00",
+            ],
+            tz=cal.tz,
+        ),
+    )
+
+    # Post to Pre Dropping Holiday and weekends
+    assert_index_equal(
+        mcal.date_range(schedule, "4h", "left", False, "closed_masked", False),
+        pd.DatetimeIndex(
+            [
+                "2016-12-30 13:00:00-05:00",
+                "2016-12-30 17:00:00-05:00",
+                "2016-12-30 21:00:00-05:00",
+                "2017-01-03 00:00:00-05:00",
+                "2017-01-03 04:00:00-05:00",
+                "2017-01-03 13:00:00-05:00",
+                "2017-01-03 17:00:00-05:00",
+                "2017-01-03 21:00:00-05:00",
+            ],
+            tz=cal.tz,
+        ),
+    )
+
+    # Same But market_close to pre
+
+    assert_index_equal(
+        mcal.date_range(
+            schedule.drop(columns=["post"]), "4h", "both", session="closed"
+        ),
+        pd.DatetimeIndex(
+            [
+                "2016-12-30 11:30:00-05:00",
+                "2016-12-30 15:30:00-05:00",
+                "2016-12-30 19:30:00-05:00",
+                "2016-12-30 23:30:00-05:00",
+                "2016-12-31 03:30:00-05:00",
+                "2016-12-31 07:30:00-05:00",
+                "2016-12-31 11:30:00-05:00",
+                "2016-12-31 15:30:00-05:00",
+                "2016-12-31 19:30:00-05:00",
+                "2016-12-31 23:30:00-05:00",
+                "2017-01-01 03:30:00-05:00",
+                "2017-01-01 07:30:00-05:00",
+                "2017-01-01 11:30:00-05:00",
+                "2017-01-01 15:30:00-05:00",
+                "2017-01-01 19:30:00-05:00",
+                "2017-01-01 23:30:00-05:00",
+                "2017-01-02 03:30:00-05:00",
+                "2017-01-02 07:30:00-05:00",
+                "2017-01-02 11:30:00-05:00",
+                "2017-01-02 15:30:00-05:00",
+                "2017-01-02 19:30:00-05:00",
+                "2017-01-02 23:30:00-05:00",
+                "2017-01-03 03:30:00-05:00",
+                "2017-01-03 07:30:00-05:00",
+                "2017-01-03 08:00:00-05:00",
+                "2017-01-03 11:30:00-05:00",
+                "2017-01-03 15:30:00-05:00",
+                "2017-01-03 19:30:00-05:00",
+                "2017-01-03 23:30:00-05:00",
+                "2017-01-04 00:00:00-05:00",
+            ],
+            tz=cal.tz,
+        ),
+    )
+
+    assert_index_equal(
+        mcal.date_range(
+            schedule.drop(columns=["post"]), "4h", "both", session="closed_masked"
+        ),
+        pd.DatetimeIndex(
+            [
+                "2016-12-30 11:30:00-05:00",
+                "2016-12-30 15:30:00-05:00",
+                "2016-12-30 19:30:00-05:00",
+                "2016-12-30 23:30:00-05:00",
+                "2016-12-31 00:00:00-05:00",
+                "2017-01-03 00:00:00-05:00",
+                "2017-01-03 04:00:00-05:00",
+                "2017-01-03 08:00:00-05:00",
+                "2017-01-03 11:30:00-05:00",
+                "2017-01-03 15:30:00-05:00",
+                "2017-01-03 19:30:00-05:00",
+                "2017-01-03 23:30:00-05:00",
+                "2017-01-04 00:00:00-05:00",
+            ],
+            tz=cal.tz,
+        ),
+    )
+
+    # Again But post to market_open
+
+    assert_index_equal(
+        mcal.date_range(schedule.drop(columns=["pre"]), "4h", "both", session="closed"),
+        pd.DatetimeIndex(
+            [
+                "2016-12-30 13:00:00-05:00",
+                "2016-12-30 17:00:00-05:00",
+                "2016-12-30 21:00:00-05:00",
+                "2016-12-31 01:00:00-05:00",
+                "2016-12-31 05:00:00-05:00",
+                "2016-12-31 09:00:00-05:00",
+                "2016-12-31 13:00:00-05:00",
+                "2016-12-31 17:00:00-05:00",
+                "2016-12-31 21:00:00-05:00",
+                "2017-01-01 01:00:00-05:00",
+                "2017-01-01 05:00:00-05:00",
+                "2017-01-01 09:00:00-05:00",
+                "2017-01-01 13:00:00-05:00",
+                "2017-01-01 17:00:00-05:00",
+                "2017-01-01 21:00:00-05:00",
+                "2017-01-02 01:00:00-05:00",
+                "2017-01-02 05:00:00-05:00",
+                "2017-01-02 09:00:00-05:00",
+                "2017-01-02 13:00:00-05:00",
+                "2017-01-02 17:00:00-05:00",
+                "2017-01-02 21:00:00-05:00",
+                "2017-01-03 01:00:00-05:00",
+                "2017-01-03 05:00:00-05:00",
+                "2017-01-03 09:00:00-05:00",
+                "2017-01-03 09:30:00-05:00",
+                "2017-01-03 13:00:00-05:00",
+                "2017-01-03 17:00:00-05:00",
+                "2017-01-03 21:00:00-05:00",
+                "2017-01-04 00:00:00-05:00",
+            ],
+            tz=cal.tz,
+        ),
+    )
+
+    assert_index_equal(
+        mcal.date_range(
+            schedule.drop(columns=["pre"]), "4h", "both", session="closed_masked"
+        ),
+        pd.DatetimeIndex(
+            [
+                "2016-12-30 13:00:00-05:00",
+                "2016-12-30 17:00:00-05:00",
+                "2016-12-30 21:00:00-05:00",
+                "2016-12-31 00:00:00-05:00",
+                "2017-01-03 00:00:00-05:00",
+                "2017-01-03 04:00:00-05:00",
+                "2017-01-03 08:00:00-05:00",
+                "2017-01-03 09:30:00-05:00",
+                "2017-01-03 13:00:00-05:00",
+                "2017-01-03 17:00:00-05:00",
+                "2017-01-03 21:00:00-05:00",
+                "2017-01-04 00:00:00-05:00",
+            ],
+            tz=cal.tz,
+        ),
+    )
+
+    # Again But market_close to market_open
+
+    assert_index_equal(
+        mcal.date_range(
+            schedule.drop(columns=["pre", "post"]), "4h", "both", session="closed"
+        ),
+        pd.DatetimeIndex(
+            [
+                "2016-12-30 11:30:00-05:00",
+                "2016-12-30 15:30:00-05:00",
+                "2016-12-30 19:30:00-05:00",
+                "2016-12-30 23:30:00-05:00",
+                "2016-12-31 03:30:00-05:00",
+                "2016-12-31 07:30:00-05:00",
+                "2016-12-31 11:30:00-05:00",
+                "2016-12-31 15:30:00-05:00",
+                "2016-12-31 19:30:00-05:00",
+                "2016-12-31 23:30:00-05:00",
+                "2017-01-01 03:30:00-05:00",
+                "2017-01-01 07:30:00-05:00",
+                "2017-01-01 11:30:00-05:00",
+                "2017-01-01 15:30:00-05:00",
+                "2017-01-01 19:30:00-05:00",
+                "2017-01-01 23:30:00-05:00",
+                "2017-01-02 03:30:00-05:00",
+                "2017-01-02 07:30:00-05:00",
+                "2017-01-02 11:30:00-05:00",
+                "2017-01-02 15:30:00-05:00",
+                "2017-01-02 19:30:00-05:00",
+                "2017-01-02 23:30:00-05:00",
+                "2017-01-03 03:30:00-05:00",
+                "2017-01-03 07:30:00-05:00",
+                "2017-01-03 09:30:00-05:00",
+                "2017-01-03 11:30:00-05:00",
+                "2017-01-03 15:30:00-05:00",
+                "2017-01-03 19:30:00-05:00",
+                "2017-01-03 23:30:00-05:00",
+                "2017-01-04 00:00:00-05:00",
+            ],
+            tz=cal.tz,
+        ),
+    )
+
+    assert_index_equal(
+        mcal.date_range(
+            schedule.drop(columns=["pre", "post"]),
+            "4h",
+            "both",
+            session="closed_masked",
+        ),
+        pd.DatetimeIndex(
+            [
+                "2016-12-30 11:30:00-05:00",
+                "2016-12-30 15:30:00-05:00",
+                "2016-12-30 19:30:00-05:00",
+                "2016-12-30 23:30:00-05:00",
+                "2016-12-31 00:00:00-05:00",
+                "2017-01-03 00:00:00-05:00",
+                "2017-01-03 04:00:00-05:00",
+                "2017-01-03 08:00:00-05:00",
+                "2017-01-03 09:30:00-05:00",
+                "2017-01-03 11:30:00-05:00",
+                "2017-01-03 15:30:00-05:00",
+                "2017-01-03 19:30:00-05:00",
+                "2017-01-03 23:30:00-05:00",
+                "2017-01-04 00:00:00-05:00",
+            ],
+            tz=cal.tz,
+        ),
+    )

@@ -110,6 +110,31 @@ class FakeCalendar(MarketCalendar):
         ]
 
 
+class FakeETHCalendar(MarketCalendar):
+    regular_market_times = {
+        "pre": ((None, time(8, 0)),),
+        "market_open": ((None, time(9, 30)),),
+        "market_close": ((None, time(11, 30)),),
+        "post": ((None, time(13, 0)),),
+    }
+
+    @property
+    def name(self):
+        return "DMY"
+
+    @property
+    def tz(self):
+        return timezone("America/New_York")
+
+    @property
+    def regular_holidays(self):
+        return AbstractHolidayCalendar(rules=[USNewYearsDay, Christmas])
+
+    @property
+    def adhoc_holidays(self):
+        return list(chain(HurricaneSandyClosings, USNationalDaysofMourning))
+
+
 class FakeBreakCalendar(MarketCalendar):
     regular_market_times = {
         "market_open": ((None, time(9, 30)),),
