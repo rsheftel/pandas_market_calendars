@@ -110,6 +110,31 @@ class FakeCalendar(MarketCalendar):
         ]
 
 
+class FakeETHCalendar(MarketCalendar):
+    regular_market_times = {
+        "pre": ((None, time(8, 0)),),
+        "market_open": ((None, time(9, 30)),),
+        "market_close": ((None, time(11, 30)),),
+        "post": ((None, time(13, 0)),),
+    }
+
+    @property
+    def name(self):
+        return "DMY"
+
+    @property
+    def tz(self):
+        return timezone("America/New_York")
+
+    @property
+    def regular_holidays(self):
+        return AbstractHolidayCalendar(rules=[USNewYearsDay, Christmas])
+
+    @property
+    def adhoc_holidays(self):
+        return list(chain(HurricaneSandyClosings, USNationalDaysofMourning))
+
+
 class FakeBreakCalendar(MarketCalendar):
     regular_market_times = {
         "market_open": ((None, time(9, 30)),),
@@ -324,7 +349,7 @@ def test_change_add_remove_time():
         cal.add_time("wrong_format", (-1, time(10)))
 
     with pytest.raises(AssertionError):
-        cal.add_time("wrong_format", pd.Timedelta("5H"))
+        cal.add_time("wrong_format", pd.Timedelta("5h"))
 
 
 def test_add_change_remove_time_w_open_close_map():
@@ -1464,7 +1489,7 @@ def test_open_at_time_interruptions():
     assert cal.open_at_time(sched, "2010-01-12 16:57:00", include_close=True) is False
 
     # interruption between market_close/post
-    sched.iloc[2, [-2, -1]] += pd.Timedelta("1H")
+    sched.iloc[2, [-2, -1]] += pd.Timedelta("1h")
     assert cal.open_at_time(sched, "2010-01-12 17:56:00") is False
     assert cal.open_at_time(sched, "2010-01-12 17:55:00", include_close=True) is False
     assert cal.open_at_time(sched, "2010-01-12 17:57:00", include_close=True) is False
