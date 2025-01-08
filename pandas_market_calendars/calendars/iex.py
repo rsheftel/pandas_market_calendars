@@ -1,6 +1,7 @@
 from datetime import time
 from itertools import chain
 
+from pandas import Timestamp
 from pandas.tseries.holiday import AbstractHolidayCalendar
 from pytz import timezone
 
@@ -106,7 +107,11 @@ class IEXExchangeCalendar(NYSEExchangeCalendar):
         return []
 
     def valid_days(self, start_date, end_date, tz="UTC"):
-        trading_days = super().valid_days(
-            start_date, end_date, tz=tz
-        )  # all NYSE valid days
-        return trading_days[~(trading_days <= "2013-08-25")]
+        start_date = Timestamp(start_date)
+        if start_date.tz is not None:
+            # Ensure valid Comparison to "2013-08-25" is possible
+            start_date.tz_convert(self.tz).tz_localize(None)
+
+        # Limit Start_date to the Exchange's Open
+        start_date = max(start_date, Timestamp("2013-08-25"))
+        return super().valid_days(start_date, end_date, tz=tz)
