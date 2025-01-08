@@ -18,6 +18,7 @@ from itertools import chain
 
 import pandas as pd
 from pandas.tseries.holiday import AbstractHolidayCalendar
+from pandas.tseries.offsets import CustomBusinessDay
 from pytz import timezone
 
 from pandas_market_calendars.holidays.nyse import (
@@ -830,7 +831,24 @@ class NYSEExchangeCalendar(MarketCalendar):
 
     @property
     def weekmask(self):
-        return "Mon Tue Wed Thu Fri Sat"  # Market open on Saturdays thru 5/24/1952
+        return "Mon Tue Wed Thu Fri"
+
+    def holidays_pre_1952(self):
+        """
+        NYSE Market open on Saturdays pre 5/24/1952.
+        CustomBusinessDay object that can be used inplace of holidays() for dates prior to crossover
+
+        :return: CustomBusinessDay object of holidays
+        """
+        if hasattr(self, "_holidays_hist"):
+            return self._holidays_hist
+
+        self._holidays_hist = CustomBusinessDay(
+            holidays=self.adhoc_holidays,
+            calendar=self.regular_holidays,
+            weekmask="Mon Tue Wed Thu Fri Sat",
+        )
+        return self._holidays_hist
 
     @property
     def regular_holidays(self):
@@ -1275,7 +1293,7 @@ class NYSEExchangeCalendar(MarketCalendar):
             ),
         ]
 
-    # Override market_calendar.py
+    # Override market_calendar.py to split calc between pre & post 1952 Saturday Close
     def valid_days(self, start_date, end_date, tz="UTC"):
         """
         Get a DatetimeIndex of valid open business days.
@@ -1285,7 +1303,8 @@ class NYSEExchangeCalendar(MarketCalendar):
         :param tz: time zone in either string or pytz.timezone
         :return: DatetimeIndex of valid business days
         """
-        trading_days = super().valid_days(start_date, end_date, tz=tz)
+        start_date = pd.Timestamp(start_date, tz=tz)
+        end_date = pd.Timestamp(end_date, tz=tz)
 
         # Starting Monday Sept. 29, 1952, no more saturday trading days
         if tz is None:
@@ -1293,12 +1312,32 @@ class NYSEExchangeCalendar(MarketCalendar):
         else:
             saturday_end = self._saturday_end
 
-        above_cut_off = trading_days >= saturday_end
-        if above_cut_off.any():
-            above_and_saturday = (trading_days.weekday == 5) & above_cut_off
-            trading_days = trading_days[~above_and_saturday]
+        # Don't care about Saturdays. Call super.
+        if start_date > saturday_end:
+            return super().valid_days(start_date, end_date, tz=tz)
 
-        return trading_days
+        # Full Date Range is pre 1952. Augment the Super call
+        if end_date <= saturday_end:
+            return pd.date_range(
+                start_date,
+                end_date,
+                freq=self.holidays_pre_1952(),
+                normalize=True,
+                tz=tz,
+            )
+
+        # Range is split across 1952. Concatenate Two different Date_Range calls
+        days_pre = pd.date_range(
+            start_date,
+            saturday_end,
+            freq=self.holidays_pre_1952(),
+            normalize=True,
+            tz=tz,
+        )
+        days_post = pd.date_range(
+            saturday_end, end_date, freq=self.holidays(), normalize=True, tz=tz
+        )
+        return days_pre.union(days_post)
 
     def days_at_time(self, days, market_time, day_offset=0):
         days = super().days_at_time(days, market_time, day_offset=day_offset)

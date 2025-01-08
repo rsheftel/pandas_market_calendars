@@ -22,7 +22,7 @@ def test_close_time_tz():
 
 
 def test_weekmask():
-    assert nyse.weekmask == "Mon Tue Wed Thu Fri Sat"
+    assert nyse.holidays_pre_1952().weekmask == "Mon Tue Wed Thu Fri Sat"
 
 
 def _test_holidays(holidays, start, end):
