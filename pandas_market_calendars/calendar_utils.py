@@ -13,6 +13,8 @@ import pandas as pd
 
 from pandas.tseries.offsets import CustomBusinessDay
 
+from pandas_market_calendars.market_calendar import WEEKMASK_ABBR
+
 
 def merge_schedules(schedules, how="outer"):
     """
@@ -725,14 +727,16 @@ Month_Anchor = Literal[
     "JAN", "FEB", "MAR", "APR", "MAY", "JUN", "JUL", "AUG", "SEP", "OCT", "NOV", "DEC"
 ]
 
-# These are needed because the pandas Period Object is stupid.
+# These needed because the pandas Period Object is stupid and not consistant w/ date_range.
+# pd.date_range(s,e, freq = 'W-SUN') == [DatetimeIndex of all sundays] (as Expected)
+# but, pd.Timestamp([A Sunday]).to_period('W-SUN').start_time == [The Monday Prior???]
 days_rolled = list(Day_Anchor.__args__)
-days_rolled.append(days_rolled.pop(0))
-weekly_grouping_map = dict(zip(Day_Anchor.__args__, days_rolled))
+days_rolled.insert(0, days_rolled.pop())
+weekly_roll_map = dict(zip(Day_Anchor.__args__, days_rolled))
 
 months_rolled = list(Month_Anchor.__args__)
 months_rolled.insert(0, months_rolled.pop())
-yearly_grouping_map = dict(zip(Month_Anchor.__args__, months_rolled))
+yearly_roll_map = dict(zip(Month_Anchor.__args__, months_rolled))
 
 
 def date_range_htf(
@@ -744,7 +748,7 @@ def date_range_htf(
     closed: Union[Literal["left", "right"], None] = "right",
     *,
     day_anchor: Day_Anchor = "SUN",
-    month_anchor: Month_Anchor = "DEC",
+    month_anchor: Month_Anchor = "JAN",
 ):
     """
     Returns a Normalized DatetimeIndex from the start-date to End-Date for Time periods of 1D and Higher.
@@ -781,15 +785,15 @@ def date_range_htf(
         :right: Last open trading day of the Session is returned (e.g. Last Open Day of The Month)
         :Note, This has no effect when the desired frequency is a number of days.
 
-    :param day_anchor: Day of the week to Anchor the Weekly timeframes to. Default 'SUN'.
+    :param day_anchor: Day to Anchor the start of the Weekly timeframes to. Default 'SUN'.
         : To get the First/Last Days of the trading Week then the Anchor needs to be on a day the relevant
             market is closed.
         : This can be set so that a specific day each week is returned.
         : freq='1W' & day_anchor='WED' Will return Every 'WED' when the market is open, and nearest day
             to the left or right (based on 'closed') when the market is closed.
 
-    :param month_anchor: Month of the year to Anchor the Quarter and yearly timeframes to.
-        : Default 'DEC' for Calendar Quarters/Years. Can be set to 'JUN' to return Fiscal Years
+    :param month_anchor: Month to Anchor the start of the year to for Quarter and yearly timeframes.
+        : Default 'JAN' for Calendar Quarters/Years. Can be set to 'JUL' to return Fiscal Years
     """
 
     start, end, periods = _error_check_htf_range(start, end, periods)
@@ -805,7 +809,7 @@ def date_range_htf(
 
     elif _period_code == "W":
         freq = str(mult) + "W-" + day_anchor.upper()
-        grouping_period = "W-" + weekly_grouping_map[day_anchor.upper()]
+        grouping_period = "W-" + weekly_roll_map[day_anchor.upper()]
 
         return _cal_WMQY_range(cal, start, end, periods, freq, grouping_period, closed)
 
@@ -814,9 +818,13 @@ def date_range_htf(
         return _cal_WMQY_range(cal, start, end, periods, freq, "M", closed)
 
     else:  # Yearly & Quarterly Period
-        freq = str(mult) + _period_code + ("S" if closed == "left" else "E")
-        freq = freq + "-" + month_anchor.upper()
-        grouping_period = _period_code + "-" + yearly_grouping_map[month_anchor.upper()]
+        freq = str(mult) + _period_code
+        freq += (
+            "S-" + month_anchor.upper()
+            if closed == "left"  # *Insert Angry Tom Meme Here*
+            else "E-" + yearly_roll_map[month_anchor.upper()]
+        )
+        grouping_period = _period_code + "-" + yearly_roll_map[month_anchor.upper()]
 
         return _cal_WMQY_range(cal, start, end, periods, freq, grouping_period, closed)
 
@@ -828,11 +836,13 @@ def _error_check_htf_range(
     start, end, periods: Union[int, None]
 ) -> Tuple[Union[pd.Timestamp, None], Union[pd.Timestamp, None], Union[int, None]]:
     "Standardize and Error Check Start, End, and period params"
-    if all((start, end, periods)):
-        periods = None  # Ignore Periods if passed too many params
-
-    if periods is not None and periods < 0:
-        raise ValueError("Date_range_HTF Periods must be Positive.")
+    if periods is not None:
+        if not isinstance(periods, int):
+            raise ValueError(
+                f"Date_Range_HTF Must be either an int or None. Given {type(periods)}"
+            )
+        if periods < 0:
+            raise ValueError("Date_range_HTF Periods must be Positive.")
 
     if isinstance(start, (int, float)):
         start = int(start * 1_000_000_000)
@@ -844,6 +854,8 @@ def _error_check_htf_range(
     if end is not None:
         end = pd.Timestamp(end).normalize().tz_localize(None)
 
+    if all((start, end, periods)):
+        periods = None  # Ignore Periods if passed too many params
     if len([param for param in (start, end, periods) if param is not None]) < 2:
         raise ValueError(
             "Date_Range_HTF must be given two of the three following params: (start, end, periods)"
@@ -925,6 +937,10 @@ def _cal_day_range(
     :returns: DateRangeIndex[datetime64[ns]]
     """
 
+    # Ensure Start and End are open Business days in the desired range
+    start = cb_day.rollforward(start)
+    end = cb_day.rollback(end)
+
     # ---- Start-Date to End-Date ----
     if isinstance(start, pd.Timestamp) and isinstance(end, pd.Timestamp):
         num_days = (end - start) / mult
@@ -984,7 +1000,7 @@ def _cal_WMQY_range(
     """
 
     # Need to Adjust the Start/End Dates given to pandas since Rolling forward or backward can shift
-    # the calculated date range out of the desired [start, end] range adding or ignoring desired valiues.
+    # the calculated date range out of the desired [start, end] range adding or ignoring desired values.
 
     # For Example, say we want NYSE-Month-Starts between [2020-01-02, 2020-02-02]. W/O Adjusting dates
     # we call pd.date_range('2020-01-02, '2020-02-02', 'MS') => ['2020-02-01'] Rolled to ['2020-02-03'].
@@ -1002,27 +1018,29 @@ def _cal_WMQY_range(
                 normalized_start if start <= roll_func(normalized_start) else start
             )
 
-        if end is not None and periods is not None:
-            normalized_end = end.to_period(grouping_period).start_time
-            _dr_end = (
-                normalized_end - pd.Timedelta("1D")  # Shift into the prior grouping
-                if end < roll_func(normalized_end)
-                else end
-            )
-        else:
-            _dr_end = end
+        if end is not None:
+            if periods is not None:
+                normalized_end = end.to_period(grouping_period).start_time
+                _dr_end = (
+                    normalized_end - pd.Timedelta("1D")  # Shift into preceding group
+                    if end < roll_func(normalized_end)
+                    else cb_day.rollback(end)
+                )
+            else:
+                _dr_end = cb_day.rollback(end)
 
     else:
         roll_func = cb_day.rollback
-        if start is not None and periods is not None:
-            normalized_start = start.to_period(grouping_period).end_time.normalize()
-            _dr_start = (
-                normalized_start + pd.Timedelta("1D")  # Shift into the next grouping
-                if start > roll_func(normalized_start)
-                else start
-            )
-        else:
-            _dr_start = start
+        if start is not None:
+            if periods is not None:
+                normalized_start = start.to_period(grouping_period).end_time.normalize()
+                _dr_start = (
+                    normalized_start + pd.Timedelta("1D")  # Shift into trailing group
+                    if start > roll_func(normalized_start)
+                    else cb_day.rollforward(start)
+                )
+            else:
+                _dr_start = cb_day.rollforward(start)
 
         if end is not None:
             normalized_end = end.to_period(grouping_period).end_time.normalize()
