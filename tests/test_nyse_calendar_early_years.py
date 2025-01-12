@@ -2048,6 +2048,137 @@ def test_1952_no_saturdays():
     assert len(df) == 0
 
 
+def test_1952_date_range_htf_crossover():
+    # Test that Date_Range_HTF can produce the correct range when having
+    # to merge ranges from two different holiday objects. This is only
+    # A massive pain in the ass when closed='right'
+    nyse = NYSEExchangeCalendar()
+
+    actual_week_ends = pd.DatetimeIndex(
+        [
+            "1952-01-05",  # Saturday
+            "1952-01-12",  # Saturday
+            "1952-01-19",  # Saturday
+            "1952-01-26",  # Saturday
+            "1952-02-02",  # Saturday
+            "1952-02-09",  # Saturday
+            "1952-02-16",  # Saturday
+            "1952-02-23",  # Saturday
+            "1952-03-01",  # Saturday
+            "1952-03-08",  # Saturday
+            "1952-03-15",  # Saturday
+            "1952-03-22",  # Saturday
+            "1952-03-29",  # Saturday
+            "1952-04-05",  # Saturday
+            "1952-04-12",  # Saturday
+            "1952-04-19",  # Saturday
+            "1952-04-26",  # Saturday
+            "1952-05-03",  # Saturday
+            "1952-05-10",  # Saturday
+            "1952-05-17",  # Saturday
+            "1952-05-24",  # Saturday ## Last Trading Saturday. ##
+            "1952-05-29",  # Thursday
+            "1952-06-06",  # Friday
+            "1952-06-13",  # Friday
+            "1952-06-20",  # Friday
+            "1952-06-27",  # Friday       All Saturdays, and the
+            "1952-07-03",  # Thursday     two fridays, in this
+            "1952-07-11",  # Friday       range are omitted since
+            "1952-07-18",  # Friday       they are labeled as holidays.
+            "1952-07-25",  # Friday
+            "1952-08-01",  # Friday
+            "1952-08-08",  # Friday
+            "1952-08-15",  # Friday
+            "1952-08-22",  # Friday
+            "1952-08-29",  # Friday
+            "1952-09-05",  # Friday
+            "1952-09-12",  # Friday
+            "1952-09-19",  # Friday
+            "1952-09-26",  # Friday ## 1952-09-29 is Crossover ##
+            "1952-10-03",  # Friday
+            "1952-10-10",  # Friday
+            "1952-10-17",  # Friday
+            "1952-10-24",  # Friday
+            "1952-10-31",  # Friday
+            "1952-11-07",  # Friday
+            "1952-11-14",  # Friday
+            "1952-11-21",  # Friday
+            "1952-11-28",  # Friday
+            "1952-12-05",  # Friday
+            "1952-12-12",  # Friday
+            "1952-12-19",  # Friday
+            "1952-12-26",  # Friday
+        ],
+        dtype="datetime64[ns]",
+        freq=None,
+    )
+
+    # Ensure all three different ways produce the same range.
+    assert_index_equal(
+        actual_week_ends,
+        nyse.date_range_htf("1W", "1952-01-01", "1953-01-01", closed="right"),
+    )
+    assert_index_equal(
+        actual_week_ends,
+        nyse.date_range_htf("1W", "1952-01-01", periods=52, closed="right"),
+    )
+    assert_index_equal(
+        actual_week_ends,
+        nyse.date_range_htf("1W", end="1953-01-01", periods=52, closed="right"),
+    )
+
+    # Ensure all three different ways produce the same range.
+    assert_index_equal(
+        actual_week_ends[::3],
+        nyse.date_range_htf("3W", "1952-01-01", "1953-01-01", closed="right"),
+    )
+    assert_index_equal(
+        actual_week_ends[::3],
+        nyse.date_range_htf("3W", "1952-01-01", periods=18, closed="right"),
+    )
+    assert_index_equal(
+        actual_week_ends[::-1][::3][::-1],
+        nyse.date_range_htf("3W", end="1953-01-01", periods=18, closed="right"),
+    )
+    assert_index_equal(
+        actual_week_ends[::-1][::7][::-1],
+        nyse.date_range_htf("7W", end="1953-01-01", periods=8, closed="right"),
+    )
+
+    # Results Should Agree between the two methods in this critical range
+    actual_days = nyse.valid_days("1952-05-01", "1952-11-01").tz_localize(None)
+
+    assert_index_equal(
+        actual_days,
+        nyse.date_range_htf("D", "1952-05-01", "1952-11-01"),
+    )
+    assert_index_equal(
+        actual_days,
+        nyse.date_range_htf("D", "1952-05-01", periods=132),
+    )
+    assert_index_equal(
+        actual_days,
+        nyse.date_range_htf("D", end="1952-11-01", periods=132),
+    )
+
+    assert_index_equal(
+        actual_days[::3],
+        nyse.date_range_htf("3D", "1952-05-01", "1952-11-01"),
+    )
+    assert_index_equal(
+        actual_days[::3],
+        nyse.date_range_htf("3D", "1952-05-01", periods=44),
+    )
+    assert_index_equal(
+        actual_days[::-1][::3][::-1],
+        nyse.date_range_htf("3D", end="1952-11-01", periods=44),
+    )
+    assert_index_equal(
+        actual_days[::-1][::7][::-1],
+        nyse.date_range_htf("7D", end="1952-11-01", periods=19),
+    )
+
+
 def test_1953():
     start = "1953-01-01"
     end = "1953-12-31"
