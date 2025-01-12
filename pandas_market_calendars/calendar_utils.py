@@ -4,16 +4,16 @@ Utilities to use with market_calendars
 
 import itertools
 from math import ceil, floor
-from typing import Iterable, Literal, Tuple, Union
+from typing import TYPE_CHECKING, Iterable, Literal, Tuple, Union
 import warnings
 
 from re import finditer, split
 import numpy as np
 import pandas as pd
 
-from pandas.tseries.offsets import CustomBusinessDay
-
-from pandas_market_calendars.market_calendar import WEEKMASK_ABBR
+if TYPE_CHECKING:
+    from pandas.tseries.offsets import CustomBusinessDay
+    from pandas.tseries.holiday import AbstractHolidayCalendar, Holiday
 
 
 def merge_schedules(schedules, how="outer"):
@@ -57,6 +57,17 @@ def merge_schedules(schedules, how="outer"):
             raise ValueError('how argument must be "inner" or "outer"')
         result = result[["market_open", "market_close"]]
     return result
+
+
+def is_single_observance(holiday: "Holiday"):
+    "Returns the Date of the Holiday if it is only observed once, None otherwise."
+    return holiday.start_date if holiday.start_date == holiday.end_date else None  # type: ignore ??
+
+
+def all_single_observance_rules(calendar: "AbstractHolidayCalendar"):
+    "Returns a list of timestamps if the Calendar's Rules are all single observance holidays, None Otherwise"
+    observances = [is_single_observance(rule) for rule in calendar.rules]
+    return observances if all(observances) else None
 
 
 def convert_freq(index, frequency):
@@ -740,7 +751,7 @@ yearly_roll_map = dict(zip(Month_Anchor.__args__, months_rolled))
 
 
 def date_range_htf(
-    cal: CustomBusinessDay,
+    cal: "CustomBusinessDay",
     frequency: Union[str, pd.Timedelta, int, float],
     start: Union[str, pd.Timestamp, int, float, None] = None,
     end: Union[str, pd.Timestamp, int, float, None] = None,
@@ -749,7 +760,7 @@ def date_range_htf(
     *,
     day_anchor: Day_Anchor = "SUN",
     month_anchor: Month_Anchor = "JAN",
-):
+) -> pd.DatetimeIndex:
     """
     Returns a Normalized DatetimeIndex from the start-date to End-Date for Time periods of 1D and Higher.
 
@@ -791,9 +802,11 @@ def date_range_htf(
         : This can be set so that a specific day each week is returned.
         : freq='1W' & day_anchor='WED' Will return Every 'WED' when the market is open, and nearest day
             to the left or right (based on 'closed') when the market is closed.
+        Options: ["SUN", "MON", "TUE", "WED", "THU", "FRI", "SAT"]
 
     :param month_anchor: Month to Anchor the start of the year to for Quarter and yearly timeframes.
         : Default 'JAN' for Calendar Quarters/Years. Can be set to 'JUL' to return Fiscal Years
+        Options: ["JAN", "FEB", "MAR", "APR", "MAY", "JUN", "JUL", "AUG", "SEP", "OCT", "NOV", "DEC"]
     """
 
     start, end, periods = _error_check_htf_range(start, end, periods)
@@ -829,7 +842,7 @@ def date_range_htf(
         return _cal_WMQY_range(cal, start, end, periods, freq, grouping_period, closed)
 
 
-# region ---- ---- ---- Date Range HTF SubRoutines ---- ---- ----
+# region ---- ---- ---- Date Range HTF Subroutines ---- ---- ----
 
 
 def _error_check_htf_range(
@@ -911,7 +924,8 @@ def _days_per_week(weekmask: Union[Iterable, str]) -> int:
     if len(weekmask) == 0:
         raise ValueError("Weekmask cannot be blank")
 
-    day_abbrs = {day for day in WEEKMASK_ABBR.values() if day in weekmask}
+    weekmask = weekmask.upper()
+    day_abbrs = {day for day in weekly_roll_map.values() if day in weekmask}
     if len(day_abbrs) != 0:
         return len(day_abbrs)
 
@@ -920,7 +934,7 @@ def _days_per_week(weekmask: Union[Iterable, str]) -> int:
 
 
 def _cal_day_range(
-    cb_day: CustomBusinessDay, start, end, periods, mult
+    cb_day: "CustomBusinessDay", start, end, periods, mult
 ) -> pd.DatetimeIndex:
     """
     Returns a Normalized DateTimeIndex of Open Buisness Days.
@@ -938,8 +952,10 @@ def _cal_day_range(
     """
 
     # Ensure Start and End are open Business days in the desired range
-    start = cb_day.rollforward(start)
-    end = cb_day.rollback(end)
+    if start is not None:
+        start = cb_day.rollforward(start)
+    if end is not None:
+        end = cb_day.rollback(end)
 
     # ---- Start-Date to End-Date ----
     if isinstance(start, pd.Timestamp) and isinstance(end, pd.Timestamp):
@@ -967,11 +983,11 @@ def _cal_day_range(
         end = cb_day.rollback(end)
         _range = pd.RangeIndex(0, -1 * periods * mult, -1 * mult)
 
-        return pd.DatetimeIndex(end + _range * cb_day, dtype="datetime64[ns]")
+        return pd.DatetimeIndex(end + _range * cb_day, dtype="datetime64[ns]")[::-1]
 
 
 def _cal_WMQY_range(
-    cb_day: CustomBusinessDay,
+    cb_day: "CustomBusinessDay",
     start: Union[pd.Timestamp, None],
     end: Union[pd.Timestamp, None],
     periods: Union[int, None],
