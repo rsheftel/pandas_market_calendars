@@ -493,7 +493,7 @@ def test_days_at_time():
 
     def dat(day, day_offset, time_offset, cal, expected):
         days = pd.DatetimeIndex([pd.Timestamp(day, tz=cal.tz)])
-        result = cal.days_at_time(days, time_offset, day_offset)[0]
+        result = cal.days_at_time(days, time_offset, day_offset).iloc[0]
         expected = pd.Timestamp(expected, tz=cal.tz).tz_convert("UTC")
         assert result == expected
 
