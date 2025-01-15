@@ -15,7 +15,7 @@ if TYPE_CHECKING:
     from pandas.tseries.offsets import CustomBusinessDay
     from pandas.tseries.holiday import AbstractHolidayCalendar, Holiday
 
-DEFAULT_NAME_MAP = {
+DEFAULT_LABEL_MAP = {
     "pre": "pre",
     "rth_pre_break": "rth",
     "rth": "rth",
@@ -65,7 +65,6 @@ def mark_session(
     :param closed: Which side of each interval should be closed (inclusive)
         left: == [start, end)
         right: == (start, end]
-
     """
     # ---- ---- ---- Determine which columns need to be dropped ---- ---- ----
     session_labels = ["closed"]
@@ -79,9 +78,9 @@ def mark_session(
 
     _extend_statement("pre", {"pre", "market_open"})
     if {"break_start", "break_end"}.issubset(columns):
-        _extend_statement("open_pre_break", {"market_open", "break_start"})
+        _extend_statement("rth_pre_break", {"market_open", "break_start"})
         _extend_statement("break", {"break_start", "break_end"})
-        _extend_statement("open_pre_break", {"break_end", "market_close"})
+        _extend_statement("rth_post_break", {"break_end", "market_close"})
     else:
         _extend_statement("rth", {"market_open", "market_close"})
     _extend_statement("post", {"market_close", "post"})
@@ -113,7 +112,7 @@ def mark_session(
         & (schedule.index <= end.normalize().tz_localize(None))
     ]
 
-    backfilled_map = DEFAULT_NAME_MAP | label_map
+    backfilled_map = DEFAULT_LABEL_MAP | label_map
     mapped_labels = [backfilled_map[label] for label in session_labels]
     labels = pd.Series([mapped_labels]).repeat(len(schedule)).explode()
     labels = pd.concat([labels, pd.Series([backfilled_map["closed"]])])
@@ -122,6 +121,13 @@ def mark_session(
     bins = schedule.to_numpy().flatten()
     bins = np.insert(bins, 0, bins[0].normalize())
     bins = np.append(bins, bins[-1].normalize() + pd.Timedelta("1D"))
+
+    bins, _ind, _counts = np.unique(bins, return_index=True, return_counts=True)
+
+    if len(bins) - 1 != len(labels):
+        # np.Unique Dropped some bins, need to drop the associated labels
+        label_inds = (_ind + _counts - 1)[:-1]
+        labels = labels.iloc[label_inds]
 
     return pd.Series(
         pd.cut(timestamps, bins, closed != "left", labels=labels, ordered=False),  # type: ignore

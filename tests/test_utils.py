@@ -2,11 +2,11 @@ import datetime
 
 import pandas as pd
 import pytest
-from pandas.testing import assert_frame_equal
+from pandas.testing import assert_frame_equal, assert_series_equal
 
 import pandas_market_calendars as mcal
 from pandas_market_calendars.calendars.nyse import NYSEExchangeCalendar
-from tests.test_market_calendar import FakeCalendar, FakeBreakCalendar
+from tests.test_market_calendar import FakeCalendar, FakeBreakCalendar, FakeETHCalendar
 
 
 def test_get_calendar():
@@ -105,3 +105,166 @@ def test_merge_schedules_w_break():
 
     assert "break_start" not in result.columns
     assert "break_end" not in result.columns
+
+
+def test_mark_session():
+    cal = FakeETHCalendar()
+    sched = cal.schedule("2020-01-01", "2020-02-01", market_times="all", tz=cal.tz)
+
+    dt = mcal.date_range(
+        sched,
+        "1h",
+        closed="left",
+        periods=8,
+        session={"RTH", "ETH"},
+        merge_adjacent=False,
+    )
+
+    assert_series_equal(
+        pd.Series(
+            [
+                "closed",
+                "pre",
+                "pre",
+                "rth",
+                "rth",
+                "post",
+                "post",
+                "closed",
+            ],
+            index=pd.DatetimeIndex(
+                [
+                    "2020-01-02 08:00:00-05:00",
+                    "2020-01-02 09:00:00-05:00",
+                    "2020-01-02 09:30:00-05:00",
+                    "2020-01-02 10:30:00-05:00",
+                    "2020-01-02 11:30:00-05:00",
+                    "2020-01-02 12:30:00-05:00",
+                    "2020-01-02 13:00:00-05:00",
+                    "2020-01-03 08:00:00-05:00",
+                ],
+                dtype="datetime64[ns, America/New_York]",
+            ),
+            dtype=pd.CategoricalDtype(["closed", "post", "pre", "rth"], ordered=False),
+        ),
+        mcal.mark_session(sched, dt),
+    )
+
+    assert_series_equal(
+        pd.Series(
+            [
+                "pre",
+                "pre",
+                "rth",
+                "rth",
+                "post",
+                "post",
+                "closed",
+                "pre",
+            ],
+            index=pd.DatetimeIndex(
+                [
+                    "2020-01-02 08:00:00-05:00",
+                    "2020-01-02 09:00:00-05:00",
+                    "2020-01-02 09:30:00-05:00",
+                    "2020-01-02 10:30:00-05:00",
+                    "2020-01-02 11:30:00-05:00",
+                    "2020-01-02 12:30:00-05:00",
+                    "2020-01-02 13:00:00-05:00",
+                    "2020-01-03 08:00:00-05:00",
+                ],
+                dtype="datetime64[ns, America/New_York]",
+            ),
+            dtype=pd.CategoricalDtype(["closed", "post", "pre", "rth"], ordered=False),
+        ),
+        mcal.mark_session(sched, dt, closed="left"),
+    )
+
+    # Test Label Mapping
+    mapping = {"pre": 1, "rth": 2, "post": "_post"}
+    assert_series_equal(
+        pd.Series(
+            [
+                1,
+                1,
+                2,
+                2,
+                "_post",
+                "_post",
+                "closed",
+                1,
+            ],
+            index=pd.DatetimeIndex(
+                [
+                    "2020-01-02 08:00:00-05:00",
+                    "2020-01-02 09:00:00-05:00",
+                    "2020-01-02 09:30:00-05:00",
+                    "2020-01-02 10:30:00-05:00",
+                    "2020-01-02 11:30:00-05:00",
+                    "2020-01-02 12:30:00-05:00",
+                    "2020-01-02 13:00:00-05:00",
+                    "2020-01-03 08:00:00-05:00",
+                ],
+                dtype="datetime64[ns, America/New_York]",
+            ),
+            dtype=pd.CategoricalDtype([1, 2, "_post", "closed"], ordered=False),
+        ),
+        mcal.mark_session(sched, dt, closed="left", label_map=mapping),
+    )
+
+    CME = mcal.get_calendar("CME_Equity")
+    sched = CME.schedule("2020-01-17", "2020-01-20", market_times="all")
+
+    # Ensure the early close on the 20th gets labeled correctly
+    assert_series_equal(
+        pd.Series(
+            ["rth", "rth", "rth", "closed"],
+            index=pd.DatetimeIndex(
+                [
+                    "2020-01-20 17:15:00+00:00",
+                    "2020-01-20 17:30:00+00:00",
+                    "2020-01-20 17:45:00+00:00",
+                    "2020-01-20 18:00:00+00:00",
+                ],
+                dtype="datetime64[ns, UTC]",
+            ),
+            dtype=pd.CategoricalDtype(categories=["closed", "rth"], ordered=False),
+        ),
+        mcal.mark_session(
+            sched,
+            mcal.date_range(
+                sched, "15m", start="2020-01-20 17:00", end="2020-01-20 18:00"
+            ),
+            closed="left",
+        ),
+    )
+
+    sched = CME.schedule("2020-01-20", "2020-01-21", market_times="all")
+    assert_series_equal(
+        pd.Series(
+            ["rth", "rth", "rth", "closed", "rth", "rth", "rth", "rth"],
+            index=pd.DatetimeIndex(
+                [
+                    "2020-01-20 17:15:00+00:00",
+                    "2020-01-20 17:30:00+00:00",
+                    "2020-01-20 17:45:00+00:00",
+                    "2020-01-20 18:00:00+00:00",
+                    "2020-01-20 23:15:00+00:00",
+                    "2020-01-20 23:30:00+00:00",
+                    "2020-01-20 23:45:00+00:00",
+                    "2020-01-21 00:00:00+00:00",
+                ],
+                dtype="datetime64[ns, UTC]",
+            ),
+            dtype=pd.CategoricalDtype(
+                categories=["break", "closed", "rth"], ordered=False
+            ),
+        ),
+        mcal.mark_session(
+            sched,
+            mcal.date_range(
+                sched, "15m", start="2020-01-20 17:00", end="2020-01-21 00:00"
+            ),
+            closed="left",
+        ),
+    )
