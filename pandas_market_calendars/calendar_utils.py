@@ -4,7 +4,7 @@ Utilities to use with market_calendars
 
 import itertools
 from math import ceil, floor
-from typing import TYPE_CHECKING, Iterable, Literal, Tuple, Union
+from typing import TYPE_CHECKING, Any, Dict, Iterable, Literal, Tuple, Union
 import warnings
 
 from re import finditer, split
@@ -14,6 +14,119 @@ import pandas as pd
 if TYPE_CHECKING:
     from pandas.tseries.offsets import CustomBusinessDay
     from pandas.tseries.holiday import AbstractHolidayCalendar, Holiday
+
+DEFAULT_NAME_MAP = {
+    "pre": "pre",
+    "rth_pre_break": "rth",
+    "rth": "rth",
+    "break": "break",
+    "rth_post_break": "rth",
+    "post": "post",
+    "closed": "closed",
+}
+
+
+def mark_session(
+    schedule: pd.DataFrame,
+    timestamps: pd.DatetimeIndex,
+    label_map: Dict[str, Any] = {},
+    *,
+    closed: Literal["left", "right"] = "right",
+) -> pd.Series:
+    """
+    Return a Series that denotes the trading session of each timestamp in a DatetimeIndex.
+    The returned Series's Index is the provided Datetime Index, the Series's values
+    are the timestamps' corresponding session.
+
+    PARAMETERS:
+
+    :param schedule: The market schedule to check the timestamps against. This Schedule must include
+        all of the trading days that are in the provided DatetimeIndex of timestamps.
+        Note: The columns need to be sorted into ascending order, if not, then an error will be
+        raised saying the bins must be in ascending order.
+
+    :param timestamps: A DatetimeIndex of Timestamps to check. Must be sorted in ascending order.
+
+    :param label_map: Optional mapping of Dict[str, Any] to change the values returned in the
+        series. The keys of the given mapping should match the keys of the default dict, but the
+        values can be anything. A subset of mappings may also be provided, e.g. {'closed':-1} will
+        only change the label of the 'closed' session. All others will remain the default label.
+
+        >>> Default Mapping == {
+            "pre": "pre",
+            "rth_pre_break": "rth",     # When the Schedule has a break
+            "rth": "rth",               # When the Schedule doesn't have a break
+            "break": "break",           # When the Schedule has a break
+            "rth_post_break": "rth",    # When the Schedule has a break
+            "post": "post",
+            "closed": "closed",
+        }
+
+    :param closed: Which side of each interval should be closed (inclusive)
+        left: == [start, end)
+        right: == (start, end]
+
+    """
+    # ---- ---- ---- Determine which columns need to be dropped ---- ---- ----
+    session_labels = ["closed"]
+    columns = set(schedule.columns)
+    needed_cols = set()
+
+    def _extend_statement(session: str, parts: set):
+        if parts.issubset(columns):
+            needed_cols.update(parts)
+            session_labels.append(session)
+
+    _extend_statement("pre", {"pre", "market_open"})
+    if {"break_start", "break_end"}.issubset(columns):
+        _extend_statement("open_pre_break", {"market_open", "break_start"})
+        _extend_statement("break", {"break_start", "break_end"})
+        _extend_statement("open_pre_break", {"break_end", "market_close"})
+    else:
+        _extend_statement("rth", {"market_open", "market_close"})
+    _extend_statement("post", {"market_close", "post"})
+
+    # ---- ---- ---- Error Check ---- ---- ----
+    if len(extra_cols := columns - needed_cols) > 0:
+        schedule = schedule.drop(columns=[*extra_cols])
+        warnings.warn(
+            f"Attempting to mark trading sessions and the schedule ({columns = }) contains the "
+            f"extra columns: {extra_cols}. Returned sessions may not be labeled as desired."
+        )
+
+    start = timestamps[0]
+    end = timestamps[-1]
+    if start < schedule.iloc[0, 0]:  # type: ignore
+        raise ValueError(
+            f"Insufficient Schedule. Needed Start-Time: {start.normalize().tz_localize(None)}. "
+            f"Schedule starts at: {schedule.iloc[0, 0]}"
+        )
+    if end > schedule.iloc[-1, -1]:  # type: ignore
+        raise ValueError(
+            f"Insufficient Schedule. Needed End-Time: {end.normalize().tz_localize(None)}. "
+            f"Schedule ends at: {schedule.iloc[-1, -1]}"
+        )
+
+    # Trim the schedule to match the timeframe covered by the given timeseries
+    schedule = schedule[
+        (schedule.index >= start.normalize().tz_localize(None))
+        & (schedule.index <= end.normalize().tz_localize(None))
+    ]
+
+    backfilled_map = DEFAULT_NAME_MAP | label_map
+    mapped_labels = [backfilled_map[label] for label in session_labels]
+    labels = pd.Series([mapped_labels]).repeat(len(schedule)).explode()
+    labels = pd.concat([labels, pd.Series([backfilled_map["closed"]])])
+
+    # Append on additional Edge-Case Bins so result doesn't include NaNs
+    bins = schedule.to_numpy().flatten()
+    bins = np.insert(bins, 0, bins[0].normalize())
+    bins = np.append(bins, bins[-1].normalize() + pd.Timedelta("1D"))
+
+    return pd.Series(
+        pd.cut(timestamps, bins, closed != "left", labels=labels, ordered=False),  # type: ignore
+        index=timestamps,
+    )
 
 
 def merge_schedules(schedules, how="outer"):
