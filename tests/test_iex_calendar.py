@@ -38,3 +38,9 @@ def test_calendar_utility():
 def test_trading_days_before_operation():
     trading_days = iex.valid_days(start_date="2000-01-01", end_date="2022-02-23")
     assert np.array([~(trading_days <= "2013-08-25")]).any()
+
+    trading_days = iex.date_range_htf("1D", "2000-01-01", "2022-02-23")
+    assert np.array([~(trading_days <= "2013-08-25")]).any()
+
+    trading_days = iex.date_range_htf("1D", "2000-01-01", "2010-02-23")
+    assert len(trading_days) == 0

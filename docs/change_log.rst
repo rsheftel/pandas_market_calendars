@@ -3,6 +3,29 @@ Change Log
 
 Updates
 -------
+4.6.0 (01/16/2025)
+~~~~~~~~~~~~~~~~~~
+- Updated usage.ipynb with information on added features
+- Added mark_session() Util Function
+- Added MarketCalendar.date_range_htf() Method
+- Added MarketCalendar.schedule_from_days() Method
+- Split NYSE Holiday Calendar into Two Calendars to support Date_Range_HTF()
+  - NYSE.weekmask now returns "Mon Tue Wed Thur Fri" instead of "Mon Tue Wed Thur Fri Sat"
+- Start, End, Periods, and Session Arguments added to Date_Range() from PR #358
+- Speed enhancements from PR #358 and #372
+Added mark_session() Util Function
+Added MarketCalendar.date_range_htf() Method
+Added MarketCalendar.schedule_from_days() Method
+The only thing of note that may not be backwards compatible with every user's implementation is the following change:
+Split NYSE Holiday Calendar into Two Calendars to support Date_Range_HTF()
+NYSE.weekmask now returns "Mon Tue Wed Thur Fri" instead of "Mon Tue Wed Thur Fri Sat"
+This was needed to make Date_Range_HTF() Work properly. In theory it should also make nyse schedule generation faster, but the difference is likely negligible. ** This doesn't effect the schedule. NYSE still produces Saturdays pre-1952, it just does so using a different implementation.
+For Information on the features added see the updates to the Usage Notebook.
+mark_session(): Helpers > Mark Session
+MarketCalendar.date_range_htf(): Basic Usage > Exchange open valid business days: Date_Range_HTF()
+MarketCalendar.schedule_from_days(): Basic Usage > Schedule_From_Days
+date_range(): Helpers > date_range - (These were actually updates in PR #358)
+
 4.5.1 (01/01/2025)
 ~~~~~~~~~~~~~~~~~~
 - Update Chinese holidays from PR #362

@@ -17,7 +17,7 @@
 from importlib import metadata
 
 from .calendar_registry import get_calendar, get_calendar_names
-from .calendar_utils import convert_freq, date_range, merge_schedules
+from .calendar_utils import convert_freq, date_range, merge_schedules, mark_session
 
 # TODO: is the below needed? Can I replace all the imports on the calendars with ".market_calendar"
 from .market_calendar import MarketCalendar
@@ -34,5 +34,6 @@ __all__ = [
     "get_calendar_names",
     "merge_schedules",
     "date_range",
+    "mark_session",
     "convert_freq",
 ]

@@ -16,11 +16,14 @@
 import warnings
 from abc import ABCMeta, abstractmethod
 from datetime import time
+from typing import Literal, Union
 
 import pandas as pd
 from pandas.tseries.offsets import CustomBusinessDay
 
 from .class_registry import RegisteryMeta, ProtectedDict
+
+from . import calendar_utils as u
 
 MONDAY, TUESDAY, WEDNESDAY, THURSDAY, FRIDAY, SATURDAY, SUNDAY = range(7)
 
@@ -550,7 +553,7 @@ class MarketCalendar(metaclass=MarketCalendarMeta):
 
         return intr.apply(self._convert).sort_index()
 
-    def holidays(self):
+    def holidays(self) -> pd.tseries.offsets.CustomBusinessDay:
         """
         Returns the complete CustomBusinessDay object of holidays that can be used in any Pandas function that take
         that input.
@@ -567,7 +570,7 @@ class MarketCalendar(metaclass=MarketCalendarMeta):
             )
         return self._holidays
 
-    def valid_days(self, start_date, end_date, tz="UTC"):
+    def valid_days(self, start_date, end_date, tz="UTC") -> pd.DatetimeIndex:
         """
         Get a DatetimeIndex of valid open business days.
 
@@ -627,7 +630,7 @@ class MarketCalendar(metaclass=MarketCalendarMeta):
         try:
             # If the Calendar is all single Observance Holidays then it is far
             # more efficient to extract and return those dates
-            observed_dates = _all_single_observance_rules(cal)
+            observed_dates = u.all_single_observance_rules(cal)
             if observed_dates is not None:
                 return pd.DatetimeIndex(
                     [date for date in observed_dates if s <= date <= e]
@@ -700,7 +703,7 @@ class MarketCalendar(metaclass=MarketCalendarMeta):
         force_special_times=True,
         market_times=None,
         interruptions=False,
-    ):
+    ) -> pd.DataFrame:
         """
         Generates the schedule DataFrame. The resulting DataFrame will have all the valid business days as the index
         and columns for the requested market times. The columns can be determined either by setting a range (inclusive
@@ -732,18 +735,71 @@ class MarketCalendar(metaclass=MarketCalendarMeta):
         if not (start_date <= end_date):
             raise ValueError("start_date must be before or equal to end_date.")
 
-        # Setup all valid trading days and the requested market_times
         _all_days = self.valid_days(start_date, end_date)
+
+        # Setup all valid trading days and the requested market_times
         if market_times is None:
             market_times = self._get_market_times(start, end)
         elif market_times == "all":
             market_times = self._market_times
 
-        # If no valid days return an empty DataFrame
-        if not _all_days.size:
+        if not _all_days.size:  # If no valid days return an empty DataFrame
             return pd.DataFrame(
                 columns=market_times, index=pd.DatetimeIndex([], freq="C")
             )
+
+        return self.schedule_from_days(
+            _all_days, tz, start, end, force_special_times, market_times, interruptions
+        )
+
+    def schedule_from_days(
+        self,
+        days: pd.DatetimeIndex,
+        tz="UTC",
+        start="market_open",
+        end="market_close",
+        force_special_times=True,
+        market_times=None,
+        interruptions=False,
+    ) -> pd.DataFrame:
+        """
+        Generates a schedule DataFrame for the days provided. The days are assumed to be valid trading days.
+
+        The columns can be determined either by setting a range (inclusive on both sides), using `start` and `end`,
+        or by passing a list to `market_times'. A range of market_times is derived from a list of market_times that
+        are available to the instance, which are sorted based on the current regular time.
+        See examples/usage.ipynb for demonstrations.
+
+        All time zones are set to UTC by default. Setting the tz parameter will convert the columns to the desired
+        timezone, such as 'America/New_York'.
+
+        :param days: pd.DatetimeIndex of all the desired days in ascending order. This function does not double check
+            that these are valid trading days, it is assumed they are. It is intended that this parameter is generated
+            by either the .valid_days() or .date_range_htf() methods. Time & Timezone Information is ignored.
+        :param tz: timezone that the columns of the returned schedule are in, default: "UTC"
+        :param start: the first market_time to include as a column, default: "market_open"
+        :param end: the last market_time to include as a column, default: "market_close"
+        :param force_special_times: how to handle special times.
+            True: overwrite regular times of the column itself, conform other columns to special times of
+                market_open/market_close if those are requested.
+            False: only overwrite regular times of the column itself, leave others alone
+            None: completely ignore special times
+        :param market_times: alternative to start/end, list of market_times that are in self.regular_market_times
+        :param interruptions: bool, whether to add interruptions to the schedule, default: False
+            These will be added as columns to the right of the DataFrame. Any interruption on a day between
+            start_date and end_date will be included, regardless of the market_times requested.
+            Also, `force_special_times` does not take these into consideration.
+        :return: schedule DataFrame
+        """
+
+        if days.dtype != "datetime64[ns]":
+            days = pd.DatetimeIndex(days).normalize().tz_localize(None)
+
+        # Setup all valid trading days and the requested market_times
+        if market_times is None:
+            market_times = self._get_market_times(start, end)
+        elif market_times == "all":
+            market_times = self._market_times
 
         _adj_others = force_special_times is True
         _adj_col = force_special_times is not None
@@ -751,11 +807,11 @@ class MarketCalendar(metaclass=MarketCalendarMeta):
 
         schedule = pd.DataFrame()
         for market_time in market_times:
-            temp = self.days_at_time(_all_days, market_time).copy()  # standard times
+            temp = self.days_at_time(days, market_time).copy()  # standard times
             if _adj_col:
                 # create an array of special times
                 special = self.special_dates(
-                    market_time, start_date, end_date, filter_holidays=False
+                    market_time, days[0], days[-1], filter_holidays=False
                 )
                 # overwrite standard times
                 specialix = special.index[
@@ -771,15 +827,26 @@ class MarketCalendar(metaclass=MarketCalendarMeta):
 
             schedule[market_time] = temp
 
-        if _adj_others:
-            adjusted = schedule.loc[_open_adj].apply(
-                lambda x: x.where(x.ge(x["market_open"]), x["market_open"]), axis=1
-            )
+        cols = schedule.columns
+        if _adj_others and len(_open_adj) > 0:
+            mkt_open_ind = cols.get_loc("market_open")
+
+            # Can't use Lambdas here since numpy array assignment doesn't return the array.
+            def adjust_opens(x):  # x is an np.Array.
+                x[x <= x[mkt_open_ind]] = x[mkt_open_ind]
+                return x
+
+            adjusted = schedule.loc[_open_adj].apply(adjust_opens, axis=1, raw=True)
             schedule.loc[_open_adj] = adjusted
 
-            adjusted = schedule.loc[_close_adj].apply(
-                lambda x: x.where(x.le(x["market_close"]), x["market_close"]), axis=1
-            )
+        if _adj_others and len(_close_adj) > 0:
+            mkt_close_ind = cols.get_loc("market_close")
+
+            def adjust_closes(x):
+                x[x >= x[mkt_close_ind]] = x[mkt_close_ind]
+                return x
+
+            adjusted = schedule.loc[_close_adj].apply(adjust_closes, axis=1, raw=True)
             schedule.loc[_close_adj] = adjusted
 
         if interruptions:
@@ -791,6 +858,66 @@ class MarketCalendar(metaclass=MarketCalendarMeta):
             schedule = schedule.apply(lambda s: s.dt.tz_convert(tz))
 
         return schedule
+
+    def date_range_htf(
+        self,
+        frequency: Union[str, pd.Timedelta, int, float],
+        start: Union[str, pd.Timestamp, int, float, None] = None,
+        end: Union[str, pd.Timestamp, int, float, None] = None,
+        periods: Union[int, None] = None,
+        closed: Union[Literal["left", "right"], None] = "right",
+        *,
+        day_anchor: u.Day_Anchor = "SUN",
+        month_anchor: u.Month_Anchor = "JAN",
+    ) -> pd.DatetimeIndex:
+        """
+        Returns a Normalized DatetimeIndex from the start-date to End-Date for Time periods of 1D and Higher.
+
+        PARAMETERS:
+
+        :param frequency: String, Int/float (POSIX seconds) or pd.Timedelta of the desired frequency.
+            :Must be Greater than '1D' and an integer multiple of the base frequency (D, W, M, Q, or Y)
+            :Important Note: Ints/Floats & Timedeltas are always considered as 'Open Business Days',
+                '2D' == Every Other Buisness Day, '3D' == Every 3rd B.Day, '7D' == Every 7th B.Day
+            :Higher periods (passed as strings) align to the beginning or end of the relevant period
+            :i.e. '1W' == First/[Last] Trading Day of each Week, '1Q' == First/[Last] Day of every Quarter
+
+        :param start: String, Int/float (POSIX seconds) or pd.Timestamp of the desired start time.
+            :The Time & Timezone information is ignored. Only the Normalized Day is considered.
+
+        :param end: String, Int/float (POSIX seconds) or pd.Timestamp of the desired start time.
+            :The Time & Timezone information is ignored. Only the Normalized Day is considered.
+
+        :param periods: Optional Integer number of periods to return. If a Period count, Start time,
+            and End time are given the period count is ignored.
+
+        :param closed: Literal['left', 'right']. Method used to close each range.
+            :Left: First open trading day of the Session is returned (e.g. First Open Day of The Month)
+            :right: Last open trading day of the Session is returned (e.g. Last Open Day of The Month)
+            :Note, This has no effect when the desired frequency is a number of days.
+
+        :param day_anchor: Day to Anchor the start of the Weekly timeframes to. Default 'SUN'.
+            : To get the First/Last Days of the trading Week then the Anchor needs to be on a day the relevant
+                market is closed.
+            : This can be set so that a specific day each week is returned.
+            : freq='1W' & day_anchor='WED' Will return Every 'WED' when the market is open, and nearest day
+                to the left or right (based on 'closed') when the market is closed.
+            Options: ["SUN", "MON", "TUE", "WED", "THU", "FRI", "SAT"]
+
+        :param month_anchor: Month to Anchor the start of the year to for Quarter and yearly timeframes.
+            : Default 'JAN' for Calendar Quarters/Years. Can be set to 'JUL' to return Fiscal Years
+            Options: ["JAN", "FEB", "MAR", "APR", "MAY", "JUN", "JUL", "AUG", "SEP", "OCT", "NOV", "DEC"]
+        """
+        return u.date_range_htf(
+            self.holidays(),
+            frequency,
+            start,
+            end,
+            periods,
+            closed,
+            day_anchor=day_anchor,
+            month_anchor=month_anchor,
+        )
 
     def open_at_time(self, schedule, timestamp, include_close=False, only_rth=False):
         """
@@ -928,14 +1055,3 @@ class MarketCalendar(metaclass=MarketCalendarMeta):
 
     def __delitem__(self, key):
         return self.remove_time(key)
-
-
-def _is_single_observance(holiday):
-    "Returns the Date of the Holiday if it is only observed once, None otherwise."
-    return holiday.start_date if holiday.start_date == holiday.end_date else None
-
-
-def _all_single_observance_rules(calendar):
-    "Returns a list of timestamps if the Calendar's Rules are all single observance holidays, None Otherwise"
-    observances = [_is_single_observance(rule) for rule in calendar.rules]
-    return observances if all(observances) else None

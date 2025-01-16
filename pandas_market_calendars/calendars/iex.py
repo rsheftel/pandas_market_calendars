@@ -1,8 +1,12 @@
 from datetime import time
 from itertools import chain
 
+from pandas import Timestamp, DatetimeIndex, Timedelta
 from pandas.tseries.holiday import AbstractHolidayCalendar
 from pytz import timezone
+
+from typing import Literal, Union
+from pandas_market_calendars import calendar_utils as u
 
 from pandas_market_calendars.holidays.nyse import (
     USPresidentsDay,
@@ -106,7 +110,42 @@ class IEXExchangeCalendar(NYSEExchangeCalendar):
         return []
 
     def valid_days(self, start_date, end_date, tz="UTC"):
-        trading_days = super().valid_days(
-            start_date, end_date, tz=tz
-        )  # all NYSE valid days
-        return trading_days[~(trading_days <= "2013-08-25")]
+        start_date = Timestamp(start_date)
+        if start_date.tz is not None:
+            # Ensure valid Comparison to "2013-08-25" is possible
+            start_date.tz_convert(self.tz).tz_localize(None)
+
+        # Limit Start_date to the Exchange's Open
+        start_date = max(start_date, Timestamp("2013-08-25"))
+        return super().valid_days(start_date, end_date, tz=tz)
+
+    def date_range_htf(
+        self,
+        frequency: Union[str, Timedelta, int, float],
+        start: Union[str, Timestamp, int, float, None] = None,
+        end: Union[str, Timestamp, int, float, None] = None,
+        periods: Union[int, None] = None,
+        closed: Union[Literal["left", "right"], None] = "right",
+        *,
+        day_anchor: u.Day_Anchor = "SUN",
+        month_anchor: u.Month_Anchor = "JAN",
+    ) -> DatetimeIndex:
+
+        start, end, periods = u._error_check_htf_range(start, end, periods)
+
+        # Cap Beginning and end dates to the opening date of IEX
+        if start is not None:
+            start = max(start, Timestamp("2013-08-25"))
+        if end is not None:
+            end = max(end, Timestamp("2013-08-25"))
+
+        return u.date_range_htf(
+            self.holidays(),
+            frequency,
+            start,
+            end,
+            periods,
+            closed,
+            day_anchor=day_anchor,
+            month_anchor=month_anchor,
+        )

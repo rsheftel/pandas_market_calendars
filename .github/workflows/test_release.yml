@@ -20,69 +20,69 @@ jobs:
     needs: check
     uses: ./.github/workflows/test_runner.yml
   
-  test_new_release:
-    needs: run_tests
-    runs-on: ubuntu-latest
-
-    steps:
-      - uses: actions/checkout@v3
-
-      - name: get new_version
-        id: new_version
-        uses: KJ002/read-yaml@1.6
-        with:
-          file: .github/config_new_release.yml
-          key-path: '["new_version"]'
-
-      - name: get_new_current_version
-        run: |
-          echo "NEWV=${{ steps.new_version.outputs.data }}" >> $GITHUB_ENV
-          echo "OLDV=$(grep "VERSION" -m1 pyproject.toml | cut -d"=" -f2 | sed "s/['\" ]//g")" >> $GITHUB_ENV
-
-      - name: warn_no_version
-        if: ${{ env.NEWV <= env.OLDV }}
-        uses: thollander/actions-comment-pull-request@v1
-        with:
-          message: WARNING - Version number in change_log is not incremented. Will not test release.
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
-      - name: exit_no_version
-        if: ${{ env.NEWV <= env.OLDV }}
-        run: echo you did not update the change_log && exit 1
-
-      - name: make rc vnumber
-        run: echo "NEWV=${{env.NEWV}}rc${{github.run_number}}.dev${{github.run_attempt}}" >> $GITHUB_ENV
-
-      - name: set version
-        run: |
-          echo release candidate: $NEWV
-          sed -i "s/$OLDV/$NEWV/" pyproject.toml
-
-      - name: Set up Python
-        uses: actions/setup-python@v4
-        with:
-          python-version: "3.12"
-
-      - name: Install dependencies
-        run: |
-          pip install --upgrade pip
-          pip install build twine pytest
-
-      - name: Build source distribution and wheel files
-        run: python -m build
-
-      - name: Upload files to TestPyPI
-        run: python -m twine upload --verbose --repository testpypi dist/* -u__token__ -p${{ secrets.TEST_PYPI_TOKEN }}
-
-      - name: Install from testpypi
-        run: |
-          while [ "$NEWV" != $(pip index versions -i https://test.pypi.org/simple --pre pandas_market_calendars | cut -d'(' -f2 | cut -d')' -f1 | sed 1q) ];\
-            do echo not found yet, sleeping 5s; sleep 5s; done
-          pip install -i https://test.pypi.org/simple pandas_market_calendars==$NEWV --no-deps
-
-      - name: test new release
-        run: |
-          pip install .
-          mv pandas_market_calendars pandas_market_calendars_copy
-          python -c 'import pandas_market_calendars;print(pandas_market_calendars.__version__)'
-          pytest tests
+#  test_new_release:
+#    needs: run_tests
+#    runs-on: ubuntu-latest
+#
+#    steps:
+#      - uses: actions/checkout@v3
+#
+#      - name: get new_version
+#        id: new_version
+#        uses: KJ002/read-yaml@1.6
+#        with:
+#          file: .github/config_new_release.yml
+#          key-path: '["new_version"]'
+#
+#      - name: get_new_current_version
+#        run: |
+#          echo "NEWV=${{ steps.new_version.outputs.data }}" >> $GITHUB_ENV
+#          echo "OLDV=$(grep "VERSION" -m1 pyproject.toml | cut -d"=" -f2 | sed "s/['\" ]//g")" >> $GITHUB_ENV
+#
+#      - name: warn_no_version
+#        if: ${{ env.NEWV <= env.OLDV }}
+#        uses: thollander/actions-comment-pull-request@v1
+#        with:
+#          message: WARNING - Version number in change_log is not incremented. Will not test release.
+#          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+#
+#      - name: exit_no_version
+#        if: ${{ env.NEWV <= env.OLDV }}
+#        run: echo you did not update the change_log && exit 1
+#
+#      - name: make rc vnumber
+#        run: echo "NEWV=${{env.NEWV}}rc${{github.run_number}}.dev${{github.run_attempt}}" >> $GITHUB_ENV
+#
+#      - name: set version
+#        run: |
+#          echo release candidate: $NEWV
+#          sed -i "s/$OLDV/$NEWV/" pyproject.toml
+#
+#      - name: Set up Python
+#        uses: actions/setup-python@v4
+#        with:
+#          python-version: "3.12"
+#
+#      - name: Install dependencies
+#        run: |
+#          pip install --upgrade pip
+#          pip install build twine pytest
+#
+#      - name: Build source distribution and wheel files
+#        run: python -m build
+#
+#      - name: Upload files to TestPyPI
+#        run: python -m twine upload --verbose --repository testpypi dist/* -u__token__ -p${{ secrets.TEST_PYPI_TOKEN }}
+#
+#      - name: Install from testpypi
+#        run: |
+#          while [ "$NEWV" != $(pip index versions -i https://test.pypi.org/simple --pre pandas_market_calendars | cut -d'(' -f2 | cut -d')' -f1 | sed 1q) ];\
+#            do echo not found yet, sleeping 5s; sleep 5s; done
+#          pip install -i https://test.pypi.org/simple pandas_market_calendars==$NEWV --no-deps
+#
+#      - name: test new release
+#        run: |
+#          pip install .
+#          mv pandas_market_calendars pandas_market_calendars_copy
+#          python -c 'import pandas_market_calendars;print(pandas_market_calendars.__version__)'
+#          pytest tests

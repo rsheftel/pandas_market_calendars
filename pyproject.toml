@@ -1,6 +1,6 @@
 [project]
 name = "pandas_market_calendars"
-version = "4.5.1"
+version = "4.6.0"
 authors = [
     { name = "Ryan Sheftel", email = "rsheftel@alumni.upenn.edu" },
 ]
@@ -26,7 +26,7 @@ classifiers = [
 dependencies = ['pandas>=1.1', 'pytz', 'python-dateutil', 'exchange-calendars>=3.3']
 
 [project.optional-dependencies]
-dev = ['pytest', 'black', 'pre-commit']
+dev = ['pytest', 'black', 'pre-commit', 'build']
 
 [build-system]
 requires = ["setuptools>=61.0", "wheel"]

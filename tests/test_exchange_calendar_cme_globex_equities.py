@@ -21,7 +21,7 @@ def test_is_different():
     late = cal.late_opens(sched).index
     assert late.empty
 
-    sched.loc["2000-01-19", "market_open"] += pd.Timedelta("3H")
+    sched.loc["2000-01-19", "market_open"] += pd.Timedelta("3h")
     late = cal.late_opens(sched).index
     assert late.shape == (1,) and late[0] == pd.Timestamp("2000-01-19")
 
