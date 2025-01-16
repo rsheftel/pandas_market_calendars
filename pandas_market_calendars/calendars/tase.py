@@ -1,9 +1,11 @@
 from datetime import time
 
-from pandas import Timestamp
+from typing import Literal, Union
+from pandas import Timestamp, Timedelta, DatetimeIndex
 from pytz import timezone
 
 from pandas_market_calendars.market_calendar import MarketCalendar
+from pandas_market_calendars.calendar_utils import Day_Anchor, Month_Anchor
 
 TASEClosedDay = [
     # 2019
@@ -195,3 +197,24 @@ class TASEExchangeCalendar(MarketCalendar):
     @property
     def weekmask(self):
         return "Sun Mon Tue Wed Thu"
+
+    def date_range_htf(
+        self,
+        frequency: Union[str, Timedelta, int, float],
+        start: Union[str, Timestamp, int, float, None] = None,
+        end: Union[str, Timestamp, int, float, None] = None,
+        periods: Union[int, None] = None,
+        closed: Union[Literal["left", "right"], None] = "right",
+        *,
+        day_anchor: Day_Anchor = "SAT",  # Change the default day anchor
+        month_anchor: Month_Anchor = "JAN",
+    ) -> DatetimeIndex:
+        return super().date_range_htf(
+            frequency,
+            start,
+            end,
+            periods,
+            closed,
+            day_anchor=day_anchor,
+            month_anchor=month_anchor,
+        )

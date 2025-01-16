@@ -5,6 +5,13 @@ Updates
 -------
 4.6.0 (XX/XX/2025)
 ~~~~~~~~~~~~~~~~~~
+- Updated useage.ipynb with information on added features
+- Added mark_session() Util Function
+- Added MarketCalendar.date_range_htf() Method
+- Added MarketCalendar.schedule_from_days() Method
+- Split NYSE Holiday Calendar into Two Calendars to support Date_Range_HTF()
+  - NYSE.weekmask now returns "Mon Tue Wed Thur Fri" instead of "Mon Tue Wed Thur Fri Sat"
+- Start, End, Periods, and Session Arguments added to Date_Range() from PR #358
 - Speed enhancements from PR #358
 
 4.5.1 (01/01/2025)

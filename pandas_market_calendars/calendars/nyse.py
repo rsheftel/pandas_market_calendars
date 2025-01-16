@@ -18,7 +18,11 @@ from itertools import chain
 
 import pandas as pd
 from pandas.tseries.holiday import AbstractHolidayCalendar
+from pandas.tseries.offsets import CustomBusinessDay
 from pytz import timezone
+
+from typing import Literal, Union
+from pandas_market_calendars import calendar_utils as u
 
 from pandas_market_calendars.holidays.nyse import (
     # Always Celebrated Holidays
@@ -830,7 +834,28 @@ class NYSEExchangeCalendar(MarketCalendar):
 
     @property
     def weekmask(self):
-        return "Mon Tue Wed Thu Fri Sat"  # Market open on Saturdays thru 5/24/1952
+        return "Mon Tue Wed Thu Fri"
+
+    @property
+    def weekmask_pre_1952(self):
+        return "Mon Tue Wed Thu Fri Sat"
+
+    def holidays_pre_1952(self):
+        """
+        NYSE Market open on Saturdays pre 5/24/1952.
+        CustomBusinessDay object that can be used inplace of holidays() for dates prior to crossover
+
+        :return: CustomBusinessDay object of holidays
+        """
+        if hasattr(self, "_holidays_hist"):
+            return self._holidays_hist
+
+        self._holidays_hist = CustomBusinessDay(
+            holidays=self.adhoc_holidays,
+            calendar=self.regular_holidays,
+            weekmask=self.weekmask_pre_1952,
+        )
+        return self._holidays_hist
 
     @property
     def regular_holidays(self):
@@ -967,7 +992,6 @@ class NYSEExchangeCalendar(MarketCalendar):
             )
         )
 
-    #
     @property
     def special_closes(self):
         return [
@@ -1088,7 +1112,6 @@ class NYSEExchangeCalendar(MarketCalendar):
             ),
         ]
 
-    #
     @property
     def special_closes_adhoc(self):
         def _union_many(indexes):
@@ -1143,7 +1166,6 @@ class NYSEExchangeCalendar(MarketCalendar):
             ),
         ]
 
-    #
     @property
     def special_opens(self):
         return [
@@ -1257,7 +1279,6 @@ class NYSEExchangeCalendar(MarketCalendar):
             ),
         ]
 
-    #
     @property
     def special_opens_adhoc(self):
         return [
@@ -1275,7 +1296,7 @@ class NYSEExchangeCalendar(MarketCalendar):
             ),
         ]
 
-    # Override market_calendar.py
+    # Override market_calendar.py to split calc between pre & post 1952 Saturday Close
     def valid_days(self, start_date, end_date, tz="UTC"):
         """
         Get a DatetimeIndex of valid open business days.
@@ -1285,7 +1306,8 @@ class NYSEExchangeCalendar(MarketCalendar):
         :param tz: time zone in either string or pytz.timezone
         :return: DatetimeIndex of valid business days
         """
-        trading_days = super().valid_days(start_date, end_date, tz=tz)
+        start_date = pd.Timestamp(start_date, tz=tz)
+        end_date = pd.Timestamp(end_date, tz=tz)
 
         # Starting Monday Sept. 29, 1952, no more saturday trading days
         if tz is None:
@@ -1293,12 +1315,32 @@ class NYSEExchangeCalendar(MarketCalendar):
         else:
             saturday_end = self._saturday_end
 
-        above_cut_off = trading_days >= saturday_end
-        if above_cut_off.any():
-            above_and_saturday = (trading_days.weekday == 5) & above_cut_off
-            trading_days = trading_days[~above_and_saturday]
+        # Don't care about Saturdays. Call super.
+        if start_date > saturday_end:
+            return super().valid_days(start_date, end_date, tz=tz)
 
-        return trading_days
+        # Full Date Range is pre 1952. Augment the Super call
+        if end_date <= saturday_end:
+            return pd.date_range(
+                start_date,
+                end_date,
+                freq=self.holidays_pre_1952(),
+                normalize=True,
+                tz=tz,
+            )
+
+        # Range is split across 1952. Concatenate Two different Date_Range calls
+        days_pre = pd.date_range(
+            start_date,
+            saturday_end,
+            freq=self.holidays_pre_1952(),
+            normalize=True,
+            tz=tz,
+        )
+        days_post = pd.date_range(
+            saturday_end, end_date, freq=self.holidays(), normalize=True, tz=tz
+        )
+        return days_pre.union(days_post)
 
     def days_at_time(self, days, market_time, day_offset=0):
         days = super().days_at_time(days, market_time, day_offset=day_offset)
@@ -1311,6 +1353,103 @@ class NYSEExchangeCalendar(MarketCalendar):
             )
             days = days.dt.tz_convert("UTC")
         return days
+
+    def date_range_htf(
+        self,
+        frequency: Union[str, pd.Timedelta, int, float],
+        start: Union[str, pd.Timestamp, int, float, None] = None,
+        end: Union[str, pd.Timestamp, int, float, None] = None,
+        periods: Union[int, None] = None,
+        closed: Union[Literal["left", "right"], None] = "right",
+        *,
+        day_anchor: u.Day_Anchor = "SUN",
+        month_anchor: u.Month_Anchor = "JAN",
+    ) -> pd.DatetimeIndex:
+        # __doc__ = MarketCalendar.date_range_htf.__doc__
+
+        start, end, periods = u._error_check_htf_range(start, end, periods)
+
+        args = {
+            "frequency": frequency,
+            "start": start,
+            "end": end,
+            "periods": periods,
+            "closed": closed,
+            "day_anchor": day_anchor,
+            "month_anchor": month_anchor,
+        }
+
+        saturday_end = self._saturday_end.tz_localize(None)
+
+        # All Dates post 1952 This is the most common use case so return it first
+        if start is not None and start > saturday_end:
+            return u.date_range_htf(self.holidays(), **args)
+
+        # ---- Start-Date to End-Date w/ pre-1952 ----
+        if start is not None and end is not None:
+            if end <= saturday_end:
+                # All pre 1952 Dates
+                return u.date_range_htf(self.holidays_pre_1952(), **args)
+            else:
+                # Split Range Across 1952
+                pre = u.date_range_htf(  # Only Generate to the last saturday
+                    self.holidays_pre_1952(), **(args | {"end": saturday_end})
+                )
+                post = u.date_range_htf(  # start generating from the last date of 'pre'
+                    self.holidays(), **(args | {"start": pre[-1]})
+                )
+                return pd.DatetimeIndex(pre.union(post), dtype="datetime64[ns]")
+
+        # ---- Periods from Start-Date w/ pre-1952 ----
+        elif start is not None and periods is not None:
+            # Start prior to 1952 & Number of periods given
+            rtn_dt = u.date_range_htf(self.holidays_pre_1952(), **args)
+            if rtn_dt[-1] <= saturday_end:
+                return rtn_dt  # never passed 1952, good to return
+
+            # Date Range Split.
+            pre = rtn_dt[rtn_dt <= saturday_end]
+            post = u.date_range_htf(
+                self.holidays(),
+                **(args | {"start": pre[-1], "periods": periods - len(pre) + 1}),
+            )
+            return pd.DatetimeIndex(pre.union(post)[:periods], dtype="datetime64[ns]")
+
+        # ---- Periods from End-Date ----
+        elif end is not None and periods is not None:
+            if end <= saturday_end:
+                # All Dates pre-1952, Good to return the normal call
+                return u.date_range_htf(self.holidays_pre_1952(), **args)
+            else:
+                rtn_dt = u.date_range_htf(self.holidays(), **args)
+
+                if rtn_dt[0] > saturday_end:
+                    return rtn_dt  # never passed 1952, good to return
+
+                # Date Range Split
+                post = rtn_dt[rtn_dt > saturday_end]
+                _, period_code = u._standardize_htf_freq(frequency)
+                altered_args = {
+                    # This nonsense is to realign the schedules as best as possible. This
+                    # essentially creates the 'pre-1952' equivalent date to the last generated 'post-1952'
+                    # date. Start the Range from there, then pre[0:-1] trims off that extra date where we
+                    # started from
+                    "end": post[0].to_period(period_code).end_time.normalize(),
+                    "periods": periods - len(post) + 2,
+                }
+                pre = u.date_range_htf(
+                    self.holidays_pre_1952(),
+                    **(args | altered_args),
+                )
+
+                return pd.DatetimeIndex(
+                    pre[:-1].union(post)[-periods:], dtype="datetime64[ns]"
+                )
+        else:
+            _, _ = u._standardize_htf_freq(frequency)
+            raise ValueError(
+                "This should never be raised, the above call should error first"
+            )
 
     def early_closes(self, schedule):
         """
