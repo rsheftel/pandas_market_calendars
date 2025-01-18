@@ -6,7 +6,7 @@ authors = [
 ]
 description = "Market and exchange trading calendars for pandas"
 readme = "README.rst"
-requires-python = ">=3.8"
+requires-python = ">=3.9"
 keywords = ["trading", "exchanges", "markets", "OTC", "datetime", "holiday", "business days"]
 license = { text = "MIT" }
 classifiers = [
