@@ -15,15 +15,14 @@
 
 from datetime import time
 from itertools import chain
+from typing import Literal, Union
 
 import pandas as pd
 from pandas.tseries.holiday import AbstractHolidayCalendar
 from pandas.tseries.offsets import CustomBusinessDay
 from pytz import timezone
 
-from typing import Literal, Union
 from pandas_market_calendars import calendar_utils as u
-
 from pandas_market_calendars.holidays.nyse import (
     # Always Celebrated Holidays
     USNewYearsDayNYSEpost1952,
@@ -1306,8 +1305,10 @@ class NYSEExchangeCalendar(MarketCalendar):
         :param tz: time zone in either string or pytz.timezone
         :return: DatetimeIndex of valid business days
         """
-        start_date = pd.Timestamp(start_date, tz=tz)
-        end_date = pd.Timestamp(end_date, tz=tz)
+        start_date = pd.Timestamp(start_date)
+        end_date = pd.Timestamp(end_date)
+        start_date = start_date.tz_convert(tz) if start_date.tz else start_date.tz_localize(tz)
+        end_date = end_date.tz_convert(tz) if end_date.tz else end_date.tz_localize(tz)
 
         # Starting Monday Sept. 29, 1952, no more saturday trading days
         if tz is None:

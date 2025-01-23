@@ -1,5 +1,6 @@
 import datetime as dt
 import os
+from zoneinfo import ZoneInfo
 
 import pandas as pd
 import pytest
@@ -145,6 +146,20 @@ def test_valid_days():
     valid = cal.valid_days(start, end, tz="UTC").tz_localize(None)
     for tz in ("America/New_York", "Europe/Berlin", None):
         assert (valid.tz_localize(tz) == cal.valid_days(start, end, tz=tz)).all()
+
+    # test with dates with timezones attached
+    start = pd.Timestamp("2000-01-01", tz="America/New_York")
+    end = pd.Timestamp("2000-01-30", tz="America/New_York")
+    valid_w_tz = cal.valid_days(start, end, tz="UTC").tz_localize(None)
+    assert_index_equal(valid, valid_w_tz)
+
+
+def test_valid_days_tz_aware():
+    calendar = NYSEExchangeCalendar()
+    data_date = dt.datetime.strptime("20250121", "%Y%m%d").astimezone(ZoneInfo("UTC"))
+    actual = calendar.valid_days(data_date, data_date + dt.timedelta(days=7), tz="UTC")
+    expected = pd.bdate_range("2025-01-21", periods=6, tz="UTC")
+    assert_index_equal(actual, expected)
 
 
 def test_time_zone():
