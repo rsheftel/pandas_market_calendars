@@ -3,6 +3,10 @@ Change Log
 
 Updates
 -------
+4.6.1 (01/23/2025)
+~~~~~~~~~~~~~~~~~~
+- patch to fix the regression error in #376
+
 4.6.0 (01/16/2025)
 ~~~~~~~~~~~~~~~~~~
 - Updated usage.ipynb with information on added features
