@@ -139,6 +139,10 @@ class TSXExchangeCalendar(MarketCalendar):
         return "TSX"
 
     @property
+    def full_name(self):
+        return "Toronto Stock Exchange"
+
+    @property
     def tz(self):
         return timezone("Canada/Eastern")
 

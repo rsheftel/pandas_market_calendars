@@ -84,6 +84,10 @@ class CFEExchangeCalendar(MarketCalendar):
         return "CFE"
 
     @property
+    def full_name(self):
+        return "CBOE Futures Exchange"
+
+    @property
     def tz(self):
         return timezone("America/Chicago")
 

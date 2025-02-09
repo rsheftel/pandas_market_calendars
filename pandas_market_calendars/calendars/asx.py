@@ -43,6 +43,10 @@ class ASXExchangeCalendar(MarketCalendar):
         return "ASX"
 
     @property
+    def full_name(self):
+        return "Australian Securities Exchange"
+
+    @property
     def tz(self):
         return timezone("Australia/Sydney")
 

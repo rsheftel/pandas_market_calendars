@@ -84,6 +84,10 @@ class OSEExchangeCalendar(MarketCalendar):
         return "OSE"
 
     @property
+    def full_name(self):
+        return "Oslo Stock Exchange"
+
+    @property
     def tz(self):
         return timezone("Europe/Oslo")
 

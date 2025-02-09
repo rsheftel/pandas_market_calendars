@@ -30,6 +30,10 @@ class SSEExchangeCalendar(MarketCalendar):
         return "SSE"
 
     @property
+    def full_name(self):
+        return "Shanghai Stock Exchange"
+
+    @property
     def tz(self):
         return timezone("Asia/Shanghai")
 

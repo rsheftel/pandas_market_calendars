@@ -382,6 +382,10 @@ class HKEXExchangeCalendar(MarketCalendar):
         return "HKEX"
 
     @property
+    def full_name(self):
+        return "Hong Kong Stock Exchange"
+
+    @property
     def tz(self):
         return timezone("Asia/Shanghai")
 

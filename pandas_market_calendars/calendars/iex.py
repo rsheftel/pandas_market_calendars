@@ -55,6 +55,10 @@ class IEXExchangeCalendar(NYSEExchangeCalendar):
         return "IEX"
 
     @property
+    def full_name(self):
+        return "Investor's Exchange"
+
+    @property
     def weekmask(self):
         return "Mon Tue Wed Thu Fri"
 
