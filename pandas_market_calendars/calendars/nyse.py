@@ -828,6 +828,10 @@ class NYSEExchangeCalendar(MarketCalendar):
         return "NYSE"
 
     @property
+    def full_name(self):
+        return "New York Stock Exchange"
+
+    @property
     def tz(self):
         return timezone("America/New_York")
 

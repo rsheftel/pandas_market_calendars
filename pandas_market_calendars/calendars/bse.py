@@ -413,6 +413,10 @@ class BSEExchangeCalendar(MarketCalendar):
         return "BSE"
 
     @property
+    def full_name(self):
+        return "Bombay Stock Exchange"
+
+    @property
     def tz(self):
         return timezone("Asia/Calcutta")
 

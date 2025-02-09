@@ -109,6 +109,10 @@ class SIXExchangeCalendar(MarketCalendar):
         return "SIX"
 
     @property
+    def full_name(self):
+        return "SIX Swiss Exchange"
+
+    @property
     def tz(self):
         return timezone("Europe/Zurich")
 

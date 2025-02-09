@@ -111,6 +111,10 @@ class SIFMAUSExchangeCalendar(MarketCalendar):
         return "SIFMA_US"
 
     @property
+    def full_name(self):
+        return "Securities Industry and Financial Markets Association"
+
+    @property
     def tz(self):
         return timezone("America/New_York")
 

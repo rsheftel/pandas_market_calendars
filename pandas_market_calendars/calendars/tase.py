@@ -187,6 +187,10 @@ class TASEExchangeCalendar(MarketCalendar):
         return "TASE"
 
     @property
+    def full_name(self):
+        return "Tel Aviv Stock Exchange"
+
+    @property
     def tz(self):
         return timezone("Asia/Jerusalem")
 
