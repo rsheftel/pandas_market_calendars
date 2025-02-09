@@ -42,6 +42,10 @@ class JPXExchangeCalendar(MarketCalendar):
         return "JPX"
 
     @property
+    def full_name(self):
+        return "Japan Exchange Group"
+
+    @property
     def tz(self):
         return timezone("Asia/Tokyo")
 

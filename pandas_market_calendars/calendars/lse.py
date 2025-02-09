@@ -70,6 +70,10 @@ class LSEExchangeCalendar(MarketCalendar):
         return "LSE"
 
     @property
+    def full_name(self):
+        return "London Stock Exchange"
+
+    @property
     def tz(self):
         return timezone("Europe/London")
 
