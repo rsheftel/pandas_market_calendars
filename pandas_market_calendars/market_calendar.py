@@ -138,6 +138,16 @@ class MarketCalendar(metaclass=MarketCalendarMeta):
 
     @property
     @abstractmethod
+    def full_name(self):
+        """
+        Full name of the market
+
+        :return: string name
+        """
+        return self.name
+
+    @property
+    @abstractmethod
     def tz(self):
         """
         Time zone for the market.
