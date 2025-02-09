@@ -3,6 +3,10 @@ Change Log
 
 Updates
 -------
+4.6.2 (XX/XX/XXXX)
+~~~~~~~~~~~~~~~~~~
+- Add human readable names from PR #380
+
 4.6.1 (01/23/2025)
 ~~~~~~~~~~~~~~~~~~
 - patch to fix the regression error in #376
