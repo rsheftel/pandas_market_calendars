@@ -171,8 +171,8 @@ class SIFMAUSExchangeCalendar(MarketCalendar):
         return [
             (
                 time(14, tzinfo=ZoneInfo("America/New_York")),
-                GoodFriday2pmEarlyCloseAdHoc  # list
-                + DayBeforeGoodFriday2pmEarlyCloseAdHoc,
+                GoodFriday2pmEarlyCloseAdHoc
+                + DayBeforeGoodFriday2pmEarlyCloseAdHoc,  # list
             ),
         ]
 
@@ -353,6 +353,4 @@ class SIFMAJPExchangeCalendar(MarketCalendar):
 
     @property
     def special_closes(self):
-        return [
-            (time(15), AbstractHolidayCalendar(rules=[UKMayDay, UKWeekendChristmas]))
-        ]
+        return [(time(15), AbstractHolidayCalendar(rules=[UKMayDay, UKWeekendChristmas]))]

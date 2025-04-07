@@ -198,9 +198,7 @@ MidAutumnFestivalDay = Holiday(
     name="Mid-autumn Festival",  # 中秋节翌日
     month=9,
     day=7,
-    observance=partial(
-        process_date, mapping=maf_mapping, delta=1, func=sunday_to_monday
-    ),
+    observance=partial(process_date, mapping=maf_mapping, delta=1, func=sunday_to_monday),
     start_date=Timestamp("2011-01-01"),
 )
 

@@ -45,9 +45,7 @@ class CMEGlobexCryptoExchangeCalendar(CMEGlobexBaseExchangeCalendar):
         # Tuple[Tuple[first date used, time, offset], ...]
         # -1 offset indicates that the open is on the previous day
         # None for first date used marks the start, subsequent market times must have an actual timestamp
-        "market_open": (
-            (None, dt.time(17, tzinfo=ZoneInfo("America/Chicago")), -1),
-        ),
+        "market_open": ((None, dt.time(17, tzinfo=ZoneInfo("America/Chicago")), -1),),
         "market_close": (
             (
                 None,

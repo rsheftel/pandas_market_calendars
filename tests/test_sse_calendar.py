@@ -33,22 +33,16 @@ def test_all_holidays():
 def test_sse_closes_at_lunch():
     sse_calendar = SSEExchangeCalendar()
     sse_schedule = sse_calendar.schedule(
-        start_date=datetime.datetime(
-            2015, 1, 14, tzinfo=ZoneInfo("Asia/Shanghai")
-        ),
+        start_date=datetime.datetime(2015, 1, 14, tzinfo=ZoneInfo("Asia/Shanghai")),
         end_date=datetime.datetime(2015, 1, 16, tzinfo=ZoneInfo("Asia/Shanghai")),
     )
 
     assert sse_calendar.open_at_time(
         schedule=sse_schedule,
-        timestamp=datetime.datetime(
-            2015, 1, 14, 11, 0, tzinfo=ZoneInfo("Asia/Shanghai")
-        ),
+        timestamp=datetime.datetime(2015, 1, 14, 11, 0, tzinfo=ZoneInfo("Asia/Shanghai")),
     )
 
     assert not sse_calendar.open_at_time(
         schedule=sse_schedule,
-        timestamp=datetime.datetime(
-            2015, 1, 14, 12, 0, tzinfo=ZoneInfo("Asia/Shanghai")
-        ),
+        timestamp=datetime.datetime(2015, 1, 14, 12, 0, tzinfo=ZoneInfo("Asia/Shanghai")),
     )

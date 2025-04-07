@@ -59,9 +59,5 @@ def test_dec_jan():
     cme = CMEEquityExchangeCalendar()
     schedule = cme.schedule("2016-12-30", "2017-01-10")
 
-    assert schedule["market_open"].iloc[0] == pd.Timestamp(
-        "2016-12-29 23:00:00", tz="UTC"
-    )
-    assert schedule["market_close"].iloc[6] == pd.Timestamp(
-        "2017-01-10 22:00:00", tz="UTC"
-    )
+    assert schedule["market_open"].iloc[0] == pd.Timestamp("2016-12-29 23:00:00", tz="UTC")
+    assert schedule["market_close"].iloc[6] == pd.Timestamp("2017-01-10 22:00:00", tz="UTC")

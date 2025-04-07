@@ -105,9 +105,7 @@ class ProtectedDict(dict):
 
     def __str__(self):
         try:
-            formatted = pformat(
-                dict(self), sort_dicts=False
-            )  # sort_dicts apparently not available < python3.8
+            formatted = pformat(dict(self), sort_dicts=False)  # sort_dicts apparently not available < python3.8
         except TypeError:
             formatted = pformat(dict(self))
 

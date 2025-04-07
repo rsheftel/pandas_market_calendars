@@ -594,10 +594,8 @@ def test_1908():
 
     # early closes we expect:
     early_closes = [
-        pd.Timestamp(
-            "1908-06-26 1:00PM", tz="America/New_York"
-        )  # Grover Cleveland funeral
-    ]
+        pd.Timestamp("1908-06-26 1:00PM", tz="America/New_York")
+    ]  # Grover Cleveland funeral
     _test_has_early_closes(early_closes, start, end)
 
 
@@ -651,19 +649,11 @@ def test_1910():
     _test_holidays(holidays, start, end)
 
     # early closes:
-    early_closes = [
-        pd.Timestamp(
-            "1910-05-07 11:00AM", tz="America/New_York"
-        )  # King Edward VII death
-    ]
+    early_closes = [pd.Timestamp("1910-05-07 11:00AM", tz="America/New_York")]  # King Edward VII death
     _test_has_early_closes(early_closes, start, end)
 
     # late opens:
-    late_opens = [
-        pd.Timestamp(
-            "1910-05-20 12:00PM", tz="America/New_York"
-        )  # King Edward VII funderal
-    ]
+    late_opens = [pd.Timestamp("1910-05-20 12:00PM", tz="America/New_York")]  # King Edward VII funderal
     _test_has_late_opens(late_opens, start, end)
 
 
@@ -738,9 +728,7 @@ def test_1913():
     # late opens:
     late_opens = [
         pd.Timestamp("1913-04-14 12:00PM", tz="America/New_York"),  # JP Morgan Funeral
-        pd.Timestamp(
-            "1913-09-22 12:00PM", tz="America/New_York"
-        ),  # Mayor William J. Gaynor Funeral
+        pd.Timestamp("1913-09-22 12:00PM", tz="America/New_York"),  # Mayor William J. Gaynor Funeral
     ]
     _test_has_late_opens(late_opens, start, end)
 
@@ -946,9 +934,7 @@ def test_1917():
 
     # early closes we expect:
     early_closes = [
-        pd.Timestamp(
-            " 1917-08-29 12:00PM", tz="America/New_York"
-        ),  # Parade of National Guard
+        pd.Timestamp(" 1917-08-29 12:00PM", tz="America/New_York"),  # Parade of National Guard
         pd.Timestamp(" 1917-10-24 12:00PM", tz="America/New_York"),  # Liberty Day
     ]
     _test_has_early_closes(early_closes, start, end)
@@ -981,9 +967,7 @@ def test_1918():
     # early closes we expect:
     early_closes = [
         pd.Timestamp("1918-04-26 12:00PM", tz="America/New_York"),  # Liberty Day
-        pd.Timestamp(
-            "1918-11-07 2:30PM", tz="America/New_York"
-        ),  # False armistice report
+        pd.Timestamp("1918-11-07 2:30PM", tz="America/New_York"),  # False armistice report
     ]
     _test_has_early_closes(early_closes, start, end)
 
@@ -1049,11 +1033,7 @@ def test_1920():
     _test_holidays(holidays, start, end)
 
     # early closes we expect:
-    early_closes = [
-        pd.Timestamp(
-            "1920-09-16 12:00PM", tz="America/New_York"
-        )  # Wall Street explosion
-    ]
+    early_closes = [pd.Timestamp("1920-09-16 12:00PM", tz="America/New_York")]  # Wall Street explosion
     _test_has_early_closes(early_closes, start, end)
 
     # late opens we expect:
@@ -1088,9 +1068,7 @@ def test_1921():
 
     # late opens we expect:
     late_opens = [
-        pd.Timestamp(
-            "1921-08-02 1:00PM", tz="America/New_York"
-        ),  # fire in annunciator board
+        pd.Timestamp("1921-08-02 1:00PM", tz="America/New_York"),  # fire in annunciator board
     ]
     _test_has_late_opens(late_opens, start, end)
 
@@ -1160,9 +1138,7 @@ def test_1924():
 
     # early closes we expect:
     early_closes = [
-        pd.Timestamp(
-            "1924-02-06 12:30PM", tz="America/New_York"
-        )  # Former President Woodrow Wilson funeral
+        pd.Timestamp("1924-02-06 12:30PM", tz="America/New_York")  # Former President Woodrow Wilson funeral
     ]
     _test_has_early_closes(early_closes, start, end)
 
@@ -1187,11 +1163,7 @@ def test_1925():
     _test_holidays(holidays, start, end)
 
     # early closes we expect:
-    early_closes = [
-        pd.Timestamp(
-            "1925-09-18 2:30PM", tz="America/New_York"
-        )  # Seymour L. Cromwell funeral
-    ]
+    early_closes = [pd.Timestamp("1925-09-18 2:30PM", tz="America/New_York")]  # Seymour L. Cromwell funeral
     _test_has_early_closes(early_closes, start, end)
 
     # late opens we expect:
@@ -1531,11 +1503,7 @@ def test_1936():
     _test_no_special_closes(start, end)
 
     # late opens we expect:
-    late_opens = [
-        pd.Timestamp(
-            "1936-01-28 11:00AM", tz="America/New_York"
-        )  # King George V funeral
-    ]
+    late_opens = [pd.Timestamp("1936-01-28 11:00AM", tz="America/New_York")]  # King George V funeral
     _test_has_late_opens(late_opens, start, end)
 
 
@@ -2431,11 +2399,7 @@ def test_1965():
     _test_no_special_closes(start, end)
 
     # late opens we expect:
-    late_opens = [
-        pd.Timestamp(
-            "1965-11-10 11:05AM", tz="America/New_York"
-        )  # NY power grid failure
-    ]
+    late_opens = [pd.Timestamp("1965-11-10 11:05AM", tz="America/New_York")]  # NY power grid failure
     _test_has_late_opens(late_opens, start, end)
 
 
@@ -2550,9 +2514,7 @@ def test_1968():
     early_closes = pd.date_range(
         "1968-01-22 2:00PM",
         "1968-03-01 2:00PM",
-        freq=CustomBusinessDay(
-            holidays=nyse.holidays().holidays, weekmask="Mon Tue Wed Thu Fri"
-        ),
+        freq=CustomBusinessDay(holidays=nyse.holidays().holidays, weekmask="Mon Tue Wed Thu Fri"),
         tz="America/New_York",
     )  # Backlog relief
     _test_has_early_closes(early_closes, start, end)
@@ -2581,27 +2543,21 @@ def test_1969():
     ec1 = pd.date_range(
         "1969-01-01 2:00PM",
         "1969-07-03 2:00PM",
-        freq=CustomBusinessDay(
-            holidays=nyse.holidays().holidays, weekmask="Mon Tue Wed Thu Fri"
-        ),
+        freq=CustomBusinessDay(holidays=nyse.holidays().holidays, weekmask="Mon Tue Wed Thu Fri"),
         tz="America/New_York",
     )  # Backlog relief
 
     ec2 = pd.date_range(
         "1969-07-07 2:30PM",
         "1969-09-26 2:30PM",
-        freq=CustomBusinessDay(
-            holidays=nyse.holidays().holidays, weekmask="Mon Tue Wed Thu Fri"
-        ),
+        freq=CustomBusinessDay(holidays=nyse.holidays().holidays, weekmask="Mon Tue Wed Thu Fri"),
         tz="America/New_York",
     )  # Backlog relief
 
     ec3 = pd.date_range(
         "1969-09-29 3:00PM",
         "1969-12-31 3:00PM",
-        freq=CustomBusinessDay(
-            holidays=nyse.holidays().holidays, weekmask="Mon Tue Wed Thu Fri"
-        ),
+        freq=CustomBusinessDay(holidays=nyse.holidays().holidays, weekmask="Mon Tue Wed Thu Fri"),
         tz="America/New_York",
     )  # Backlog relief
     early_closes = ec1.append(ec2).append(ec3)
@@ -2633,9 +2589,7 @@ def test_1970():
     early_closes = pd.date_range(
         "1970-01-01 3:00PM",
         "1970-05-01 3:00PM",
-        freq=CustomBusinessDay(
-            holidays=nyse.holidays().holidays, weekmask="Mon Tue Wed Thu Fri"
-        ),
+        freq=CustomBusinessDay(holidays=nyse.holidays().holidays, weekmask="Mon Tue Wed Thu Fri"),
         tz="America/New_York",
     )  # Backlog relief
     _test_has_early_closes(early_closes, start, end)
@@ -2723,9 +2677,7 @@ def test_1974():
 
     # late opens we expect:
     late_opens = [
-        pd.Timestamp(
-            "1974-01-16 10:15AM", tz="America/New_York"
-        ),  # Merrill Lynch computer trouble
+        pd.Timestamp("1974-01-16 10:15AM", tz="America/New_York"),  # Merrill Lynch computer trouble
         pd.Timestamp("1974-11-22 10:15AM", tz="America/New_York"),  # Fire drill
     ]
     _test_has_late_opens(late_opens, start, end)
@@ -2883,12 +2835,8 @@ def test_1981():
 
     # early closes we expect:
     early_closes = [
-        pd.Timestamp(
-            "1981-03-30 3:17PM", tz="America/New_York"
-        ),  # Reagan Assassination attemp
-        pd.Timestamp(
-            "1981-09-09 3:28PM", tz="America/New_York"
-        ),  # Con Edison power failure
+        pd.Timestamp("1981-03-30 3:17PM", tz="America/New_York"),  # Reagan Assassination attemp
+        pd.Timestamp("1981-09-09 3:28PM", tz="America/New_York"),  # Con Edison power failure
     ]
     _test_has_early_closes(early_closes, start, end)
 
@@ -2998,33 +2946,25 @@ def test_1987():
     ec1 = pd.date_range(
         "1987-10-23 2:00PM",
         "1987-10-30 2:00PM",
-        freq=CustomBusinessDay(
-            holidays=nyse.holidays().holidays, weekmask="Mon Tue Wed Thu Fri"
-        ),
+        freq=CustomBusinessDay(holidays=nyse.holidays().holidays, weekmask="Mon Tue Wed Thu Fri"),
         tz="America/New_York",
     )  # Backlog Relief
     ec2 = pd.date_range(
         "1987-11-02 2:30PM",
         "1987-11-04 2:30PM",
-        freq=CustomBusinessDay(
-            holidays=nyse.holidays().holidays, weekmask="Mon Tue Wed Thu Fri"
-        ),
+        freq=CustomBusinessDay(holidays=nyse.holidays().holidays, weekmask="Mon Tue Wed Thu Fri"),
         tz="America/New_York",
     )  # Backlog Relief
     ec3 = pd.date_range(
         "1987-11-05 3:00PM",
         "1987-11-06 3:00PM",
-        freq=CustomBusinessDay(
-            holidays=nyse.holidays().holidays, weekmask="Mon Tue Wed Thu Fri"
-        ),
+        freq=CustomBusinessDay(holidays=nyse.holidays().holidays, weekmask="Mon Tue Wed Thu Fri"),
         tz="America/New_York",
     )  # Backlog Relief
     ec4 = pd.date_range(
         "1987-11-09 3:30PM",
         "1987-11-11 3:30PM",
-        freq=CustomBusinessDay(
-            holidays=nyse.holidays().holidays, weekmask="Mon Tue Wed Thu Fri"
-        ),
+        freq=CustomBusinessDay(holidays=nyse.holidays().holidays, weekmask="Mon Tue Wed Thu Fri"),
         tz="America/New_York",
     )  # Backlog Relief
     early_closes = ec1.append(ec2).append(ec3).append(ec4)
@@ -3095,9 +3035,7 @@ def test_1990():
 
     # late opens we expect:
     late_opens = [
-        pd.Timestamp(
-            "1990-12-27 9:31AM", tz="America/New_York"
-        ),  # Con Edison transformer explosioin
+        pd.Timestamp("1990-12-27 9:31AM", tz="America/New_York"),  # Con Edison transformer explosioin
     ]
     _test_has_late_opens(late_opens, start, end)
 
@@ -3125,12 +3063,8 @@ def test_1991():
 
     # late opens we expect:
     late_opens = [
-        pd.Timestamp(
-            "1991-01-17 9:31AM", tz="America/New_York"
-        ),  # Troops in Gulf moment of silence
-        pd.Timestamp(
-            "1991-02-25 9:31AM", tz="America/New_York"
-        ),  # Troops in Gulf moment of silence
+        pd.Timestamp("1991-01-17 9:31AM", tz="America/New_York"),  # Troops in Gulf moment of silence
+        pd.Timestamp("1991-02-25 9:31AM", tz="America/New_York"),  # Troops in Gulf moment of silence
     ]
     _test_has_late_opens(late_opens, start, end)
 
@@ -3153,9 +3087,7 @@ def test_1992():
 
     # early closes we expect:
     early_closes = [
-        pd.Timestamp(
-            "1992-11-27 2:00PM", tz="America/New_York"
-        ),  # Day after Thanksgiving
+        pd.Timestamp("1992-11-27 2:00PM", tz="America/New_York"),  # Day after Thanksgiving
         pd.Timestamp("1992-12-24 2:00PM", tz="America/New_York"),  # Christmas Eve
     ]
     _test_has_early_closes(early_closes, start, end)
@@ -3203,9 +3135,7 @@ def test_1994():
     # early closes we expect:
     early_closes = [
         pd.Timestamp("1994-02-11 2:30PM", tz="America/New_York"),  # snowstorm
-        pd.Timestamp(
-            "1994-11-25 1:00PM", tz="America/New_York"
-        ),  # Day after Thanksgiving
+        pd.Timestamp("1994-11-25 1:00PM", tz="America/New_York"),  # Day after Thanksgiving
     ]
     _test_has_early_closes(early_closes, start, end)
 
@@ -3227,20 +3157,14 @@ def test_1995():
 
     # early closes we expect:
     early_closes = [
-        pd.Timestamp(
-            "1995-07-03 1:00PM", tz="America/New_York"
-        ),  # Day before Independence Day
-        pd.Timestamp(
-            "1995-11-24 1:00PM", tz="America/New_York"
-        ),  # Day after Thanksgiving
+        pd.Timestamp("1995-07-03 1:00PM", tz="America/New_York"),  # Day before Independence Day
+        pd.Timestamp("1995-11-24 1:00PM", tz="America/New_York"),  # Day after Thanksgiving
     ]
     _test_has_early_closes(early_closes, start, end)
 
     # late opens we expect:
     late_opens = [
-        pd.Timestamp(
-            "1995-12-18 10:30AM", tz="America/New_York"
-        ),  # Computer system troubles
+        pd.Timestamp("1995-12-18 10:30AM", tz="America/New_York"),  # Computer system troubles
     ]
     _test_has_late_opens(late_opens, start, end)
 
@@ -3263,12 +3187,8 @@ def test_1996():
     # early closes we expect:
     early_closes = [
         pd.Timestamp("1996-01-08 2:00PM", tz="America/New_York"),  # snow
-        pd.Timestamp(
-            "1996-07-05 1:00PM", tz="America/New_York"
-        ),  # Day after Independence Day
-        pd.Timestamp(
-            "1996-11-29 1:00PM", tz="America/New_York"
-        ),  # Day after Thanksgiving
+        pd.Timestamp("1996-07-05 1:00PM", tz="America/New_York"),  # Day after Independence Day
+        pd.Timestamp("1996-11-29 1:00PM", tz="America/New_York"),  # Day after Thanksgiving
         pd.Timestamp("1996-12-24 1:00PM", tz="America/New_York"),  # Christmas eve
     ]
     _test_has_early_closes(early_closes, start, end)
@@ -3298,15 +3218,9 @@ def test_1997():
 
     # early closes we expect:
     early_closes = [
-        pd.Timestamp(
-            "1997-07-03 1:00PM", tz="America/New_York"
-        ),  # Day before Independence Day
-        pd.Timestamp(
-            "1997-10-27 3:30PM", tz="America/New_York"
-        ),  # Circuit breaker triggered
-        pd.Timestamp(
-            "1997-11-28 1:00PM", tz="America/New_York"
-        ),  # Day after Thanksgiving
+        pd.Timestamp("1997-07-03 1:00PM", tz="America/New_York"),  # Day before Independence Day
+        pd.Timestamp("1997-10-27 3:30PM", tz="America/New_York"),  # Circuit breaker triggered
+        pd.Timestamp("1997-11-28 1:00PM", tz="America/New_York"),  # Day after Thanksgiving
         pd.Timestamp("1997-12-24 1:00PM", tz="America/New_York"),  # Christmas eve
         pd.Timestamp("1997-12-26 1:00PM", tz="America/New_York"),  # Day after Christmas
     ]
@@ -3332,9 +3246,7 @@ def test_1998():
 
     # early closes we expect:
     early_closes = [
-        pd.Timestamp(
-            "1998-11-27 1:00PM", tz="America/New_York"
-        ),  # Day after Thanksgiving
+        pd.Timestamp("1998-11-27 1:00PM", tz="America/New_York"),  # Day after Thanksgiving
         pd.Timestamp("1998-12-24 1:00PM", tz="America/New_York"),  # Christmas eve
     ]
     _test_has_early_closes(early_closes, start, end)
@@ -3359,9 +3271,7 @@ def test_1999():
 
     # early closes we expect:
     early_closes = [
-        pd.Timestamp(
-            "1999-11-26 1:00PM", tz="America/New_York"
-        ),  # Day after Thanksgiving
+        pd.Timestamp("1999-11-26 1:00PM", tz="America/New_York"),  # Day after Thanksgiving
     ]
     _test_has_early_closes(early_closes, start, end)
 
@@ -3384,12 +3294,8 @@ def test_2000():
 
     # early closes we expect:
     early_closes = [
-        pd.Timestamp(
-            "2000-07-03 1:00PM", tz="America/New_York"
-        ),  # Day before Independence Day
-        pd.Timestamp(
-            "2000-11-24 1:00PM", tz="America/New_York"
-        ),  # Day after Thanksgiving
+        pd.Timestamp("2000-07-03 1:00PM", tz="America/New_York"),  # Day before Independence Day
+        pd.Timestamp("2000-11-24 1:00PM", tz="America/New_York"),  # Day after Thanksgiving
     ]
     _test_has_early_closes(early_closes, start, end)
 
@@ -3416,24 +3322,16 @@ def test_2001():
 
     # early closes we expect:
     early_closes = [
-        pd.Timestamp(
-            "2001-07-03 1:00PM", tz="America/New_York"
-        ),  # Day before Independence Day
-        pd.Timestamp(
-            "2001-11-23 1:00PM", tz="America/New_York"
-        ),  # Day after Thanksgiving
+        pd.Timestamp("2001-07-03 1:00PM", tz="America/New_York"),  # Day before Independence Day
+        pd.Timestamp("2001-11-23 1:00PM", tz="America/New_York"),  # Day after Thanksgiving
         pd.Timestamp("2001-12-24 1:00PM", tz="America/New_York"),  # Christmas eve
     ]
     _test_has_early_closes(early_closes, start, end)
 
     # late opens we expect:
     late_opens = [
-        pd.Timestamp(
-            "2001-09-17 9:33AM", tz="America/New_York"
-        ),  # 9/11 victims moment of silence
-        pd.Timestamp(
-            "2001-10-08 9:31AM", tz="America/New_York"
-        ),  # Enduring Freedom troops moment of silence
+        pd.Timestamp("2001-09-17 9:33AM", tz="America/New_York"),  # 9/11 victims moment of silence
+        pd.Timestamp("2001-10-08 9:31AM", tz="America/New_York"),  # Enduring Freedom troops moment of silence
     ]
     _test_has_late_opens(late_opens, start, end)
 
@@ -3456,12 +3354,8 @@ def test_2002():
 
     # early closes we expect:
     early_closes = [
-        pd.Timestamp(
-            "2002-07-05 1:00PM", tz="America/New_York"
-        ),  # Day after Independence Day
-        pd.Timestamp(
-            "2002-11-29 1:00PM", tz="America/New_York"
-        ),  # Day after Thanksgiving
+        pd.Timestamp("2002-07-05 1:00PM", tz="America/New_York"),  # Day after Independence Day
+        pd.Timestamp("2002-11-29 1:00PM", tz="America/New_York"),  # Day after Thanksgiving
         pd.Timestamp("2002-12-24 1:00PM", tz="America/New_York"),  # Christmas eve
     ]
     _test_has_early_closes(early_closes, start, end)
@@ -3491,24 +3385,16 @@ def test_2003():
 
     # early closes we expect:
     early_closes = [
-        pd.Timestamp(
-            "2003-07-03 1:00PM", tz="America/New_York"
-        ),  # Day before Independence Day
-        pd.Timestamp(
-            "2003-11-28 1:00PM", tz="America/New_York"
-        ),  # Day after Thanksgiving
+        pd.Timestamp("2003-07-03 1:00PM", tz="America/New_York"),  # Day before Independence Day
+        pd.Timestamp("2003-11-28 1:00PM", tz="America/New_York"),  # Day after Thanksgiving
         pd.Timestamp("2003-12-24 1:00PM", tz="America/New_York"),  # Christmas eve
-        pd.Timestamp(
-            "2003-12-26 1:00PM", tz="America/New_York"
-        ),  # Friday after Christmas
+        pd.Timestamp("2003-12-26 1:00PM", tz="America/New_York"),  # Friday after Christmas
     ]
     _test_has_early_closes(early_closes, start, end)
 
     # late opens we expect:
     late_opens = [
-        pd.Timestamp(
-            "2003-03-20 9:32AM", tz="America/New_York"
-        ),  # Iraqi freedom moment of silence
+        pd.Timestamp("2003-03-20 9:32AM", tz="America/New_York"),  # Iraqi freedom moment of silence
     ]
     _test_has_late_opens(late_opens, start, end)
 
@@ -3532,17 +3418,13 @@ def test_2004():
 
     # early closes we expect:
     early_closes = [
-        pd.Timestamp(
-            "2004-11-26 1:00PM", tz="America/New_York"
-        ),  # Day after Thanksgiving
+        pd.Timestamp("2004-11-26 1:00PM", tz="America/New_York"),  # Day after Thanksgiving
     ]
     _test_has_early_closes(early_closes, start, end)
 
     # late opens we expect:
     late_opens = [
-        pd.Timestamp(
-            "2004-06-07 9:32AM", tz="America/New_York"
-        ),  # President Reagan moment of silence
+        pd.Timestamp("2004-06-07 9:32AM", tz="America/New_York"),  # President Reagan moment of silence
     ]
     _test_has_late_opens(late_opens, start, end)
 
@@ -3565,12 +3447,8 @@ def test_2005():
 
     # early closes we expect:
     early_closes = [
-        pd.Timestamp(
-            "2005-06-01 3:56PM", tz="America/New_York"
-        ),  # Systems communication problem
-        pd.Timestamp(
-            "2005-11-25 1:00PM", tz="America/New_York"
-        ),  # Day after Thanksgiving
+        pd.Timestamp("2005-06-01 3:56PM", tz="America/New_York"),  # Systems communication problem
+        pd.Timestamp("2005-11-25 1:00PM", tz="America/New_York"),  # Day after Thanksgiving
     ]
     _test_has_early_closes(early_closes, start, end)
 
@@ -3593,20 +3471,14 @@ def test_2006():
 
     # early closes we expect:
     early_closes = [
-        pd.Timestamp(
-            "2006-07-03 1:00PM", tz="America/New_York"
-        ),  # Day before Independence Day
-        pd.Timestamp(
-            "2006-11-24 1:00PM", tz="America/New_York"
-        ),  # Day after Thanksgiving
+        pd.Timestamp("2006-07-03 1:00PM", tz="America/New_York"),  # Day before Independence Day
+        pd.Timestamp("2006-11-24 1:00PM", tz="America/New_York"),  # Day after Thanksgiving
     ]
     _test_has_early_closes(early_closes, start, end)
 
     # late opens we expect:
     late_opens = [
-        pd.Timestamp(
-            "2006-12-27 9:32AM", tz="America/New_York"
-        ),  # President Ford moment of silence
+        pd.Timestamp("2006-12-27 9:32AM", tz="America/New_York"),  # President Ford moment of silence
     ]
     _test_has_late_opens(late_opens, start, end)
 
@@ -3631,12 +3503,8 @@ def test_2007():
 
     # early closes we expect:
     early_closes = [
-        pd.Timestamp(
-            "2007-07-03 1:00PM", tz="America/New_York"
-        ),  # Day before Independence Day
-        pd.Timestamp(
-            "2007-11-23 1:00PM", tz="America/New_York"
-        ),  # Day after Thanksgiving
+        pd.Timestamp("2007-07-03 1:00PM", tz="America/New_York"),  # Day before Independence Day
+        pd.Timestamp("2007-11-23 1:00PM", tz="America/New_York"),  # Day after Thanksgiving
         pd.Timestamp("2007-12-24 1:00PM", tz="America/New_York"),  # Christmas eve
     ]
     _test_has_early_closes(early_closes, start, end)
@@ -3661,12 +3529,8 @@ def test_2008():
 
     # early closes we expect:
     early_closes = [
-        pd.Timestamp(
-            "2008-07-03 1:00PM", tz="America/New_York"
-        ),  # Day before Independence Day
-        pd.Timestamp(
-            "2008-11-28 1:00PM", tz="America/New_York"
-        ),  # Day after Thanksgiving
+        pd.Timestamp("2008-07-03 1:00PM", tz="America/New_York"),  # Day before Independence Day
+        pd.Timestamp("2008-11-28 1:00PM", tz="America/New_York"),  # Day after Thanksgiving
         pd.Timestamp("2008-12-24 1:00PM", tz="America/New_York"),  # Christmas eve
     ]
     _test_has_early_closes(early_closes, start, end)
@@ -3691,9 +3555,7 @@ def test_2009():
 
     # early closes we expect:
     early_closes = [
-        pd.Timestamp(
-            "2009-11-27 1:00PM", tz="America/New_York"
-        ),  # Day after Thanksgiving
+        pd.Timestamp("2009-11-27 1:00PM", tz="America/New_York"),  # Day after Thanksgiving
         pd.Timestamp("2009-12-24 1:00PM", tz="America/New_York"),  # Christmas eve
     ]
     _test_has_early_closes(early_closes, start, end)
@@ -3718,9 +3580,7 @@ def test_2010():
 
     # early closes we expect:
     early_closes = [
-        pd.Timestamp(
-            "2010-11-26 1:00PM", tz="America/New_York"
-        ),  # Day after Thanksgiving
+        pd.Timestamp("2010-11-26 1:00PM", tz="America/New_York"),  # Day after Thanksgiving
     ]
     _test_has_early_closes(early_closes, start, end)
 
@@ -3743,9 +3603,7 @@ def test_2011():
 
     # early closes we expect:
     early_closes = [
-        pd.Timestamp(
-            "2011-11-25 1:00PM", tz="America/New_York"
-        ),  # Day after Thanksgiving
+        pd.Timestamp("2011-11-25 1:00PM", tz="America/New_York"),  # Day after Thanksgiving
     ]
     _test_has_early_closes(early_closes, start, end)
 
@@ -3771,12 +3629,8 @@ def test_2012():
 
     # early closes we expect:
     early_closes = [
-        pd.Timestamp(
-            "2012-07-03 1:00PM", tz="America/New_York"
-        ),  # Day before Independence Day
-        pd.Timestamp(
-            "2012-11-23 1:00PM", tz="America/New_York"
-        ),  # Day after Thanksgiving
+        pd.Timestamp("2012-07-03 1:00PM", tz="America/New_York"),  # Day before Independence Day
+        pd.Timestamp("2012-11-23 1:00PM", tz="America/New_York"),  # Day after Thanksgiving
         pd.Timestamp("2012-12-24 1:00PM", tz="America/New_York"),  # Christmas eve
     ]
     _test_has_early_closes(early_closes, start, end)
@@ -3801,12 +3655,8 @@ def test_2013():
 
     # early closes we expect:
     early_closes = [
-        pd.Timestamp(
-            "2013-07-03 1:00PM", tz="America/New_York"
-        ),  # Day before Independence Day
-        pd.Timestamp(
-            "2013-11-29 1:00PM", tz="America/New_York"
-        ),  # Day after Thanksgiving
+        pd.Timestamp("2013-07-03 1:00PM", tz="America/New_York"),  # Day before Independence Day
+        pd.Timestamp("2013-11-29 1:00PM", tz="America/New_York"),  # Day after Thanksgiving
         pd.Timestamp("2013-12-24 1:00PM", tz="America/New_York"),  # Christmas eve
     ]
     _test_has_early_closes(early_closes, start, end)
@@ -3831,12 +3681,8 @@ def test_2014():
 
     # early closes we expect:
     early_closes = [
-        pd.Timestamp(
-            "2014-07-03 1:00PM", tz="America/New_York"
-        ),  # Day before Independence Day
-        pd.Timestamp(
-            "2014-11-28 1:00PM", tz="America/New_York"
-        ),  # Day after Thanksgiving
+        pd.Timestamp("2014-07-03 1:00PM", tz="America/New_York"),  # Day before Independence Day
+        pd.Timestamp("2014-11-28 1:00PM", tz="America/New_York"),  # Day after Thanksgiving
         pd.Timestamp("2014-12-24 1:00PM", tz="America/New_York"),  # Christmas eve
     ]
     _test_has_early_closes(early_closes, start, end)
@@ -3861,9 +3707,7 @@ def test_2015():
 
     # early closes we expect:
     early_closes = [
-        pd.Timestamp(
-            "2015-11-27 1:00PM", tz="America/New_York"
-        ),  # Day after Thanksgiving
+        pd.Timestamp("2015-11-27 1:00PM", tz="America/New_York"),  # Day after Thanksgiving
         pd.Timestamp("2015-12-24 1:00PM", tz="America/New_York"),  # Christmas eve
     ]
     _test_has_early_closes(early_closes, start, end)
@@ -3888,9 +3732,7 @@ def test_2016():
 
     # early closes we expect:
     early_closes = [
-        pd.Timestamp(
-            "2016-11-25 1:00PM", tz="America/New_York"
-        ),  # Day after Thanksgiving
+        pd.Timestamp("2016-11-25 1:00PM", tz="America/New_York"),  # Day after Thanksgiving
     ]
     _test_has_early_closes(early_closes, start, end)
 
@@ -3914,12 +3756,8 @@ def test_2017():
 
     # early closes we expect:
     early_closes = [
-        pd.Timestamp(
-            "2017-07-03 1:00PM", tz="America/New_York"
-        ),  # Day before Independence Day
-        pd.Timestamp(
-            "2017-11-24 1:00PM", tz="America/New_York"
-        ),  # Day after Thanksgiving
+        pd.Timestamp("2017-07-03 1:00PM", tz="America/New_York"),  # Day before Independence Day
+        pd.Timestamp("2017-11-24 1:00PM", tz="America/New_York"),  # Day after Thanksgiving
     ]
     _test_has_early_closes(early_closes, start, end)
 
@@ -3944,12 +3782,8 @@ def test_2018():
 
     # early closes we expect:
     early_closes = [
-        pd.Timestamp(
-            "2018-07-03 1:00PM", tz="America/New_York"
-        ),  # Day before Independence Day
-        pd.Timestamp(
-            "2018-11-23 1:00PM", tz="America/New_York"
-        ),  # Day after Thanksgiving
+        pd.Timestamp("2018-07-03 1:00PM", tz="America/New_York"),  # Day before Independence Day
+        pd.Timestamp("2018-11-23 1:00PM", tz="America/New_York"),  # Day after Thanksgiving
         pd.Timestamp("2018-12-24 1:00PM", tz="America/New_York"),  # Christmas eve
     ]
     _test_has_early_closes(early_closes, start, end)
@@ -3974,12 +3808,8 @@ def test_2019():
 
     # early closes we expect:
     early_closes = [
-        pd.Timestamp(
-            "2019-07-03 1:00PM", tz="America/New_York"
-        ),  # Day before Independence Day
-        pd.Timestamp(
-            "2019-11-29 1:00PM", tz="America/New_York"
-        ),  # Day after Thanksgiving
+        pd.Timestamp("2019-07-03 1:00PM", tz="America/New_York"),  # Day before Independence Day
+        pd.Timestamp("2019-11-29 1:00PM", tz="America/New_York"),  # Day after Thanksgiving
         pd.Timestamp("2019-12-24 1:00PM", tz="America/New_York"),  # Christmas eve
     ]
     _test_has_early_closes(early_closes, start, end)
@@ -4004,9 +3834,7 @@ def test_2020():
 
     # early closes we expect:
     early_closes = [
-        pd.Timestamp(
-            "2020-11-27 1:00PM", tz="America/New_York"
-        ),  # Day after Thanksgiving
+        pd.Timestamp("2020-11-27 1:00PM", tz="America/New_York"),  # Day after Thanksgiving
         pd.Timestamp("2020-12-24 1:00PM", tz="America/New_York"),  # Christmas eve
     ]
     _test_has_early_closes(early_closes, start, end)
@@ -4031,9 +3859,7 @@ def test_2021():
 
     # early closes we expect:
     early_closes = [
-        pd.Timestamp(
-            "2021-11-26 1:00PM", tz="America/New_York"
-        ),  # Day after Thanksgiving
+        pd.Timestamp("2021-11-26 1:00PM", tz="America/New_York"),  # Day after Thanksgiving
     ]
     _test_has_early_closes(early_closes, start, end)
 
@@ -4057,9 +3883,7 @@ def test_2022():
 
     # early closes we expect:
     early_closes = [
-        pd.Timestamp(
-            "2022-11-25 1:00PM", tz="America/New_York"
-        ),  # Day after Thanksgiving
+        pd.Timestamp("2022-11-25 1:00PM", tz="America/New_York"),  # Day after Thanksgiving
     ]
     _test_has_early_closes(early_closes, start, end)
 
@@ -4085,9 +3909,7 @@ def test_2023():
     # early closes we expect:
     early_closes = [
         pd.Timestamp("2023-07-03 1:00PM", tz="America/New_York"),  # Day before July 4th
-        pd.Timestamp(
-            "2023-11-24 1:00PM", tz="America/New_York"
-        ),  # Day after Thanksgiving
+        pd.Timestamp("2023-11-24 1:00PM", tz="America/New_York"),  # Day after Thanksgiving
     ]
     _test_has_early_closes(early_closes, start, end)
 
@@ -4113,9 +3935,7 @@ def test_2024():
     # early closes we expect:
     early_closes = [
         pd.Timestamp("2024-07-03 1:00PM", tz="America/New_York"),  # Day before July 4th
-        pd.Timestamp(
-            "2024-11-29 1:00PM", tz="America/New_York"
-        ),  # Day after Thanksgiving
+        pd.Timestamp("2024-11-29 1:00PM", tz="America/New_York"),  # Day after Thanksgiving
         pd.Timestamp("2024-12-24 1:00PM", tz="America/New_York"),  # Christmas eve
     ]
     _test_has_early_closes(early_closes, start, end)
@@ -4143,9 +3963,7 @@ def test_2025():
     # early closes we expect:
     early_closes = [
         pd.Timestamp("2025-07-03 1:00PM", tz="America/New_York"),  # Day before July 4th
-        pd.Timestamp(
-            "2025-11-28 1:00PM", tz="America/New_York"
-        ),  # Day after Thanksgiving
+        pd.Timestamp("2025-11-28 1:00PM", tz="America/New_York"),  # Day after Thanksgiving
         pd.Timestamp("2025-12-24 1:00PM", tz="America/New_York"),  # Christmas Eve
     ]
     _test_has_early_closes(early_closes, start, end)

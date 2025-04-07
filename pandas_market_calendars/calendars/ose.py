@@ -17,9 +17,7 @@ OSEWednesdayBeforeEaster = Holiday(
     "Wednesday before Easter", month=1, day=1, offset=[Easter(), Day(-4)]
 )
 
-OSEMaundyThursday = Holiday(
-    "Maundy Thursday", month=1, day=1, offset=[Easter(), Day(-3)]
-)
+OSEMaundyThursday = Holiday("Maundy Thursday", month=1, day=1, offset=[Easter(), Day(-3)])
 
 OSEGoodFriday = GoodFriday
 

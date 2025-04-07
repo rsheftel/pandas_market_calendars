@@ -46,10 +46,7 @@ class TradingCalendar(MarketCalendar):
             if self._ec.close_offset:
                 cls.regular_market_times._set(
                     "market_close",
-                    tuple(
-                        (t[0], t[1], self._ec.close_offset)
-                        for t in cls.regular_market_times["market_close"]
-                    ),
+                    tuple((t[0], t[1], self._ec.close_offset) for t in cls.regular_market_times["market_close"]),
                 )
             cls._FINALIZE_TRADING_CALENDAR = False
 
@@ -108,13 +105,7 @@ class TradingCalendar(MarketCalendar):
         if hasattr(self._ec, "weekmask"):
             if "1" in self._ec.weekmask or "0" in self._ec.weekmask:
                 # Convert 1s & 0s to Day Abbreviations
-                return " ".join(
-                    [
-                        DAYMASKS[i]
-                        for i, val in enumerate(self._ec.weekmask)
-                        if val == "1"
-                    ]
-                )
+                return " ".join([DAYMASKS[i] for i, val in enumerate(self._ec.weekmask) if val == "1"])
             else:
                 return self._ec.weekmask
         else:

@@ -1343,9 +1343,7 @@ class NYSEExchangeCalendar(MarketCalendar):
             normalize=True,
             tz=tz,
         )
-        days_post = pd.date_range(
-            saturday_end, end_date, freq=self.holidays(), normalize=True, tz=tz
-        )
+        days_post = pd.date_range(saturday_end, end_date, freq=self.holidays(), normalize=True, tz=tz)
         return days_pre.union(days_post)
 
     def days_at_time(self, days, market_time, day_offset=0):
@@ -1448,14 +1446,10 @@ class NYSEExchangeCalendar(MarketCalendar):
                     **(args | altered_args),
                 )
 
-                return pd.DatetimeIndex(
-                    pre[:-1].union(post)[-periods:], dtype="datetime64[ns]"
-                )
+                return pd.DatetimeIndex(pre[:-1].union(post)[-periods:], dtype="datetime64[ns]")
         else:
             _, _ = u._standardize_htf_freq(frequency)
-            raise ValueError(
-                "This should never be raised, the above call should error first"
-            )
+            raise ValueError("This should never be raised, the above call should error first")
 
     def early_closes(self, schedule):
         """

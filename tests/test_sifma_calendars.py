@@ -154,18 +154,10 @@ def test_us_2023():
     # early closes we expect:
     early_closes = [
         pd.Timestamp("2023-04-07 2:00PM", tz="America/New_York"),  # Good Friday
-        pd.Timestamp(
-            "2023-05-26 2:00PM", tz="America/New_York"
-        ),  # Day before Memorial Day
-        pd.Timestamp(
-            "2023-07-03 2:00PM", tz="America/New_York"
-        ),  # Day before Independence Day
-        pd.Timestamp(
-            "2023-11-24 2:00PM", tz="America/New_York"
-        ),  # Day after Thanksgiving
-        pd.Timestamp(
-            "2023-12-22 2:00PM", tz="America/New_York"
-        ),  # Day before Christmas
+        pd.Timestamp("2023-05-26 2:00PM", tz="America/New_York"),  # Day before Memorial Day
+        pd.Timestamp("2023-07-03 2:00PM", tz="America/New_York"),  # Day before Independence Day
+        pd.Timestamp("2023-11-24 2:00PM", tz="America/New_York"),  # Day after Thanksgiving
+        pd.Timestamp("2023-12-22 2:00PM", tz="America/New_York"),  # Day before Christmas
         pd.Timestamp("2023-12-29 2:00PM", tz="America/New_York"),  # New Year's Eve
     ]
     _test_has_early_closes(sifma_us, early_closes, start, end)
@@ -192,21 +184,11 @@ def test_us_2022():
 
     # early closes we expect:
     early_closes = [
-        pd.Timestamp(
-            "2022-04-14 2:00PM", tz="America/New_York"
-        ),  # Day before Good Friday
-        pd.Timestamp(
-            "2022-05-27 2:00PM", tz="America/New_York"
-        ),  # Day before Memorial Day
-        pd.Timestamp(
-            "2022-07-01 2:00PM", tz="America/New_York"
-        ),  # Day before Independence Day
-        pd.Timestamp(
-            "2022-11-25 2:00PM", tz="America/New_York"
-        ),  # Day after Thanksgiving
-        pd.Timestamp(
-            "2022-12-23 2:00PM", tz="America/New_York"
-        ),  # Day before Christmas
+        pd.Timestamp("2022-04-14 2:00PM", tz="America/New_York"),  # Day before Good Friday
+        pd.Timestamp("2022-05-27 2:00PM", tz="America/New_York"),  # Day before Memorial Day
+        pd.Timestamp("2022-07-01 2:00PM", tz="America/New_York"),  # Day before Independence Day
+        pd.Timestamp("2022-11-25 2:00PM", tz="America/New_York"),  # Day after Thanksgiving
+        pd.Timestamp("2022-12-23 2:00PM", tz="America/New_York"),  # Day before Christmas
         pd.Timestamp("2022-12-30 2:00PM", tz="America/New_York"),  # New Year's Eve
     ]
     _test_has_early_closes(sifma_us, early_closes, start, end)
@@ -232,21 +214,11 @@ def test_us_2021():
 
     # early closes we expect:
     early_closes = [
-        pd.Timestamp(
-            "2021-04-02 2:00PM", tz="America/New_York"
-        ),  # Day before Good Friday
-        pd.Timestamp(
-            "2021-05-28 2:00PM", tz="America/New_York"
-        ),  # Day before Memorial Day
-        pd.Timestamp(
-            "2021-07-02 2:00PM", tz="America/New_York"
-        ),  # Day before Independence Day
-        pd.Timestamp(
-            "2021-11-26 2:00PM", tz="America/New_York"
-        ),  # Day after Thanksgiving
-        pd.Timestamp(
-            "2021-12-23 2:00PM", tz="America/New_York"
-        ),  # Day before Christmas
+        pd.Timestamp("2021-04-02 2:00PM", tz="America/New_York"),  # Day before Good Friday
+        pd.Timestamp("2021-05-28 2:00PM", tz="America/New_York"),  # Day before Memorial Day
+        pd.Timestamp("2021-07-02 2:00PM", tz="America/New_York"),  # Day before Independence Day
+        pd.Timestamp("2021-11-26 2:00PM", tz="America/New_York"),  # Day after Thanksgiving
+        pd.Timestamp("2021-12-23 2:00PM", tz="America/New_York"),  # Day before Christmas
         pd.Timestamp("2021-12-31 2:00PM", tz="America/New_York"),  # New Year's Eve
     ]
     _test_has_early_closes(sifma_us, early_closes, start, end)
@@ -273,21 +245,11 @@ def test_us_2020():
 
     # early closes we expect:
     early_closes = [
-        pd.Timestamp(
-            "2020-04-09 2:00PM", tz="America/New_York"
-        ),  # Day before Good Friday
-        pd.Timestamp(
-            "2020-05-22 2:00PM", tz="America/New_York"
-        ),  # Day before Memorial Day
-        pd.Timestamp(
-            "2020-07-02 2:00PM", tz="America/New_York"
-        ),  # Day before Independence Day
-        pd.Timestamp(
-            "2020-11-27 2:00PM", tz="America/New_York"
-        ),  # Day after Thanksgiving
-        pd.Timestamp(
-            "2020-12-24 2:00PM", tz="America/New_York"
-        ),  # Day before Christmas
+        pd.Timestamp("2020-04-09 2:00PM", tz="America/New_York"),  # Day before Good Friday
+        pd.Timestamp("2020-05-22 2:00PM", tz="America/New_York"),  # Day before Memorial Day
+        pd.Timestamp("2020-07-02 2:00PM", tz="America/New_York"),  # Day before Independence Day
+        pd.Timestamp("2020-11-27 2:00PM", tz="America/New_York"),  # Day after Thanksgiving
+        pd.Timestamp("2020-12-24 2:00PM", tz="America/New_York"),  # Day before Christmas
         pd.Timestamp("2020-12-31 2:00PM", tz="America/New_York"),  # New Year's Eve
     ]
     _test_has_early_closes(sifma_us, early_closes, start, end)
@@ -314,21 +276,11 @@ def test_us_2019():
 
     # early closes we expect:
     early_closes = [
-        pd.Timestamp(
-            "2019-04-18 2:00PM", tz="America/New_York"
-        ),  # Day before Good Friday
-        pd.Timestamp(
-            "2019-05-24 2:00PM", tz="America/New_York"
-        ),  # Day before Memorial Day
-        pd.Timestamp(
-            "2019-07-03 2:00PM", tz="America/New_York"
-        ),  # Day before Independence Day
-        pd.Timestamp(
-            "2019-11-29 2:00PM", tz="America/New_York"
-        ),  # Day after Thanksgiving
-        pd.Timestamp(
-            "2019-12-24 2:00PM", tz="America/New_York"
-        ),  # Day before Christmas
+        pd.Timestamp("2019-04-18 2:00PM", tz="America/New_York"),  # Day before Good Friday
+        pd.Timestamp("2019-05-24 2:00PM", tz="America/New_York"),  # Day before Memorial Day
+        pd.Timestamp("2019-07-03 2:00PM", tz="America/New_York"),  # Day before Independence Day
+        pd.Timestamp("2019-11-29 2:00PM", tz="America/New_York"),  # Day after Thanksgiving
+        pd.Timestamp("2019-12-24 2:00PM", tz="America/New_York"),  # Day before Christmas
         pd.Timestamp("2019-12-31 2:00PM", tz="America/New_York"),  # New Year's Eve
     ]
     _test_has_early_closes(sifma_us, early_closes, start, end)

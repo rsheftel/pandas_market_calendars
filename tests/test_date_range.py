@@ -56,9 +56,7 @@ def test_date_range_exceptions():
     bschedule = bcal.schedule("2021-01-05", "2021-01-05")
 
     # ** Was a Value Error, Was Changed to a Warning. Escalate and test**
-    filter_date_range_warnings(
-        "error", [OverlappingSessionWarning, InsufficientScheduleWarning]
-    )
+    filter_date_range_warnings("error", [OverlappingSessionWarning, InsufficientScheduleWarning])
 
     with pytest.raises(OverlappingSessionWarning) as e1:
         # this frequency overlaps
@@ -76,8 +74,7 @@ def test_date_range_exceptions():
 
     for e in (e1, e2, e3):
         assert (
-            e.exconly()
-            == "pandas_market_calendars.calendar_utils.OverlappingSessionWarning: "
+            e.exconly() == "pandas_market_calendars.calendar_utils.OverlappingSessionWarning: "
             "The desired frequency results in date_range() generating overlapping sessions. "
             "This can happen when the timestep is larger than a session, or when "
             "merge_session = False and a session is not evenly divisible by the timestep. "
@@ -136,9 +133,7 @@ def test_date_range_exceptions():
         # should all be fine, since force_close cuts the overlapping interval
         mcal.date_range(bschedule, "2h", closed="right", force_close=True)
 
-        with pytest.warns(
-            DisappearingSessionWarning
-        ):  # should also warn about lost sessions
+        with pytest.warns(DisappearingSessionWarning):  # should also warn about lost sessions
             mcal.date_range(bschedule, "2h", closed="right", force_close=False)
 
         mcal.date_range(bschedule, "2h", closed="both", force_close=True)
@@ -303,9 +298,7 @@ def test_session_list_merge_adj():
         ("break_end", "market_close"),
         ("post", "market_open_wrap"),
     ]
-    assert _make_session_list(cols - {"post", "pre"}, ["closed", "post_break"], True)[
-        0
-    ] == [
+    assert _make_session_list(cols - {"post", "pre"}, ["closed", "post_break"], True)[0] == [
         ("break_end", "market_open_wrap"),
     ]
 
@@ -323,9 +316,7 @@ def test_session_list_merge_adj():
         ("pre", "break_start"),
         ("break_end", "post"),
     ]
-    assert _make_session_list(
-        cols - {"break_start", "break_end"}, ["RTH", "ETH"], True
-    )[0] == [
+    assert _make_session_list(cols - {"break_start", "break_end"}, ["RTH", "ETH"], True)[0] == [
         ("pre", "post"),
     ]
 
@@ -333,9 +324,7 @@ def test_session_list_merge_adj():
     assert _make_session_list(cols, ["RTH", "ETH", "break", "closed"], True)[0] == [
         ("pre", "pre_wrap"),
     ]
-    assert _make_session_list(cols - {"pre", "post"}, ["RTH", "break", "closed"], True)[
-        0
-    ] == [
+    assert _make_session_list(cols - {"pre", "post"}, ["RTH", "break", "closed"], True)[0] == [
         ("market_open", "market_open_wrap"),
     ]
 
@@ -383,9 +372,7 @@ def test_date_range_permutations(tz):
     assert_index_equal(actual, expected)
 
     # 10 11          right False
-    expected = pd.DatetimeIndex(
-        ["2021-01-05 02:00:00+00:00", "2021-01-05 03:00:00+00:00"], tz=tz
-    )
+    expected = pd.DatetimeIndex(["2021-01-05 02:00:00+00:00", "2021-01-05 03:00:00+00:00"], tz=tz)
     actual = mcal.date_range(schedule, "1h", closed="right", force_close=False)
     assert_index_equal(actual, expected)
 
@@ -527,23 +514,16 @@ def test_date_range_lower_freq():
     # cannot get date range of frequency lower than 1D
     with pytest.raises(ValueError) as e:
         mcal.date_range(schedule, frequency="3D")
-    assert (
-        e.exconly()
-        == "ValueError: Market Calendar Date_Range Frequency Cannot Be longer than '1D'."
-    )
+    assert e.exconly() == "ValueError: Market Calendar Date_Range Frequency Cannot Be longer than '1D'."
 
     # instead get for 1D and convert to lower frequency
     short = mcal.date_range(schedule, frequency="1D")
     actual = mcal.convert_freq(short, "3D")
-    expected = pd.date_range(
-        "2017-09-05 20:00", "2017-10-23 20:00", freq="3D", tz="UTC"
-    )
+    expected = pd.date_range("2017-09-05 20:00", "2017-10-23 20:00", freq="3D", tz="UTC")
     assert_index_equal(actual, expected)
 
     actual = mcal.convert_freq(short, "1W")
-    expected = pd.date_range(
-        "2017-09-05 20:00", "2017-10-23 20:00", freq="1W", tz="UTC"
-    )
+    expected = pd.date_range("2017-09-05 20:00", "2017-10-23 20:00", freq="1W", tz="UTC")
     assert_index_equal(actual, expected)
 
 
@@ -961,9 +941,7 @@ def test_date_range_start_end(tz):
         actual1[1 : len(actual1)],
     )
     assert_index_equal(
-        mcal.date_range(
-            schedule, "30m", "left", True, start="2016-12-30T10:00-5:00", periods=3
-        ),
+        mcal.date_range(schedule, "30m", "left", True, start="2016-12-30T10:00-5:00", periods=3),
         actual1[0:-6],
     )
 
@@ -1007,9 +985,7 @@ def test_date_range_start_end(tz):
         actual2[0:-1],
     )
     assert_index_equal(
-        mcal.date_range(
-            schedule, "30m", "left", True, end="2016-12-30T11:00-5:00", periods=2
-        ),
+        mcal.date_range(schedule, "30m", "left", True, end="2016-12-30T11:00-5:00", periods=2),
         actual2[2 : len(actual2)],
     )
 
@@ -1038,17 +1014,13 @@ def test_date_range_catch_periods_err(tz):
     # Update the Schedule to what is needed in a recovery attempt
     _bool, t1, t2 = parse_insufficient_schedule_warning(e1.value)
     if _bool:
-        schedule = pd.concat(
-            [cal.schedule(t1, t2, market_times="all", tz=tz), schedule]
-        )
+        schedule = pd.concat([cal.schedule(t1, t2, market_times="all", tz=tz), schedule])
     else:
         assert False
 
     # Retest with the updated schedule
     assert_index_equal(
-        mcal.date_range(
-            schedule, "30m", "left", True, start="2016-12-29T10:00:00-5:00"
-        ),
+        mcal.date_range(schedule, "30m", "left", True, start="2016-12-29T10:00:00-5:00"),
         pd.DatetimeIndex(
             [
                 "2016-12-29 10:00:00-05:00",
@@ -1080,9 +1052,7 @@ def test_date_range_catch_periods_err(tz):
     if _bool:
         assert False
     else:
-        schedule = pd.concat(
-            [schedule, cal.schedule(t1, t2, market_times="all", tz=tz)]
-        )
+        schedule = pd.concat([schedule, cal.schedule(t1, t2, market_times="all", tz=tz)])
 
     # Retest with the updated schedule
     assert_index_equal(
@@ -1111,24 +1081,18 @@ def test_date_range_catch_periods_err(tz):
     # ---- ---- Attempt To Throw and catch an insufficient # of periods from start ---- ----
     schedule = cal.schedule("2016-12-30", "2017-01-03", market_times="all", tz=tz)
     with pytest.raises(InsufficientScheduleWarning) as e1:
-        mcal.date_range(
-            schedule, "30m", "left", True, start="2017-01-03T10:00-5:00", periods=8
-        )
+        mcal.date_range(schedule, "30m", "left", True, start="2017-01-03T10:00-5:00", periods=8)
 
     # Update the Schedule to what is needed in a recovery attempt
     _bool, t1, t2 = parse_insufficient_schedule_warning(e1.value)
     if _bool:
         assert False
     else:
-        schedule = pd.concat(
-            [schedule, cal.schedule(t1, t2, market_times="all", tz=tz)]
-        )
+        schedule = pd.concat([schedule, cal.schedule(t1, t2, market_times="all", tz=tz)])
 
     # Retest with the updated schedule
     assert_index_equal(
-        mcal.date_range(
-            schedule, "30m", "left", True, start="2017-01-03T10:00-5:00", periods=8
-        ),
+        mcal.date_range(schedule, "30m", "left", True, start="2017-01-03T10:00-5:00", periods=8),
         pd.DatetimeIndex(
             [
                 "2017-01-03 10:00:00-05:00",
@@ -1147,24 +1111,18 @@ def test_date_range_catch_periods_err(tz):
     # ---- ---- Attempt To Throw and catch an insufficient # of periods from end ---- ----
     schedule = cal.schedule("2016-12-30", "2017-01-03", market_times="all", tz=tz)
     with pytest.raises(InsufficientScheduleWarning) as e1:
-        mcal.date_range(
-            schedule, "30m", "left", True, end="2016-12-30T11:00-5:00", periods=8
-        )
+        mcal.date_range(schedule, "30m", "left", True, end="2016-12-30T11:00-5:00", periods=8)
 
     # Update the Schedule to what is needed in a recovery attempt
     _bool, t1, t2 = parse_insufficient_schedule_warning(e1.value)
     if _bool:
-        schedule = pd.concat(
-            [cal.schedule(t1, t2, market_times="all", tz=tz), schedule]
-        )
+        schedule = pd.concat([cal.schedule(t1, t2, market_times="all", tz=tz), schedule])
     else:
         assert False
 
     # Retest with the updated schedule
     assert_index_equal(
-        mcal.date_range(
-            schedule, "30m", "left", True, end="2016-12-30T11:00-5:00", periods=8
-        ),
+        mcal.date_range(schedule, "30m", "left", True, end="2016-12-30T11:00-5:00", periods=8),
         pd.DatetimeIndex(
             [
                 "2016-12-29 10:00:00-05:00",
@@ -1248,9 +1206,7 @@ def test_date_range_closed():
     # Same But market_close to pre
 
     assert_index_equal(
-        mcal.date_range(
-            schedule.drop(columns=["post"]), "4h", "both", session="closed"
-        ),
+        mcal.date_range(schedule.drop(columns=["post"]), "4h", "both", session="closed"),
         pd.DatetimeIndex(
             [
                 "2016-12-30 11:30:00-05:00",
@@ -1289,9 +1245,7 @@ def test_date_range_closed():
     )
 
     assert_index_equal(
-        mcal.date_range(
-            schedule.drop(columns=["post"]), "4h", "both", session="closed_masked"
-        ),
+        mcal.date_range(schedule.drop(columns=["post"]), "4h", "both", session="closed_masked"),
         pd.DatetimeIndex(
             [
                 "2016-12-30 11:30:00-05:00",
@@ -1353,9 +1307,7 @@ def test_date_range_closed():
     )
 
     assert_index_equal(
-        mcal.date_range(
-            schedule.drop(columns=["pre"]), "4h", "both", session="closed_masked"
-        ),
+        mcal.date_range(schedule.drop(columns=["pre"]), "4h", "both", session="closed_masked"),
         pd.DatetimeIndex(
             [
                 "2016-12-30 13:00:00-05:00",
@@ -1378,9 +1330,7 @@ def test_date_range_closed():
     # Again But market_close to market_open
 
     assert_index_equal(
-        mcal.date_range(
-            schedule.drop(columns=["pre", "post"]), "4h", "both", session="closed"
-        ),
+        mcal.date_range(schedule.drop(columns=["pre", "post"]), "4h", "both", session="closed"),
         pd.DatetimeIndex(
             [
                 "2016-12-30 11:30:00-05:00",
@@ -1487,32 +1437,16 @@ def test_date_range_htf_days():
 
     assert_index_equal(reference, date_range_htf(cal, "1D", "2020-01-01", "2021-01-01"))
 
-    assert_index_equal(
-        reference[::2], date_range_htf(cal, "2D", "2020-01-01", "2021-01-01")
-    )
-    assert_index_equal(
-        reference[::5], date_range_htf(cal, "5D", "2020-01-01", "2021-01-01")
-    )
-    assert_index_equal(
-        reference[:20], date_range_htf(cal, "1D", "2020-01-01", None, 20)
-    )
-    assert_index_equal(
-        reference[-20:], date_range_htf(cal, "1D", None, "2021-01-01", 20)
-    )
-    assert_index_equal(
-        pd.DatetimeIndex([]), date_range_htf(cal, "D", "2020-01-01", "2020-01-01")
-    )
+    assert_index_equal(reference[::2], date_range_htf(cal, "2D", "2020-01-01", "2021-01-01"))
+    assert_index_equal(reference[::5], date_range_htf(cal, "5D", "2020-01-01", "2021-01-01"))
+    assert_index_equal(reference[:20], date_range_htf(cal, "1D", "2020-01-01", None, 20))
+    assert_index_equal(reference[-20:], date_range_htf(cal, "1D", None, "2021-01-01", 20))
+    assert_index_equal(pd.DatetimeIndex([]), date_range_htf(cal, "D", "2020-01-01", "2020-01-01"))
 
     # Following should test that _days_per_week doesn't underestimate? i think?
-    assert_index_equal(
-        reference[0:1], date_range_htf(cal, "D", "2020-01-01", "2020-01-02")
-    )
-    assert_index_equal(
-        reference[0:5], date_range_htf(cal, "D", "2020-01-01", "2020-01-08")
-    )
-    assert_index_equal(
-        reference[0:5:2], date_range_htf(cal, "2D", "2020-01-01", "2020-01-08")
-    )
+    assert_index_equal(reference[0:1], date_range_htf(cal, "D", "2020-01-01", "2020-01-02"))
+    assert_index_equal(reference[0:5], date_range_htf(cal, "D", "2020-01-01", "2020-01-08"))
+    assert_index_equal(reference[0:5:2], date_range_htf(cal, "2D", "2020-01-01", "2020-01-08"))
 
 
 def test_date_range_htf_weeks():
@@ -1580,22 +1514,12 @@ def test_date_range_htf_weeks():
 
     assert_index_equal(reference, date_range_htf(cal, "1W", "2025-01-01", "2026-01-01"))
 
-    assert_index_equal(
-        reference[::2], date_range_htf(cal, "2W", "2025-01-01", "2026-01-01")
-    )
-    assert_index_equal(
-        reference[::5], date_range_htf(cal, "5W", "2025-01-03", "2026-01-01")
-    )
-    assert_index_equal(
-        reference[1::5], date_range_htf(cal, "5W", "2025-01-04", "2026-01-01")
-    )
+    assert_index_equal(reference[::2], date_range_htf(cal, "2W", "2025-01-01", "2026-01-01"))
+    assert_index_equal(reference[::5], date_range_htf(cal, "5W", "2025-01-03", "2026-01-01"))
+    assert_index_equal(reference[1::5], date_range_htf(cal, "5W", "2025-01-04", "2026-01-01"))
     assert_index_equal(reference[:20], date_range_htf(cal, "W", "2025-01-01", None, 20))
-    assert_index_equal(
-        reference[-20:], date_range_htf(cal, "W", None, "2026-01-01", 20)
-    )
-    assert_index_equal(
-        pd.DatetimeIndex([]), date_range_htf(cal, "W", "2020-01-01", "2020-01-02")
-    )
+    assert_index_equal(reference[-20:], date_range_htf(cal, "W", None, "2026-01-01", 20))
+    assert_index_equal(pd.DatetimeIndex([]), date_range_htf(cal, "W", "2020-01-01", "2020-01-02"))
 
     # endregion
     # region closed == 'left'
@@ -1658,9 +1582,7 @@ def test_date_range_htf_weeks():
         freq=None,
     )
 
-    assert_index_equal(
-        reference, date_range_htf(cal, "1W", "2025-01-01", "2026-01-01", closed="left")
-    )
+    assert_index_equal(reference, date_range_htf(cal, "1W", "2025-01-01", "2026-01-01", closed="left"))
 
     assert_index_equal(
         reference[::2],
@@ -1678,12 +1600,8 @@ def test_date_range_htf_weeks():
         reference[1::5],
         date_range_htf(cal, "5W", "2025-01-07", "2026-01-01", closed="left"),
     )
-    assert_index_equal(
-        reference[:20], date_range_htf(cal, "W", "2025-01-01", None, 20, closed="left")
-    )
-    assert_index_equal(
-        reference[-20:], date_range_htf(cal, "W", None, "2026-01-01", 20, closed="left")
-    )
+    assert_index_equal(reference[:20], date_range_htf(cal, "W", "2025-01-01", None, 20, closed="left"))
+    assert_index_equal(reference[-20:], date_range_htf(cal, "W", None, "2026-01-01", 20, closed="left"))
     assert_index_equal(
         pd.DatetimeIndex([]),
         date_range_htf(cal, "W", "2020-01-01", "2020-01-05", closed="left"),
@@ -1696,9 +1614,7 @@ def test_date_range_htf_weeks():
             dtype="datetime64[ns]",
             freq=None,
         ),
-        date_range_htf(
-            cal, "1W", "2025-01-01", "2025-02-01", closed="left", day_anchor="WED"
-        ),
+        date_range_htf(cal, "1W", "2025-01-01", "2025-02-01", closed="left", day_anchor="WED"),
     )
     assert_index_equal(  # Checks that 'WED' Anchor Trims off Closed 2025-01-01 'WED'
         pd.DatetimeIndex(
@@ -1706,9 +1622,7 @@ def test_date_range_htf_weeks():
             dtype="datetime64[ns]",
             freq=None,
         ),
-        date_range_htf(
-            cal, "1W", "2025-01-01", "2025-02-01", closed="right", day_anchor="WED"
-        ),
+        date_range_htf(cal, "1W", "2025-01-01", "2025-02-01", closed="right", day_anchor="WED"),
     )
 
 
@@ -1737,28 +1651,14 @@ def test_date_range_htf_months():
 
     assert_index_equal(reference, date_range_htf(cal, "M", "2025-01-01", "2026-01-01"))
 
-    assert_index_equal(
-        reference[::2], date_range_htf(cal, "2M", "2025-01-01", "2026-01-01")
-    )
-    assert_index_equal(
-        reference[4::5], date_range_htf(cal, "5M", "2025-05-30", "2026-01-01")
-    )
-    assert_index_equal(
-        reference[5::5], date_range_htf(cal, "5M", "2025-05-31", "2026-01-01")
-    )
+    assert_index_equal(reference[::2], date_range_htf(cal, "2M", "2025-01-01", "2026-01-01"))
+    assert_index_equal(reference[4::5], date_range_htf(cal, "5M", "2025-05-30", "2026-01-01"))
+    assert_index_equal(reference[5::5], date_range_htf(cal, "5M", "2025-05-31", "2026-01-01"))
     assert_index_equal(reference[:10], date_range_htf(cal, "M", "2025-01-01", None, 10))
-    assert_index_equal(
-        reference[-10:], date_range_htf(cal, "M", None, "2026-01-01", 10)
-    )
-    assert_index_equal(
-        reference[3::2], date_range_htf(cal, "2M", None, "2026-01-01", 5)
-    )
-    assert_index_equal(
-        reference[2:-1:2], date_range_htf(cal, "2M", None, "2025-12-30", 5)
-    )
-    assert_index_equal(
-        pd.DatetimeIndex([]), date_range_htf(cal, "M", "2020-01-01", "2020-01-02")
-    )
+    assert_index_equal(reference[-10:], date_range_htf(cal, "M", None, "2026-01-01", 10))
+    assert_index_equal(reference[3::2], date_range_htf(cal, "2M", None, "2026-01-01", 5))
+    assert_index_equal(reference[2:-1:2], date_range_htf(cal, "2M", None, "2025-12-30", 5))
+    assert_index_equal(pd.DatetimeIndex([]), date_range_htf(cal, "M", "2020-01-01", "2020-01-02"))
     # endregion
 
     # region closed == 'left'
@@ -1781,9 +1681,7 @@ def test_date_range_htf_months():
         freq=None,
     )
 
-    assert_index_equal(
-        reference, date_range_htf(cal, "1M", "2025-01-01", "2026-01-01", closed="left")
-    )
+    assert_index_equal(reference, date_range_htf(cal, "1M", "2025-01-01", "2026-01-01", closed="left"))
 
     assert_index_equal(
         reference[::2],
@@ -1805,15 +1703,9 @@ def test_date_range_htf_months():
         reference[1::5],
         date_range_htf(cal, "5M", "2025-01-05", "2026-01-01", closed="left"),
     )
-    assert_index_equal(
-        reference[:10], date_range_htf(cal, "M", "2025-01-01", None, 10, closed="left")
-    )
-    assert_index_equal(
-        reference[-10:], date_range_htf(cal, "M", None, "2026-01-01", 10, closed="left")
-    )
-    assert_index_equal(
-        reference[3::2], date_range_htf(cal, "2M", None, "2026-01-01", 5, closed="left")
-    )
+    assert_index_equal(reference[:10], date_range_htf(cal, "M", "2025-01-01", None, 10, closed="left"))
+    assert_index_equal(reference[-10:], date_range_htf(cal, "M", None, "2026-01-01", 10, closed="left"))
+    assert_index_equal(reference[3::2], date_range_htf(cal, "2M", None, "2026-01-01", 5, closed="left"))
     assert_index_equal(
         pd.DatetimeIndex([]),
         date_range_htf(cal, "M", "2020-01-01", "2020-01-01", closed="left"),
@@ -1842,20 +1734,12 @@ def test_date_range_htf_quarters():
 
     assert_index_equal(reference, date_range_htf(cal, "Q", "2025-01-01", "2027-01-01"))
 
-    assert_index_equal(
-        reference[::2], date_range_htf(cal, "2Q", "2025-01-01", "2027-01-01")
-    )
+    assert_index_equal(reference[::2], date_range_htf(cal, "2Q", "2025-01-01", "2027-01-01"))
     assert_index_equal(reference[:5], date_range_htf(cal, "Q", "2025-01-01", None, 5))
     assert_index_equal(reference[-5:], date_range_htf(cal, "Q", None, "2027-01-01", 5))
-    assert_index_equal(
-        reference[1::2], date_range_htf(cal, "2Q", None, "2027-01-01", 4)
-    )
-    assert_index_equal(
-        reference[1::2], date_range_htf(cal, "2Q", None, "2026-12-31", 4)
-    )
-    assert_index_equal(
-        pd.DatetimeIndex([]), date_range_htf(cal, "Q", "2020-01-01", "2020-01-02")
-    )
+    assert_index_equal(reference[1::2], date_range_htf(cal, "2Q", None, "2027-01-01", 4))
+    assert_index_equal(reference[1::2], date_range_htf(cal, "2Q", None, "2026-12-31", 4))
+    assert_index_equal(pd.DatetimeIndex([]), date_range_htf(cal, "Q", "2020-01-01", "2020-01-02"))
     # endregion
 
     # region closed == 'left'
@@ -1874,9 +1758,7 @@ def test_date_range_htf_quarters():
         freq=None,
     )
 
-    assert_index_equal(
-        reference, date_range_htf(cal, "1Q", "2025-01-01", "2027-01-01", closed="left")
-    )
+    assert_index_equal(reference, date_range_htf(cal, "1Q", "2025-01-01", "2027-01-01", closed="left"))
     assert_index_equal(
         reference[::2],
         date_range_htf(cal, "2Q", "2025-01-01", "2027-01-01", closed="left"),
@@ -1893,15 +1775,9 @@ def test_date_range_htf_quarters():
         reference[1::5],
         date_range_htf(cal, "5Q", "2025-01-05", "2027-01-01", closed="left"),
     )
-    assert_index_equal(
-        reference[:5], date_range_htf(cal, "Q", "2025-01-01", None, 5, closed="left")
-    )
-    assert_index_equal(
-        reference[-5:], date_range_htf(cal, "Q", None, "2027-01-01", 5, closed="left")
-    )
-    assert_index_equal(
-        reference[1::2], date_range_htf(cal, "2Q", None, "2027-01-01", 4, closed="left")
-    )
+    assert_index_equal(reference[:5], date_range_htf(cal, "Q", "2025-01-01", None, 5, closed="left"))
+    assert_index_equal(reference[-5:], date_range_htf(cal, "Q", None, "2027-01-01", 5, closed="left"))
+    assert_index_equal(reference[1::2], date_range_htf(cal, "2Q", None, "2027-01-01", 4, closed="left"))
     assert_index_equal(
         pd.DatetimeIndex([]),
         date_range_htf(cal, "Q", "2020-01-01", "2020-01-01", closed="left"),
@@ -1922,9 +1798,7 @@ def test_date_range_htf_quarters():
             dtype="datetime64[ns]",
             freq=None,
         ),
-        date_range_htf(
-            cal, "Q", "2025-01-01", "2026-01-01", closed="left", month_anchor="FEB"
-        ),
+        date_range_htf(cal, "Q", "2025-01-01", "2026-01-01", closed="left", month_anchor="FEB"),
     )
 
 
@@ -1952,18 +1826,12 @@ def test_date_range_htf_years():
 
     assert_index_equal(reference, date_range_htf(cal, "Y", "2025-01-01", "2036-01-01"))
 
-    assert_index_equal(
-        reference[::2], date_range_htf(cal, "2Y", "2025-01-01", "2036-01-01")
-    )
+    assert_index_equal(reference[::2], date_range_htf(cal, "2Y", "2025-01-01", "2036-01-01"))
     assert_index_equal(reference[:5], date_range_htf(cal, "Y", "2025-01-01", None, 5))
     assert_index_equal(reference[-5:], date_range_htf(cal, "Y", None, "2036-01-01", 5))
     assert_index_equal(reference[::2], date_range_htf(cal, "2Y", None, "2036-01-01", 6))
-    assert_index_equal(
-        reference[1::2], date_range_htf(cal, "2Y", None, "2035-12-30", 5)
-    )
-    assert_index_equal(
-        pd.DatetimeIndex([]), date_range_htf(cal, "Y", "2020-01-01", "2020-01-02")
-    )
+    assert_index_equal(reference[1::2], date_range_htf(cal, "2Y", None, "2035-12-30", 5))
+    assert_index_equal(pd.DatetimeIndex([]), date_range_htf(cal, "Y", "2020-01-01", "2020-01-02"))
     # endregion
 
     # region closed == 'left'
@@ -1985,9 +1853,7 @@ def test_date_range_htf_years():
         freq=None,
     )
 
-    assert_index_equal(
-        reference, date_range_htf(cal, "1Y", "2025-01-01", "2036-01-01", closed="left")
-    )
+    assert_index_equal(reference, date_range_htf(cal, "1Y", "2025-01-01", "2036-01-01", closed="left"))
     assert_index_equal(
         reference[::2],
         date_range_htf(cal, "2Y", "2025-01-01", "2036-01-01", closed="left"),
@@ -2004,15 +1870,9 @@ def test_date_range_htf_years():
         reference[1::5],
         date_range_htf(cal, "5Y", "2025-01-05", "2036-01-01", closed="left"),
     )
-    assert_index_equal(
-        reference[:5], date_range_htf(cal, "Y", "2025-01-01", None, 5, closed="left")
-    )
-    assert_index_equal(
-        reference[-6:], date_range_htf(cal, "Y", None, "2036-01-01", 6, closed="left")
-    )
-    assert_index_equal(
-        reference[2::2], date_range_htf(cal, "2Y", None, "2036-01-01", 5, closed="left")
-    )
+    assert_index_equal(reference[:5], date_range_htf(cal, "Y", "2025-01-01", None, 5, closed="left"))
+    assert_index_equal(reference[-6:], date_range_htf(cal, "Y", None, "2036-01-01", 6, closed="left"))
+    assert_index_equal(reference[2::2], date_range_htf(cal, "2Y", None, "2036-01-01", 5, closed="left"))
     assert_index_equal(
         pd.DatetimeIndex([]),
         date_range_htf(cal, "Y", "2020-01-01", "2020-01-01", closed="left"),
@@ -2032,9 +1892,7 @@ def test_date_range_htf_years():
             dtype="datetime64[ns]",
             freq=None,
         ),
-        date_range_htf(
-            cal, "Y", "2025-01-01", "2028-01-01", closed="left", month_anchor="FEB"
-        ),
+        date_range_htf(cal, "Y", "2025-01-01", "2028-01-01", closed="left", month_anchor="FEB"),
     )
     # endregion
 

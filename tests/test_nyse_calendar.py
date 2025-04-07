@@ -77,9 +77,7 @@ def test_days_at_time_close(dates, results):
 
     results = pd.DatetimeIndex(results)
     ix = pd.DatetimeIndex(results.normalize(), freq=None)
-    assert_series_equal(
-        at_close, pd.Series(results.tz_localize(cal.tz).tz_convert("UTC"), index=ix)
-    )
+    assert_series_equal(at_close, pd.Series(results.tz_localize(cal.tz).tz_convert("UTC"), index=ix))
 
 
 def test_days_at_time_custom():
@@ -96,34 +94,22 @@ def test_days_at_time_custom():
 
     # check if chosen time is kept
     cal = NYSEExchangeCalendar(close_time=dt.time(10))
-    at_close = cal.days_at_time(
-        cal.valid_days("1901-12-13", "1901-12-16"), "market_close"
-    )
+    at_close = cal.days_at_time(cal.valid_days("1901-12-13", "1901-12-16"), "market_close")
 
-    results = pd.DatetimeIndex(
-        ["1901-12-13 10:00:00", "1901-12-14 10:00:00", "1901-12-16 10:00:00"]
-    )
+    results = pd.DatetimeIndex(["1901-12-13 10:00:00", "1901-12-14 10:00:00", "1901-12-16 10:00:00"])
     assert_series_equal(
         at_close,
-        pd.Series(
-            results.tz_localize(cal.tz).tz_convert("UTC"), index=results.normalize()
-        ),
+        pd.Series(results.tz_localize(cal.tz).tz_convert("UTC"), index=results.normalize()),
     )
 
     # check if chosen time is kept
     cal = NYSEExchangeCalendar(open_time=dt.time(9))
-    at_open = cal.days_at_time(
-        cal.valid_days("1901-12-13", "1901-12-16"), "market_open"
-    )
+    at_open = cal.days_at_time(cal.valid_days("1901-12-13", "1901-12-16"), "market_open")
 
-    results = pd.DatetimeIndex(
-        ["1901-12-13 09:00:00", "1901-12-14 09:00:00", "1901-12-16 09:00:00"]
-    )
+    results = pd.DatetimeIndex(["1901-12-13 09:00:00", "1901-12-14 09:00:00", "1901-12-16 09:00:00"])
     assert_series_equal(
         at_open,
-        pd.Series(
-            results.tz_localize(cal.tz).tz_convert("UTC"), index=results.normalize()
-        ),
+        pd.Series(results.tz_localize(cal.tz).tz_convert("UTC"), index=results.normalize()),
     )
 
 
@@ -134,13 +120,9 @@ def test_valid_days():
     # used to raise an error because tz= None
     assert cal.valid_days("1999-01-01", "2014-01-01", tz=None) is not None
 
-    assert (
-        cal.special_dates("market_close", "1999-01-01", "2014-01-01", False) is not None
-    )
+    assert cal.special_dates("market_close", "1999-01-01", "2014-01-01", False) is not None
     # calls valid_days internally
-    assert (
-        cal.special_dates("market_close", "1999-01-01", "2014-01-01", True) is not None
-    )
+    assert cal.special_dates("market_close", "1999-01-01", "2014-01-01", True) is not None
 
     start, end = "2000-01-01", "2000-01-30"
     valid = cal.valid_days(start, end, tz="UTC").tz_localize(None)
@@ -404,9 +386,7 @@ def test_all_full_day_holidays_since_1928(request):
     """
     # get the expected dates from the csv file
     expected = pd.read_csv(
-        os.path.join(
-            request.fspath.dirname, "data", "nyse_all_full_day_holidays_since_1928.csv"
-        ),
+        os.path.join(request.fspath.dirname, "data", "nyse_all_full_day_holidays_since_1928.csv"),
         index_col=0,
         parse_dates=True,
         header=None,

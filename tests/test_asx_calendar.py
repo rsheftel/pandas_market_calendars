@@ -52,9 +52,7 @@ def test_unique_holidays():
     # Test of closed dates
     asx = ASXExchangeCalendar()
     # get all the closed dates
-    closed_days = [
-        australia_unique_hols[k].get("closed") for k in australia_unique_hols
-    ]
+    closed_days = [australia_unique_hols[k].get("closed") for k in australia_unique_hols]
     good_dates = asx.valid_days("1990-01-01", "2022-12-31")
     for date in chain.from_iterable(closed_days):
         assert pd.Timestamp(date, tz="UTC") not in good_dates

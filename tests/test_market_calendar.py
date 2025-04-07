@@ -377,33 +377,21 @@ def test_add_change_remove_time_w_open_close_map():
     ## Standard time
 
     cal.remove_time("market_close")
-    assert (
-        "market_close" not in cal.open_close_map
-        and "market_close" not in cal.regular_market_times
-    )
+    assert "market_close" not in cal.open_close_map and "market_close" not in cal.regular_market_times
 
     cal.add_time("market_close", time(15))
-    assert (
-        "market_close" in cal.open_close_map
-        and "market_close" in cal.regular_market_times
-    )
+    assert "market_close" in cal.open_close_map and "market_close" in cal.regular_market_times
 
     cal.remove_time("market_close")
     cal.add_time("market_close", time(15), opens=None)
-    assert (
-        "market_close" not in cal.open_close_map
-        and "market_close" in cal.regular_market_times
-    )
+    assert "market_close" not in cal.open_close_map and "market_close" in cal.regular_market_times
 
     cal.change_time("market_close", time(16), opens=False)
     assert cal.open_close_map["market_close"] is False
 
     cal.remove_time("market_close")
     cal.add_time("market_close", time(15), opens=True)
-    assert (
-        cal.open_close_map["market_close"] is True
-        and "market_close" in cal.regular_market_times
-    )
+    assert cal.open_close_map["market_close"] is True and "market_close" in cal.regular_market_times
 
     # Incorrect opens argument
     with pytest.raises(ValueError):
@@ -930,18 +918,10 @@ def test_schedule_w_breaks():
     # using a different time zone
     expected = pd.DataFrame(
         {
-            "market_open": pd.Timestamp(
-                "2016-12-28 09:30:00-05:00", tz="America/New_York"
-            ),
-            "market_close": pd.Timestamp(
-                "2016-12-28 12:00:00-05:00", tz="America/New_York"
-            ),
-            "break_start": pd.Timestamp(
-                "2016-12-28 10:00:00-05:00", tz="America/New_York"
-            ),
-            "break_end": pd.Timestamp(
-                "2016-12-28 11:00:00-05:00", tz="America/New_York"
-            ),
+            "market_open": pd.Timestamp("2016-12-28 09:30:00-05:00", tz="America/New_York"),
+            "market_close": pd.Timestamp("2016-12-28 12:00:00-05:00", tz="America/New_York"),
+            "break_start": pd.Timestamp("2016-12-28 10:00:00-05:00", tz="America/New_York"),
+            "break_end": pd.Timestamp("2016-12-28 11:00:00-05:00", tz="America/New_York"),
         },
         index=pd.DatetimeIndex([pd.Timestamp("2016-12-28")]),
         columns=["market_open", "break_start", "break_end", "market_close"],
@@ -1038,11 +1018,7 @@ def test_schedule_w_interruptions():
                 dtype="datetime64[ns]",
             ).dt.tz_localize(ZoneInfo("Asia/Ulaanbaatar")),
         }
-    ).set_index(
-        pd.DatetimeIndex(
-            ["2010-01-08", "2010-01-11", "2010-01-12", "2010-01-13", "2010-01-14"]
-        )
-    )
+    ).set_index(pd.DatetimeIndex(["2010-01-08", "2010-01-11", "2010-01-12", "2010-01-13", "2010-01-14"]))
 
     assert_frame_equal(results, goal)
 
@@ -1090,27 +1066,21 @@ def test_special_opens():
     opens = results["market_open"].tolist()
 
     # confirm that the day before July 4th is an 11:15 open not 11:13
-    assert (
-        pd.Timestamp("2012-07-02 11:13", tz=ZoneInfo("Asia/Ulaanbaatar")).tz_convert("UTC")
-        in opens
-    )
-    assert (
-        pd.Timestamp("2012-07-03 11:15", tz=ZoneInfo("Asia/Ulaanbaatar")).tz_convert("UTC")
-        in opens
-    )
-    assert (
-        pd.Timestamp("2012-07-04 11:13", tz=ZoneInfo("Asia/Ulaanbaatar")).tz_convert("UTC")
-        in opens
-    )
+    assert pd.Timestamp("2012-07-02 11:13", tz=ZoneInfo("Asia/Ulaanbaatar")).tz_convert("UTC") in opens
+    assert pd.Timestamp("2012-07-03 11:15", tz=ZoneInfo("Asia/Ulaanbaatar")).tz_convert("UTC") in opens
+    assert pd.Timestamp("2012-07-04 11:13", tz=ZoneInfo("Asia/Ulaanbaatar")).tz_convert("UTC") in opens
 
     results = cal.schedule("2002-09-10", "2002-09-12", tz=cal.tz).market_open
 
-    goal = pd.Series(pd.to_datetime(
-        [
-            "2002-09-10 11:13:00+09:00",
-            "2002-09-10 23:00:00+09:00",
-            "2002-09-12 11:13:00+09:00",
-        ],utc=True).tz_convert(ZoneInfo("Asia/Ulaanbaatar")),
+    goal = pd.Series(
+        pd.to_datetime(
+            [
+                "2002-09-10 11:13:00+09:00",
+                "2002-09-10 23:00:00+09:00",
+                "2002-09-12 11:13:00+09:00",
+            ],
+            utc=True,
+        ).tz_convert(ZoneInfo("Asia/Ulaanbaatar")),
         index=pd.DatetimeIndex(["2002-09-10", "2002-09-11", "2002-09-12"]),
         name="market_open",
     )
@@ -1125,31 +1095,23 @@ def test_special_opens_adhoc():
     opens = results["market_open"].tolist()
 
     # confirm that 2016-12-13 is an 11:20 open not 11:13
-    assert (
-        pd.Timestamp("2016-12-12 11:13", tz=ZoneInfo("Asia/Ulaanbaatar")).tz_convert("UTC")
-        in opens
-    )
-    assert (
-        pd.Timestamp("2016-12-13 11:20", tz=ZoneInfo("Asia/Ulaanbaatar")).tz_convert("UTC")
-        in opens
-    )
-    assert (
-        pd.Timestamp("2016-12-14 11:13", tz=ZoneInfo("Asia/Ulaanbaatar")).tz_convert("UTC")
-        in opens
-    )
+    assert pd.Timestamp("2016-12-12 11:13", tz=ZoneInfo("Asia/Ulaanbaatar")).tz_convert("UTC") in opens
+    assert pd.Timestamp("2016-12-13 11:20", tz=ZoneInfo("Asia/Ulaanbaatar")).tz_convert("UTC") in opens
+    assert pd.Timestamp("2016-12-14 11:13", tz=ZoneInfo("Asia/Ulaanbaatar")).tz_convert("UTC") in opens
 
     results = cal.schedule("2016-12-06", "2016-12-10", tz=cal.tz).market_open
 
-    goal = pd.Series(pd.to_datetime(
-        [
-            "2016-12-06 11:13:00+08:00",
-            "2016-12-06 22:00:00+08:00",
-            "2016-12-08 11:13:00+08:00",
-            "2016-12-08 22:00:00+08:00",
-        ],utc=True).tz_convert(ZoneInfo("Asia/Ulaanbaatar")),
-        index=pd.DatetimeIndex(
-            ["2016-12-06", "2016-12-07", "2016-12-08", "2016-12-09"]
-        ),
+    goal = pd.Series(
+        pd.to_datetime(
+            [
+                "2016-12-06 11:13:00+08:00",
+                "2016-12-06 22:00:00+08:00",
+                "2016-12-08 11:13:00+08:00",
+                "2016-12-08 22:00:00+08:00",
+            ],
+            utc=True,
+        ).tz_convert(ZoneInfo("Asia/Ulaanbaatar")),
+        index=pd.DatetimeIndex(["2016-12-06", "2016-12-07", "2016-12-08", "2016-12-09"]),
         name="market_open",
     )
 
@@ -1163,18 +1125,9 @@ def test_special_closes():
     closes = results["market_close"].tolist()
 
     # confirm that the day before July 4th is an 11:30 close not 11:49
-    assert (
-        pd.Timestamp("2012-07-02 11:49", tz=ZoneInfo("Asia/Ulaanbaatar")).tz_convert("UTC")
-        in closes
-    )
-    assert (
-        pd.Timestamp("2012-07-03 11:30", tz=ZoneInfo("Asia/Ulaanbaatar")).tz_convert("UTC")
-        in closes
-    )
-    assert (
-        pd.Timestamp("2012-07-04 11:49", tz=ZoneInfo("Asia/Ulaanbaatar")).tz_convert("UTC")
-        in closes
-    )
+    assert pd.Timestamp("2012-07-02 11:49", tz=ZoneInfo("Asia/Ulaanbaatar")).tz_convert("UTC") in closes
+    assert pd.Timestamp("2012-07-03 11:30", tz=ZoneInfo("Asia/Ulaanbaatar")).tz_convert("UTC") in closes
+    assert pd.Timestamp("2012-07-04 11:49", tz=ZoneInfo("Asia/Ulaanbaatar")).tz_convert("UTC") in closes
 
     # early close first date
     results = cal.schedule("2012-07-03", "2012-07-04")
@@ -1196,12 +1149,15 @@ def test_special_closes():
 
     results = cal.schedule("2002-09-10", "2002-09-12", tz=cal.tz).market_close
 
-    goal = pd.Series(pd.to_datetime(
-        [
-            "2002-09-10 11:49:00+09:00",
-            "2002-09-12 01:00:00+09:00",
-            "2002-09-12 11:49:00+09:00",
-        ],utc=True).tz_convert(ZoneInfo("Asia/Ulaanbaatar")),
+    goal = pd.Series(
+        pd.to_datetime(
+            [
+                "2002-09-10 11:49:00+09:00",
+                "2002-09-12 01:00:00+09:00",
+                "2002-09-12 11:49:00+09:00",
+            ],
+            utc=True,
+        ).tz_convert(ZoneInfo("Asia/Ulaanbaatar")),
         index=pd.DatetimeIndex(["2002-09-10", "2002-09-11", "2002-09-12"]),
         name="market_close",
     )
@@ -1216,44 +1172,30 @@ def test_special_closes_adhoc():
     closes = results["market_close"].tolist()
 
     # confirm that 2016-12-14 is an 11:40 close not 11:49
-    assert (
-        pd.Timestamp("2016-12-13 11:49", tz=ZoneInfo("Asia/Ulaanbaatar")).tz_convert("UTC")
-        in closes
-    )
-    assert (
-        pd.Timestamp("2016-12-14 11:40", tz=ZoneInfo("Asia/Ulaanbaatar")).tz_convert("UTC")
-        in closes
-    )
-    assert (
-        pd.Timestamp("2016-12-15 11:49", tz=ZoneInfo("Asia/Ulaanbaatar")).tz_convert("UTC")
-        in closes
-    )
+    assert pd.Timestamp("2016-12-13 11:49", tz=ZoneInfo("Asia/Ulaanbaatar")).tz_convert("UTC") in closes
+    assert pd.Timestamp("2016-12-14 11:40", tz=ZoneInfo("Asia/Ulaanbaatar")).tz_convert("UTC") in closes
+    assert pd.Timestamp("2016-12-15 11:49", tz=ZoneInfo("Asia/Ulaanbaatar")).tz_convert("UTC") in closes
 
     # now with the early close as end date
     results = cal.schedule("2016-12-13", "2016-12-14")
     closes = results["market_close"].tolist()
-    assert (
-        pd.Timestamp("2016-12-13 11:49", tz=ZoneInfo("Asia/Ulaanbaatar")).tz_convert("UTC")
-        in closes
-    )
-    assert (
-        pd.Timestamp("2016-12-14 11:40", tz=ZoneInfo("Asia/Ulaanbaatar")).tz_convert("UTC")
-        in closes
-    )
+    assert pd.Timestamp("2016-12-13 11:49", tz=ZoneInfo("Asia/Ulaanbaatar")).tz_convert("UTC") in closes
+    assert pd.Timestamp("2016-12-14 11:40", tz=ZoneInfo("Asia/Ulaanbaatar")).tz_convert("UTC") in closes
 
     results = cal.schedule("2016-12-13", "2016-12-19", cal.tz).market_close
 
-    goal = pd.Series(pd.to_datetime(
-        [
-            "2016-12-13 11:49:00+08:00",
-            "2016-12-14 11:40:00+08:00",
-            "2016-12-15 11:49:00+08:00",
-            "2016-12-17 01:05:00+08:00",
-            "2016-12-19 11:49:00+08:00",
-        ],utc=True).tz_convert(ZoneInfo("Asia/Ulaanbaatar")),
-        index=pd.DatetimeIndex(
-            ["2016-12-13", "2016-12-14", "2016-12-15", "2016-12-16", "2016-12-19"]
-        ),
+    goal = pd.Series(
+        pd.to_datetime(
+            [
+                "2016-12-13 11:49:00+08:00",
+                "2016-12-14 11:40:00+08:00",
+                "2016-12-15 11:49:00+08:00",
+                "2016-12-17 01:05:00+08:00",
+                "2016-12-19 11:49:00+08:00",
+            ],
+            utc=True,
+        ).tz_convert(ZoneInfo("Asia/Ulaanbaatar")),
+        index=pd.DatetimeIndex(["2016-12-13", "2016-12-14", "2016-12-15", "2016-12-16", "2016-12-19"]),
         name="market_close",
     )
 
@@ -1283,9 +1225,7 @@ def test_open_at_time():
 
     schedule = cal.schedule("2014-01-01", "2016-12-31")
     # regular trading day
-    assert (
-        cal.open_at_time(schedule, pd.Timestamp("2014-07-02 03:40", tz="UTC")) is True
-    )
+    assert cal.open_at_time(schedule, pd.Timestamp("2014-07-02 03:40", tz="UTC")) is True
     assert cal.open_at_time(schedule, pd.Timestamp("2014-07-02 03:40")) is True
     assert (
         cal.open_at_time(
@@ -1295,21 +1235,12 @@ def test_open_at_time():
         is True
     )
     # early close
-    assert (
-        cal.open_at_time(schedule, pd.Timestamp("2014-07-03 03:40", tz="UTC")) is False
-    )
+    assert cal.open_at_time(schedule, pd.Timestamp("2014-07-03 03:40", tz="UTC")) is False
     # holiday
-    assert (
-        cal.open_at_time(schedule, pd.Timestamp("2014-12-25 03:30", tz="UTC")) is False
-    )
+    assert cal.open_at_time(schedule, pd.Timestamp("2014-12-25 03:30", tz="UTC")) is False
 
     # last bar of the day defaults to False
-    assert (
-        cal.open_at_time(
-            schedule, pd.Timestamp("2016-09-07 11:49", tz=ZoneInfo("Asia/Ulaanbaatar"))
-        )
-        is False
-    )
+    assert cal.open_at_time(schedule, pd.Timestamp("2016-09-07 11:49", tz=ZoneInfo("Asia/Ulaanbaatar"))) is False
 
     # last bar of the day is True if include_close is True
     assert (
@@ -1321,20 +1252,13 @@ def test_open_at_time():
         is True
     )
     # equivalent to 2014-07-02 03:40 UTC
-    assert (
-        cal.open_at_time(
-            schedule, pd.Timestamp("2014-07-01 23:40:00-0400", tz="America/New_York")
-        )
-        is True
-    )
+    assert cal.open_at_time(schedule, pd.Timestamp("2014-07-01 23:40:00-0400", tz="America/New_York")) is True
 
     cal["pre"] = time(11)  # which is 3 am in Ulaanbaatar
     schedule = cal.schedule("2014-07-01", "2014-07-10", market_times="all")
     assert cal.open_at_time(schedule, "2014-07-02 02:55:00+00:00") is False
     # only_rth = True makes it ignore anything before market_open or after market_close
-    assert (
-        cal.open_at_time(schedule, "2014-07-02 03:05:00+00:00", only_rth=True) is False
-    )
+    assert cal.open_at_time(schedule, "2014-07-02 03:05:00+00:00", only_rth=True) is False
     assert cal.open_at_time(schedule, "2014-07-02 03:05:00+00:00") is True
 
     # handle market times that cross midnight
@@ -1343,12 +1267,7 @@ def test_open_at_time():
     schedule = cal.schedule("2014-07-01", "2014-07-10", market_times="all")
     assert cal.open_at_time(schedule, pd.Timestamp("2014-07-03 23:30:00+00:00")) is True
     assert cal.open_at_time(schedule, pd.Timestamp("2014-07-05 00:30:00+00:00")) is True
-    assert (
-        cal.open_at_time(
-            schedule, pd.Timestamp("2014-07-05 00:30:00+00:00"), only_rth=True
-        )
-        is False
-    )
+    assert cal.open_at_time(schedule, pd.Timestamp("2014-07-05 00:30:00+00:00"), only_rth=True) is False
 
     cal.change_time("market_open", (cal.open_time, -2))
     cal.change_time("market_close", (cal.close_time, 3))
@@ -1358,9 +1277,7 @@ def test_open_at_time():
 
     # should raise error if not all columns are in self.market_times
     with pytest.raises(ValueError):
-        cal.open_at_time(
-            schedule.rename(columns={"pre": "other"}), "2014-07-02 02:55:00+00:00"
-        )
+        cal.open_at_time(schedule.rename(columns={"pre": "other"}), "2014-07-02 02:55:00+00:00")
 
     # or if the date is before/after the first/last dates covered by the schedule
     with pytest.raises(ValueError):
@@ -1375,19 +1292,9 @@ def test_open_at_time_breaks():
     schedule = cal.schedule("2016-12-20", "2016-12-30")
 
     # between open and break
-    assert (
-        cal.open_at_time(
-            schedule, pd.Timestamp("2016-12-28 09:50", tz="America/New_York")
-        )
-        is True
-    )
+    assert cal.open_at_time(schedule, pd.Timestamp("2016-12-28 09:50", tz="America/New_York")) is True
     # at break start
-    assert (
-        cal.open_at_time(
-            schedule, pd.Timestamp("2016-12-28 10:00", tz="America/New_York")
-        )
-        is False
-    )
+    assert cal.open_at_time(schedule, pd.Timestamp("2016-12-28 10:00", tz="America/New_York")) is False
     assert (
         cal.open_at_time(
             schedule,
@@ -1397,32 +1304,12 @@ def test_open_at_time_breaks():
         is True
     )
     # during break
-    assert (
-        cal.open_at_time(
-            schedule, pd.Timestamp("2016-12-28 10:30", tz="America/New_York")
-        )
-        is False
-    )
-    assert (
-        cal.open_at_time(
-            schedule, pd.Timestamp("2016-12-28 10:59", tz="America/New_York")
-        )
-        is False
-    )
+    assert cal.open_at_time(schedule, pd.Timestamp("2016-12-28 10:30", tz="America/New_York")) is False
+    assert cal.open_at_time(schedule, pd.Timestamp("2016-12-28 10:59", tz="America/New_York")) is False
     # at break end
-    assert (
-        cal.open_at_time(
-            schedule, pd.Timestamp("2016-12-28 11:00", tz="America/New_York")
-        )
-        is True
-    )
+    assert cal.open_at_time(schedule, pd.Timestamp("2016-12-28 11:00", tz="America/New_York")) is True
     # between break and close
-    assert (
-        cal.open_at_time(
-            schedule, pd.Timestamp("2016-12-28 11:30", tz="America/New_York")
-        )
-        is True
-    )
+    assert cal.open_at_time(schedule, pd.Timestamp("2016-12-28 11:30", tz="America/New_York")) is True
 
     # handle market times that cross midnight
     cal.change_time("market_open", time(7))  # is the day before in UTC
@@ -1431,24 +1318,13 @@ def test_open_at_time_breaks():
     schedule = cal.schedule("2014-07-01", "2014-07-10", market_times="all")
     assert cal.open_at_time(schedule, pd.Timestamp("2014-07-03 23:30:00+00:00")) is True
     assert cal.open_at_time(schedule, pd.Timestamp("2014-07-05 00:30:00+00:00")) is True
-    assert (
-        cal.open_at_time(schedule, pd.Timestamp("2014-07-04 14:30:00+00:00")) is False
-    )
+    assert cal.open_at_time(schedule, pd.Timestamp("2014-07-04 14:30:00+00:00")) is False
     assert cal.open_at_time(schedule, pd.Timestamp("2014-07-11 12:00:00+00:00")) is True
 
-    assert (
-        cal.open_at_time(
-            schedule, pd.Timestamp("2014-07-11 14:00:00+00:00"), include_close=True
-        )
-        is True
-    )
-    assert (
-        cal.open_at_time(schedule, pd.Timestamp("2014-07-11 14:00:00+00:00")) is False
-    )
+    assert cal.open_at_time(schedule, pd.Timestamp("2014-07-11 14:00:00+00:00"), include_close=True) is True
+    assert cal.open_at_time(schedule, pd.Timestamp("2014-07-11 14:00:00+00:00")) is False
     with pytest.raises(ValueError):
-        cal.open_at_time(
-            schedule, pd.Timestamp("2014-07-11 14:00:00+00:00"), only_rth=True
-        )
+        cal.open_at_time(schedule, pd.Timestamp("2014-07-11 14:00:00+00:00"), only_rth=True)
 
 
 def test_open_at_time_interruptions():
@@ -1467,14 +1343,10 @@ def test_open_at_time_interruptions():
     cal.add_time("post", time(13))
 
     # different timezone
-    sched = cal.schedule(
-        "2010-01-08", "2010-01-14", market_times="all", interruptions=True, tz=cal.tz
-    )
+    sched = cal.schedule("2010-01-08", "2010-01-14", market_times="all", interruptions=True, tz=cal.tz)
 
     # interruption between pre/market_open
-    sched.iloc[2, [-4, -3]] = pd.to_datetime(
-        ["2010-01-12 08:05:00", "2010-01-12 08:07:00"]
-    ).tz_localize(cal.tz)
+    sched.iloc[2, [-4, -3]] = pd.to_datetime(["2010-01-12 08:05:00", "2010-01-12 08:07:00"]).tz_localize(cal.tz)
 
     assert cal.open_at_time(sched, "2010-01-12 13:01:00") is True
     assert cal.open_at_time(sched, "2010-01-12 13:06:00") is False
@@ -1508,9 +1380,7 @@ def test_is_open_now(patch_get_current_time):
 def test_bad_dates():
     cal = FakeCalendar()
 
-    empty = pd.DataFrame(
-        columns=["market_open", "market_close"], index=pd.DatetimeIndex([], freq="C")
-    )
+    empty = pd.DataFrame(columns=["market_open", "market_close"], index=pd.DatetimeIndex([], freq="C"))
 
     # single weekend date
     schedule = cal.schedule("2018-06-30", "2018-06-30")
@@ -1557,9 +1427,7 @@ def test_interruptions_df():
                 [np.nan, np.nan, "2010-01-13 02:30:00", np.nan], dtype="datetime64[ns]"
             ).dt.tz_localize("UTC"),
         }
-    ).set_index(
-        pd.DatetimeIndex(["2002-02-03", "2010-01-11", "2010-01-13", "2011-01-10"])
-    )
+    ).set_index(pd.DatetimeIndex(["2002-02-03", "2010-01-11", "2010-01-13", "2011-01-10"]))
 
     cal = FakeCalendar()
     assert_frame_equal(cal.interruptions_df, goal)
@@ -1590,9 +1458,7 @@ class _TstExchangeCalendar:
         return 3
 
 
-TstExchangeCalendar = type(
-    "TestExchangeCalendar", (TradingCalendar,), {"_ec_class": _TstExchangeCalendar}
-)
+TstExchangeCalendar = type("TestExchangeCalendar", (TradingCalendar,), {"_ec_class": _TstExchangeCalendar})
 
 test_cal = TstExchangeCalendar()
 
@@ -1620,9 +1486,7 @@ def test_basic_information():
 
 
 def assert_same(one, two):
-    assert (
-        one.shape[0] == two.shape[0]
-    ), f"the shape is different {one.shape[0]} != {two.shape[0]}"
+    assert one.shape[0] == two.shape[0], f"the shape is different {one.shape[0]} != {two.shape[0]}"
     assert (one.values == two.values).all()
 
 

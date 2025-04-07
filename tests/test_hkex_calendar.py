@@ -42,22 +42,16 @@ def test_2018_holidays():
 def test_hkex_closes_at_lunch():
     hkex = HKEXExchangeCalendar()
     schedule = hkex.schedule(
-        start_date=datetime.datetime(
-            2015, 1, 14, tzinfo=ZoneInfo("Asia/Shanghai")
-        ),
+        start_date=datetime.datetime(2015, 1, 14, tzinfo=ZoneInfo("Asia/Shanghai")),
         end_date=datetime.datetime(2015, 1, 16, tzinfo=ZoneInfo("Asia/Shanghai")),
     )
 
     assert hkex.open_at_time(
         schedule=schedule,
-        timestamp=datetime.datetime(
-            2015, 1, 14, 11, 0, tzinfo=ZoneInfo("Asia/Shanghai")
-        ),
+        timestamp=datetime.datetime(2015, 1, 14, 11, 0, tzinfo=ZoneInfo("Asia/Shanghai")),
     )
 
     assert not hkex.open_at_time(
         schedule=schedule,
-        timestamp=datetime.datetime(
-            2015, 1, 14, 12, 10, tzinfo=ZoneInfo("Asia/Shanghai")
-        ),
+        timestamp=datetime.datetime(2015, 1, 14, 12, 10, tzinfo=ZoneInfo("Asia/Shanghai")),
     )
