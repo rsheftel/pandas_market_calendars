@@ -1,5 +1,5 @@
 import pandas as pd
-import pytz
+from zoneinfo import ZoneInfo
 from pandas.testing import assert_index_equal
 
 from pandas_market_calendars.calendars.sifma import (
@@ -77,7 +77,7 @@ sifma_us = SIFMAUSExchangeCalendar()
 
 
 def test_us_time_zone():
-    assert sifma_us.tz == pytz.timezone("America/New_York")
+    assert sifma_us.tz == ZoneInfo("America/New_York")
     assert sifma_us.name == "SIFMA_US"
 
 
@@ -341,7 +341,7 @@ sifma_uk = SIFMAUKExchangeCalendar()
 
 
 def test_uk_time_zone():
-    assert sifma_uk.tz == pytz.timezone("Europe/London")
+    assert sifma_uk.tz == ZoneInfo("Europe/London")
     assert sifma_uk.name == "SIFMA_UK"
 
 
@@ -440,7 +440,7 @@ sifma_jp = SIFMAJPExchangeCalendar()
 
 
 def test_jp_time_zone():
-    assert sifma_jp.tz == pytz.timezone("Asia/Tokyo")
+    assert sifma_jp.tz == ZoneInfo("Asia/Tokyo")
     assert sifma_jp.name == "SIFMA_JP"
 
 

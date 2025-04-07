@@ -4,7 +4,7 @@ from zoneinfo import ZoneInfo
 
 import pandas as pd
 import pytest
-import pytz
+from zoneinfo import ZoneInfo
 from pandas.testing import assert_index_equal, assert_series_equal
 
 from pandas_market_calendars.calendars.nyse import NYSEExchangeCalendar
@@ -163,7 +163,7 @@ def test_valid_days_tz_aware():
 
 
 def test_time_zone():
-    assert NYSEExchangeCalendar().tz == pytz.timezone("America/New_York")
+    assert NYSEExchangeCalendar().tz == ZoneInfo("America/New_York")
     assert NYSEExchangeCalendar().name == "NYSE"
 
 

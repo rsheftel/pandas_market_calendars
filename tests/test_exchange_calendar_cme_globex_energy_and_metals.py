@@ -1,5 +1,5 @@
 import pandas as pd
-import pytz
+from zoneinfo import ZoneInfo
 from pandas.testing import assert_index_equal
 
 from pandas_market_calendars.calendars.cme_globex_energy_and_metals import (
@@ -10,7 +10,7 @@ cal = CMEGlobexEnergyAndMetalsExchangeCalendar()
 
 
 def test_time_zone():
-    assert cal.tz == pytz.timezone("America/Chicago")
+    assert cal.tz == ZoneInfo("America/Chicago")
     assert cal.name == "CMEGlobex_EnergyAndMetals"
 
 

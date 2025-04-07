@@ -72,6 +72,10 @@ class TradingCalendar(MarketCalendar):
         return self._ec.name
 
     @property
+    def full_name(self):
+        return self._ec.name
+
+    @property
     def tz(self):
         return self._ec.tz
 

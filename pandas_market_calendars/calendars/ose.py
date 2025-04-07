@@ -7,7 +7,7 @@ from pandas.tseries.holiday import (
     Holiday,
 )
 from pandas.tseries.offsets import Day, Easter
-from pytz import timezone
+from zoneinfo import ZoneInfo
 
 from pandas_market_calendars.market_calendar import MarketCalendar
 
@@ -89,7 +89,7 @@ class OSEExchangeCalendar(MarketCalendar):
 
     @property
     def tz(self):
-        return timezone("Europe/Oslo")
+        return ZoneInfo("Europe/Oslo")
 
     @property
     def regular_holidays(self):

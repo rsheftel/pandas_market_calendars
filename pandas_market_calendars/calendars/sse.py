@@ -2,7 +2,7 @@ from datetime import time, timedelta
 from functools import partial
 
 from pandas.tseries.holiday import AbstractHolidayCalendar, Holiday, next_monday
-from pytz import timezone
+from zoneinfo import ZoneInfo
 
 from pandas_market_calendars.holidays.cn import *
 from pandas_market_calendars.market_calendar import MarketCalendar
@@ -35,7 +35,7 @@ class SSEExchangeCalendar(MarketCalendar):
 
     @property
     def tz(self):
-        return timezone("Asia/Shanghai")
+        return ZoneInfo("Asia/Shanghai")
 
     @property
     def regular_holidays(self):

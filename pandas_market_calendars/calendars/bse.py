@@ -5,7 +5,7 @@ Bombay Stock Exchnage
 from datetime import time
 
 from pandas import Timestamp
-from pytz import timezone
+from zoneinfo import ZoneInfo
 
 from pandas_market_calendars.market_calendar import MarketCalendar
 
@@ -418,7 +418,7 @@ class BSEExchangeCalendar(MarketCalendar):
 
     @property
     def tz(self):
-        return timezone("Asia/Calcutta")
+        return ZoneInfo("Asia/Calcutta")
 
     @property
     def adhoc_holidays(self):

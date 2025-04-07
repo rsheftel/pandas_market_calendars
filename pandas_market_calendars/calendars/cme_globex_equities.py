@@ -1,7 +1,7 @@
 from datetime import time
 
 from pandas.tseries.holiday import AbstractHolidayCalendar
-from pytz import timezone
+from zoneinfo import ZoneInfo
 
 from pandas_market_calendars.holidays.cme import (
     USMartinLutherKingJrAfter1998Before2015,
@@ -45,7 +45,7 @@ class CMEGlobexEquitiesExchangeCalendar(CMEGlobexBaseExchangeCalendar):
 
     @property
     def tz(self):
-        return timezone("America/Chicago")
+        return ZoneInfo("America/Chicago")
 
     @property
     def name(self):

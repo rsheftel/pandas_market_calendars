@@ -1,11 +1,11 @@
 import pandas as pd
-import pytz
+from zoneinfo import ZoneInfo
 
 from pandas_market_calendars.calendars.cme import CMEEquityExchangeCalendar
 
 
 def test_time_zone():
-    assert CMEEquityExchangeCalendar().tz == pytz.timezone("America/Chicago")
+    assert CMEEquityExchangeCalendar().tz == ZoneInfo("America/Chicago")
     assert CMEEquityExchangeCalendar().name == "CME_Equity"
 
 

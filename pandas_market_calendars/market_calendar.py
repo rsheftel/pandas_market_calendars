@@ -137,7 +137,6 @@ class MarketCalendar(metaclass=MarketCalendarMeta):
         raise NotImplementedError()
 
     @property
-    @abstractmethod
     def full_name(self):
         """
         Full name of the market

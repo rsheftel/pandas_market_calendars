@@ -1,13 +1,13 @@
 from itertools import chain
 
 import pandas as pd
-import pytz
+from zoneinfo import ZoneInfo
 
 from pandas_market_calendars.calendars.asx import ASXExchangeCalendar
 
 
 def test_time_zone():
-    assert ASXExchangeCalendar().tz == pytz.timezone("Australia/Sydney")
+    assert ASXExchangeCalendar().tz == ZoneInfo("Australia/Sydney")
 
 
 def test_2019_holidays():

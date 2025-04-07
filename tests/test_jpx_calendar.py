@@ -2,14 +2,14 @@ import datetime
 import os
 
 import pandas as pd
-import pytz
+from zoneinfo import ZoneInfo
 from pandas.testing import assert_index_equal
 
 from pandas_market_calendars.calendars.jpx import JPXExchangeCalendar
 
 
 def test_time_zone():
-    assert JPXExchangeCalendar().tz == pytz.timezone("Asia/Tokyo")
+    assert JPXExchangeCalendar().tz == ZoneInfo("Asia/Tokyo")
     assert JPXExchangeCalendar().name == "JPX"
 
 
@@ -185,21 +185,21 @@ def test_jpx_2021_holidays():
 def test_jpx_closes_at_lunch():
     jpx_calendar = JPXExchangeCalendar()
     jpx_schedule = jpx_calendar.schedule(
-        start_date=datetime.datetime(2015, 1, 14, tzinfo=pytz.timezone("Asia/Tokyo")),
-        end_date=datetime.datetime(2015, 1, 16, tzinfo=pytz.timezone("Asia/Tokyo")),
+        start_date=datetime.datetime(2015, 1, 14, tzinfo=ZoneInfo("Asia/Tokyo")),
+        end_date=datetime.datetime(2015, 1, 16, tzinfo=ZoneInfo("Asia/Tokyo")),
     )
 
     assert jpx_calendar.open_at_time(
         schedule=jpx_schedule,
         timestamp=datetime.datetime(
-            2015, 1, 14, 11, 0, tzinfo=pytz.timezone("Asia/Tokyo")
+            2015, 1, 14, 11, 0, tzinfo=ZoneInfo("Asia/Tokyo")
         ),
     )
 
     assert not jpx_calendar.open_at_time(
         schedule=jpx_schedule,
         timestamp=datetime.datetime(
-            2015, 1, 14, 12, 0, tzinfo=pytz.timezone("Asia/Tokyo")
+            2015, 1, 14, 12, 0, tzinfo=ZoneInfo("Asia/Tokyo")
         ),
     )
 

@@ -3,6 +3,7 @@ import datetime
 import pandas as pd
 import pytest
 from pandas.testing import assert_frame_equal, assert_series_equal
+from zoneinfo import ZoneInfo
 
 import pandas_market_calendars as mcal
 from pandas_market_calendars.calendars.nyse import NYSEExchangeCalendar
@@ -132,7 +133,7 @@ def test_mark_session():
                 "post",
                 "closed",
             ],
-            index=pd.DatetimeIndex(
+            index=pd.to_datetime(
                 [
                     "2020-01-02 08:00:00-05:00",
                     "2020-01-02 09:00:00-05:00",
@@ -142,8 +143,7 @@ def test_mark_session():
                     "2020-01-02 12:30:00-05:00",
                     "2020-01-02 13:00:00-05:00",
                     "2020-01-03 08:00:00-05:00",
-                ],
-                dtype="datetime64[ns, America/New_York]",
+                ], utc=True).tz_convert(ZoneInfo("America/New_York"),
             ),
             dtype=pd.CategoricalDtype(["closed", "post", "pre", "rth"], ordered=False),
         ),
@@ -162,7 +162,7 @@ def test_mark_session():
                 "closed",
                 "pre",
             ],
-            index=pd.DatetimeIndex(
+            index=pd.to_datetime(
                 [
                     "2020-01-02 08:00:00-05:00",
                     "2020-01-02 09:00:00-05:00",
@@ -172,8 +172,7 @@ def test_mark_session():
                     "2020-01-02 12:30:00-05:00",
                     "2020-01-02 13:00:00-05:00",
                     "2020-01-03 08:00:00-05:00",
-                ],
-                dtype="datetime64[ns, America/New_York]",
+                ], utc=True).tz_convert(ZoneInfo("America/New_York"),
             ),
             dtype=pd.CategoricalDtype(["closed", "post", "pre", "rth"], ordered=False),
         ),
@@ -194,7 +193,7 @@ def test_mark_session():
                 "closed",
                 1,
             ],
-            index=pd.DatetimeIndex(
+            index=pd.to_datetime(
                 [
                     "2020-01-02 08:00:00-05:00",
                     "2020-01-02 09:00:00-05:00",
@@ -204,8 +203,7 @@ def test_mark_session():
                     "2020-01-02 12:30:00-05:00",
                     "2020-01-02 13:00:00-05:00",
                     "2020-01-03 08:00:00-05:00",
-                ],
-                dtype="datetime64[ns, America/New_York]",
+                ],utc=True).tz_convert(ZoneInfo("America/New_York"),
             ),
             dtype=pd.CategoricalDtype([1, 2, "_post", "closed"], ordered=False),
         ),

@@ -10,7 +10,7 @@ from pandas.tseries.holiday import (
     sunday_to_monday,
 )
 from pandas.tseries.offsets import LastWeekOfMonth, WeekOfMonth
-from pytz import timezone
+from zoneinfo import ZoneInfo
 
 from pandas_market_calendars.holidays.cn import (
     bsd_mapping,
@@ -387,7 +387,7 @@ class HKEXExchangeCalendar(MarketCalendar):
 
     @property
     def tz(self):
-        return timezone("Asia/Shanghai")
+        return ZoneInfo("Asia/Shanghai")
 
     @property
     def regular_holidays(self):

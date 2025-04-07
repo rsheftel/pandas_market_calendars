@@ -1,6 +1,6 @@
 import pandas as pd
 import pytest
-import pytz
+from zoneinfo import ZoneInfo
 from pandas.tseries.offsets import Day, Hour, Minute
 
 from pandas_market_calendars.calendars.cme_globex_fx import CMEGlobexFXExchangeCalendar
@@ -9,7 +9,7 @@ TZ = "America/Chicago"
 
 
 def test_time_zone():
-    assert CMEGlobexFXExchangeCalendar().tz == pytz.timezone(TZ)
+    assert CMEGlobexFXExchangeCalendar().tz == ZoneInfo(TZ)
     assert CMEGlobexFXExchangeCalendar().name == "CMEGlobex_FX"
 
 

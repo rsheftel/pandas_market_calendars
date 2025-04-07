@@ -1,5 +1,5 @@
 import pandas as pd
-import pytz
+from zoneinfo import ZoneInfo
 from pandas.testing import assert_index_equal
 from pandas.tseries.offsets import CustomBusinessDay
 
@@ -9,7 +9,7 @@ nyse = NYSEExchangeCalendar()
 
 
 def test_time_zone():
-    assert nyse.tz == pytz.timezone("America/New_York")
+    assert nyse.tz == ZoneInfo("America/New_York")
     assert nyse.name == "NYSE"
 
 

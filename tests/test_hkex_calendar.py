@@ -1,13 +1,13 @@
 import datetime
 
 import pandas as pd
-import pytz
+from zoneinfo import ZoneInfo
 
 from pandas_market_calendars.calendars.hkex import HKEXExchangeCalendar
 
 
 def test_time_zone():
-    assert HKEXExchangeCalendar().tz == pytz.timezone("Asia/Shanghai")
+    assert HKEXExchangeCalendar().tz == ZoneInfo("Asia/Shanghai")
     assert HKEXExchangeCalendar().name == "HKEX"
 
 
@@ -43,21 +43,21 @@ def test_hkex_closes_at_lunch():
     hkex = HKEXExchangeCalendar()
     schedule = hkex.schedule(
         start_date=datetime.datetime(
-            2015, 1, 14, tzinfo=pytz.timezone("Asia/Shanghai")
+            2015, 1, 14, tzinfo=ZoneInfo("Asia/Shanghai")
         ),
-        end_date=datetime.datetime(2015, 1, 16, tzinfo=pytz.timezone("Asia/Shanghai")),
+        end_date=datetime.datetime(2015, 1, 16, tzinfo=ZoneInfo("Asia/Shanghai")),
     )
 
     assert hkex.open_at_time(
         schedule=schedule,
         timestamp=datetime.datetime(
-            2015, 1, 14, 11, 0, tzinfo=pytz.timezone("Asia/Shanghai")
+            2015, 1, 14, 11, 0, tzinfo=ZoneInfo("Asia/Shanghai")
         ),
     )
 
     assert not hkex.open_at_time(
         schedule=schedule,
         timestamp=datetime.datetime(
-            2015, 1, 14, 12, 10, tzinfo=pytz.timezone("Asia/Shanghai")
+            2015, 1, 14, 12, 10, tzinfo=ZoneInfo("Asia/Shanghai")
         ),
     )

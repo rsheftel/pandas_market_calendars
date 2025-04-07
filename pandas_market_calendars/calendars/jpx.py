@@ -2,7 +2,7 @@ from datetime import time
 from itertools import chain
 
 from pandas.tseries.holiday import AbstractHolidayCalendar
-from pytz import timezone
+from zoneinfo import ZoneInfo
 
 from pandas_market_calendars.holidays.jp import *
 from pandas_market_calendars.holidays.us import USNewYearsDay
@@ -47,7 +47,7 @@ class JPXExchangeCalendar(MarketCalendar):
 
     @property
     def tz(self):
-        return timezone("Asia/Tokyo")
+        return ZoneInfo("Asia/Tokyo")
 
     @property
     def adhoc_holidays(self):

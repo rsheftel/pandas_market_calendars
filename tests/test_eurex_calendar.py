@@ -1,11 +1,11 @@
 import pandas as pd
-import pytz
+from zoneinfo import ZoneInfo
 
 from pandas_market_calendars.calendars.eurex import EUREXExchangeCalendar
 
 
 def test_time_zone():
-    assert EUREXExchangeCalendar().tz == pytz.timezone("Europe/Berlin")
+    assert EUREXExchangeCalendar().tz == ZoneInfo("Europe/Berlin")
     assert EUREXExchangeCalendar().name == "EUREX"
 
 

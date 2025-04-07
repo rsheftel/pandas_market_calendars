@@ -3,7 +3,7 @@ from itertools import chain
 
 from pandas import Timestamp, DatetimeIndex, Timedelta
 from pandas.tseries.holiday import AbstractHolidayCalendar
-from pytz import timezone
+from zoneinfo import ZoneInfo
 
 from typing import Literal, Union
 from pandas_market_calendars import calendar_utils as u
@@ -89,7 +89,7 @@ class IEXExchangeCalendar(NYSEExchangeCalendar):
     def special_closes(self):
         return [
             (
-                time(hour=13, tzinfo=timezone("America/New_York")),
+                time(hour=13, tzinfo=ZoneInfo("America/New_York")),
                 AbstractHolidayCalendar(
                     rules=[
                         DayAfterThanksgiving1pmEarlyCloseInOrAfter1993,
@@ -104,7 +104,7 @@ class IEXExchangeCalendar(NYSEExchangeCalendar):
     def special_closes_adhoc(self):
         return [
             (
-                time(13, tzinfo=timezone("America/New_York")),
+                time(13, tzinfo=ZoneInfo("America/New_York")),
                 DaysBeforeIndependenceDay1pmEarlyCloseAdhoc,
             )
         ]

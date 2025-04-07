@@ -22,7 +22,7 @@ from pandas.tseries.holiday import (
     USPresidentsDay,
     USThanksgivingDay,
 )
-from pytz import timezone
+from zoneinfo import ZoneInfo
 
 from pandas_market_calendars.holidays.us import (
     Christmas,
@@ -79,7 +79,7 @@ class CMEGlobexBaseExchangeCalendar(MarketCalendar, ABC):
 
     @property
     def tz(self):
-        return timezone("America/Chicago")
+        return ZoneInfo("America/Chicago")
 
     @property
     def regular_holidays(self):

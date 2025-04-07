@@ -9,15 +9,15 @@
 
 import pandas as pd
 import pytest
-import pytz
+from zoneinfo import ZoneInfo
 
 from pandas_market_calendars.calendars.ose import OSEExchangeCalendar
 
-TIMEZONE = pytz.timezone("Europe/Oslo")
+TIMEZONE = ZoneInfo("Europe/Oslo")
 
 
 def test_time_zone():
-    assert OSEExchangeCalendar().tz == pytz.timezone("Europe/Oslo")
+    assert OSEExchangeCalendar().tz == ZoneInfo("Europe/Oslo")
 
 
 def test_name():

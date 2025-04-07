@@ -1,13 +1,13 @@
 import datetime
 
 import pandas as pd
-import pytz
+from zoneinfo import ZoneInfo
 
 from pandas_market_calendars.calendars.bmf import BMFExchangeCalendar
 
 
 def test_time_zone():
-    assert BMFExchangeCalendar().tz == pytz.timezone("America/Sao_Paulo")
+    assert BMFExchangeCalendar().tz == ZoneInfo("America/Sao_Paulo")
 
 
 def test_2020_holidays_skip():

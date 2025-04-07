@@ -23,7 +23,7 @@ from pandas.tseries.holiday import (
     GoodFriday,
     Holiday,
 )
-from pytz import timezone
+from zoneinfo import ZoneInfo
 
 from pandas_market_calendars.market_calendar import FRIDAY, MarketCalendar
 
@@ -185,7 +185,7 @@ class BMFExchangeCalendar(MarketCalendar):
 
     @property
     def tz(self):
-        return timezone("America/Sao_Paulo")
+        return ZoneInfo("America/Sao_Paulo")
 
     @property
     def regular_holidays(self):

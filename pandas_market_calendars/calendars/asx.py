@@ -1,7 +1,7 @@
 from datetime import time
 
 from pandas.tseries.holiday import AbstractHolidayCalendar, GoodFriday, EasterMonday
-from pytz import timezone
+from zoneinfo import ZoneInfo
 
 from pandas_market_calendars.holidays.oz import *
 from pandas_market_calendars.market_calendar import MarketCalendar
@@ -48,7 +48,7 @@ class ASXExchangeCalendar(MarketCalendar):
 
     @property
     def tz(self):
-        return timezone("Australia/Sydney")
+        return ZoneInfo("Australia/Sydney")
 
     @property
     def regular_holidays(self):
