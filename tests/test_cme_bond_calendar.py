@@ -1,11 +1,11 @@
 import pandas as pd
-import pytz
+from zoneinfo import ZoneInfo
 
 from pandas_market_calendars.calendars.cme import CMEBondExchangeCalendar
 
 
 def test_time_zone():
-    assert CMEBondExchangeCalendar().tz == pytz.timezone("America/Chicago")
+    assert CMEBondExchangeCalendar().tz == ZoneInfo("America/Chicago")
     assert CMEBondExchangeCalendar().name == "CME_Bond"
 
 
@@ -37,9 +37,9 @@ def test_2020_noon_holidays():
     cme = CMEBondExchangeCalendar()
     schedule = cme.schedule("2020-01-01", "2020-12-31")
     for date in ["2020-01-20", "2020-02-17", "2020-05-25", "2020-09-07", "2020-11-26"]:
-        assert schedule.loc[date, "market_close"] == pd.Timestamp(
-            date, tz="America/Chicago"
-        ).replace(hour=12).tz_convert("UTC")
+        assert schedule.loc[date, "market_close"] == pd.Timestamp(date, tz="America/Chicago").replace(
+            hour=12
+        ).tz_convert("UTC")
 
 
 def test_2020_noon_15_holidays():
@@ -48,9 +48,9 @@ def test_2020_noon_15_holidays():
     cme = CMEBondExchangeCalendar()
     schedule = cme.schedule("2020-11-27", "2020-12-24")
     for date in ["2020-11-27", "2020-12-24"]:
-        assert schedule.loc[date, "market_close"] == pd.Timestamp(
-            date, tz="America/Chicago"
-        ).replace(hour=12, minute=15).tz_convert("UTC")
+        assert schedule.loc[date, "market_close"] == pd.Timestamp(date, tz="America/Chicago").replace(
+            hour=12, minute=15
+        ).tz_convert("UTC")
 
 
 def test_good_fridays():

@@ -1,13 +1,13 @@
 from itertools import chain
 
 import pandas as pd
-import pytz
+from zoneinfo import ZoneInfo
 
 from pandas_market_calendars.calendars.lse import LSEExchangeCalendar
 
 
 def test_time_zone():
-    assert LSEExchangeCalendar().tz == pytz.timezone("Europe/London")
+    assert LSEExchangeCalendar().tz == ZoneInfo("Europe/London")
 
 
 def test_2012_holidays():
@@ -83,14 +83,10 @@ def test_unique_holidays():
     # VE-Day Anniversary
     # 50th Anniversary
     england_unique_hols["VE_50"]["closed"] = [pd.Timestamp("1995-05-08")]
-    england_unique_hols["VE_50"]["open"] = [
-        pd.Timestamp("1995-05-01")
-    ]  # Early May bank holiday removed
+    england_unique_hols["VE_50"]["open"] = [pd.Timestamp("1995-05-01")]  # Early May bank holiday removed
     # 75th Anniversary
     england_unique_hols["VE_75"]["closed"] = [pd.Timestamp("2020-05-08")]
-    england_unique_hols["VE_75"]["open"] = [
-        pd.Timestamp("2020-05-04")
-    ]  # Early May bank holiday removed
+    england_unique_hols["VE_75"]["open"] = [pd.Timestamp("2020-05-04")]  # Early May bank holiday removed
 
     # Queen Elizabeth II Jubilees
     # Silver Jubilee
@@ -100,42 +96,30 @@ def test_unique_holidays():
         pd.Timestamp("2002-06-03"),
         pd.Timestamp("2002-06-04"),
     ]
-    england_unique_hols["QEII_Jubilee_50"]["open"] = [
-        pd.Timestamp("2002-05-27")
-    ]  # Spring bank holiday removed
+    england_unique_hols["QEII_Jubilee_50"]["open"] = [pd.Timestamp("2002-05-27")]  # Spring bank holiday removed
     # Diamond Jubilee
     england_unique_hols["QEII_Jubilee_60"]["closed"] = [
         pd.Timestamp("2012-06-04"),
         pd.Timestamp("2012-06-05"),
     ]
-    england_unique_hols["QEII_Jubilee_60"]["open"] = [
-        pd.Timestamp("2012-05-28")
-    ]  # Spring bank holiday removed
+    england_unique_hols["QEII_Jubilee_60"]["open"] = [pd.Timestamp("2012-05-28")]  # Spring bank holiday removed
     # Platinum Jubilee
     england_unique_hols["QEII_Jubilee_60"]["closed"] = [
         pd.Timestamp("2022-06-02"),
         pd.Timestamp("2022-06-03"),
     ]
-    england_unique_hols["QEII_Jubilee_60"]["open"] = [
-        pd.Timestamp("2022-05-31")
-    ]  # Spring bank holiday removed
+    england_unique_hols["QEII_Jubilee_60"]["open"] = [pd.Timestamp("2022-05-31")]  # Spring bank holiday removed
 
     # State Funeral of Queen Elizabeth II
     england_unique_hols["QEII_StateFuneral"]["closed"] = [pd.Timestamp("2022-09-19")]
 
     # Royal Weddings
     # Wedding Day of Princess Anne and Mark Phillips
-    england_unique_hols["Royal_Wedding_Anne_1973"]["closed"] = [
-        pd.Timestamp("1973-11-14")
-    ]
+    england_unique_hols["Royal_Wedding_Anne_1973"]["closed"] = [pd.Timestamp("1973-11-14")]
     # Wedding Day of Prince Charles and Diana Spencer
-    england_unique_hols["Royal_Wedding_Charles_1981"]["closed"] = [
-        pd.Timestamp("1981-07-29")
-    ]
+    england_unique_hols["Royal_Wedding_Charles_1981"]["closed"] = [pd.Timestamp("1981-07-29")]
     # Wedding Day of Prince William and Catherine Middleton
-    england_unique_hols["Royal_Wedding_William_2011"]["closed"] = [
-        pd.Timestamp("2011-04-29")
-    ]
+    england_unique_hols["Royal_Wedding_William_2011"]["closed"] = [pd.Timestamp("2011-04-29")]
 
     # Coronation of King Charles III
     england_unique_hols["KCIII_Coronation"]["closed"] = [pd.Timestamp("2023-05-08")]

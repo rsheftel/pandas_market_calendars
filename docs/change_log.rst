@@ -3,6 +3,12 @@ Change Log
 
 Updates
 -------
+5.0.0 (04/07/2025)
+~~~~~~~~~~~~~~~~~~
+- Add human readable names from PR #380
+- Replace all usage of pytz with the new zoneinfo standard
+- Bump min python version to 3.9
+
 4.6.1 (01/23/2025)
 ~~~~~~~~~~~~~~~~~~
 - patch to fix the regression error in #376

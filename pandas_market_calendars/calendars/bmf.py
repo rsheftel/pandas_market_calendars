@@ -23,7 +23,7 @@ from pandas.tseries.holiday import (
     GoodFriday,
     Holiday,
 )
-from pytz import timezone
+from zoneinfo import ZoneInfo
 
 from pandas_market_calendars.market_calendar import FRIDAY, MarketCalendar
 
@@ -38,9 +38,7 @@ AniversarioSaoPaulo = Holiday(
     "Aniversario de Sao Paulo", month=1, day=25, end_date="2021-12-31"
 )
 # Carnival Monday
-CarnavalSegunda = Holiday(
-    "Carnaval Segunda", month=1, day=1, offset=[Easter(), Day(-48)]
-)
+CarnavalSegunda = Holiday("Carnaval Segunda", month=1, day=1, offset=[Easter(), Day(-48)])
 # Carnival Tuesday
 CarnavalTerca = Holiday("Carnaval Terca", month=1, day=1, offset=[Easter(), Day(-47)])
 # Ash Wednesday (short day)
@@ -62,9 +60,7 @@ DiaTrabalho = Holiday(
     day=1,
 )
 # Constitutionalist Revolution
-Constitucionalista = Holiday(
-    "Constitucionalista", month=7, day=9, start_date="1997-01-01", end_date="2019-12-31"
-)
+Constitucionalista = Holiday("Constitucionalista", month=7, day=9, start_date="1997-01-01", end_date="2019-12-31")
 # Independence Day
 Independencia = Holiday(
     "Independencia",
@@ -185,7 +181,7 @@ class BMFExchangeCalendar(MarketCalendar):
 
     @property
     def tz(self):
-        return timezone("America/Sao_Paulo")
+        return ZoneInfo("America/Sao_Paulo")
 
     @property
     def regular_holidays(self):

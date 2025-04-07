@@ -1,5 +1,5 @@
 import pandas as pd
-import pytz
+from zoneinfo import ZoneInfo
 
 from pandas_market_calendars.calendars.eurex_fixed_income import (
     EUREXFixedIncomeCalendar,
@@ -7,7 +7,7 @@ from pandas_market_calendars.calendars.eurex_fixed_income import (
 
 
 def test_time_zone():
-    assert EUREXFixedIncomeCalendar().tz == pytz.timezone("Europe/Berlin")
+    assert EUREXFixedIncomeCalendar().tz == ZoneInfo("Europe/Berlin")
     assert EUREXFixedIncomeCalendar().name == "EUREX_Bond"
 
 

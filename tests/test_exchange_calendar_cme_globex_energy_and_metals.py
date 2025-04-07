@@ -1,5 +1,5 @@
 import pandas as pd
-import pytz
+from zoneinfo import ZoneInfo
 from pandas.testing import assert_index_equal
 
 from pandas_market_calendars.calendars.cme_globex_energy_and_metals import (
@@ -10,7 +10,7 @@ cal = CMEGlobexEnergyAndMetalsExchangeCalendar()
 
 
 def test_time_zone():
-    assert cal.tz == pytz.timezone("America/Chicago")
+    assert cal.tz == ZoneInfo("America/Chicago")
     assert cal.name == "CMEGlobex_EnergyAndMetals"
 
 
@@ -130,9 +130,7 @@ def test_2021():
         pd.Timestamp("2021-07-05 12:00PM", tz="America/Chicago"),  # Independence Day
         pd.Timestamp("2021-09-06 12:00PM", tz="America/Chicago"),  # Labor Day
         pd.Timestamp("2021-11-25 12:00PM", tz="America/Chicago"),  # US Thanksgiving
-        pd.Timestamp(
-            "2021-11-26 12:45PM", tz="America/Chicago"
-        ),  # Friday after US Thanksgiving
+        pd.Timestamp("2021-11-26 12:45PM", tz="America/Chicago"),  # Friday after US Thanksgiving
     ]
     _test_has_early_closes(early_closes, start, end)
 
@@ -155,8 +153,6 @@ def test_2020():
         pd.Timestamp("2020-07-03 12:00PM", tz="America/Chicago"),  # Independence Day
         pd.Timestamp("2020-09-07 12:00PM", tz="America/Chicago"),  # Labor Day
         pd.Timestamp("2020-11-26 12:00PM", tz="America/Chicago"),  # US Thanksgiving
-        pd.Timestamp(
-            "2020-11-27 12:45PM", tz="America/Chicago"
-        ),  # Friday after US Thanksgiving
+        pd.Timestamp("2020-11-27 12:45PM", tz="America/Chicago"),  # Friday after US Thanksgiving
     ]
     _test_has_early_closes(early_closes, start, end)

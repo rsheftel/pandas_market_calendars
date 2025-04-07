@@ -10,7 +10,7 @@ from pandas.tseries.holiday import (
     MO,
     weekend_to_monday,
 )
-from pytz import timezone
+from zoneinfo import ZoneInfo
 
 from pandas_market_calendars.holidays.uk import (
     BoxingDay,
@@ -139,8 +139,12 @@ class TSXExchangeCalendar(MarketCalendar):
         return "TSX"
 
     @property
+    def full_name(self):
+        return "Toronto Stock Exchange"
+
+    @property
     def tz(self):
-        return timezone("Canada/Eastern")
+        return ZoneInfo("Canada/Eastern")
 
     regular_early_close = time(13)
 

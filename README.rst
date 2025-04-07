@@ -48,6 +48,8 @@ As of v3.0, the function date_range() is more complete and consistent, for more 
 As of v4.0, this package provides the framework to add interruptions to calendars. These can also be added to a schedule and viewed using
 the new interruptions_df property. A full list of changes can be found in PR #210.
 
+As of v5.0, this package uses the new zoneinfo standard to timezones and depricates and removes pytz. Minimum python version is now 3.9
+
 Source location
 ~~~~~~~~~~~~~~~
 Hosted on GitHub: https://github.com/rsheftel/pandas_market_calendars

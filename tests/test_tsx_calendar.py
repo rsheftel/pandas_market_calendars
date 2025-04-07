@@ -1,12 +1,12 @@
 import pandas as pd
-import pytz
+from zoneinfo import ZoneInfo
 from pandas.testing import assert_index_equal
 
 from pandas_market_calendars.calendars.tsx import TSXExchangeCalendar, VictoriaDay
 
 
 def test_time_zone():
-    assert TSXExchangeCalendar().tz == pytz.timezone("Canada/Eastern")
+    assert TSXExchangeCalendar().tz == ZoneInfo("Canada/Eastern")
     assert TSXExchangeCalendar().name == "TSX"
 
 

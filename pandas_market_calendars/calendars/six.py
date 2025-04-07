@@ -9,7 +9,7 @@ from pandas.tseries.holiday import (
     Holiday,
     previous_friday,
 )
-from pytz import timezone
+from zoneinfo import ZoneInfo
 
 from pandas_market_calendars.market_calendar import (
     FRIDAY,
@@ -109,8 +109,12 @@ class SIXExchangeCalendar(MarketCalendar):
         return "SIX"
 
     @property
+    def full_name(self):
+        return "SIX Swiss Exchange"
+
+    @property
     def tz(self):
-        return timezone("Europe/Zurich")
+        return ZoneInfo("Europe/Zurich")
 
     @property
     def regular_holidays(self):

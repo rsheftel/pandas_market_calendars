@@ -7,7 +7,7 @@ from pandas.tseries.holiday import (
     Holiday,
 )
 from pandas.tseries.offsets import Day, Easter
-from pytz import timezone
+from zoneinfo import ZoneInfo
 
 from pandas_market_calendars.market_calendar import MarketCalendar
 
@@ -17,9 +17,7 @@ OSEWednesdayBeforeEaster = Holiday(
     "Wednesday before Easter", month=1, day=1, offset=[Easter(), Day(-4)]
 )
 
-OSEMaundyThursday = Holiday(
-    "Maundy Thursday", month=1, day=1, offset=[Easter(), Day(-3)]
-)
+OSEMaundyThursday = Holiday("Maundy Thursday", month=1, day=1, offset=[Easter(), Day(-3)])
 
 OSEGoodFriday = GoodFriday
 
@@ -84,8 +82,12 @@ class OSEExchangeCalendar(MarketCalendar):
         return "OSE"
 
     @property
+    def full_name(self):
+        return "Oslo Stock Exchange"
+
+    @property
     def tz(self):
-        return timezone("Europe/Oslo")
+        return ZoneInfo("Europe/Oslo")
 
     @property
     def regular_holidays(self):

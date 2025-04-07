@@ -3,6 +3,7 @@ import datetime
 import pandas as pd
 import pytest
 from pandas.testing import assert_frame_equal, assert_series_equal
+from zoneinfo import ZoneInfo
 
 import pandas_market_calendars as mcal
 from pandas_market_calendars.calendars.nyse import NYSEExchangeCalendar
@@ -66,12 +67,10 @@ def test_merge_schedules():
     expected = pd.DataFrame(
         {
             "market_open": [
-                pd.Timestamp(x, tz="UTC")
-                for x in ["2016-07-01 13:30", "2016-07-05 13:30", "2016-07-06 13:30"]
+                pd.Timestamp(x, tz="UTC") for x in ["2016-07-01 13:30", "2016-07-05 13:30", "2016-07-06 13:30"]
             ],
             "market_close": [
-                pd.Timestamp(x, tz="UTC")
-                for x in ["2016-07-01 02:49", "2016-07-05 02:49", "2016-07-06 02:49"]
+                pd.Timestamp(x, tz="UTC") for x in ["2016-07-01 02:49", "2016-07-05 02:49", "2016-07-06 02:49"]
             ],
         },
         columns=["market_open", "market_close"],
@@ -98,10 +97,7 @@ def test_merge_schedules_w_break():
 
     with pytest.warns(Warning) as w:
         result = mcal.merge_schedules([schedule, schedule_breaks])
-    assert (
-        w[0].message.args[0]
-        == "Merge schedules will drop the break_start and break_end from result."
-    )
+    assert w[0].message.args[0] == "Merge schedules will drop the break_start and break_end from result."
 
     assert "break_start" not in result.columns
     assert "break_end" not in result.columns
@@ -132,7 +128,7 @@ def test_mark_session():
                 "post",
                 "closed",
             ],
-            index=pd.DatetimeIndex(
+            index=pd.to_datetime(
                 [
                     "2020-01-02 08:00:00-05:00",
                     "2020-01-02 09:00:00-05:00",
@@ -143,7 +139,9 @@ def test_mark_session():
                     "2020-01-02 13:00:00-05:00",
                     "2020-01-03 08:00:00-05:00",
                 ],
-                dtype="datetime64[ns, America/New_York]",
+                utc=True,
+            ).tz_convert(
+                ZoneInfo("America/New_York"),
             ),
             dtype=pd.CategoricalDtype(["closed", "post", "pre", "rth"], ordered=False),
         ),
@@ -162,7 +160,7 @@ def test_mark_session():
                 "closed",
                 "pre",
             ],
-            index=pd.DatetimeIndex(
+            index=pd.to_datetime(
                 [
                     "2020-01-02 08:00:00-05:00",
                     "2020-01-02 09:00:00-05:00",
@@ -173,7 +171,9 @@ def test_mark_session():
                     "2020-01-02 13:00:00-05:00",
                     "2020-01-03 08:00:00-05:00",
                 ],
-                dtype="datetime64[ns, America/New_York]",
+                utc=True,
+            ).tz_convert(
+                ZoneInfo("America/New_York"),
             ),
             dtype=pd.CategoricalDtype(["closed", "post", "pre", "rth"], ordered=False),
         ),
@@ -194,7 +194,7 @@ def test_mark_session():
                 "closed",
                 1,
             ],
-            index=pd.DatetimeIndex(
+            index=pd.to_datetime(
                 [
                     "2020-01-02 08:00:00-05:00",
                     "2020-01-02 09:00:00-05:00",
@@ -205,7 +205,9 @@ def test_mark_session():
                     "2020-01-02 13:00:00-05:00",
                     "2020-01-03 08:00:00-05:00",
                 ],
-                dtype="datetime64[ns, America/New_York]",
+                utc=True,
+            ).tz_convert(
+                ZoneInfo("America/New_York"),
             ),
             dtype=pd.CategoricalDtype([1, 2, "_post", "closed"], ordered=False),
         ),
@@ -232,9 +234,7 @@ def test_mark_session():
         ),
         mcal.mark_session(
             sched,
-            mcal.date_range(
-                sched, "15m", start="2020-01-20 17:00", end="2020-01-20 18:00"
-            ),
+            mcal.date_range(sched, "15m", start="2020-01-20 17:00", end="2020-01-20 18:00"),
             closed="left",
         ),
     )
@@ -256,15 +256,11 @@ def test_mark_session():
                 ],
                 dtype="datetime64[ns, UTC]",
             ),
-            dtype=pd.CategoricalDtype(
-                categories=["break", "closed", "rth"], ordered=False
-            ),
+            dtype=pd.CategoricalDtype(categories=["break", "closed", "rth"], ordered=False),
         ),
         mcal.mark_session(
             sched,
-            mcal.date_range(
-                sched, "15m", start="2020-01-20 17:00", end="2020-01-21 00:00"
-            ),
+            mcal.date_range(sched, "15m", start="2020-01-20 17:00", end="2020-01-21 00:00"),
             closed="left",
         ),
     )

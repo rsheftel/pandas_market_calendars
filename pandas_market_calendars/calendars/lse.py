@@ -16,7 +16,7 @@
 from datetime import time
 
 from pandas.tseries.holiday import AbstractHolidayCalendar, EasterMonday, GoodFriday
-from pytz import timezone
+from zoneinfo import ZoneInfo
 
 from pandas_market_calendars.holidays.uk import (
     BoxingDay,
@@ -70,8 +70,12 @@ class LSEExchangeCalendar(MarketCalendar):
         return "LSE"
 
     @property
+    def full_name(self):
+        return "London Stock Exchange"
+
+    @property
     def tz(self):
-        return timezone("Europe/London")
+        return ZoneInfo("Europe/London")
 
     @property
     def regular_holidays(self):

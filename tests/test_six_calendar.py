@@ -1,11 +1,11 @@
 import pandas as pd
-import pytz
+from zoneinfo import ZoneInfo
 
 from pandas_market_calendars.calendars.six import SIXExchangeCalendar
 
 
 def test_time_zone():
-    assert SIXExchangeCalendar().tz == pytz.timezone("Europe/Zurich")
+    assert SIXExchangeCalendar().tz == ZoneInfo("Europe/Zurich")
     assert SIXExchangeCalendar().name == "SIX"
 
 

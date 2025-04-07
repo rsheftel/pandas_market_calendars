@@ -2,14 +2,14 @@ import datetime
 import os
 
 import pandas as pd
-import pytz
+from zoneinfo import ZoneInfo
 from pandas.testing import assert_index_equal
 
 from pandas_market_calendars.calendars.jpx import JPXExchangeCalendar
 
 
 def test_time_zone():
-    assert JPXExchangeCalendar().tz == pytz.timezone("Asia/Tokyo")
+    assert JPXExchangeCalendar().tz == ZoneInfo("Asia/Tokyo")
     assert JPXExchangeCalendar().name == "JPX"
 
 
@@ -71,9 +71,7 @@ def test_2018_jpx_holidays():
         pd.Timestamp("2018-12-31", tz="UTC"),
     ]
 
-    valid_days = jpx_calendar.valid_days(
-        pd.Timestamp("2018-01-01"), pd.Timestamp("2018-12-31")
-    )
+    valid_days = jpx_calendar.valid_days(pd.Timestamp("2018-01-01"), pd.Timestamp("2018-12-31"))
     for session_label in holidays_2018:
         assert session_label not in valid_days
 
@@ -107,9 +105,7 @@ def test_jpx_2019_holidays():
         pd.Timestamp("2019-12-31", tz="UTC"),
     ]
 
-    valid_days = jpx_calendar.valid_days(
-        pd.Timestamp("2019-01-01"), pd.Timestamp("2019-12-31")
-    )
+    valid_days = jpx_calendar.valid_days(pd.Timestamp("2019-01-01"), pd.Timestamp("2019-12-31"))
     for session_label in holidays_2019:
         assert session_label not in valid_days
 
@@ -141,9 +137,7 @@ def test_jpx_2020_holidays():
         pd.Timestamp("2020-12-31", tz="UTC"),
     ]
 
-    valid_days = jpx_calendar.valid_days(
-        pd.Timestamp("2020-01-01"), pd.Timestamp("2020-12-31")
-    )
+    valid_days = jpx_calendar.valid_days(pd.Timestamp("2020-01-01"), pd.Timestamp("2020-12-31"))
     for session_label in holidays_2020:
         assert session_label not in valid_days
 
@@ -175,9 +169,7 @@ def test_jpx_2021_holidays():
         pd.Timestamp("2021-12-31", tz="UTC"),
     ]
 
-    valid_days = jpx_calendar.valid_days(
-        pd.Timestamp("2021-01-01"), pd.Timestamp("2021-12-31")
-    )
+    valid_days = jpx_calendar.valid_days(pd.Timestamp("2021-01-01"), pd.Timestamp("2021-12-31"))
     for session_label in holidays_2021:
         assert session_label not in valid_days
 
@@ -185,22 +177,18 @@ def test_jpx_2021_holidays():
 def test_jpx_closes_at_lunch():
     jpx_calendar = JPXExchangeCalendar()
     jpx_schedule = jpx_calendar.schedule(
-        start_date=datetime.datetime(2015, 1, 14, tzinfo=pytz.timezone("Asia/Tokyo")),
-        end_date=datetime.datetime(2015, 1, 16, tzinfo=pytz.timezone("Asia/Tokyo")),
+        start_date=datetime.datetime(2015, 1, 14, tzinfo=ZoneInfo("Asia/Tokyo")),
+        end_date=datetime.datetime(2015, 1, 16, tzinfo=ZoneInfo("Asia/Tokyo")),
     )
 
     assert jpx_calendar.open_at_time(
         schedule=jpx_schedule,
-        timestamp=datetime.datetime(
-            2015, 1, 14, 11, 0, tzinfo=pytz.timezone("Asia/Tokyo")
-        ),
+        timestamp=datetime.datetime(2015, 1, 14, 11, 0, tzinfo=ZoneInfo("Asia/Tokyo")),
     )
 
     assert not jpx_calendar.open_at_time(
         schedule=jpx_schedule,
-        timestamp=datetime.datetime(
-            2015, 1, 14, 12, 0, tzinfo=pytz.timezone("Asia/Tokyo")
-        ),
+        timestamp=datetime.datetime(2015, 1, 14, 12, 0, tzinfo=ZoneInfo("Asia/Tokyo")),
     )
 
 
@@ -243,9 +231,7 @@ def test_jpx_trading_days_since_1949(request):
     """
     # get the expected dates from the csv file
     expected = pd.read_csv(
-        os.path.join(
-            request.fspath.dirname, "data", "jpx_open_weekdays_since_1949.csv"
-        ),
+        os.path.join(request.fspath.dirname, "data", "jpx_open_weekdays_since_1949.csv"),
         index_col=0,
         parse_dates=True,
     ).index
@@ -293,11 +279,7 @@ def test_jpx_change_in_market_close():
     ]
 
     for date in business_dates_before_change:
-        assert jpx_schedule.loc[date, "market_close"] == pd.Timestamp(
-            f"{date} 15:00", tz="Asia/Tokyo"
-        )
+        assert jpx_schedule.loc[date, "market_close"] == pd.Timestamp(f"{date} 15:00", tz="Asia/Tokyo")
 
     for date in business_dates_after_change:
-        assert jpx_schedule.loc[date, "market_close"] == pd.Timestamp(
-            f"{date} 15:30", tz="Asia/Tokyo"
-        )
+        assert jpx_schedule.loc[date, "market_close"] == pd.Timestamp(f"{date} 15:30", tz="Asia/Tokyo")

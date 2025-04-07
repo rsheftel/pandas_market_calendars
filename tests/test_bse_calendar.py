@@ -2,13 +2,13 @@ import datetime
 
 import pandas as pd
 import pytest
-import pytz
+from zoneinfo import ZoneInfo
 
 from pandas_market_calendars.calendars.bse import BSEExchangeCalendar, BSEClosedDay
 
 
 def test_time_zone():
-    assert BSEExchangeCalendar().tz == pytz.timezone("Asia/Calcutta")
+    assert BSEExchangeCalendar().tz == ZoneInfo("Asia/Calcutta")
     assert BSEExchangeCalendar().name == "BSE"
 
 
@@ -24,20 +24,20 @@ def test_holidays():
 
 def test_open_close_time():
     bse_calendar = BSEExchangeCalendar()
-    india_time_zone = pytz.timezone("Asia/Calcutta")
+    india_time_zone = ZoneInfo("Asia/Calcutta")
 
     bse_schedule = bse_calendar.schedule(
-        start_date=india_time_zone.localize(datetime.datetime(2015, 1, 14)),
-        end_date=india_time_zone.localize(datetime.datetime(2015, 1, 16)),
+        start_date=datetime.datetime(2015, 1, 14, tzinfo=india_time_zone),
+        end_date=datetime.datetime(2015, 1, 16, tzinfo=india_time_zone),
     )
 
     assert bse_calendar.open_at_time(
         schedule=bse_schedule,
-        timestamp=india_time_zone.localize(datetime.datetime(2015, 1, 14, 11, 0)),
+        timestamp=datetime.datetime(2015, 1, 14, 11, 0, tzinfo=india_time_zone),
     )
 
     with pytest.raises(ValueError):
         bse_calendar.open_at_time(
             schedule=bse_schedule,
-            timestamp=india_time_zone.localize(datetime.datetime(2015, 1, 9, 12, 0)),
+            timestamp=datetime.datetime(2015, 1, 9, 12, 0, tzinfo=india_time_zone),
         )

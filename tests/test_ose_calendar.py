@@ -9,15 +9,15 @@
 
 import pandas as pd
 import pytest
-import pytz
+from zoneinfo import ZoneInfo
 
 from pandas_market_calendars.calendars.ose import OSEExchangeCalendar
 
-TIMEZONE = pytz.timezone("Europe/Oslo")
+TIMEZONE = ZoneInfo("Europe/Oslo")
 
 
 def test_time_zone():
-    assert OSEExchangeCalendar().tz == pytz.timezone("Europe/Oslo")
+    assert OSEExchangeCalendar().tz == ZoneInfo("Europe/Oslo")
 
 
 def test_name():
@@ -67,9 +67,7 @@ def test_2017_calendar():
         schedule=ose_schedule, timestamp=pd.Timestamp("2017-04-12 12PM", tz=TIMEZONE)
     )
     with pytest.raises(ValueError):
-        ose.open_at_time(
-            schedule=ose_schedule, timestamp=pd.Timestamp("2017-04-12 2PM", tz=TIMEZONE)
-        )
+        ose.open_at_time(schedule=ose_schedule, timestamp=pd.Timestamp("2017-04-12 2PM", tz=TIMEZONE))
 
 
 def test_2018_calendar():
@@ -103,9 +101,7 @@ def test_2018_calendar():
     for half_trading_day in half_trading_days_2018:
         assert half_trading_day in valid_market_dates
 
-    assert ose.open_at_time(
-        schedule=ose_schedule, timestamp=pd.Timestamp("2018-03-28 12PM", tz=TIMEZONE)
-    )
+    assert ose.open_at_time(schedule=ose_schedule, timestamp=pd.Timestamp("2018-03-28 12PM", tz=TIMEZONE))
     with pytest.raises(ValueError):
         ose.open_at_time(
             schedule=ose_schedule,
@@ -145,9 +141,7 @@ def test_2019_calendar():
     for half_trading_day in half_trading_days_2019:
         assert half_trading_day in valid_market_dates
 
-    assert ose.open_at_time(
-        schedule=ose_schedule, timestamp=pd.Timestamp("2019-04-17 12PM", tz=TIMEZONE)
-    )
+    assert ose.open_at_time(schedule=ose_schedule, timestamp=pd.Timestamp("2019-04-17 12PM", tz=TIMEZONE))
     with pytest.raises(ValueError):
         ose.open_at_time(
             schedule=ose_schedule,

@@ -2,7 +2,7 @@ from datetime import time
 
 from typing import Literal, Union
 from pandas import Timestamp, Timedelta, DatetimeIndex
-from pytz import timezone
+from zoneinfo import ZoneInfo
 
 from pandas_market_calendars.market_calendar import MarketCalendar
 from pandas_market_calendars.calendar_utils import Day_Anchor, Month_Anchor
@@ -187,8 +187,12 @@ class TASEExchangeCalendar(MarketCalendar):
         return "TASE"
 
     @property
+    def full_name(self):
+        return "Tel Aviv Stock Exchange"
+
+    @property
     def tz(self):
-        return timezone("Asia/Jerusalem")
+        return ZoneInfo("Asia/Jerusalem")
 
     @property
     def adhoc_holidays(self):

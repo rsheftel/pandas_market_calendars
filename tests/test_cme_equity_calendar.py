@@ -1,11 +1,11 @@
 import pandas as pd
-import pytz
+from zoneinfo import ZoneInfo
 
 from pandas_market_calendars.calendars.cme import CMEEquityExchangeCalendar
 
 
 def test_time_zone():
-    assert CMEEquityExchangeCalendar().tz == pytz.timezone("America/Chicago")
+    assert CMEEquityExchangeCalendar().tz == ZoneInfo("America/Chicago")
     assert CMEEquityExchangeCalendar().name == "CME_Equity"
 
 
@@ -59,9 +59,5 @@ def test_dec_jan():
     cme = CMEEquityExchangeCalendar()
     schedule = cme.schedule("2016-12-30", "2017-01-10")
 
-    assert schedule["market_open"].iloc[0] == pd.Timestamp(
-        "2016-12-29 23:00:00", tz="UTC"
-    )
-    assert schedule["market_close"].iloc[6] == pd.Timestamp(
-        "2017-01-10 22:00:00", tz="UTC"
-    )
+    assert schedule["market_open"].iloc[0] == pd.Timestamp("2016-12-29 23:00:00", tz="UTC")
+    assert schedule["market_close"].iloc[6] == pd.Timestamp("2017-01-10 22:00:00", tz="UTC")

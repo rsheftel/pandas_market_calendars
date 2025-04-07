@@ -18,7 +18,7 @@ from datetime import time
 from pandas.tseries.holiday import (
     AbstractHolidayCalendar,
 )  # , GoodFriday, USLaborDay, USPresidentsDay, USThanksgivingDay
-from pytz import timezone
+from zoneinfo import ZoneInfo
 
 from pandas_market_calendars.holidays.cme_globex import (
     USMartinLutherKingJrFrom2022,
@@ -180,7 +180,7 @@ class CMEGlobexEnergyAndMetalsExchangeCalendar(CMEGlobexBaseExchangeCalendar):
     def special_closes(self):
         return [
             (
-                time(12, tzinfo=timezone("America/Chicago")),
+                time(12, tzinfo=ZoneInfo("America/Chicago")),
                 AbstractHolidayCalendar(
                     rules=[
                         USMartinLutherKingJrPre2022,
@@ -193,7 +193,7 @@ class CMEGlobexEnergyAndMetalsExchangeCalendar(CMEGlobexBaseExchangeCalendar):
                 ),
             ),
             (
-                time(12, 45, tzinfo=timezone("America/Chicago")),
+                time(12, 45, tzinfo=ZoneInfo("America/Chicago")),
                 AbstractHolidayCalendar(
                     rules=[
                         FridayAfterThanksgiving,
@@ -201,7 +201,7 @@ class CMEGlobexEnergyAndMetalsExchangeCalendar(CMEGlobexBaseExchangeCalendar):
                 ),
             ),
             (
-                time(13, 30, tzinfo=timezone("America/Chicago")),
+                time(13, 30, tzinfo=ZoneInfo("America/Chicago")),
                 AbstractHolidayCalendar(
                     rules=[
                         USMartinLutherKingJrFrom2022,

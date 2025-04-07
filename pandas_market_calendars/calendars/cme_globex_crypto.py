@@ -1,6 +1,6 @@
 import datetime as dt
 
-import pytz
+from zoneinfo import ZoneInfo
 from pandas.tseries.holiday import AbstractHolidayCalendar
 
 from pandas_market_calendars.holidays.cme import (
@@ -45,25 +45,23 @@ class CMEGlobexCryptoExchangeCalendar(CMEGlobexBaseExchangeCalendar):
         # Tuple[Tuple[first date used, time, offset], ...]
         # -1 offset indicates that the open is on the previous day
         # None for first date used marks the start, subsequent market times must have an actual timestamp
-        "market_open": (
-            (None, dt.time(17, tzinfo=pytz.timezone("America/Chicago")), -1),
-        ),
+        "market_open": ((None, dt.time(17, tzinfo=ZoneInfo("America/Chicago")), -1),),
         "market_close": (
             (
                 None,
-                dt.time(16, tzinfo=pytz.timezone("America/Chicago")),
+                dt.time(16, tzinfo=ZoneInfo("America/Chicago")),
             ),
         ),
         "break_start": (
             (
                 None,
-                dt.time(16, tzinfo=pytz.timezone("America/Chicago")),
+                dt.time(16, tzinfo=ZoneInfo("America/Chicago")),
             ),
         ),
         "break_end": (
             (
                 None,
-                dt.time(17, tzinfo=pytz.timezone("America/Chicago")),
+                dt.time(17, tzinfo=ZoneInfo("America/Chicago")),
             ),
         ),
     }
@@ -71,7 +69,7 @@ class CMEGlobexCryptoExchangeCalendar(CMEGlobexBaseExchangeCalendar):
     @property
     def tz(self):
         # Central Time
-        return pytz.timezone("America/Chicago")
+        return ZoneInfo("America/Chicago")
 
     @property
     def name(self):
@@ -100,7 +98,7 @@ class CMEGlobexCryptoExchangeCalendar(CMEGlobexBaseExchangeCalendar):
         # list[Tuple[time, AbstractHolidayCalendar]]
         return [
             (
-                dt.time(8, 15, tzinfo=pytz.timezone("America/Chicago")),
+                dt.time(8, 15, tzinfo=ZoneInfo("America/Chicago")),
                 AbstractHolidayCalendar(
                     rules=[
                         GoodFriday2021,
@@ -108,7 +106,7 @@ class CMEGlobexCryptoExchangeCalendar(CMEGlobexBaseExchangeCalendar):
                 ),
             ),
             (
-                dt.time(10, 15, tzinfo=pytz.timezone("America/Chicago")),
+                dt.time(10, 15, tzinfo=ZoneInfo("America/Chicago")),
                 AbstractHolidayCalendar(
                     rules=[
                         GoodFridayAfter2022,
@@ -116,7 +114,7 @@ class CMEGlobexCryptoExchangeCalendar(CMEGlobexBaseExchangeCalendar):
                 ),
             ),
             (
-                dt.time(12, tzinfo=pytz.timezone("America/Chicago")),
+                dt.time(12, tzinfo=ZoneInfo("America/Chicago")),
                 AbstractHolidayCalendar(
                     rules=[
                         USMartinLutherKingJrPre2022,
@@ -129,7 +127,7 @@ class CMEGlobexCryptoExchangeCalendar(CMEGlobexBaseExchangeCalendar):
                 ),
             ),
             (
-                dt.time(12, 15, tzinfo=pytz.timezone("America/Chicago")),
+                dt.time(12, 15, tzinfo=ZoneInfo("America/Chicago")),
                 AbstractHolidayCalendar(
                     rules=[
                         ChristmasEveInOrAfter1993,
@@ -139,12 +137,12 @@ class CMEGlobexCryptoExchangeCalendar(CMEGlobexBaseExchangeCalendar):
                 ),
             ),
             (
-                dt.time(12, 45, tzinfo=pytz.timezone("America/Chicago")),
+                dt.time(12, 45, tzinfo=ZoneInfo("America/Chicago")),
                 AbstractHolidayCalendar(rules=[USThanksgivingFridayFrom2021]),
             ),
             # TODO: this market already closes at 1600 normally, do we need these holidays?
             (
-                dt.time(16, tzinfo=pytz.timezone("America/Chicago")),
+                dt.time(16, tzinfo=ZoneInfo("America/Chicago")),
                 AbstractHolidayCalendar(
                     rules=[
                         USMartinLutherKingJrFrom2022,

@@ -16,11 +16,12 @@
 from datetime import time
 from itertools import chain
 from typing import Literal, Union
+from zoneinfo import ZoneInfo
 
 import pandas as pd
 from pandas.tseries.holiday import AbstractHolidayCalendar
 from pandas.tseries.offsets import CustomBusinessDay
-from pytz import timezone
+from zoneinfo import ZoneInfo
 
 from pandas_market_calendars import calendar_utils as u
 from pandas_market_calendars.holidays.nyse import (
@@ -828,8 +829,12 @@ class NYSEExchangeCalendar(MarketCalendar):
         return "NYSE"
 
     @property
+    def full_name(self):
+        return "New York Stock Exchange"
+
+    @property
     def tz(self):
-        return timezone("America/New_York")
+        return ZoneInfo("America/New_York")
 
     @property
     def weekmask(self):
@@ -995,7 +1000,7 @@ class NYSEExchangeCalendar(MarketCalendar):
     def special_closes(self):
         return [
             (
-                time(11, tzinfo=timezone("America/New_York")),
+                time(11, tzinfo=ZoneInfo("America/New_York")),
                 AbstractHolidayCalendar(
                     rules=[
                         KingEdwardDeath11amyClose1910,
@@ -1003,7 +1008,7 @@ class NYSEExchangeCalendar(MarketCalendar):
                 ),
             ),
             (
-                time(12, tzinfo=timezone("America/New_York")),
+                time(12, tzinfo=ZoneInfo("America/New_York")),
                 AbstractHolidayCalendar(
                     rules=[
                         ParadeOfNationalGuardEarlyClose1917,
@@ -1015,7 +1020,7 @@ class NYSEExchangeCalendar(MarketCalendar):
                 ),
             ),
             (
-                time(hour=12, minute=30, tzinfo=timezone("America/New_York")),
+                time(hour=12, minute=30, tzinfo=ZoneInfo("America/New_York")),
                 AbstractHolidayCalendar(
                     rules=[
                         RooseveltFuneral1230EarlyClose1919,
@@ -1026,7 +1031,7 @@ class NYSEExchangeCalendar(MarketCalendar):
                 ),
             ),
             (
-                time(13, tzinfo=timezone("America/New_York")),
+                time(13, tzinfo=ZoneInfo("America/New_York")),
                 AbstractHolidayCalendar(
                     rules=[
                         FridayAfterIndependenceDayNYSEpre2013,
@@ -1039,7 +1044,7 @@ class NYSEExchangeCalendar(MarketCalendar):
                 ),
             ),
             (
-                time(14, tzinfo=timezone("America/New_York")),
+                time(14, tzinfo=ZoneInfo("America/New_York")),
                 AbstractHolidayCalendar(
                     rules=[
                         DayAfterThanksgiving2pmEarlyCloseBefore1993,
@@ -1051,7 +1056,7 @@ class NYSEExchangeCalendar(MarketCalendar):
                 ),
             ),
             (
-                time(14, 7, tzinfo=timezone("America/New_York")),
+                time(14, 7, tzinfo=ZoneInfo("America/New_York")),
                 AbstractHolidayCalendar(
                     rules=[
                         KennedyAssassination1407EarlyClose,
@@ -1059,7 +1064,7 @@ class NYSEExchangeCalendar(MarketCalendar):
                 ),
             ),
             (
-                time(hour=14, minute=30, tzinfo=timezone("America/New_York")),
+                time(hour=14, minute=30, tzinfo=ZoneInfo("America/New_York")),
                 AbstractHolidayCalendar(
                     rules=[
                         FalseArmisticeReport1430EarlyClose1918,
@@ -1070,7 +1075,7 @@ class NYSEExchangeCalendar(MarketCalendar):
                 ),
             ),
             (
-                time(15, tzinfo=timezone("America/New_York")),
+                time(15, tzinfo=ZoneInfo("America/New_York")),
                 AbstractHolidayCalendar(
                     rules=[
                         HurricaneWatch3pmEarlyClose1976,
@@ -1078,7 +1083,7 @@ class NYSEExchangeCalendar(MarketCalendar):
                 ),
             ),
             (
-                time(15, 17, tzinfo=timezone("America/New_York")),
+                time(15, 17, tzinfo=ZoneInfo("America/New_York")),
                 AbstractHolidayCalendar(
                     rules=[
                         ReaganAssassAttempt317pmEarlyClose1981,
@@ -1086,7 +1091,7 @@ class NYSEExchangeCalendar(MarketCalendar):
                 ),
             ),
             (
-                time(15, 28, tzinfo=timezone("America/New_York")),
+                time(15, 28, tzinfo=ZoneInfo("America/New_York")),
                 AbstractHolidayCalendar(
                     rules=[
                         ConEdPowerFail328pmEarlyClose1981,
@@ -1094,7 +1099,7 @@ class NYSEExchangeCalendar(MarketCalendar):
                 ),
             ),
             (
-                time(15, 30, tzinfo=timezone("America/New_York")),
+                time(15, 30, tzinfo=ZoneInfo("America/New_York")),
                 AbstractHolidayCalendar(
                     rules=[
                         CircuitBreakerTriggered330pmEarlyClose1997,
@@ -1102,7 +1107,7 @@ class NYSEExchangeCalendar(MarketCalendar):
                 ),
             ),
             (
-                time(15, 56, tzinfo=timezone("America/New_York")),
+                time(15, 56, tzinfo=ZoneInfo("America/New_York")),
                 AbstractHolidayCalendar(
                     rules=[
                         SystemProb356pmEarlyClose2005,
@@ -1122,14 +1127,14 @@ class NYSEExchangeCalendar(MarketCalendar):
 
         return [
             (
-                time(13, tzinfo=timezone("America/New_York")),
+                time(13, tzinfo=ZoneInfo("America/New_York")),
                 # DaysBeforeIndependenceDay1pmEarlyCloseAdhoc # list
                 ChristmasEve1pmEarlyCloseAdhoc
                 + DayAfterChristmas1pmEarlyCloseAdhoc
                 + BacklogRelief1pmEarlyClose1929,
             ),
             (
-                time(14, tzinfo=timezone("America/New_York")),
+                time(14, tzinfo=ZoneInfo("America/New_York")),
                 _union_many(
                     [
                         pd.DatetimeIndex(
@@ -1148,19 +1153,19 @@ class NYSEExchangeCalendar(MarketCalendar):
                 ),  # index
             ),
             (
-                time(14, 30, tzinfo=timezone("America/New_York")),
+                time(14, 30, tzinfo=ZoneInfo("America/New_York")),
                 _union_many(
                     [PaperworkCrisis230pmEarlyCloses1969, Backlog230pmEarlyCloses1987]
                 ),  # index
             ),
             (
-                time(15, tzinfo=timezone("America/New_York")),
+                time(15, tzinfo=ZoneInfo("America/New_York")),
                 _union_many(
                     [PaperworkCrisis3pmEarlyCloses1969to1970, Backlog3pmEarlyCloses1987]
                 ),  # index
             ),
             (
-                time(15, 30, tzinfo=timezone("America/New_York")),
+                time(15, 30, tzinfo=ZoneInfo("America/New_York")),
                 Backlog330pmEarlyCloses1987,  # index
             ),
         ]
@@ -1169,7 +1174,7 @@ class NYSEExchangeCalendar(MarketCalendar):
     def special_opens(self):
         return [
             (
-                time(hour=9, minute=31, tzinfo=timezone("America/New_York")),
+                time(hour=9, minute=31, tzinfo=ZoneInfo("America/New_York")),
                 AbstractHolidayCalendar(
                     rules=[
                         ConEdXformer931amLateOpen1990,
@@ -1178,7 +1183,7 @@ class NYSEExchangeCalendar(MarketCalendar):
                 ),
             ),
             (
-                time(hour=9, minute=32, tzinfo=timezone("America/New_York")),
+                time(hour=9, minute=32, tzinfo=ZoneInfo("America/New_York")),
                 AbstractHolidayCalendar(
                     rules=[
                         IraqiFreedom932amLateOpen2003,
@@ -1188,7 +1193,7 @@ class NYSEExchangeCalendar(MarketCalendar):
                 ),
             ),
             (
-                time(hour=9, minute=33, tzinfo=timezone("America/New_York")),
+                time(hour=9, minute=33, tzinfo=ZoneInfo("America/New_York")),
                 AbstractHolidayCalendar(
                     rules=[
                         Sept11MomentSilence933amLateOpen2001,
@@ -1196,7 +1201,7 @@ class NYSEExchangeCalendar(MarketCalendar):
                 ),
             ),
             (
-                time(hour=10, minute=15, tzinfo=timezone("America/New_York")),
+                time(hour=10, minute=15, tzinfo=ZoneInfo("America/New_York")),
                 AbstractHolidayCalendar(
                     rules=[
                         Snow1015LateOpen1967,
@@ -1207,7 +1212,7 @@ class NYSEExchangeCalendar(MarketCalendar):
                 ),
             ),
             (
-                time(hour=10, minute=30, tzinfo=timezone("America/New_York")),
+                time(hour=10, minute=30, tzinfo=ZoneInfo("America/New_York")),
                 AbstractHolidayCalendar(
                     rules=[
                         TrafficBlockLateOpen1919,
@@ -1217,7 +1222,7 @@ class NYSEExchangeCalendar(MarketCalendar):
                 ),
             ),
             (
-                time(hour=10, minute=45, tzinfo=timezone("America/New_York")),
+                time(hour=10, minute=45, tzinfo=ZoneInfo("America/New_York")),
                 AbstractHolidayCalendar(
                     rules=[
                         EclipseOfSunLateOpen1925,
@@ -1226,7 +1231,7 @@ class NYSEExchangeCalendar(MarketCalendar):
                 ),
             ),
             (
-                time(11, tzinfo=timezone("America/New_York")),
+                time(11, tzinfo=ZoneInfo("America/New_York")),
                 AbstractHolidayCalendar(
                     rules=[
                         Snow11amLateOpen1934,
@@ -1241,7 +1246,7 @@ class NYSEExchangeCalendar(MarketCalendar):
                 ),
             ),
             (
-                time(11, 5, tzinfo=timezone("America/New_York")),
+                time(11, 5, tzinfo=ZoneInfo("America/New_York")),
                 AbstractHolidayCalendar(
                     rules=[
                         PowerFail1105LateOpen,
@@ -1249,7 +1254,7 @@ class NYSEExchangeCalendar(MarketCalendar):
                 ),
             ),
             (
-                time(11, 15, tzinfo=timezone("America/New_York")),
+                time(11, 15, tzinfo=ZoneInfo("America/New_York")),
                 AbstractHolidayCalendar(
                     rules=[
                         Storm1115LateOpen1976,
@@ -1257,7 +1262,7 @@ class NYSEExchangeCalendar(MarketCalendar):
                 ),
             ),
             (
-                time(12, tzinfo=timezone("America/New_York")),
+                time(12, tzinfo=ZoneInfo("America/New_York")),
                 AbstractHolidayCalendar(
                     rules=[
                         KingEdwardFuneral12pmOpen1910,
@@ -1269,7 +1274,7 @@ class NYSEExchangeCalendar(MarketCalendar):
                 ),
             ),
             (
-                time(13, tzinfo=timezone("America/New_York")),
+                time(13, tzinfo=ZoneInfo("America/New_York")),
                 AbstractHolidayCalendar(
                     rules=[
                         AnnunciatorBoardFire1pmLateOpen1921,
@@ -1282,15 +1287,15 @@ class NYSEExchangeCalendar(MarketCalendar):
     def special_opens_adhoc(self):
         return [
             (
-                time(9, 31, tzinfo=timezone("America/New_York")),
+                time(9, 31, tzinfo=ZoneInfo("America/New_York")),
                 TroopsInGulf931LateOpens1991,
             ),
             (
-                time(11, tzinfo=timezone("America/New_York")),
+                time(11, tzinfo=ZoneInfo("America/New_York")),
                 HeavyVolume11amLateOpen1933,
             ),
             (
-                time(12, tzinfo=timezone("America/New_York")),
+                time(12, tzinfo=ZoneInfo("America/New_York")),
                 BacklogRelief12pmLateOpen1929 + HeavyVolume12pmLateOpen1933,
             ),
         ]
@@ -1338,9 +1343,7 @@ class NYSEExchangeCalendar(MarketCalendar):
             normalize=True,
             tz=tz,
         )
-        days_post = pd.date_range(
-            saturday_end, end_date, freq=self.holidays(), normalize=True, tz=tz
-        )
+        days_post = pd.date_range(saturday_end, end_date, freq=self.holidays(), normalize=True, tz=tz)
         return days_pre.union(days_post)
 
     def days_at_time(self, days, market_time, day_offset=0):
@@ -1443,14 +1446,10 @@ class NYSEExchangeCalendar(MarketCalendar):
                     **(args | altered_args),
                 )
 
-                return pd.DatetimeIndex(
-                    pre[:-1].union(post)[-periods:], dtype="datetime64[ns]"
-                )
+                return pd.DatetimeIndex(pre[:-1].union(post)[-periods:], dtype="datetime64[ns]")
         else:
             _, _ = u._standardize_htf_freq(frequency)
-            raise ValueError(
-                "This should never be raised, the above call should error first"
-            )
+            raise ValueError("This should never be raised, the above call should error first")
 
     def early_closes(self, schedule):
         """

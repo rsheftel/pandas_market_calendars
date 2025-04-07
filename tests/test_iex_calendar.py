@@ -2,7 +2,7 @@ from datetime import time
 
 import numpy as np
 import pandas as pd
-from pytz import timezone
+from zoneinfo import ZoneInfo
 
 from pandas_market_calendars.calendars.iex import IEXExchangeCalendar
 from pandas_market_calendars.class_registry import ProtectedDict
@@ -11,13 +11,13 @@ iex = IEXExchangeCalendar()
 
 
 def test_time_zone():
-    assert iex.tz == timezone("America/New_York")
+    assert iex.tz == ZoneInfo("America/New_York")
     assert iex.name == "IEX"
 
 
 def test_open_close():
-    assert iex.open_time == time(9, 30, tzinfo=timezone("America/New_York"))
-    assert iex.close_time == time(16, tzinfo=timezone("America/New_York"))
+    assert iex.open_time == time(9, 30, tzinfo=ZoneInfo("America/New_York"))
+    assert iex.close_time == time(16, tzinfo=ZoneInfo("America/New_York"))
 
 
 def test_calendar_utility():

@@ -10,7 +10,7 @@ from pandas.tseries.holiday import (
     sunday_to_monday,
 )
 from pandas.tseries.offsets import LastWeekOfMonth, WeekOfMonth
-from pytz import timezone
+from zoneinfo import ZoneInfo
 
 from pandas_market_calendars.holidays.cn import (
     bsd_mapping,
@@ -198,9 +198,7 @@ MidAutumnFestivalDay = Holiday(
     name="Mid-autumn Festival",  # 中秋节翌日
     month=9,
     day=7,
-    observance=partial(
-        process_date, mapping=maf_mapping, delta=1, func=sunday_to_monday
-    ),
+    observance=partial(process_date, mapping=maf_mapping, delta=1, func=sunday_to_monday),
     start_date=Timestamp("2011-01-01"),
 )
 
@@ -382,8 +380,12 @@ class HKEXExchangeCalendar(MarketCalendar):
         return "HKEX"
 
     @property
+    def full_name(self):
+        return "Hong Kong Stock Exchange"
+
+    @property
     def tz(self):
-        return timezone("Asia/Shanghai")
+        return ZoneInfo("Asia/Shanghai")
 
     @property
     def regular_holidays(self):

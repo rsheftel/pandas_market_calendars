@@ -11,7 +11,7 @@ from pandas.tseries.holiday import (
     Holiday,
     previous_friday,
 )
-from pytz import timezone
+from zoneinfo import ZoneInfo
 
 from pandas_market_calendars.market_calendar import (
     FRIDAY,
@@ -99,7 +99,7 @@ class EUREXExchangeCalendar(MarketCalendar):
 
     @property
     def tz(self):
-        return timezone("Europe/Berlin")
+        return ZoneInfo("Europe/Berlin")
 
     @property
     def regular_holidays(self):

@@ -1,7 +1,7 @@
 from datetime import time
 
 from pandas.tseries.holiday import AbstractHolidayCalendar
-from pytz import timezone
+from zoneinfo import ZoneInfo
 from itertools import chain
 
 ########################################################################################################################
@@ -111,8 +111,12 @@ class SIFMAUSExchangeCalendar(MarketCalendar):
         return "SIFMA_US"
 
     @property
+    def full_name(self):
+        return "Securities Industry and Financial Markets Association"
+
+    @property
     def tz(self):
-        return timezone("America/New_York")
+        return ZoneInfo("America/New_York")
 
     @property
     def regular_holidays(self):
@@ -166,9 +170,9 @@ class SIFMAUSExchangeCalendar(MarketCalendar):
     def special_closes_adhoc(self):
         return [
             (
-                time(14, tzinfo=timezone("America/New_York")),
-                GoodFriday2pmEarlyCloseAdHoc  # list
-                + DayBeforeGoodFriday2pmEarlyCloseAdHoc,
+                time(14, tzinfo=ZoneInfo("America/New_York")),
+                GoodFriday2pmEarlyCloseAdHoc
+                + DayBeforeGoodFriday2pmEarlyCloseAdHoc,  # list
             ),
         ]
 
@@ -205,7 +209,7 @@ class SIFMAUKExchangeCalendar(MarketCalendar):
 
     @property
     def tz(self):
-        return timezone("Europe/London")
+        return ZoneInfo("Europe/London")
 
     @property
     def regular_holidays(self):
@@ -295,7 +299,7 @@ class SIFMAJPExchangeCalendar(MarketCalendar):
 
     @property
     def tz(self):
-        return timezone("Asia/Tokyo")
+        return ZoneInfo("Asia/Tokyo")
 
     @property
     def regular_holidays(self):
@@ -349,6 +353,4 @@ class SIFMAJPExchangeCalendar(MarketCalendar):
 
     @property
     def special_closes(self):
-        return [
-            (time(15), AbstractHolidayCalendar(rules=[UKMayDay, UKWeekendChristmas]))
-        ]
+        return [(time(15), AbstractHolidayCalendar(rules=[UKMayDay, UKWeekendChristmas]))]

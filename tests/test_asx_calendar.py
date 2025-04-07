@@ -1,13 +1,13 @@
 from itertools import chain
 
 import pandas as pd
-import pytz
+from zoneinfo import ZoneInfo
 
 from pandas_market_calendars.calendars.asx import ASXExchangeCalendar
 
 
 def test_time_zone():
-    assert ASXExchangeCalendar().tz == pytz.timezone("Australia/Sydney")
+    assert ASXExchangeCalendar().tz == ZoneInfo("Australia/Sydney")
 
 
 def test_2019_holidays():
@@ -52,9 +52,7 @@ def test_unique_holidays():
     # Test of closed dates
     asx = ASXExchangeCalendar()
     # get all the closed dates
-    closed_days = [
-        australia_unique_hols[k].get("closed") for k in australia_unique_hols
-    ]
+    closed_days = [australia_unique_hols[k].get("closed") for k in australia_unique_hols]
     good_dates = asx.valid_days("1990-01-01", "2022-12-31")
     for date in chain.from_iterable(closed_days):
         assert pd.Timestamp(date, tz="UTC") not in good_dates
