@@ -163,4 +163,6 @@ Sponsor
     :target: https://www.tradinghours.com/data
     :alt: TradingHours.com
 
-`TradingHours.com <https://www.tradinghours.com>`_ provides the most accurate and comprehensive coverage of market holidays and trading hours data available. They cover over 900 markets around the world. Their data is continually monitored for changes and updated daily. `Learn more <https://www.tradinghours.com/data>`_
+`TradingHours.com <https://www.tradinghours.com?utm_source=github&utm_medium=sponsor&utm_campaign=panda>`_ provides the most accurate and comprehensive coverage of market holidays and trading hours data available. They cover over 1,100 markets worldwide, with extensive historical data and full coverage of all global trading venues, including the CME, ICE, Eurex, and more.
+
+Their data is continuously monitored for changes and updated daily. If there's a market you need that they don't currently cover, they'll add it. For when accurate, reliable data matters most, choose TradingHours.com. `Learn more <https://www.tradinghours.com/data?utm_source=github&utm_medium=sponsor&utm_campaign=panda>`_
