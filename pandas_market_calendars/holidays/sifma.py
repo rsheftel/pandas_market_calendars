@@ -1,4 +1,3 @@
-import pandas as pd
 from dateutil.relativedelta import MO, TH
 from pandas import DateOffset, Timestamp
 from pandas.tseries.holiday import (
@@ -9,7 +8,7 @@ from pandas.tseries.holiday import (
     previous_workday,
     Easter,
 )
-from pandas.tseries.offsets import Day, MonthBegin
+from pandas.tseries.offsets import Day
 
 from pandas_market_calendars.market_calendar import (
     MONDAY,
