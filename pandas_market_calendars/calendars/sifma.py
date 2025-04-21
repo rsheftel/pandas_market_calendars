@@ -1,5 +1,6 @@
 from datetime import time
 
+import pandas as pd
 from pandas.tseries.holiday import AbstractHolidayCalendar
 from zoneinfo import ZoneInfo
 from itertools import chain
@@ -26,11 +27,13 @@ from pandas_market_calendars.holidays.sifma import (
     USNewYearsEve2pmEarlyClose,
     MartinLutherKingJr,
     USPresidentsDay,
+    # --- Good Friday Rules --- #
+    is_first_friday,
     GoodFridayThru2020,
     DayBeforeGoodFriday2pmEarlyCloseThru2020,
-    GoodFridayAdHoc,
-    GoodFriday2pmEarlyCloseAdHoc,
-    DayBeforeGoodFriday2pmEarlyCloseAdHoc,
+    GoodFridayPotentialPost2020,  # Potential dates, filtered later
+    DayBeforeGoodFridayPotentialPost2020,  # Potential dates, filtered later
+    # --- End Good Friday Rules --- #
     DayBeforeUSMemorialDay2pmEarlyClose,
     USMemorialDay,
     USJuneteenthAfter2022,
@@ -118,6 +121,23 @@ class SIFMAUSExchangeCalendar(MarketCalendar):
     def tz(self):
         return ZoneInfo("America/New_York")
 
+    # Helper method to calculate and cache dynamic dates
+    def _calculate_dynamic_gf_dates(self):
+        if hasattr(self, "_gf_full_holidays"):  # Check if already calculated
+            return
+
+        calc_start = pd.Timestamp("2021-01-01")
+        calc_end = pd.Timestamp("2050-12-31")  # Adjust as needed
+
+        potential_gf_dates = GoodFridayPotentialPost2020.dates(calc_start, calc_end)
+        self._gf_full_holidays = [d for d in potential_gf_dates if not is_first_friday(d)]
+        self._gf_12pm_early_closes = [d for d in potential_gf_dates if is_first_friday(d)]
+
+        potential_thurs_dates = DayBeforeGoodFridayPotentialPost2020.dates(calc_start, calc_end)
+        self._thurs_before_gf_2pm_early_closes = [
+            thurs for thurs in potential_thurs_dates if not is_first_friday(thurs + pd.Timedelta(days=1))
+        ]
+
     @property
     def regular_holidays(self):
         return AbstractHolidayCalendar(
@@ -140,11 +160,8 @@ class SIFMAUSExchangeCalendar(MarketCalendar):
 
     @property
     def adhoc_holidays(self):
-        return list(
-            chain(
-                GoodFridayAdHoc,
-            )
-        )
+        self._calculate_dynamic_gf_dates()  # Calculate on first access
+        return self._gf_full_holidays
 
     @property
     def special_closes(self):
@@ -168,11 +185,15 @@ class SIFMAUSExchangeCalendar(MarketCalendar):
 
     @property
     def special_closes_adhoc(self):
+        self._calculate_dynamic_gf_dates()  # Calculate on first access
         return [
             (
-                time(14, tzinfo=ZoneInfo("America/New_York")),
-                GoodFriday2pmEarlyCloseAdHoc
-                + DayBeforeGoodFriday2pmEarlyCloseAdHoc,  # list
+                time(12, tzinfo=self.tz),
+                self._gf_12pm_early_closes,
+            ),
+            (
+                time(14, tzinfo=self.tz),
+                self._thurs_before_gf_2pm_early_closes,
             ),
         ]
 

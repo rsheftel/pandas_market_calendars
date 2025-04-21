@@ -1,3 +1,4 @@
+import pandas as pd
 from dateutil.relativedelta import MO, TH
 from pandas import DateOffset, Timestamp
 from pandas.tseries.holiday import (
@@ -8,7 +9,7 @@ from pandas.tseries.holiday import (
     previous_workday,
     Easter,
 )
-from pandas.tseries.offsets import Day
+from pandas.tseries.offsets import Day, MonthBegin
 
 from pandas_market_calendars.market_calendar import (
     MONDAY,
@@ -89,27 +90,29 @@ USPresidentsDay = Holiday(
 ############################################################
 # Good Friday
 ############################################################
+
+
+def is_first_friday(dt):
+    """Check if date is the first Friday of the month"""
+    return dt.weekday() == FRIDAY and dt.day <= 7
+
+
 GoodFridayThru2020 = Holiday(
-    "Good Friday 1908+",
+    "Good Friday Thru 2020",
     end_date=Timestamp("2020-12-31"),
     month=1,
     day=1,
     offset=[Easter(), Day(-2)],
 )
 
-# 2021 is early close.
-# 2022 is a full holiday.
-# 2023 is early close.
-# 2024 is a full holiday
-GoodFridayAdHoc = [
-    Timestamp("2022-04-15", tz="UTC"),
-    Timestamp("2024-03-29", tz="UTC"),
-]
-
-GoodFriday2pmEarlyCloseAdHoc = [
-    Timestamp("2021-04-02", tz="UTC"),
-    Timestamp("2023-04-07", tz="UTC"),
-]
+# Generate potential Good Friday dates post 2020 (will be filtered in calendar class)
+GoodFridayPotentialPost2020 = Holiday(
+    "Good Friday Potential Post 2020",
+    start_date=Timestamp("2021-01-01"),
+    month=1,
+    day=1,
+    offset=[Easter(), Day(-2)],
+)
 
 DayBeforeGoodFriday2pmEarlyCloseThru2020 = Holiday(
     "Day Before Good Friday Thru 2020",
@@ -119,10 +122,14 @@ DayBeforeGoodFriday2pmEarlyCloseThru2020 = Holiday(
     offset=[Easter(), Day(-3)],
 )
 
-DayBeforeGoodFriday2pmEarlyCloseAdHoc = [
-    Timestamp("2022-04-14", tz="UTC"),
-    Timestamp("2024-03-28", tz="UTC"),
-]
+# Generate potential Thursday before Good Friday dates post 2020 (will be filtered in calendar class)
+DayBeforeGoodFridayPotentialPost2020 = Holiday(
+    "Day Before Good Friday Potential Post 2020",
+    start_date=Timestamp("2021-01-01"),
+    month=1,
+    day=1,
+    offset=[Easter(), Day(-3)],
+)
 
 ##################################################
 # US Memorial Day (Decoration Day) May 30
@@ -225,9 +232,7 @@ USVeteransDay = Holiday(
 ################################################
 # US Thanksgiving Nov 30
 ################################################
-USThanksgivingDay = Holiday(
-    "Thanksgiving", month=11, day=1, offset=DateOffset(weekday=TH(4))
-)
+USThanksgivingDay = Holiday("Thanksgiving", month=11, day=1, offset=DateOffset(weekday=TH(4)))
 
 DayAfterThanksgiving2pmEarlyClose = Holiday(
     "Black Friday",
