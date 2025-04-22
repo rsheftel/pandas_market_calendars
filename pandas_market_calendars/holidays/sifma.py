@@ -93,6 +93,8 @@ USPresidentsDay = Holiday(
 
 def is_first_friday(dt):
     """Check if date is the first Friday of the month"""
+    # The first Friday of any month must occur on or before the 7th.
+    # This check is sufficient regardless of whether Good Friday is in March or April.
     return dt.weekday() == FRIDAY and dt.day <= 7
 
 

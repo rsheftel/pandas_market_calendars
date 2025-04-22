@@ -1,4 +1,5 @@
 from datetime import time
+import functools
 
 import pandas as pd
 from pandas.tseries.holiday import AbstractHolidayCalendar
@@ -121,21 +122,30 @@ class SIFMAUSExchangeCalendar(MarketCalendar):
         return ZoneInfo("America/New_York")
 
     # Helper method to calculate and cache dynamic dates
-    def _calculate_dynamic_gf_dates(self):
-        if hasattr(self, "_gf_full_holidays"):  # Check if already calculated
-            return
+    @functools.lru_cache()
+    def _get_dynamic_gf_rules(self):
+        # Calculate rules for a wide fixed range to avoid arbitrary cutoffs
+        # while preventing infinite generation. 1970-2100 is a reasonable range.
+        calc_start = pd.Timestamp("1970-01-01")
+        calc_end = pd.Timestamp("2100-12-31")
 
-        calc_start = pd.Timestamp("2021-01-01")
-        calc_end = pd.Timestamp("2050-12-31")  # Adjust as needed
+        # Filter potential dates based on the start_date of the underlying Holiday rules
+        gf_rule_start = GoodFridayPotentialPost2020.start_date
+        thurs_rule_start = DayBeforeGoodFridayPotentialPost2020.start_date
 
-        potential_gf_dates = GoodFridayPotentialPost2020.dates(calc_start, calc_end)
-        self._gf_full_holidays = [d for d in potential_gf_dates if not is_first_friday(d)]
-        self._gf_12pm_early_closes = [d for d in potential_gf_dates if is_first_friday(d)]
+        # Ensure calculation range respects the rule start dates
+        effective_gf_start = max(calc_start, gf_rule_start) if gf_rule_start else calc_start
+        effective_thurs_start = max(calc_start, thurs_rule_start) if thurs_rule_start else calc_start
 
-        potential_thurs_dates = DayBeforeGoodFridayPotentialPost2020.dates(calc_start, calc_end)
-        self._thurs_before_gf_2pm_early_closes = [
+        potential_gf_dates = GoodFridayPotentialPost2020.dates(effective_gf_start, calc_end)
+        gf_full_holidays = [d for d in potential_gf_dates if not is_first_friday(d)]
+        gf_12pm_early_closes = [d for d in potential_gf_dates if is_first_friday(d)]
+
+        potential_thurs_dates = DayBeforeGoodFridayPotentialPost2020.dates(effective_thurs_start, calc_end)
+        thurs_before_gf_2pm_early_closes = [
             thurs for thurs in potential_thurs_dates if not is_first_friday(thurs + pd.Timedelta(days=1))
         ]
+        return gf_full_holidays, gf_12pm_early_closes, thurs_before_gf_2pm_early_closes
 
     @property
     def regular_holidays(self):
@@ -158,8 +168,8 @@ class SIFMAUSExchangeCalendar(MarketCalendar):
 
     @property
     def adhoc_holidays(self):
-        self._calculate_dynamic_gf_dates()  # Calculate on first access
-        return self._gf_full_holidays
+        gf_full_holidays, _, _ = self._get_dynamic_gf_rules()
+        return gf_full_holidays
 
     @property
     def special_closes(self):
@@ -183,15 +193,15 @@ class SIFMAUSExchangeCalendar(MarketCalendar):
 
     @property
     def special_closes_adhoc(self):
-        self._calculate_dynamic_gf_dates()  # Calculate on first access
+        _, gf_12pm_early_closes, thurs_before_gf_2pm_early_closes = self._get_dynamic_gf_rules()
         return [
             (
-                time(12, tzinfo=self.tz),
-                self._gf_12pm_early_closes,
+                time(12), # SIFMA rule specifies 12:00 PM ET
+                gf_12pm_early_closes,
             ),
             (
-                time(14, tzinfo=self.tz),
-                self._thurs_before_gf_2pm_early_closes,
+                time(14), # SIFMA rule specifies 2:00 PM ET
+                thurs_before_gf_2pm_early_closes,
             ),
         ]
 
