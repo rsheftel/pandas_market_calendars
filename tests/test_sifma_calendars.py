@@ -93,6 +93,40 @@ def test_us_weekmask():
     assert sifma_us.weekmask == "Mon Tue Wed Thu Fri"
 
 
+def test_us_2025():
+    start = "2025-01-01"
+    end = "2025-12-31"
+    holidays = [
+        pd.Timestamp("2025-01-01", tz="UTC"),  # New Year's Day
+        pd.Timestamp("2025-01-20", tz="UTC"),  # MLK
+        pd.Timestamp("2025-02-17", tz="UTC"),  # Presidents Day
+        pd.Timestamp("2025-04-18", tz="UTC"),  # Good Friday (NOT first Friday)
+        pd.Timestamp("2025-05-26", tz="UTC"),  # Memorial Day
+        pd.Timestamp("2025-06-19", tz="UTC"),  # Juneteenth
+        pd.Timestamp("2025-07-04", tz="UTC"),  # Independence Day
+        pd.Timestamp("2025-09-01", tz="UTC"),  # Labor Day
+        pd.Timestamp("2025-10-13", tz="UTC"),  # Columbus Day
+        pd.Timestamp("2025-11-11", tz="UTC"),  # Veterans Day
+        pd.Timestamp("2025-11-27", tz="UTC"),  # Thanksgiving
+        pd.Timestamp("2025-12-25", tz="UTC"),  # Christmas
+    ]
+    _test_holidays(sifma_us, holidays, start, end)
+    _test_no_special_opens(sifma_us, start, end)
+
+    # early closes we expect:
+    early_closes = [
+        pd.Timestamp(
+            "2025-04-17 2:00PM", tz="America/New_York"
+        ),  # Day before Good Friday (2pm because GF is full holiday)
+        pd.Timestamp("2025-05-23 2:00PM", tz="America/New_York"),  # Day before Memorial Day
+        pd.Timestamp("2025-07-03 2:00PM", tz="America/New_York"),  # Day before Independence Day
+        pd.Timestamp("2025-11-28 2:00PM", tz="America/New_York"),  # Day after Thanksgiving
+        pd.Timestamp("2025-12-24 2:00PM", tz="America/New_York"),  # Day before Christmas
+        pd.Timestamp("2025-12-31 2:00PM", tz="America/New_York"),  # New Year's Eve
+    ]
+    _test_has_early_closes(sifma_us, early_closes, start, end)
+
+
 def test_us_2024():
     start = "2024-01-01"
     end = "2024-12-31"
@@ -100,7 +134,7 @@ def test_us_2024():
         pd.Timestamp("2024-01-01", tz="UTC"),  # New Year's Day
         pd.Timestamp("2024-01-15", tz="UTC"),  # MLK
         pd.Timestamp("2024-02-19", tz="UTC"),  # Presidents Day
-        pd.Timestamp("2024-03-29", tz="UTC"),  # Good Friday
+        pd.Timestamp("2024-03-29", tz="UTC"),  # Good Friday (NOT first Friday)
         pd.Timestamp("2024-05-27", tz="UTC"),  # Memorial Day
         pd.Timestamp("2024-06-19", tz="UTC"),  # Juneteenth
         pd.Timestamp("2024-07-04", tz="UTC"),  # Independence Day
@@ -115,19 +149,13 @@ def test_us_2024():
 
     # early closes we expect:
     early_closes = [
-        pd.Timestamp("2024-03-28 2:00PM", tz="America/New_York"),  # Good Friday
         pd.Timestamp(
-            "2024-05-24 2:00PM", tz="America/New_York"
-        ),  # Day before Memorial Day
-        pd.Timestamp(
-            "2024-07-03 2:00PM", tz="America/New_York"
-        ),  # Day before Independence Day
-        pd.Timestamp(
-            "2024-11-29 2:00PM", tz="America/New_York"
-        ),  # Day after Thanksgiving
-        pd.Timestamp(
-            "2024-12-24 2:00PM", tz="America/New_York"
-        ),  # Day before Christmas
+            "2024-03-28 2:00PM", tz="America/New_York"
+        ),  # Day before Good Friday (2pm because GF is full holiday)
+        pd.Timestamp("2024-05-24 2:00PM", tz="America/New_York"),  # Day before Memorial Day
+        pd.Timestamp("2024-07-03 2:00PM", tz="America/New_York"),  # Day before Independence Day
+        pd.Timestamp("2024-11-29 2:00PM", tz="America/New_York"),  # Day after Thanksgiving
+        pd.Timestamp("2024-12-24 2:00PM", tz="America/New_York"),  # Day before Christmas
         pd.Timestamp("2024-12-31 2:00PM", tz="America/New_York"),  # New Year's Eve
     ]
     _test_has_early_closes(sifma_us, early_closes, start, end)
@@ -136,10 +164,12 @@ def test_us_2024():
 def test_us_2023():
     start = "2023-01-01"
     end = "2023-12-31"
+    # Note: Good Friday 2023-04-07 IS the first Friday -> 12pm early close
     holidays = [
         pd.Timestamp("2023-01-02", tz="UTC"),  # New Year's Day
         pd.Timestamp("2023-01-16", tz="UTC"),  # MLK
         pd.Timestamp("2023-02-20", tz="UTC"),  # Presidents Day
+        # Good Friday is NOT a full holiday
         pd.Timestamp("2023-05-29", tz="UTC"),  # Memorial Day
         pd.Timestamp("2023-06-19", tz="UTC"),  # Juneteenth
         pd.Timestamp("2023-07-04", tz="UTC"),  # Independence Day
@@ -153,7 +183,8 @@ def test_us_2023():
 
     # early closes we expect:
     early_closes = [
-        pd.Timestamp("2023-04-07 2:00PM", tz="America/New_York"),  # Good Friday
+        pd.Timestamp("2023-04-07 12:00PM", tz="America/New_York"),  # Good Friday (12pm because it's the first Friday)
+        # No early close the day before Good Friday
         pd.Timestamp("2023-05-26 2:00PM", tz="America/New_York"),  # Day before Memorial Day
         pd.Timestamp("2023-07-03 2:00PM", tz="America/New_York"),  # Day before Independence Day
         pd.Timestamp("2023-11-24 2:00PM", tz="America/New_York"),  # Day after Thanksgiving
@@ -166,10 +197,11 @@ def test_us_2023():
 def test_us_2022():
     start = "2022-01-01"
     end = "2022-12-31"
+    # Note: Good Friday 2022-04-15 is NOT the first Friday -> full holiday
     holidays = [
         pd.Timestamp("2022-01-17", tz="UTC"),  # MLK
         pd.Timestamp("2022-02-21", tz="UTC"),  # Presidents Day
-        pd.Timestamp("2022-04-15", tz="UTC"),  # Good Friday
+        pd.Timestamp("2022-04-15", tz="UTC"),  # Good Friday (Full Holiday)
         pd.Timestamp("2022-05-30", tz="UTC"),  # Memorial Day
         pd.Timestamp("2022-06-20", tz="UTC"),  # Juneteenth
         pd.Timestamp("2022-07-04", tz="UTC"),  # Independence Day
@@ -184,7 +216,9 @@ def test_us_2022():
 
     # early closes we expect:
     early_closes = [
-        pd.Timestamp("2022-04-14 2:00PM", tz="America/New_York"),  # Day before Good Friday
+        pd.Timestamp(
+            "2022-04-14 2:00PM", tz="America/New_York"
+        ),  # Day before Good Friday (2pm because GF is full holiday)
         pd.Timestamp("2022-05-27 2:00PM", tz="America/New_York"),  # Day before Memorial Day
         pd.Timestamp("2022-07-01 2:00PM", tz="America/New_York"),  # Day before Independence Day
         pd.Timestamp("2022-11-25 2:00PM", tz="America/New_York"),  # Day after Thanksgiving
@@ -197,24 +231,28 @@ def test_us_2022():
 def test_us_2021():
     start = "2021-01-01"
     end = "2021-12-31"
+    # Note: Good Friday 2021-04-02 IS the first Friday -> 12pm early close
     holidays = [
         pd.Timestamp("2021-01-01", tz="UTC"),  # New Year's Day
         pd.Timestamp("2021-01-18", tz="UTC"),  # MLK
         pd.Timestamp("2021-02-15", tz="UTC"),  # Presidents Day
+        # Good Friday is NOT a full holiday
         pd.Timestamp("2021-05-31", tz="UTC"),  # Memorial Day
-        pd.Timestamp("2021-07-05", tz="UTC"),  # Independence Day
+        # Juneteenth not observed by SIFMA in 2021
+        pd.Timestamp("2021-07-05", tz="UTC"),  # Independence Day observed
         pd.Timestamp("2021-09-06", tz="UTC"),  # Labor Day
         pd.Timestamp("2021-10-11", tz="UTC"),  # Columbus Day
         pd.Timestamp("2021-11-11", tz="UTC"),  # Veterans Day
         pd.Timestamp("2021-11-25", tz="UTC"),  # Thanksgiving
-        pd.Timestamp("2021-12-24", tz="UTC"),  # Christmas
+        pd.Timestamp("2021-12-24", tz="UTC"),  # Christmas observed
     ]
     _test_holidays(sifma_us, holidays, start, end)
     _test_no_special_opens(sifma_us, start, end)
 
     # early closes we expect:
     early_closes = [
-        pd.Timestamp("2021-04-02 2:00PM", tz="America/New_York"),  # Day before Good Friday
+        pd.Timestamp("2021-04-02 12:00PM", tz="America/New_York"),  # Good Friday (12pm because it's the first Friday)
+        # No early close the day before Good Friday
         pd.Timestamp("2021-05-28 2:00PM", tz="America/New_York"),  # Day before Memorial Day
         pd.Timestamp("2021-07-02 2:00PM", tz="America/New_York"),  # Day before Independence Day
         pd.Timestamp("2021-11-26 2:00PM", tz="America/New_York"),  # Day after Thanksgiving
@@ -282,6 +320,75 @@ def test_us_2019():
         pd.Timestamp("2019-11-29 2:00PM", tz="America/New_York"),  # Day after Thanksgiving
         pd.Timestamp("2019-12-24 2:00PM", tz="America/New_York"),  # Day before Christmas
         pd.Timestamp("2019-12-31 2:00PM", tz="America/New_York"),  # New Year's Eve
+    ]
+    _test_has_early_closes(sifma_us, early_closes, start, end)
+
+
+def test_us_2026():
+    start = "2026-01-01"
+    end = "2026-12-31"
+    # Note: Good Friday 2026-04-03 IS the first Friday -> 12pm early close
+    holidays = [
+        pd.Timestamp("2026-01-01", tz="UTC"),  # New Year's Day
+        pd.Timestamp("2026-01-19", tz="UTC"),  # MLK
+        pd.Timestamp("2026-02-16", tz="UTC"),  # Presidents Day
+        # Good Friday is NOT a full holiday
+        pd.Timestamp("2026-05-25", tz="UTC"),  # Memorial Day
+        pd.Timestamp("2026-06-19", tz="UTC"),  # Juneteenth
+        pd.Timestamp("2026-07-03", tz="UTC"),  # Independence Day observed
+        pd.Timestamp("2026-09-07", tz="UTC"),  # Labor Day
+        pd.Timestamp("2026-10-12", tz="UTC"),  # Columbus Day
+        pd.Timestamp("2026-11-11", tz="UTC"),  # Veterans Day
+        pd.Timestamp("2026-11-26", tz="UTC"),  # Thanksgiving
+        pd.Timestamp("2026-12-25", tz="UTC"),  # Christmas
+    ]
+    _test_holidays(sifma_us, holidays, start, end)
+    _test_no_special_opens(sifma_us, start, end)
+
+    # early closes we expect:
+    early_closes = [
+        pd.Timestamp("2026-04-03 12:00PM", tz="America/New_York"),  # Good Friday (12pm because it's the first Friday)
+        # No early close the day before Good Friday
+        pd.Timestamp("2026-05-22 2:00PM", tz="America/New_York"),  # Day before Memorial Day
+        pd.Timestamp("2026-07-02 2:00PM", tz="America/New_York"),  # Day before Independence Day
+        pd.Timestamp("2026-11-27 2:00PM", tz="America/New_York"),  # Day after Thanksgiving
+        pd.Timestamp("2026-12-24 2:00PM", tz="America/New_York"),  # Day before Christmas
+        pd.Timestamp("2026-12-31 2:00PM", tz="America/New_York"),  # New Year's Eve
+    ]
+    _test_has_early_closes(sifma_us, early_closes, start, end)
+
+
+def test_us_2027():
+    start = "2027-01-01"
+    end = "2027-12-31"
+    # Note: Good Friday 2027-03-26 is NOT the first Friday -> full holiday
+    holidays = [
+        pd.Timestamp("2027-01-01", tz="UTC"),  # New Year's Day
+        pd.Timestamp("2027-01-18", tz="UTC"),  # MLK
+        pd.Timestamp("2027-02-15", tz="UTC"),  # Presidents Day
+        pd.Timestamp("2027-03-26", tz="UTC"),  # Good Friday (Full Holiday)
+        pd.Timestamp("2027-05-31", tz="UTC"),  # Memorial Day
+        pd.Timestamp("2027-06-18", tz="UTC"),  # Juneteenth observed
+        pd.Timestamp("2027-07-05", tz="UTC"),  # Independence Day observed
+        pd.Timestamp("2027-09-06", tz="UTC"),  # Labor Day
+        pd.Timestamp("2027-10-11", tz="UTC"),  # Columbus Day
+        pd.Timestamp("2027-11-11", tz="UTC"),  # Veterans Day
+        pd.Timestamp("2027-11-25", tz="UTC"),  # Thanksgiving
+        pd.Timestamp("2027-12-24", tz="UTC"),  # Christmas observed
+    ]
+    _test_holidays(sifma_us, holidays, start, end)
+    _test_no_special_opens(sifma_us, start, end)
+
+    # early closes we expect:
+    early_closes = [
+        pd.Timestamp(
+            "2027-03-25 2:00PM", tz="America/New_York"
+        ),  # Day before Good Friday (2pm because GF is full holiday)
+        pd.Timestamp("2027-05-28 2:00PM", tz="America/New_York"),  # Day before Memorial Day
+        pd.Timestamp("2027-07-02 2:00PM", tz="America/New_York"),  # Day before Independence Day
+        pd.Timestamp("2027-11-26 2:00PM", tz="America/New_York"),  # Day after Thanksgiving
+        pd.Timestamp("2027-12-23 2:00PM", tz="America/New_York"),  # Day before Christmas
+        pd.Timestamp("2027-12-31 2:00PM", tz="America/New_York"),  # New Year's Eve
     ]
     _test_has_early_closes(sifma_us, early_closes, start, end)
 
