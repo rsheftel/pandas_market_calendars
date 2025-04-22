@@ -210,20 +210,14 @@ USColumbusDay = Holiday(
 # When falls on Saturday, no holiday is observed.
 # When falls on Sunday, the Monday following is a holiday.
 ##########################################################
-USVeteransDay2022 = Holiday(
-    "Veterans Day Prior to 2023",
-    month=11,
-    day=11,
-    end_date=Timestamp("2022-12-31"),
-    days_of_week=(MONDAY, TUESDAY, WEDNESDAY, THURSDAY, FRIDAY),
-    observance=sunday_to_monday,
-)
-
 USVeteransDay = Holiday(
     "Veterans Day",
     month=11,
     day=11,
-    start_date=Timestamp("2023-12-31"),
+    # SIFMA guidance for observing only Mon-Fri or Sunday->Monday
+    # appears consistent for many years. This rule doesn't specify
+    # a start_date, letting it apply further back if needed by other logic,
+    # while effectively covering 2023+ due to the days_of_week filter.
     days_of_week=(MONDAY, TUESDAY, WEDNESDAY, THURSDAY, FRIDAY),
     observance=sunday_to_monday,
 )
