@@ -56,9 +56,7 @@ def test_merge_schedules():
             ],
         },
         columns=["market_open", "market_close"],
-        index=pd.DatetimeIndex(
-            ["2016-07-01", "2016-07-04", "2016-07-05", "2016-07-06"]
-        ),
+        index=pd.DatetimeIndex(["2016-07-01", "2016-07-04", "2016-07-05", "2016-07-06"]),
     )
     actual = mcal.merge_schedules([sch1, sch2], how="outer")
     assert_frame_equal(actual, expected)
@@ -230,7 +228,7 @@ def test_mark_session():
                 ],
                 dtype="datetime64[ns, UTC]",
             ),
-            dtype=pd.CategoricalDtype(categories=["closed", "rth"], ordered=False),
+            dtype=pd.CategoricalDtype(categories=["break", "closed", "rth"], ordered=False),
         ),
         mcal.mark_session(
             sched,
@@ -263,4 +261,29 @@ def test_mark_session():
             mcal.date_range(sched, "15m", start="2020-01-20 17:00", end="2020-01-21 00:00"),
             closed="left",
         ),
+    )
+
+
+def test_mark_session_edge_case():
+    # Edge case test where mark_session needs an additional schedule row because the first
+    # timestamp of a given date range lands in the post market session of the day prior
+    NYSE = mcal.get_calendar("NYSE")
+    sched = NYSE.schedule("2015-12-25", "2016-01-05", market_times="all", tz="UTC")
+    dt = pd.date_range("2015-12-31T23:00", "2016-01-01T02:00", freq="30min", tz="UTC")
+
+    assert_series_equal(
+        pd.Series(
+            [
+                "post",
+                "post",
+                "post",
+                "post",
+                "closed",
+                "closed",
+                "closed",
+            ],
+            index=dt,
+            dtype=pd.CategoricalDtype(["closed", "post", "pre", "rth"], ordered=False),
+        ),
+        mcal.mark_session(sched, dt, closed="left"),
     )

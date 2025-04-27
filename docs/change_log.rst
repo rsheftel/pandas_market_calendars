@@ -3,6 +3,10 @@ Change Log
 
 Updates
 -------
+5.1.0 (04/22/2025)
+~~~~~~~~~~~~~~~~~~
+- Implement robust SIFMA Good Friday logic #385
+
 5.0.0 (04/07/2025)
 ~~~~~~~~~~~~~~~~~~
 - Add human readable names from PR #380
@@ -200,7 +204,7 @@ date_range(): Helpers > date_range - (These were actually updates in PR #358)
 2.0 (5/8/21)
 ~~~~~~~~~~~~
 This version replaces the trading_calendars integration with exchange_calendars, closing out #120. `exchange_calendars <https://github.com/gerrymanoim/exchange_calendars>`_
-if the fork of trading_calendars that is currently actively maintained. trading_calendars is now abandoned because
+is the fork of trading_calendars that is currently actively maintained. trading_calendars is now abandoned because
 it's corporate sponsor is out of business and gone.
 
 1.7 (5/6/21)

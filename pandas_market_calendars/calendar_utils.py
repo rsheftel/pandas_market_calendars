@@ -106,11 +106,15 @@ def mark_session(
             f"Schedule ends at: {schedule.iloc[-1, -1]}"
         )
 
+    lte_end = schedule.index <= end.normalize().tz_localize(None)
+    gte_start = schedule.index >= start.normalize().tz_localize(None)
+
+    # Shift both by 1 to keep an extra row on either end if available. Needed in some edge cases.
+    gte_start = np.append(gte_start, True)[1:]  # Shifts gte_start by one to the left.
+    lte_end = np.insert(lte_end, 0, True)[:-1]  # Shifts lte_end by one to the right.
+
     # Trim the schedule to match the timeframe covered by the given timeseries
-    schedule = schedule[
-        (schedule.index >= start.normalize().tz_localize(None))
-        & (schedule.index <= end.normalize().tz_localize(None))
-    ]
+    schedule = schedule[gte_start & lte_end]
 
     backfilled_map = DEFAULT_LABEL_MAP | label_map
     mapped_labels = [backfilled_map[label] for label in session_labels]

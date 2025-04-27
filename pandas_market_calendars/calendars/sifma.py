@@ -1,5 +1,7 @@
 from datetime import time
+import functools
 
+import pandas as pd
 from pandas.tseries.holiday import AbstractHolidayCalendar
 from zoneinfo import ZoneInfo
 from itertools import chain
@@ -26,11 +28,13 @@ from pandas_market_calendars.holidays.sifma import (
     USNewYearsEve2pmEarlyClose,
     MartinLutherKingJr,
     USPresidentsDay,
+    # --- Good Friday Rules --- #
+    is_first_friday,
     GoodFridayThru2020,
     DayBeforeGoodFriday2pmEarlyCloseThru2020,
-    GoodFridayAdHoc,
-    GoodFriday2pmEarlyCloseAdHoc,
-    DayBeforeGoodFriday2pmEarlyCloseAdHoc,
+    GoodFridayPotentialPost2020,  # Potential dates, filtered later
+    DayBeforeGoodFridayPotentialPost2020,  # Potential dates, filtered later
+    # --- End Good Friday Rules --- #
     DayBeforeUSMemorialDay2pmEarlyClose,
     USMemorialDay,
     USJuneteenthAfter2022,
@@ -39,7 +43,6 @@ from pandas_market_calendars.holidays.sifma import (
     ThursdayBeforeUSIndependenceDay2pmEarlyClose,
     USLaborDay,
     USColumbusDay,
-    USVeteransDay2022,
     USVeteransDay,
     USThanksgivingDay,
     DayAfterThanksgiving2pmEarlyClose,
@@ -118,6 +121,32 @@ class SIFMAUSExchangeCalendar(MarketCalendar):
     def tz(self):
         return ZoneInfo("America/New_York")
 
+    # Helper method to calculate and cache dynamic dates
+    @functools.lru_cache()
+    def _get_dynamic_gf_rules(self):
+        # Calculate rules for a wide fixed range to avoid arbitrary cutoffs
+        # while preventing infinite generation. 1970-2100 is a reasonable range.
+        calc_start = pd.Timestamp("1970-01-01")
+        calc_end = pd.Timestamp("2100-12-31")
+
+        # Filter potential dates based on the start_date of the underlying Holiday rules
+        gf_rule_start = GoodFridayPotentialPost2020.start_date
+        thurs_rule_start = DayBeforeGoodFridayPotentialPost2020.start_date
+
+        # Ensure calculation range respects the rule start dates
+        effective_gf_start = max(calc_start, gf_rule_start) if gf_rule_start else calc_start
+        effective_thurs_start = max(calc_start, thurs_rule_start) if thurs_rule_start else calc_start
+
+        potential_gf_dates = GoodFridayPotentialPost2020.dates(effective_gf_start, calc_end)
+        gf_full_holidays = [d for d in potential_gf_dates if not is_first_friday(d)]
+        gf_12pm_early_closes = [d for d in potential_gf_dates if is_first_friday(d)]
+
+        potential_thurs_dates = DayBeforeGoodFridayPotentialPost2020.dates(effective_thurs_start, calc_end)
+        thurs_before_gf_2pm_early_closes = [
+            thurs for thurs in potential_thurs_dates if not is_first_friday(thurs + pd.Timedelta(days=1))
+        ]
+        return gf_full_holidays, gf_12pm_early_closes, thurs_before_gf_2pm_early_closes
+
     @property
     def regular_holidays(self):
         return AbstractHolidayCalendar(
@@ -131,7 +160,6 @@ class SIFMAUSExchangeCalendar(MarketCalendar):
                 USIndependenceDay,
                 USLaborDay,
                 USColumbusDay,
-                USVeteransDay2022,
                 USVeteransDay,
                 USThanksgivingDay,
                 Christmas,
@@ -140,11 +168,8 @@ class SIFMAUSExchangeCalendar(MarketCalendar):
 
     @property
     def adhoc_holidays(self):
-        return list(
-            chain(
-                GoodFridayAdHoc,
-            )
-        )
+        gf_full_holidays, _, _ = self._get_dynamic_gf_rules()
+        return gf_full_holidays
 
     @property
     def special_closes(self):
@@ -168,11 +193,15 @@ class SIFMAUSExchangeCalendar(MarketCalendar):
 
     @property
     def special_closes_adhoc(self):
+        _, gf_12pm_early_closes, thurs_before_gf_2pm_early_closes = self._get_dynamic_gf_rules()
         return [
             (
-                time(14, tzinfo=ZoneInfo("America/New_York")),
-                GoodFriday2pmEarlyCloseAdHoc
-                + DayBeforeGoodFriday2pmEarlyCloseAdHoc,  # list
+                time(12), # SIFMA rule specifies 12:00 PM ET
+                gf_12pm_early_closes,
+            ),
+            (
+                time(14), # SIFMA rule specifies 2:00 PM ET
+                thurs_before_gf_2pm_early_closes,
             ),
         ]
 
@@ -227,7 +256,6 @@ class SIFMAUKExchangeCalendar(MarketCalendar):
                 UKSummerBank,
                 USLaborDay,
                 USColumbusDay,
-                USVeteransDay2022,
                 USVeteransDay,
                 USThanksgivingDay,
                 UKChristmas,
@@ -331,7 +359,6 @@ class SIFMAJPExchangeCalendar(MarketCalendar):
                 JapanSportsDay2020,
                 JapanHealthAndSportsDay2000To2019,
                 JapanCultureDay,
-                USVeteransDay2022,
                 USVeteransDay,
                 JapanLaborThanksgivingDay,
                 USThanksgivingDay,
