@@ -818,7 +818,10 @@ class NYSEExchangeCalendar(MarketCalendar):
             ("1952-09-29", time(15, 30)),
             ("1974-01-01", time(16)),
         ),
-        "post": ((None, time(20)),),
+        "post": (
+            (None, time(20)),
+            ("1999-01-01", time(17)),  # Adjust post-market close for early close days
+        ),
     }
 
     _saturday_close = time(12)
@@ -1111,6 +1114,15 @@ class NYSEExchangeCalendar(MarketCalendar):
                 AbstractHolidayCalendar(
                     rules=[
                         SystemProb356pmEarlyClose2005,
+                    ]
+                ),
+            ),
+            (
+                time(17, tzinfo=ZoneInfo("America/New_York")),
+                AbstractHolidayCalendar(
+                    rules=[
+                        ChristmasEvePost1999Early1pmClose,
+                        DayAfterThanksgiving1pmEarlyCloseInOrAfter1993,
                     ]
                 ),
             ),

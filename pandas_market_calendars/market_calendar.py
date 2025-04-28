@@ -782,6 +782,11 @@ class MarketCalendar(metaclass=MarketCalendarMeta):
                     elif market_time == "market_close":
                         _close_adj = specialix
 
+            if market_time == "post":
+                special = self.special_dates(market_time, days[0], days[-1], filter_holidays=False)
+                specialix = special.index[special.index.isin(temp.index)]
+                temp.loc[specialix] = special
+
             schedule[market_time] = temp
 
         cols = schedule.columns

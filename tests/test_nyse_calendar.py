@@ -436,6 +436,34 @@ def test_juneteenth():
     assert pd.Timestamp("6/19/2023", tz="UTC") not in good_dates
 
 
+def test_christmas_eve_post_market_close():
+    from pandas_market_calendars.calendars.nyse import NYSEExchangeCalendar
+    import pandas as pd
+
+    nyse = NYSEExchangeCalendar()
+    schedule = nyse.schedule(
+        start_date="2019-12-24", end_date="2019-12-24", market_times=["market_open", "market_close", "post"]
+    )
+
+    assert schedule.loc["2019-12-24", "market_close"] == pd.Timestamp(
+        "2019-12-24 13:00:00-05:00", tz="America/New_York"
+    )
+    assert schedule.loc["2019-12-24", "post"] == pd.Timestamp(
+        "2019-12-24 17:00:00-05:00", tz="America/New_York"
+    )
+
+    schedule_2025 = nyse.schedule(
+        start_date="2025-12-24", end_date="2025-12-24", market_times=["market_open", "market_close", "post"]
+    )
+
+    assert schedule_2025.loc["2025-12-24", "market_close"] == pd.Timestamp(
+        "2025-12-24 13:00:00-05:00", tz="America/New_York"
+    )
+    assert schedule_2025.loc["2025-12-24", "post"] == pd.Timestamp(
+        "2025-12-24 17:00:00-05:00", tz="America/New_York"
+    )
+
+
 if __name__ == "__main__":
     print("runing open")
     test_days_at_time_open()
