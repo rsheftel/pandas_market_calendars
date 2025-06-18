@@ -24,118 +24,33 @@ from pandas.tseries.holiday import (
     Holiday,
 )
 from zoneinfo import ZoneInfo
-
 from pandas_market_calendars.market_calendar import FRIDAY, MarketCalendar
 
-# Universal Confraternization (new years day)
-ConfUniversal = Holiday(
-    "Dia da Confraternizacao Universal",
-    month=1,
-    day=1,
-)
-# Sao Paulo city birthday
-AniversarioSaoPaulo = Holiday(
-    "Aniversario de Sao Paulo", month=1, day=25, end_date="2021-12-31"
-)
-# Carnival Monday
-CarnavalSegunda = Holiday("Carnaval Segunda", month=1, day=1, offset=[Easter(), Day(-48)])
-# Carnival Tuesday
-CarnavalTerca = Holiday("Carnaval Terca", month=1, day=1, offset=[Easter(), Day(-47)])
-# Ash Wednesday (short day)
-QuartaCinzas = Holiday("Quarta Cinzas", month=1, day=1, offset=[Easter(), Day(-46)])
-# Good Friday
-SextaPaixao = GoodFriday
-# Feast of the Most Holy Body of Christ
-CorpusChristi = Holiday("Corpus Christi", month=1, day=1, offset=[Easter(), Day(60)])
-# Tiradentes Memorial
-Tiradentes = Holiday(
-    "Tiradentes",
-    month=4,
-    day=21,
-)
-# Labor Day
-DiaTrabalho = Holiday(
-    "Dia Trabalho",
-    month=5,
-    day=1,
-)
-# Constitutionalist Revolution
-Constitucionalista = Holiday("Constitucionalista", month=7, day=9, start_date="1997-01-01", end_date="2019-12-31")
-# Independence Day
-Independencia = Holiday(
-    "Independencia",
-    month=9,
-    day=7,
-)
-# Our Lady of Aparecida
-Aparecida = Holiday(
-    "Nossa Senhora de Aparecida",
-    month=10,
-    day=12,
-)
-# All Souls' Day
-Finados = Holiday(
-    "Dia dos Finados",
-    month=11,
-    day=2,
-)
-# Proclamation of the Republic
-ProclamacaoRepublica = Holiday(
-    "Proclamacao da Republica",
-    month=11,
-    day=15,
-)
-# Day of Black Awareness (municipal holiday for the city of São Paulo)
-ConscienciaNegra = Holiday(
-    "Dia da Consciencia Negra",
-    month=11,
-    day=20,
-    start_date="2004-01-01",
-    end_date="2019-12-31",
-)
-# Day of Black Awareness (national holiday)
-ConscienciaNegraNacional = Holiday(
-    "Dia da Consciencia Negra",
-    month=11,
-    day=20,
-    start_date="2023-12-22",
-)
-# Christmas Eve
-VesperaNatal = Holiday(
-    "Vespera Natal",
-    month=12,
-    day=24,
-)
-# Christmas
-Natal = Holiday(
-    "Natal",
-    month=12,
-    day=25,
-)
-# New Year's Eve
-AnoNovo = Holiday(
-    "Ano Novo",
-    month=12,
-    day=31,
-)
-# New Year's Eve falls on Saturday
-AnoNovoSabado = Holiday(
-    "Ano Novo Sabado",
-    month=12,
-    day=30,
-    days_of_week=(FRIDAY,),
-)
-# New Year's Eve falls on Sunday
-AnoNovoDomingo = Holiday(
-    "Ano Novo Domingo",
-    month=12,
-    day=29,
-    days_of_week=(FRIDAY,),
+# Import shared Brazil holiday definitions to avoid duplication
+from pandas_market_calendars.holidays.br import (
+    ConfraternizacaoUniversal as ConfUniversal,
+    AniversarioSaoPaulo,
+    CarnavalSegunda,
+    CarnavalTerca,
+    QuartaCinzas,
+    PaixaoCristo as SextaPaixao,
+    CorpusChristi,
+    Tiradentes,
+    DiaTrabalho,
+    RevConstitucionalista_1997_2019 as Constitucionalista,
+    IndependenciaBrasil as Independencia,
+    NossaSeñoraAparecida as Aparecida,
+    Finados,
+    ProclamacaoRepublica,
+    ConscienciaNegraMunicipal as ConscienciaNegra,
+    ConscienciaNegraNacional,
+    VesperaNatal,
+    Natal,
+    VesperaAnoNovo as AnoNovo,
+    AnoNovoSabado,
+    AnoNovoDomingo,
 )
 
-##########################
-# Non-recurring holidays
-##########################
 
 Constitucionalista2021 = Timestamp("2021-07-09", tz="UTC")
 ConscienciaNegra2021 = Timestamp("2021-11-20", tz="UTC")
