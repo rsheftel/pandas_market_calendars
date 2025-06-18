@@ -4,7 +4,7 @@ Utilities to use with market_calendars
 
 import itertools
 from math import ceil, floor
-from typing import TYPE_CHECKING, Any, Dict, Iterable, Literal, Tuple, Union
+from typing import TYPE_CHECKING, Any, Dict, Iterable, Literal, Tuple, Union, Type, Set
 import warnings
 
 from re import finditer, split
@@ -271,7 +271,7 @@ class InsufficientScheduleWarning(DateRangeWarning):
 
 def filter_date_range_warnings(
     action: Literal["error", "ignore", "always", "default", "once"],
-    source: Union[Iterable[type[DateRangeWarning]], type[DateRangeWarning]] = DateRangeWarning,
+    source: Union[Iterable[Type[DateRangeWarning]], Type[DateRangeWarning]] = DateRangeWarning,
 ):
     """
     Adjust the behavior of the date_range() warnings to the desired action.
@@ -298,7 +298,7 @@ def filter_date_range_warnings(
 
 def parse_missing_session_warning(
     err: MissingSessionWarning,
-) -> Tuple[set[SESSIONS], set[MKT_TIMES]]:
+) -> Tuple[Set[SESSIONS], Set[MKT_TIMES]]:
     """
     Parses a Missing Session Warning's Error Message.
     :returns Tuple[set[str], set[str]]:
