@@ -3,6 +3,11 @@ Change Log
 
 Updates
 -------
+5.1.1 (06/22/2025)
+~~~~~~~~~~~~~~~~~~
+- Fix the close time for BMF (#391 #393)
+- Bring backward compatability to python 3.8, lower min version to that
+
 5.1.0 (04/22/2025)
 ~~~~~~~~~~~~~~~~~~
 - Implement robust SIFMA Good Friday logic #385
