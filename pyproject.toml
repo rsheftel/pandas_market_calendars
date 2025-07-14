@@ -1,6 +1,6 @@
 [project]
 name = "pandas_market_calendars"
-version = "5.1.0"
+version = "5.1.1"
 authors = [
     { name = "Ryan Sheftel", email = "rsheftel@alumni.upenn.edu" },
 ]
@@ -17,6 +17,7 @@ classifiers = [
     # Pick your license as you wish (should match "license" above)
     'License :: OSI Approved :: MIT License',
     # Specify the Python versions you support here.
+    'Programming Language :: Python :: 3.8',
     'Programming Language :: Python :: 3.9',
     'Programming Language :: Python :: 3.10',
     'Programming Language :: Python :: 3.11',
@@ -26,7 +27,7 @@ classifiers = [
 dependencies = ['pandas>=1.1', 'tzdata', 'python-dateutil', 'exchange-calendars>=3.3']
 
 [project.optional-dependencies]
-dev = ['pytest', 'black', 'pre-commit', 'build']
+dev = ['pytest', 'black', 'pre-commit', 'build', 'twine']
 
 [build-system]
 requires = ["setuptools>=61.0", "wheel"]
