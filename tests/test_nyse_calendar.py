@@ -4,7 +4,6 @@ from zoneinfo import ZoneInfo
 
 import pandas as pd
 import pytest
-from zoneinfo import ZoneInfo
 from pandas.testing import assert_index_equal, assert_series_equal
 
 from pandas_market_calendars.calendars.nyse import NYSEExchangeCalendar

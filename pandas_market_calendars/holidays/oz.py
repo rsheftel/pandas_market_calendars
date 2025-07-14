@@ -6,6 +6,7 @@ from pandas.tseries.holiday import (
     MO,
     next_monday_or_tuesday,
     weekend_to_monday,
+    previous_friday,
 )
 
 # New Year's Day
@@ -61,3 +62,21 @@ UniqueCloses = []
 
 # National Day of Mourning for Her Majesty the Queen
 UniqueCloses.append(Timestamp("2022-09-22", tz="UTC"))
+
+
+# Early closes
+# Christmas Eve
+ChristmasEve = Holiday(
+    "Christmas Eve",
+    month=12,
+    day=24,
+    observance=previous_friday,
+)
+
+# New Year's Eve
+NewYearsEve = Holiday(
+    "New Year's Eve",
+    month=12,
+    day=31,
+    observance=previous_friday,
+)

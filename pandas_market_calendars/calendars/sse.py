@@ -2,7 +2,8 @@ from datetime import time, timedelta
 from functools import partial
 
 from pandas.tseries.holiday import AbstractHolidayCalendar, Holiday, next_monday
-import sys 
+import sys
+
 # check python versiOn aNd import accordingly
 if sys.version_info >= (3, 9):
     # For Python 3.9 and later, import directly
@@ -152,81 +153,63 @@ class SSEExchangeCalendar(MarketCalendar):
                     name="Tomb-sweeping Day",
                     month=4,
                     day=4,
-                    observance=partial(
-                        lunisolar, mapping=tsd_mapping, func=next_monday
-                    ),
+                    observance=partial(lunisolar, mapping=tsd_mapping, func=next_monday),
                     start_date=Timestamp(start_year, 4, 4),
                 ),
                 Holiday(
                     name="Tomb-sweeping Day",
                     month=4,
                     day=5,
-                    observance=partial(
-                        lunisolar, mapping=tsd_mapping, func=second_day_in_lieu, delta=1
-                    ),
+                    observance=partial(lunisolar, mapping=tsd_mapping, func=second_day_in_lieu, delta=1),
                     start_date=Timestamp(start_year, 4, 4),
                 ),
                 Holiday(
                     name="Tomb-sweeping Day",
                     month=4,
                     day=6,
-                    observance=partial(
-                        lunisolar, mapping=tsd_mapping, func=third_day_in_lieu, delta=2
-                    ),
+                    observance=partial(lunisolar, mapping=tsd_mapping, func=third_day_in_lieu, delta=2),
                     start_date=Timestamp(start_year, 4, 4),
                 ),
                 Holiday(
                     name="Dragon Boat Festival",
                     month=5,
                     day=27,
-                    observance=partial(
-                        lunisolar, mapping=dbf_mapping, func=next_monday
-                    ),
+                    observance=partial(lunisolar, mapping=dbf_mapping, func=next_monday),
                     start_date=Timestamp(start_year, 5, 27),
                 ),
                 Holiday(
                     name="Dragon Boat Festival",
                     month=5,
                     day=28,
-                    observance=partial(
-                        lunisolar, mapping=dbf_mapping, func=second_day_in_lieu, delta=1
-                    ),
+                    observance=partial(lunisolar, mapping=dbf_mapping, func=second_day_in_lieu, delta=1),
                     start_date=Timestamp(start_year, 5, 27),
                 ),
                 Holiday(
                     name="Dragon Boat Festival",
                     month=5,
                     day=29,
-                    observance=partial(
-                        lunisolar, mapping=dbf_mapping, func=third_day_in_lieu, delta=2
-                    ),
+                    observance=partial(lunisolar, mapping=dbf_mapping, func=third_day_in_lieu, delta=2),
                     start_date=Timestamp(start_year, 5, 27),
                 ),
                 Holiday(
                     name="Mid-autumn Festival",
                     month=9,
                     day=7,
-                    observance=partial(
-                        lunisolar, mapping=maf_mapping, func=next_monday
-                    ),
+                    observance=partial(lunisolar, mapping=maf_mapping, func=next_monday),
                     start_date=Timestamp(start_year, 9, 7),
                 ),
                 Holiday(
                     name="Mid-autumn Festival",
                     month=9,
                     day=8,
-                    observance=partial(
-                        lunisolar, mapping=maf_mapping, func=second_day_in_lieu, delta=1
-                    ),
+                    observance=partial(lunisolar, mapping=maf_mapping, func=second_day_in_lieu, delta=1),
                     start_date=Timestamp(start_year, 9, 7),
                 ),
                 Holiday(
                     name="Mid-autumn Festival",
                     month=9,
                     day=9,
-                    observance=partial(
-                        lunisolar, mapping=maf_mapping, func=third_day_in_lieu, delta=2
-                    ),
+                    observance=partial(lunisolar, mapping=maf_mapping, func=third_day_in_lieu, delta=2),
                     start_date=Timestamp(start_year, 9, 7),
                 ),
                 Holiday(

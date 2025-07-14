@@ -10,7 +10,8 @@ from pandas.tseries.holiday import (
     USThanksgivingDay,
     Holiday,
 )
-import sys 
+import sys
+
 # check python versiOn aNd import accordingly
 if sys.version_info >= (3, 9):
     # For Python 3.9 and later, import directly
@@ -44,12 +45,8 @@ def good_friday_unless_christmas_nye_friday(dt):
         raise NotImplementedError()
 
     year = dt.year
-    christmas_weekday = Christmas.observance(
-        pd.Timestamp(year=year, month=12, day=25)
-    ).weekday()
-    nyd_weekday = USNewYearsDay.observance(
-        pd.Timestamp(year=year, month=1, day=1)
-    ).weekday()
+    christmas_weekday = Christmas.observance(pd.Timestamp(year=year, month=12, day=25)).weekday()
+    nyd_weekday = USNewYearsDay.observance(pd.Timestamp(year=year, month=1, day=1)).weekday()
     if christmas_weekday != 4 and nyd_weekday != 4:
         return GoodFriday.dates(
             pd.Timestamp(year=year, month=1, day=1),
