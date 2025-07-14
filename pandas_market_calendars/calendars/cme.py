@@ -47,6 +47,9 @@ from pandas_market_calendars.holidays.us import (
     USNewYearsDay,
 )
 from pandas_market_calendars.market_calendar import MarketCalendar
+from pandas_market_calendars.holidays.cme import (
+    USIndependenceDayBefore2022PreviousDay,
+)
 
 
 # Useful resources for making changes to this file: http://www.cmegroup.com/tools-information/holiday-calendar.html
@@ -109,6 +112,7 @@ class CMEEquityExchangeCalendar(MarketCalendar):
                         USLaborDay,
                         USJuneteenthAfter2022,
                         USIndependenceDay,
+                        USIndependenceDayBefore2022PreviousDay,
                         USThanksgivingDay,
                         USBlackFridayInOrAfter1993,
                         ChristmasEveBefore1993,

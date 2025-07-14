@@ -6,6 +6,7 @@ Updates07/14
 5.1.2 (06/22/2025)
 ~~~~~~~~~~~~~~~~~~
 - Added early closes for ASX (#399)
+- Added USIndependenceDayBefore2022PreviousDay for CME Equity Calendar (#400)
 
 5.1.1 (06/22/2025)
 ~~~~~~~~~~~~~~~~~~
