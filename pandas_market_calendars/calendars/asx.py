@@ -1,7 +1,8 @@
 from datetime import time
 
 from pandas.tseries.holiday import AbstractHolidayCalendar, GoodFriday, EasterMonday
-import sys 
+import sys
+
 # check python versiOn aNd import accordingly
 if sys.version_info >= (3, 9):
     # For Python 3.9 and later, import directly
@@ -21,6 +22,7 @@ class ASXExchangeCalendar(MarketCalendar):
     Open Time: 10:00 AM, Australia/Sydney
     Close Time: 4:10 PM, Australia/Sydney
 
+    https://www.asx.com.au/markets/market-resources/trading-hours-calendar/cash-market-trading-hours/trading-calendar
 
     Regularly-Observed Holidays:
     - New Year's Day (observed on Monday when Jan 1 is a Saturday or Sunday)
@@ -75,3 +77,24 @@ class ASXExchangeCalendar(MarketCalendar):
     @property
     def adhoc_holidays(self):
         return UniqueCloses
+
+    @property
+    def special_closes(self):
+        return [
+            (
+                time(hour=14, minute=10, tzinfo=self.tz),
+                AbstractHolidayCalendar(
+                    rules=[
+                        ChristmasEve,
+                    ]
+                ),
+            ),
+            (
+                time(hour=14, minute=10, tzinfo=self.tz),
+                AbstractHolidayCalendar(
+                    rules=[
+                        NewYearsEve,
+                    ]
+                ),
+            ),
+        ]
