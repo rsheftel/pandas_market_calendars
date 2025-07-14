@@ -11,7 +11,8 @@ from pandas.tseries.holiday import (
     Holiday,
     previous_friday,
 )
-import sys 
+import sys
+
 # check python versiOn aNd import accordingly
 if sys.version_info >= (3, 9):
     # For Python 3.9 and later, import directly

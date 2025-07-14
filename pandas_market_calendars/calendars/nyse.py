@@ -16,7 +16,8 @@
 from datetime import time
 from itertools import chain
 from typing import Literal, Union
-import sys 
+import sys
+
 # check python versiOn aNd import accordingly
 if sys.version_info >= (3, 9):
     # For Python 3.9 and later, import directly
@@ -1135,19 +1136,12 @@ class NYSEExchangeCalendar(MarketCalendar):
             (
                 time(13, tzinfo=ZoneInfo("America/New_York")),
                 # DaysBeforeIndependenceDay1pmEarlyCloseAdhoc # list
-                ChristmasEve1pmEarlyCloseAdhoc
-                + DayAfterChristmas1pmEarlyCloseAdhoc
-                + BacklogRelief1pmEarlyClose1929,
+                ChristmasEve1pmEarlyCloseAdhoc + DayAfterChristmas1pmEarlyCloseAdhoc + BacklogRelief1pmEarlyClose1929,
             ),
             (
                 time(14, tzinfo=ZoneInfo("America/New_York")),
                 _union_many(
-                    [
-                        pd.DatetimeIndex(
-                            ChristmasEve2pmEarlyCloseAdhoc
-                            + HeavyVolume2pmEarlyClose1933
-                        )
-                    ]
+                    [pd.DatetimeIndex(ChristmasEve2pmEarlyCloseAdhoc + HeavyVolume2pmEarlyClose1933)]
                     + [
                         BacklogRelief2pmEarlyClose1928,
                         TransitStrike2pmEarlyClose1966,  # index
@@ -1160,15 +1154,11 @@ class NYSEExchangeCalendar(MarketCalendar):
             ),
             (
                 time(14, 30, tzinfo=ZoneInfo("America/New_York")),
-                _union_many(
-                    [PaperworkCrisis230pmEarlyCloses1969, Backlog230pmEarlyCloses1987]
-                ),  # index
+                _union_many([PaperworkCrisis230pmEarlyCloses1969, Backlog230pmEarlyCloses1987]),  # index
             ),
             (
                 time(15, tzinfo=ZoneInfo("America/New_York")),
-                _union_many(
-                    [PaperworkCrisis3pmEarlyCloses1969to1970, Backlog3pmEarlyCloses1987]
-                ),  # index
+                _union_many([PaperworkCrisis3pmEarlyCloses1969to1970, Backlog3pmEarlyCloses1987]),  # index
             ),
             (
                 time(15, 30, tzinfo=ZoneInfo("America/New_York")),

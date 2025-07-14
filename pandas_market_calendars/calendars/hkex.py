@@ -10,7 +10,8 @@ from pandas.tseries.holiday import (
     sunday_to_monday,
 )
 from pandas.tseries.offsets import LastWeekOfMonth, WeekOfMonth
-import sys 
+import sys
+
 # check python versiOn aNd import accordingly
 if sys.version_info >= (3, 9):
     # For Python 3.9 and later, import directly
@@ -185,9 +186,7 @@ MidAutumnFestivalDayBefore1983 = Holiday(
     name="Mid-autumn Festival",  # 中秋节翌日
     month=9,
     day=7,
-    observance=partial(
-        process_date, mapping=maf_mapping, delta=1, func=sunday_to_monday
-    ),
+    observance=partial(process_date, mapping=maf_mapping, delta=1, func=sunday_to_monday),
     start_date=Timestamp("1961-01-01"),
     end_date=Timestamp("1983-01-01"),
 )

@@ -7,7 +7,8 @@ from pandas.tseries.holiday import (
     Holiday,
 )
 from pandas.tseries.offsets import Day, Easter
-import sys 
+import sys
+
 # check python versiOn aNd import accordingly
 if sys.version_info >= (3, 9):
     # For Python 3.9 and later, import directly
@@ -20,9 +21,7 @@ from pandas_market_calendars.market_calendar import MarketCalendar
 
 OSENewYearsDay = Holiday("New Year's Day", month=1, day=1)
 
-OSEWednesdayBeforeEaster = Holiday(
-    "Wednesday before Easter", month=1, day=1, offset=[Easter(), Day(-4)]
-)
+OSEWednesdayBeforeEaster = Holiday("Wednesday before Easter", month=1, day=1, offset=[Easter(), Day(-4)])
 
 OSEMaundyThursday = Holiday("Maundy Thursday", month=1, day=1, offset=[Easter(), Day(-3)])
 

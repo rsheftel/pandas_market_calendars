@@ -1,6 +1,4 @@
-import pandas as pd
 from zoneinfo import ZoneInfo
-from pandas.testing import assert_index_equal
 
 from pandas_market_calendars.calendars.cme_globex_agriculture import (
     CMEGlobexGrainsAndOilseedsExchangeCalendar,

@@ -74,9 +74,7 @@ class MarketCalendar(metaclass=MarketCalendarMeta):
             )
         except AttributeError:
             t, day_offset = t
-            return pd.Timedelta(
-                days=day_offset, hours=t.hour, minutes=t.minute, seconds=t.second
-            )
+            return pd.Timedelta(days=day_offset, hours=t.hour, minutes=t.minute, seconds=t.second)
 
     @staticmethod
     def _off(tple):
