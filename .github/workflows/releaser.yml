@@ -11,110 +11,104 @@ jobs:
   run_tests:
     uses: ./.github/workflows/test_runner.yml
   
-  make_new_release:
-    needs: run_tests
-    runs-on: ubuntu-latest
+  # make_new_release:
+  #   needs: run_tests
+  #   runs-on: ubuntu-latest
 
-    steps:
-      - uses: actions/checkout@v3
-      - name: get new_version
-        id: new_version
-        uses: KJ002/read-yaml@1.6
-        with:
-          file: .github/config_new_release.yml
-          key-path: '["new_version"]'
+  #   steps:
+  #     - uses: actions/checkout@v3
+  #     - name: get new_version
+  #       id: new_version
+  #       uses: KJ002/read-yaml@1.6
+  #       with:
+  #         file: .github/config_new_release.yml
+  #         key-path: '["new_version"]'
 
-      - name: get_new_current_version
-        run: |
-          echo "NEWV=${{ steps.new_version.outputs.data }}" >> $GITHUB_ENV
-          echo "OLDV=$(grep "VERSION" -m1 pyproject.toml | cut -d"=" -f2 | sed "s/['\" ]//g")" >> $GITHUB_ENV
+  #     - name: get_new_current_version
+  #       run: |
+  #         echo "NEWV=${{ steps.new_version.outputs.data }}" >> $GITHUB_ENV
+  #         echo "OLDV=$(grep "VERSION" -m1 pyproject.toml | cut -d"=" -f2 | sed "s/['\" ]//g")" >> $GITHUB_ENV
 
-      - name: verify ${{env.NEWV}} > ${{env.OLDV}}
-        if: ${{ env.NEWV <= env.OLDV }}
-        run: echo you did not increment the version number && exit 1
+  #     - name: verify ${{env.NEWV}} > ${{env.OLDV}}
+  #       if: ${{ env.NEWV <= env.OLDV }}
+  #       run: echo you did not increment the version number && exit 1
 
-      - name: get changes
-        id: changes
-        uses: KJ002/read-yaml@1.6
-        with:
-          file: .github/config_new_release.yml
-          key-path: '["change_log"]'
+  #     - name: get changes
+  #       id: changes
+  #       uses: KJ002/read-yaml@1.6
+  #       with:
+  #         file: .github/config_new_release.yml
+  #         key-path: '["change_log"]'
 
-      - name: get body
-        id: body
-        uses: KJ002/read-yaml@1.6
-        with:
-          file: .github/config_new_release.yml
-          key-path: '["release_body"]'
+  #     - name: get body
+  #       id: body
+  #       uses: KJ002/read-yaml@1.6
+  #       with:
+  #         file: .github/config_new_release.yml
+  #         key-path: '["release_body"]'
 
-      - name: update change log
-        run: |
-          sed 5q docs/change_log.rst > docs/new_log.rst
-          echo "$NEWV ($(date +%m/%d/%Y))" >> docs/new_log.rst
-          echo '~~~~~~~~~~~~~~' >> docs/new_log.rst
-          echo "${{ steps.changes.outputs.data }}" >> docs/new_log.rst
+  #     - name: update change log
+  #       run: |
+  #         sed 5q docs/change_log.rst > docs/new_log.rst
+  #         echo "$NEWV ($(date +%m/%d/%Y))" >> docs/new_log.rst
+  #         echo '~~~~~~~~~~~~~~' >> docs/new_log.rst
+  #         echo "${{ steps.changes.outputs.data }}" >> docs/new_log.rst
           
-          sed -n 6,$(wc -l docs/change_log.rst | cut -d' ' -f1)p docs/change_log.rst >> docs/new_log.rst
-          mv docs/new_log.rst docs/change_log.rst
+  #         sed -n 6,$(wc -l docs/change_log.rst | cut -d' ' -f1)p docs/change_log.rst >> docs/new_log.rst
+  #         mv docs/new_log.rst docs/change_log.rst
 
-      - name: set up new version
-        run: |
-          sed -i "s/$OLDV/$NEWV/" pyproject.toml
+  #     - name: set up new version
+  #       run: |
+  #         sed -i "s/$OLDV/$NEWV/" pyproject.toml
 
-      - name: Set up Python
-        uses: actions/setup-python@v4
-        with:
-          python-version: "3.12"
+  #     - name: Set up Python
+  #       uses: actions/setup-python@v4
+  #       with:
+  #         python-version: "3.12"
 
-      - name: install dependencies
-        run: |
-          python -m pip install --upgrade pip
-          pip install build twine jupyter pytest
+  #     - name: install dependencies
+  #       run: |
+  #         python -m pip install --upgrade pip
+  #         pip install build twine jupyter pytest
 
-      - name: build package
-        run: python -m build
+  #     - name: build package
+  #       run: python -m build
 
-      - uses: pypa/gh-action-pypi-publish@release/v1
-        with:
-          user: __token__
-          password: ${{ secrets.PYPI_TOKEN  }}
+  #     - uses: pypa/gh-action-pypi-publish@release/v1
+  #       with:
+  #         user: __token__
+  #         password: ${{ secrets.PYPI_TOKEN  }}
 
-      - name: install from pypi
-        run: |
-          while [ "$NEWV" != $(pip index versions pandas_market_calendars | cut -d'(' -f2 | cut -d')' -f1 | sed 1q) ];\
-            do echo not found yet, sleeping 5s; sleep 5s; done
-          pip install pandas_market_calendars==$NEWV
+  #     - name: install from pypi
+  #       run: |
+  #         while [ "$NEWV" != $(pip index versions pandas_market_calendars | cut -d'(' -f2 | cut -d')' -f1 | sed 1q) ];\
+  #           do echo not found yet, sleeping 5s; sleep 5s; done
+  #         pip install pandas_market_calendars==$NEWV
 
-      - name: run tests
-        run: |
-          pip install .
-          mv pandas_market_calendars pandas_market_calendars_copy
-          python -c 'import pandas_market_calendars;print(pandas_market_calendars.__version__)'
-          pytest tests
+  #     - name: run tests
+  #       run: |
+  #         pip install .
+  #         mv pandas_market_calendars pandas_market_calendars_copy
+  #         python -c 'import pandas_market_calendars;print(pandas_market_calendars.__version__)'
+  #         pytest tests
 
-      - name: prepare usage.rst
-        run: |
-          sudo apt install pandoc 
-          jupyter nbconvert --execute --ExecutePreprocessor.kernel_name='python3' --to rst --output-dir docs --output usage.rst examples/usage.ipynb
+  #     - name: prepare usage.rst
+  #       run: |
+  #         sudo apt install pandoc 
+  #         jupyter nbconvert --execute --ExecutePreprocessor.kernel_name='python3' --to rst --output-dir docs --output usage.rst examples/usage.ipynb
 
-      - uses: stefanzweifel/git-auto-commit-action@v4
-        with:
-          file_pattern: pyproject.toml docs/change_log.rst docs/usage.rst
-          commit_message: '[GH-Actions] v${{ env.NEWV }} -- updated configuration and documentation files.'
+  #     - uses: stefanzweifel/git-auto-commit-action@v4
+  #       with:
+  #         file_pattern: pyproject.toml docs/change_log.rst docs/usage.rst
+  #         commit_message: '[GH-Actions] v${{ env.NEWV }} -- updated configuration and documentation files.'
 
-      - name: Create Release
-        uses: softprops/action-gh-release@v1
-        with:
-          name: v${{ env.NEWV }}
-          tag_name: v${{ env.NEWV }}
-          body: |
-            Changes:
-            ${{ steps.changes.outputs.data }}
+  #     - name: Create Release
+  #       uses: softprops/action-gh-release@v1
+  #       with:
+  #         name: v${{ env.NEWV }}
+  #         tag_name: v${{ env.NEWV }}
+  #         body: |
+  #           Changes:
+  #           ${{ steps.changes.outputs.data }}
             
-            ${{ steps.body.outputs.data }}
-            
-    
-    
-
-
-  
+  #           ${{ steps.body.outputs.data }}
