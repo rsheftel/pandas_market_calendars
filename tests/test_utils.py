@@ -61,6 +61,10 @@ def test_merge_schedules():
     actual = mcal.merge_schedules([sch1, sch2], how="outer")
     assert_frame_equal(actual, expected)
 
+    # reverse should also work
+    actual = mcal.merge_schedules([sch2, sch1], how="outer")
+    assert_frame_equal(actual, expected)
+
     # inner join will exclude July 4th because not open for both
     expected = pd.DataFrame(
         {
