@@ -161,11 +161,11 @@ def merge_schedules(schedules, how="outer"):
     for schedule in schedules[1:]:
         result = result.merge(schedule, how=how, right_index=True, left_index=True)
         if how == "outer":
-            result["market_open"] = result.apply(lambda x: min(x.market_open_x, x.market_open_y), axis=1)
-            result["market_close"] = result.apply(lambda x: max(x.market_close_x, x.market_close_y), axis=1)
+            result["market_open"] = result[["market_open_x", "market_open_y"]].min(axis=1)
+            result["market_close"] = result[["market_close_x", "market_close_y"]].max(axis=1)
         elif how == "inner":
-            result["market_open"] = result.apply(lambda x: max(x.market_open_x, x.market_open_y), axis=1)
-            result["market_close"] = result.apply(lambda x: min(x.market_close_x, x.market_close_y), axis=1)
+            result["market_open"] = result[["market_open_x", "market_open_y"]].max(axis=1)
+            result["market_close"] = result[["market_close_x", "market_close_y"]].min(axis=1)
         else:
             raise ValueError('how argument must be "inner" or "outer"')
         result = result[["market_open", "market_close"]]
