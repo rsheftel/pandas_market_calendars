@@ -30,7 +30,7 @@ dependencies = ['pandas>=1.1', 'tzdata', 'python-dateutil', 'exchange-calendars>
 dev = ['pytest', 'black', 'pre-commit', 'build', 'twine']
 
 [build-system]
-requires = ["setuptools>=61.0", "wheel"]
+requires = ["setuptools >= 77.0.3"]
 build-backend = "setuptools.build_meta"
 
 [tool.setuptools]
