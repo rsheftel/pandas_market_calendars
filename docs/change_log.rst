@@ -3,6 +3,12 @@ Change Log
 
 Updates07/14
 -------
+5.1.3 (06/22/2025)
+~~~~~~~~~~~~~~~~~~
+- Added items to pyproject.toml for using uv for development
+- Better merge_schedules outer join handling #406
+- Use pandas min/max to account for NaT #410
+
 5.1.2 (06/22/2025)
 ~~~~~~~~~~~~~~~~~~
 - Added early closes for ASX (#399)
