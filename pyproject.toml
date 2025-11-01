@@ -1,6 +1,6 @@
 [project]
 name = "pandas_market_calendars"
-version = "5.1.2"
+version = "5.1.3"
 authors = [
     { name = "Ryan Sheftel", email = "rsheftel@alumni.upenn.edu" },
 ]
@@ -23,8 +23,12 @@ classifiers = [
     'Programming Language :: Python :: 3.11',
     'Programming Language :: Python :: 3.12',
     'Programming Language :: Python :: 3.13',
+    'Programming Language :: Python :: 3.14',
 ]
-dependencies = ['pandas>=1.1', 'tzdata', 'python-dateutil', 'exchange-calendars>=3.3']
+dependencies = [
+    "exchange-calendars>=3.3",
+    "pandas>=1.1",
+]
 
 [project.optional-dependencies]
 dev = ['pytest', 'black', 'pre-commit', 'build', 'twine']
@@ -72,3 +76,12 @@ line_length = 88
 skip_gitignore = true
 skip_glob = ["tests/data", "profiling"]
 known_first_party = ["black", "blib2to3", "blackd", "_black_version"]
+
+[dependency-groups]
+dev = [
+    "black>=24.8.0",
+    "build>=1.2.2.post1",
+    "pre-commit>=3.5.0",
+    "pytest>=8.3.5",
+    "twine>=6.1.0",
+]

@@ -105,3 +105,6 @@ venv.bak/
 .vscode/*
 *.code-workspace
 .history/
+
+# uv
+uv.lock
