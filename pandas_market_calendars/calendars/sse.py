@@ -54,7 +54,7 @@ class SSEExchangeCalendar(MarketCalendar):
         # Since all past holidays are adhoc, start_year should always be a year in the future.
         # For example: Holiday arrangements for 2022 are now included,
         # then our guesswork starts from the next year so start_year = 2023
-        start_year = 2026
+        start_year = 2027
 
         return AbstractHolidayCalendar(
             rules=[
