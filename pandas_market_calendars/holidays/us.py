@@ -352,6 +352,7 @@ HurricaneSandyClosings = date_range("2012-10-29", "2012-10-30", tz="UTC")
 # - President Ronald W. Reagan - June 11, 2004
 # - President Gerald R. Ford - Jan 2, 2007
 # - President George H.W. Bush - Dec 5, 2018
+# - President Jimmy Carter - Jan 9, 2025
 USNationalDaysofMourning = [
     Timestamp("1963-11-25", tz="UTC"),
     Timestamp("1968-04-09", tz="UTC"),
@@ -362,6 +363,7 @@ USNationalDaysofMourning = [
     Timestamp("2004-06-11", tz="UTC"),
     Timestamp("2007-01-02", tz="UTC"),
     Timestamp("2018-12-05", tz="UTC"),
+    Timestamp("2025-01-09", tz="UTC"),
 ]
 
 #######################################
