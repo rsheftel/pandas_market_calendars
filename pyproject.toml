@@ -28,6 +28,7 @@ classifiers = [
 dependencies = [
     "exchange-calendars>=3.3",
     "pandas>=1.1",
+    "pandas-stubs>=2.0.3.230814",
 ]
 
 [project.optional-dependencies]
