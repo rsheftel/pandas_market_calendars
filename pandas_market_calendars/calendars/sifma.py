@@ -1,9 +1,9 @@
-from datetime import time
 import functools
+import sys
+from datetime import time
 
 import pandas as pd
 from pandas.tseries.holiday import AbstractHolidayCalendar
-import sys
 
 # check python versiOn aNd import accordingly
 if sys.version_info >= (3, 9):

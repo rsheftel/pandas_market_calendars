@@ -1,8 +1,8 @@
 import datetime
 import os
+from zoneinfo import ZoneInfo
 
 import pandas as pd
-from zoneinfo import ZoneInfo
 from pandas.testing import assert_index_equal
 
 from pandas_market_calendars.calendars.jpx import JPXExchangeCalendar
@@ -38,9 +38,7 @@ def test_2017_jpx_holidays():
         pd.Timestamp("2017-12-31", tz="UTC"),
     ]
 
-    valid_days = jpx_calendar.valid_days(
-        pd.Timestamp("2017-01-01"), pd.Timestamp("2017-12-31")
-    )
+    valid_days = jpx_calendar.valid_days(pd.Timestamp("2017-01-01"), pd.Timestamp("2017-12-31"))
     for session_label in holidays_2017:
         assert session_label not in valid_days
 

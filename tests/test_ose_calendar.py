@@ -1,15 +1,16 @@
 """
-    Currently only 2017, 2018 and 2019 dates are confirmed.
+Currently only 2017, 2018 and 2019 dates are confirmed.
 
-    Dates based on:
-    - (not this is for OBX and Equity Derivatives)
-    https://www.oslobors.no/obnewsletter/download/1e05ee05a9c1a472da4c715435ff1314/file/file/Bortfallskalender%202017-2019.pdf
-    - https://www.oslobors.no/ob_eng/Oslo-Boers/About-Oslo-Boers/Opening-hours
+Dates based on:
+- (not this is for OBX and Equity Derivatives)
+https://www.oslobors.no/obnewsletter/download/1e05ee05a9c1a472da4c715435ff1314/file/file/Bortfallskalender%202017-2019.pdf
+- https://www.oslobors.no/ob_eng/Oslo-Boers/About-Oslo-Boers/Opening-hours
 """
+
+from zoneinfo import ZoneInfo
 
 import pandas as pd
 import pytest
-from zoneinfo import ZoneInfo
 
 from pandas_market_calendars.calendars.ose import OSEExchangeCalendar
 
@@ -63,9 +64,7 @@ def test_2017_calendar():
     for half_trading_day in half_trading_days_2017:
         assert half_trading_day in valid_market_dates
 
-    assert ose.open_at_time(
-        schedule=ose_schedule, timestamp=pd.Timestamp("2017-04-12 12PM", tz=TIMEZONE)
-    )
+    assert ose.open_at_time(schedule=ose_schedule, timestamp=pd.Timestamp("2017-04-12 12PM", tz=TIMEZONE))
     with pytest.raises(ValueError):
         ose.open_at_time(schedule=ose_schedule, timestamp=pd.Timestamp("2017-04-12 2PM", tz=TIMEZONE))
 

@@ -1,6 +1,6 @@
 [project]
 name = "pandas_market_calendars"
-version = "5.1.3"
+version = "5.2.0"
 authors = [
     { name = "Ryan Sheftel", email = "rsheftel@alumni.upenn.edu" },
 ]
@@ -81,6 +81,7 @@ known_first_party = ["black", "blib2to3", "blackd", "_black_version"]
 dev = [
     "black>=24.8.0",
     "build>=1.2.2.post1",
+    "pandas-stubs>=2.0.3.230814",
     "pre-commit>=3.5.0",
     "pytest>=8.3.5",
     "twine>=6.1.0",

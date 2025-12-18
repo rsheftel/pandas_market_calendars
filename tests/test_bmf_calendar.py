@@ -1,7 +1,7 @@
 import datetime
+from zoneinfo import ZoneInfo
 
 import pandas as pd
-from zoneinfo import ZoneInfo
 
 from pandas_market_calendars.calendars.bmf import BMFExchangeCalendar
 
@@ -29,10 +29,7 @@ def test_post_2022_regulation_change():
 
     for year in [2017, 2018, 2019, 2021]:  # skip 2020 due to test above
         for month, day in [(1, 25), (7, 9), (11, 20)]:
-            assert (
-                pd.Timestamp(datetime.date(year, month, day), tz="UTC").to_datetime64()
-                in holidays
-            )
+            assert pd.Timestamp(datetime.date(year, month, day), tz="UTC").to_datetime64() in holidays
     for year in range(2022, 2040):
         for month, day in [(1, 25), (7, 9)]:
             assert pd.Timestamp(datetime.date(year, month, day), tz="UTC").to_datetime64() not in holidays

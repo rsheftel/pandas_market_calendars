@@ -1,7 +1,7 @@
 import datetime
+from zoneinfo import ZoneInfo
 
 import pandas as pd
-from zoneinfo import ZoneInfo
 
 from pandas_market_calendars.calendars.hkex import HKEXExchangeCalendar
 

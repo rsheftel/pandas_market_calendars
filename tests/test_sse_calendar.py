@@ -1,7 +1,7 @@
 import datetime
+from zoneinfo import ZoneInfo
 
 import pandas as pd
-from zoneinfo import ZoneInfo
 
 from pandas_market_calendars.calendars.sse import SSEExchangeCalendar
 from pandas_market_calendars.holidays.cn import all_holidays

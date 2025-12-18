@@ -40,9 +40,7 @@ def test_days_at_time_open(dates, results):
 
     assert_series_equal(
         at_open,
-        pd.Series(
-            results, index=pd.DatetimeIndex(results).normalize(), dtype="datetime64[ns]"
-        )
+        pd.Series(results, index=pd.DatetimeIndex(results).normalize(), dtype="datetime64[ns]")
         .dt.tz_localize(cal.tz)
         .dt.tz_convert("UTC"),
     )

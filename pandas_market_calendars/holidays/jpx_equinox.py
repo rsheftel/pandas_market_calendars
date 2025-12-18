@@ -497,9 +497,7 @@ def autumnal_equinox(dt):
 def autumnal_citizen_dates(start=2003, end=2099):
     dates = []
     for year in range(start, end):
-        respect_for_aged = pd.Timestamp(year, 9, 1) + pd.offsets.WeekOfMonth(
-            week=2, weekday=0
-        )
+        respect_for_aged = pd.Timestamp(year, 9, 1) + pd.offsets.WeekOfMonth(week=2, weekday=0)
         equinox = autumnal_equinox_for_year(year)
         if (equinox - respect_for_aged).days == 2:
             dates.append(respect_for_aged + pd.offsets.Day())

@@ -1,8 +1,8 @@
+import sys
 from datetime import time, timedelta
 from functools import partial
 
 from pandas.tseries.holiday import AbstractHolidayCalendar, Holiday, next_monday
-import sys
 
 # check python versiOn aNd import accordingly
 if sys.version_info >= (3, 9):
@@ -54,7 +54,7 @@ class SSEExchangeCalendar(MarketCalendar):
         # Since all past holidays are adhoc, start_year should always be a year in the future.
         # For example: Holiday arrangements for 2022 are now included,
         # then our guesswork starts from the next year so start_year = 2023
-        start_year = 2026
+        start_year = 2027
 
         return AbstractHolidayCalendar(
             rules=[

@@ -5,8 +5,6 @@ import pytest
 from pandas.testing import assert_index_equal
 
 import pandas_market_calendars as mcal
-from tests.test_market_calendar import FakeCalendar, FakeBreakCalendar, FakeETHCalendar
-
 from pandas_market_calendars.calendar_utils import (
     InsufficientScheduleWarning,
     MissingSessionWarning,
@@ -18,6 +16,8 @@ from pandas_market_calendars.calendar_utils import (
     parse_missing_session_warning,
     parse_insufficient_schedule_warning,
 )
+from tests.test_market_calendar import FakeCalendar, FakeBreakCalendar, FakeETHCalendar
+
 
 # region ---- ---- ---- Date Range LTF ---- ---- ----
 
@@ -45,8 +45,7 @@ def test_date_range_exceptions():
     with pytest.raises(ValueError) as e:
         mcal.date_range(schedule, "15min", closed="right", force_close=True)
     assert (
-        e.exconly()
-        == "ValueError: Desired Sessions from the Schedule contain rows where session start < session end, "
+        e.exconly() == "ValueError: Desired Sessions from the Schedule contain rows where session start < session end, "
         "please correct the schedule"
     )
 

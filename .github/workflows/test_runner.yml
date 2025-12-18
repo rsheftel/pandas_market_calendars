@@ -5,31 +5,63 @@ on:
   workflow_call:
   workflow_dispatch:
 
+permissions:
+  contents: write  # Required for pushing commits in non-fork PRs
+
 jobs:
+  format_check:
+    # Run only for forked PRs: enforce check without auto-fix (can't push to forks)
+    if: ${{ github.event.pull_request.head.repo.fork }}
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'  # Single version sufficient for format check
+      - name: install black
+        run: |
+          python -m pip install --upgrade pip
+          pip install "black>=24.3.0"
+      - name: check black format
+        run: python -m black --check .
+
   run_tests:
+    # Skip auto-format on forks (no push permission); format_check handles enforcement
+    if: ${{ ! github.event.pull_request.head.repo.fork }}
     runs-on: ubuntu-latest
     strategy:
       matrix:
         os: [ ubuntu-latest, windows-latest, macos-latest ]
-        python-version: [ '3.10', '3.11', '3.12', '3.13', '3.14']
+        python-version: [ '3.10', '3.11', '3.12', '3.13', '3.14' ]
 
     env:
       GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
     steps:
-      - uses: actions/checkout@v3
-      - uses: actions/setup-python@v4
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.head_ref }}  # Checkout PR branch for potential push
+
+      - uses: actions/setup-python@v5
         with:
           python-version: ${{ matrix.python-version }}
 
       - name: install dependencies
         run: |
           python -m pip install --upgrade pip
-          pip install pytest coveralls black===24.3.0
+          pip install pytest coveralls "black>=24.3.0"
           pip install .
 
-#      - name: ensure black format
-#        run: python -m black --check pandas_market_calendars tests
+      - name: apply black formatting
+        run: python -m black .
+
+      - name: commit formatting changes if any
+        uses: stefanzweifel/git-auto-commit-action@v5
+        with:
+          commit_message: "style: apply black formatting [ci skip]"
+          commit_user_name: "GitHub Actions"
+          commit_user_email: "actions@github.com"
+          commit_author: "GitHub Actions <actions@github.com>"
 
       - name: run tests
         run: |
@@ -37,34 +69,23 @@ jobs:
           coverage lcov -o coverage.lcov
 
       - name: coveralls parallel
-        uses: coverallsapp/github-action@master
+        uses: coverallsapp/github-action@v2
         with:
           github-token: ${{ secrets.github_token }}
-          flag-name: test_${{matrix.os}}_${{matrix.python-version}}
+          flag-name: test_${{ matrix.os }}_${{ matrix.python-version }}
           parallel: true
-          path-to-lcov: coverage.lcov
+          file: coverage.lcov  # Updated to recommended 'file' input
 
   report_coverage:
     if: ${{ always() }}
-    needs: run_tests
+    needs: [ run_tests, format_check ]  # Wait for both jobs
     runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
 
       - name: coveralls finalize
-        id: coveralls_finalize
-        uses: coverallsapp/github-action@master
+        uses: coverallsapp/github-action@v2
         with:
-          github-token: ${{secrets.github_token}}
+          github-token: ${{ secrets.github_token }}
           parallel-finished: true
-          path-to-lcov: coverage.lcov
-      
-
-      
-    
-      
-      
-    
-    
-    

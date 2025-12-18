@@ -15,6 +15,7 @@
 import pickle
 from datetime import time
 from itertools import chain
+from zoneinfo import ZoneInfo
 
 import exchange_calendars as ecal
 import numpy as np
@@ -22,7 +23,6 @@ import pandas as pd
 import pytest
 from pandas.testing import assert_frame_equal, assert_index_equal, assert_series_equal
 from pandas.tseries.holiday import AbstractHolidayCalendar
-from zoneinfo import ZoneInfo
 
 from pandas_market_calendars import get_calendar, get_calendar_names
 from pandas_market_calendars.calendars.mirror import TradingCalendar
@@ -279,9 +279,7 @@ def test_special_dates():
     special = cal.special_dates("market_open", "2016-12-10", "2016-12-31")
     assert special.astype(str).tolist() == ["2016-12-13 03:20:00+00:00"]
 
-    special = cal.special_dates(
-        "market_open", "2016-12-10", "2016-12-31", filter_holidays=False
-    )
+    special = cal.special_dates("market_open", "2016-12-10", "2016-12-31", filter_holidays=False)
     assert special.astype(str).tolist() == [
         "2016-12-13 03:20:00+00:00",
         "2016-12-25 03:20:00+00:00",

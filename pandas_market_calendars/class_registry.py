@@ -14,9 +14,7 @@ def _regmeta_instance_factory(cls, name, *args, **kwargs):
         class_ = cls._regmeta_class_registry[name]
     except KeyError:
         raise RuntimeError(
-            "Class {} is not one of the registered classes: {}".format(
-                name, cls._regmeta_class_registry.keys()
-            )
+            "Class {} is not one of the registered classes: {}".format(name, cls._regmeta_class_registry.keys())
         )
     return class_(*args, **kwargs)
 

@@ -13,6 +13,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+import sys
 from datetime import time
 
 from pandas import Timestamp
@@ -23,7 +24,6 @@ from pandas.tseries.holiday import (
     GoodFriday,
     Holiday,
 )
-import sys
 
 # check python versiOn aNd import accordingly
 if sys.version_info >= (3, 9):

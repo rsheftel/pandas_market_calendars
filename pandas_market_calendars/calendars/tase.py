@@ -1,8 +1,8 @@
-from datetime import time
-
-from typing import Literal, Union
-from pandas import Timestamp, Timedelta, DatetimeIndex
 import sys
+from datetime import time
+from typing import Literal, Union
+
+from pandas import Timestamp, Timedelta, DatetimeIndex
 
 # check python versiOn aNd import accordingly
 if sys.version_info >= (3, 9):
