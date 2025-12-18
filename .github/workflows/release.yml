@@ -5,7 +5,7 @@ on:
 
 permissions:
   id-token: write   # Required for Trusted Publishing OIDC
-  contents: read
+  contents: write   # Added: Enables pushing tags (and branches if needed)
 
 jobs:
   test-and-release:
