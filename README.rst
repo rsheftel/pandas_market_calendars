@@ -150,6 +150,8 @@ To add new functionality please include tests which are in standard pytest forma
 
 Use pytest to run the test suite.
 
+Use black for formatting.
+
 For complete information on contributing see CONTRIBUTING.md_
 
 .. _CONTRIBUTING.md: https://github.com/rsheftel/pandas_market_calendars/blob/master/CONTRIBUTING.md

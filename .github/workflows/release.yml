@@ -38,8 +38,9 @@ jobs:
 
       - name: Run tests
         run: uv run pytest
+
       - name: Extract package name and version from pyproject.toml
-        if: matrix.python-version == '3.14'
+        if: matrix.python-version == '3.14' && matrix.os == 'ubuntu-latest'
         id: metadata
         run: |
           PACKAGE_NAME=$(uv run python -c "import tomllib; data = tomllib.load(open('pyproject.toml','rb')); print(data['project']['name'])")
@@ -48,7 +49,7 @@ jobs:
           echo "version=$VERSION" >> $GITHUB_OUTPUT
 
       - name: Check if local version > current PyPI version
-        if: matrix.python-version == '3.14'
+        if: matrix.python-version == '3.14' && matrix.os == 'ubuntu-latest'
         run: |
           PACKAGE_NAME="${{ steps.metadata.outputs.package_name }}"
           LOCAL_VERSION="${{ steps.metadata.outputs.version }}"
@@ -83,7 +84,7 @@ jobs:
           EOF
 
       - name: Tag the commit
-        if: matrix.python-version == '3.14'
+        if: matrix.python-version == '3.14' && matrix.os == 'ubuntu-latest'
         run: |
           git config user.name "github-actions"
           git config user.email "github-actions@github.com"
@@ -91,9 +92,9 @@ jobs:
           git push origin v${{ steps.metadata.outputs.version }}
 
       - name: Build package with uv
-        if: matrix.python-version == '3.14'
+        if: matrix.python-version == '3.14' && matrix.os == 'ubuntu-latest'
         run: uv build
 
       - name: Publish to PyPI using Trusted Publishing
-        if: matrix.python-version == '3.14'
+        if: matrix.python-version == '3.14' && matrix.os == 'ubuntu-latest'
         run: uv publish
