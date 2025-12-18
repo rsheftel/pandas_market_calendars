@@ -94,8 +94,6 @@ class CMEGlobexFXExchangeCalendar(CMEGlobexBaseExchangeCalendar):
             ),
             (
                 _1215,
-                AbstractHolidayCalendar(
-                    rules=[USThanksgivingFriday, ChristmasEveInOrAfter1993]
-                ),
+                AbstractHolidayCalendar(rules=[USThanksgivingFriday, ChristmasEveInOrAfter1993]),
             ),
         ]

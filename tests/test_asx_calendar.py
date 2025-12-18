@@ -40,9 +40,7 @@ def test_2022_holidays():
 
 def test_unique_holidays():
     australia_unique_hols_names = ["QEII_DayOfMourning"]
-    australia_unique_hols = {
-        i: {"closed": None, "open": None} for i in australia_unique_hols_names
-    }
+    australia_unique_hols = {i: {"closed": None, "open": None} for i in australia_unique_hols_names}
 
     # One-off holiday additions and removals in Australia
 

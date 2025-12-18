@@ -15,9 +15,7 @@ def test_time_zone():
 def test_holidays():
     bse_calendar = BSEExchangeCalendar()
 
-    trading_days = bse_calendar.valid_days(
-        pd.Timestamp("2004-01-01"), pd.Timestamp("2018-12-31")
-    )
+    trading_days = bse_calendar.valid_days(pd.Timestamp("2004-01-01"), pd.Timestamp("2018-12-31"))
     for session_label in BSEClosedDay:
         assert session_label not in trading_days
 

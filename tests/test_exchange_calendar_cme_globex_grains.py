@@ -17,9 +17,6 @@ def test_x():
 
     good_dates = cal.valid_days("2023-01-01", "2023-12-31")
 
-    assert all(
-        d not in good_dates
-        for d in {"2023-01-01", "2023-12-24", "2023-12-25", "2023-12-30", "2023-12-31"}
-    )
+    assert all(d not in good_dates for d in {"2023-01-01", "2023-12-24", "2023-12-25", "2023-12-30", "2023-12-31"})
 
     assert all(d in good_dates for d in {"2023-01-03", "2023-01-05", "2023-12-26", "2023-12-27", "2023-12-28"})

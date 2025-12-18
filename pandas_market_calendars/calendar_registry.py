@@ -2,6 +2,7 @@
 from .calendars.mirror import *
 # fmt: on
 
+
 def get_calendar(name, open_time=None, close_time=None) -> MarketCalendar:
     """
     Retrieves an instance of an MarketCalendar whose name is given.

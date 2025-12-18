@@ -107,9 +107,7 @@ JapanEmperorsBirthday = Holiday(
     observance=sunday_to_monday,
 )
 
-JapanVernalEquinox = Holiday(
-    name="Vernal Equinox", month=3, day=20, observance=vernal_equinox
-)
+JapanVernalEquinox = Holiday(name="Vernal Equinox", month=3, day=20, observance=vernal_equinox)
 
 JapanShowaDayUntil1972 = Holiday(
     name="Showa Day",

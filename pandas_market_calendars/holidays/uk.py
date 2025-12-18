@@ -169,15 +169,9 @@ UniqueCloses.append(pd.Timestamp("2022-06-03", tz="UTC"))
 UniqueCloses.append(pd.Timestamp("2022-09-19", tz="UTC"))
 
 # Royal Weddings
-UniqueCloses.append(
-    pd.Timestamp("1973-11-14", tz="UTC")
-)  # Wedding Day of Princess Anne and Mark Phillips
-UniqueCloses.append(
-    pd.Timestamp("1981-07-29", tz="UTC")
-)  # Wedding Day of Prince Charles and Diana Spencer
-UniqueCloses.append(
-    pd.Timestamp("2011-04-29", tz="UTC")
-)  # Wedding Day of Prince William and Catherine Middleton
+UniqueCloses.append(pd.Timestamp("1973-11-14", tz="UTC"))  # Wedding Day of Princess Anne and Mark Phillips
+UniqueCloses.append(pd.Timestamp("1981-07-29", tz="UTC"))  # Wedding Day of Prince Charles and Diana Spencer
+UniqueCloses.append(pd.Timestamp("2011-04-29", tz="UTC"))  # Wedding Day of Prince William and Catherine Middleton
 
 # Coronation of King Charles III
 UniqueCloses.append(pd.Timestamp("2023-05-08", tz="UTC"))

@@ -13,10 +13,7 @@ def test_time_zone():
 def test_sunday_opens():
     cme = CMEEquityExchangeCalendar()
     schedule = cme.schedule("2020-01-01", "2020-01-31", tz="America/New_York")
-    assert (
-        pd.Timestamp("2020-01-12 18:00:00", tz="America/New_York")
-        == schedule.loc["2020-01-13", "market_open"]
-    )
+    assert pd.Timestamp("2020-01-12 18:00:00", tz="America/New_York") == schedule.loc["2020-01-13", "market_open"]
 
 
 def test_2016_holidays():

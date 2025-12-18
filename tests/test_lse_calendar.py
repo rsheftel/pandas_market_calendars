@@ -74,9 +74,7 @@ def test_unique_holidays():
         "KCIII_Coronation",
         "3rd_Millennium_Eve",
     ]
-    england_unique_hols = {
-        i: {"closed": None, "open": None} for i in england_unique_hols_names
-    }
+    england_unique_hols = {i: {"closed": None, "open": None} for i in england_unique_hols_names}
 
     # One-off holiday additions and removals in England
 

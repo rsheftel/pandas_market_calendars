@@ -37,10 +37,7 @@ class TradingCalendar(MarketCalendar):
             if self._ec.open_offset:
                 cls.regular_market_times._set(
                     "market_open",
-                    tuple(
-                        (t[0], t[1], self._ec.open_offset)
-                        for t in cls.regular_market_times["market_open"]
-                    ),
+                    tuple((t[0], t[1], self._ec.open_offset) for t in cls.regular_market_times["market_open"]),
                 )
 
             if self._ec.close_offset:
