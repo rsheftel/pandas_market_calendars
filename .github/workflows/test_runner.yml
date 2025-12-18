@@ -6,28 +6,10 @@ on:
   workflow_dispatch:
 
 permissions:
-  contents: write  # Required for pushing commits in non-fork PRs
+  contents: write  # Required for pushing commits if needed in future
 
 jobs:
-  format_check:
-    # Run only for forked PRs: enforce check without auto-fix (can't push to forks)
-    if: ${{ github.event.pull_request.head.repo.fork }}
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-python@v5
-        with:
-          python-version: '3.12'  # Single version sufficient for format check
-      - name: install black
-        run: |
-          python -m pip install --upgrade pip
-          pip install "black>=24.3.0"
-      - name: check black format
-        run: python -m black --check .
-
   run_tests:
-    # Skip auto-format on forks (no push permission); format_check handles enforcement
-    if: ${{ ! github.event.pull_request.head.repo.fork }}
     runs-on: ubuntu-latest
     strategy:
       matrix:
@@ -40,7 +22,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
         with:
-          ref: ${{ github.head_ref }}  # Checkout PR branch for potential push
+          ref: ${{ github.head_ref }}
 
       - uses: actions/setup-python@v5
         with:
@@ -49,19 +31,8 @@ jobs:
       - name: install dependencies
         run: |
           python -m pip install --upgrade pip
-          pip install pytest coveralls "black>=24.3.0"
+          pip install pytest coveralls
           pip install .
-
-      - name: apply black formatting
-        run: python -m black .
-
-      - name: commit formatting changes if any
-        uses: stefanzweifel/git-auto-commit-action@v5
-        with:
-          commit_message: "style: apply black formatting [ci skip]"
-          commit_user_name: "GitHub Actions"
-          commit_user_email: "actions@github.com"
-          commit_author: "GitHub Actions <actions@github.com>"
 
       - name: run tests
         run: |
@@ -74,11 +45,11 @@ jobs:
           github-token: ${{ secrets.github_token }}
           flag-name: test_${{ matrix.os }}_${{ matrix.python-version }}
           parallel: true
-          file: coverage.lcov  # Updated to recommended 'file' input
+          file: coverage.lcov
 
   report_coverage:
     if: ${{ always() }}
-    needs: [ run_tests, format_check ]  # Wait for both jobs
+    needs: [ run_tests ]
     runs-on: ubuntu-latest
 
     steps:
