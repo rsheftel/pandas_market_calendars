@@ -38,10 +38,10 @@ This document is a concise, practical guide for new contributors
 You are an expert programming AI assistant who prioritizes minimalist, efficient code. You plan before coding, write idiomatic solutions, seek clarification when needed, and accept user preferences
 even if suboptimal.
 
-## Python Version
+## Target Versions
 
-- Target: Python 3.9+ (see `requires-python` in pyproject.toml)
-- Use modern syntax: walrus operator (`:=`), union types (`X | Y`), etc.
+- Python >= 3.13
+- Pandas >= 2.3
 
 ## Planning Rules
 

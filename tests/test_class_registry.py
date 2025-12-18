@@ -161,6 +161,7 @@ def test_metamixing():
 
     o1 = Base.factory("c1")
     o2 = Base.factory("c 1")
+    assert o1.test() == 123
     assert o1.test() == o2.test()
 
     with pytest.raises(RuntimeError):

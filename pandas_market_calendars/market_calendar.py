@@ -173,16 +173,20 @@ class MarketCalendar(metaclass=MarketCalendarMeta):
             regular_tds[market_time] = tuple((t[0], self._tdelta(t[1], self._off(t))) for t in times)
 
         if discontinued:
-            warnings.warn(
-                f"{list(discontinued.keys())} are discontinued, the dictionary"
-                f" `.discontinued_market_times` has the dates on which these were discontinued."
-                f" The times as of those dates are incorrect, use .remove_time(market_time)"
-                f" to ignore a market_time."
-            )
+            self.discontinued_market_times = discontinued
+            # Only warn if this is not a customized instance which might have handled this already
+            if not self._customized_market_times:
+                warnings.warn(
+                    f"{list(discontinued.keys())} are discontinued, the dictionary"
+                    f" `.discontinued_market_times` has the dates on which these were discontinued."
+                    f" The times as of those dates are incorrect, use .remove_time(market_time)"
+                    f" to ignore a market_time.",
+                    stacklevel=2
+                )
+        else:
+            self.discontinued_market_times = discontinued
 
-        self.discontinued_market_times = discontinued
         self.regular_market_times = regular
-
         self._regular_market_timedeltas = regular_tds
         self._market_times = sorted(regular.keys(), key=lambda x: regular_tds[x][-1][1])
         self._oc_market_times = list(filter(oc_map.__contains__, self._market_times))

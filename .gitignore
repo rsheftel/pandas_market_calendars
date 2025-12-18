@@ -94,6 +94,7 @@ venv.bak/
 
 # Pycharm files
 .idea/
+.aiassistant/
 
 # mkdocs documentation
 /site

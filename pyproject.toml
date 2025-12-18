@@ -28,7 +28,6 @@ classifiers = [
 dependencies = [
     "exchange-calendars>=3.3",
     "pandas>=1.1",
-    "pandas-stubs>=2.0.3.230814",
 ]
 
 [project.optional-dependencies]
@@ -82,6 +81,7 @@ known_first_party = ["black", "blib2to3", "blackd", "_black_version"]
 dev = [
     "black>=24.8.0",
     "build>=1.2.2.post1",
+    "pandas-stubs>=2.0.3.230814",
     "pre-commit>=3.5.0",
     "pytest>=8.3.5",
     "twine>=6.1.0",
