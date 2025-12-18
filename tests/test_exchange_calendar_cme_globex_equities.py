@@ -25,9 +25,7 @@ def test_is_different():
     late = cal.late_opens(sched).index
     assert late.shape == (1,) and late[0] == pd.Timestamp("2000-01-19")
 
-    cal.change_time(
-        "market_open", ((None, dt.time(17), -1), ("2000-01-25", dt.time(9)))
-    )
+    cal.change_time("market_open", ((None, dt.time(17), -1), ("2000-01-25", dt.time(9))))
 
     different = cal.is_different(sched.market_open)
     different = different[different].index

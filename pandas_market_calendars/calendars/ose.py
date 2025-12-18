@@ -1,3 +1,4 @@
+import sys
 from datetime import time
 
 from pandas.tseries.holiday import (
@@ -7,7 +8,6 @@ from pandas.tseries.holiday import (
     Holiday,
 )
 from pandas.tseries.offsets import Day, Easter
-import sys
 
 # check python versiOn aNd import accordingly
 if sys.version_info >= (3, 9):

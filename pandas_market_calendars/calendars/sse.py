@@ -1,8 +1,8 @@
+import sys
 from datetime import time, timedelta
 from functools import partial
 
 from pandas.tseries.holiday import AbstractHolidayCalendar, Holiday, next_monday
-import sys
 
 # check python versiOn aNd import accordingly
 if sys.version_info >= (3, 9):

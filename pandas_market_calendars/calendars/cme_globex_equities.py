@@ -1,7 +1,7 @@
+import sys
 from datetime import time
 
 from pandas.tseries.holiday import AbstractHolidayCalendar
-import sys
 
 # check python versiOn aNd import accordingly
 if sys.version_info >= (3, 9):

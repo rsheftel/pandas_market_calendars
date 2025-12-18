@@ -13,12 +13,12 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+import sys
 from datetime import time
 
 from pandas.tseries.holiday import (
     AbstractHolidayCalendar,
 )  # , GoodFriday, USLaborDay, USPresidentsDay, USThanksgivingDay
-import sys
 
 # check python versiOn aNd import accordingly
 if sys.version_info >= (3, 9):

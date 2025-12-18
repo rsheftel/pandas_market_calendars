@@ -71,12 +71,14 @@ even if suboptimal.
 ## Common Patterns
 
 ### Adding a New Calendar
+
 1. Create holiday definitions in `holidays/<exchange>.py`
 2. Create calendar class in `calendars/<exchange>.py`
 3. Register in `calendar_registry.py`
 4. Add tests in `tests/test_<exchange>_calendar.py`
 
 ### Modifying Holiday Rules
+
 - Historical holidays: add to existing rules with date ranges
 - Future holidays: use observance rules where possible
 - Test against known historical data in `tests/data/`
@@ -145,6 +147,7 @@ even if suboptimal.
 ## Code Style & Best Practices
 
 ### General Principles
+
 - Follow PEP 8 with max line length 120 (Black enforces formatting and import sorting when enabled)
 - Always prioritize readability and clarity
 - Write concise, efficient, and idiomatic code
@@ -152,17 +155,20 @@ even if suboptimal.
 - Prefer composition over inheritance
 
 ### Functions & Structure
+
 - Keep functions short, focused on a single responsibility
 - Prefer functions in modules rather than OOP, though classes are fine when they make sense
 - Avoid deep nesting: limit to 2-3 levels of indentation; refactor complex logic into smaller functions
 - Group related code logically
 
 ### Immutability & State
+
 - Favor immutability: return new variables instead of modifying inputs (e.g., `df = df.copy()`)
 - Never mutate global state; functions should be pure if possible
 - Avoid: mutable default args, singleton globals, shared mutable state
 
 ### Type Hints & Syntax
+
 - Always include type hints
 - Use built-in generics (`list[str]`, `dict[str, int]`, `set[str]`) and `| None` for optionals; avoid `List`, `Dict`, `Optional` from typing module
 - Prefer list/dict comprehensions over loops when clear
@@ -170,11 +176,13 @@ even if suboptimal.
 - Use `pathlib.Path` exclusively for filesystem paths
 
 ### Imports
+
 - Prefer absolute imports within the package
 - Avoid top-level side effects in module imports
 - Libraries: see pyproject.toml
 
 ### Project-Specific
+
 - When possible use the functions in `calendar_utils.py` for common calendar operations
 - For libraries or external dependencies, mention their usage and purpose in comments
 - Write code with good maintainability practices, including comments on why certain design decisions were made

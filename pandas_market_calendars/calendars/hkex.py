@@ -1,3 +1,4 @@
+import sys
 from datetime import time, timedelta
 from functools import partial
 
@@ -10,7 +11,6 @@ from pandas.tseries.holiday import (
     sunday_to_monday,
 )
 from pandas.tseries.offsets import LastWeekOfMonth, WeekOfMonth
-import sys
 
 # check python versiOn aNd import accordingly
 if sys.version_info >= (3, 9):

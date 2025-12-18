@@ -1,8 +1,8 @@
 from datetime import time
+from zoneinfo import ZoneInfo
 
 import numpy as np
 import pandas as pd
-from zoneinfo import ZoneInfo
 
 from pandas_market_calendars.calendars.iex import IEXExchangeCalendar
 from pandas_market_calendars.class_registry import ProtectedDict

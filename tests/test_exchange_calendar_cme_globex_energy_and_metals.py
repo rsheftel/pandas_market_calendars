@@ -1,5 +1,6 @@
-import pandas as pd
 from zoneinfo import ZoneInfo
+
+import pandas as pd
 from pandas.testing import assert_index_equal
 
 from pandas_market_calendars.calendars.cme_globex_energy_and_metals import (
@@ -105,9 +106,7 @@ def test_2022():
         pd.Timestamp("2022-07-04  1:30PM", tz="America/Chicago"),  # Independence Day
         pd.Timestamp("2022-09-05 12:00PM", tz="America/Chicago"),  # Labor Day
         pd.Timestamp("2022-11-24  1:30PM", tz="America/Chicago"),  # US Thanksgiving
-        pd.Timestamp(
-            "2022-11-25 12:45PM", tz="America/Chicago"
-        ),  # Friday after US Thanksgiving
+        pd.Timestamp("2022-11-25 12:45PM", tz="America/Chicago"),  # Friday after US Thanksgiving
     ]
     _test_has_early_closes(early_closes, start, end)
 

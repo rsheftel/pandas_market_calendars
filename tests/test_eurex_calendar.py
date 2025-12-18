@@ -1,5 +1,6 @@
-import pandas as pd
 from zoneinfo import ZoneInfo
+
+import pandas as pd
 
 from pandas_market_calendars.calendars.eurex import EUREXExchangeCalendar
 

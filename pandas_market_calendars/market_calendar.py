@@ -21,9 +21,8 @@ from typing import Literal, Union
 import pandas as pd
 from pandas.tseries.offsets import CustomBusinessDay
 
-from .class_registry import RegisteryMeta, ProtectedDict
-
 from . import calendar_utils as u
+from .class_registry import RegisteryMeta, ProtectedDict
 
 MONDAY, TUESDAY, WEDNESDAY, THURSDAY, FRIDAY, SATURDAY, SUNDAY = range(7)
 
@@ -69,9 +68,7 @@ class MarketCalendar(metaclass=MarketCalendarMeta):
     @staticmethod
     def _tdelta(t, day_offset=0):
         try:
-            return pd.Timedelta(
-                days=day_offset, hours=t.hour, minutes=t.minute, seconds=t.second
-            )
+            return pd.Timedelta(days=day_offset, hours=t.hour, minutes=t.minute, seconds=t.second)
         except AttributeError:
             t, day_offset = t
             return pd.Timedelta(days=day_offset, hours=t.hour, minutes=t.minute, seconds=t.second)
@@ -181,7 +178,7 @@ class MarketCalendar(metaclass=MarketCalendarMeta):
                     f" `.discontinued_market_times` has the dates on which these were discontinued."
                     f" The times as of those dates are incorrect, use .remove_time(market_time)"
                     f" to ignore a market_time.",
-                    stacklevel=2
+                    stacklevel=2,
                 )
         else:
             self.discontinued_market_times = discontinued

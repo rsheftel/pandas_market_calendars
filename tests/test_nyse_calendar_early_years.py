@@ -1,5 +1,6 @@
-import pandas as pd
 from zoneinfo import ZoneInfo
+
+import pandas as pd
 from pandas.testing import assert_index_equal
 from pandas.tseries.offsets import CustomBusinessDay
 
@@ -593,9 +594,7 @@ def test_1908():
     _test_no_special_opens(start, end)
 
     # early closes we expect:
-    early_closes = [
-        pd.Timestamp("1908-06-26 1:00PM", tz="America/New_York")
-    ]  # Grover Cleveland funeral
+    early_closes = [pd.Timestamp("1908-06-26 1:00PM", tz="America/New_York")]  # Grover Cleveland funeral
     _test_has_early_closes(early_closes, start, end)
 
 

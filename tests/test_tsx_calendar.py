@@ -1,5 +1,6 @@
-import pandas as pd
 from zoneinfo import ZoneInfo
+
+import pandas as pd
 from pandas.testing import assert_index_equal
 
 from pandas_market_calendars.calendars.tsx import TSXExchangeCalendar, VictoriaDay

@@ -583,9 +583,7 @@ ChristmasEve1pmEarlyCloseAdhoc = [
 ChristmasEve2pmEarlyCloseAdhoc = [
     Timestamp("1974-12-24", tz="UTC"),
     Timestamp("1975-12-24", tz="UTC"),
-    Timestamp(
-        "1990-12-24", tz="UTC"
-    ),  # This one was also in the 1pm list, in the tests you check for 2pm
+    Timestamp("1990-12-24", tz="UTC"),  # This one was also in the 1pm list, in the tests you check for 2pm
     Timestamp("1991-12-24", tz="UTC"),
     Timestamp("1992-12-24", tz="UTC"),
 ]

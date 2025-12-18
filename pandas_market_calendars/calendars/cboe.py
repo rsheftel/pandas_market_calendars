@@ -1,3 +1,4 @@
+import sys
 from datetime import time
 from itertools import chain
 
@@ -10,7 +11,6 @@ from pandas.tseries.holiday import (
     USThanksgivingDay,
     Holiday,
 )
-import sys
 
 # check python versiOn aNd import accordingly
 if sys.version_info >= (3, 9):
