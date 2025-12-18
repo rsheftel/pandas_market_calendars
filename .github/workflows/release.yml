@@ -1,0 +1,99 @@
+name: Manual Release to PyPI
+
+on:
+  workflow_dispatch:
+
+permissions:
+  id-token: write   # Required for Trusted Publishing OIDC
+  contents: read
+
+jobs:
+  test-and-release:
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: true
+      matrix:
+        python-version: ["3.10", "3.11", "3.12", "3.13", "3.14"]
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Install uv
+        run: |
+          curl -LsSf https://astral.sh/uv/install.sh | sh
+          echo "$HOME/.cargo/bin" >> $GITHUB_PATH
+
+      - name: Set up Python ${{ matrix.python-version }}
+        uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python-version }}
+          cache: uv
+
+      - name: Install dependencies and project
+        run: uv sync --all-extras --dev
+
+      - name: Run tests
+        run: uv run pytest
+
+      - name: Extract package name and version from pyproject.toml
+        if: matrix.python-version == '3.14'
+        id: metadata
+        run: |
+          PACKAGE_NAME=$(uv run python -c "import tomllib; data = tomllib.load(open('pyproject.toml','rb')); print(data['project']['name'])")
+          VERSION=$(uv run python -c "import tomllib; data = tomllib.load(open('pyproject.toml','rb')); print(data['project']['version'])")
+          echo "package_name=$PACKAGE_NAME" >> $GITHUB_OUTPUT
+          echo "version=$VERSION" >> $GITHUB_OUTPUT
+
+      - name: Check if local version > current PyPI version
+        if: matrix.python-version == '3.14'
+        run: |
+          PACKAGE_NAME="${{ steps.metadata.outputs.package_name }}"
+          LOCAL_VERSION="${{ steps.metadata.outputs.version }}"
+          
+          echo "Package name: $PACKAGE_NAME"
+          echo "Local version: $LOCAL_VERSION"
+          
+          # Fetch latest version from PyPI JSON API
+          RESPONSE=$(curl -s -o /dev/null -w "%{http_code}" https://pypi.org/pypi/$PACKAGE_NAME/json)
+          
+          if [ "$RESPONSE" -eq 404 ]; then
+            echo "Package not found on PyPI – assuming first release, proceeding."
+            exit 0
+          fi
+          
+          if [ "$RESPONSE" -ne 200 ]; then
+            echo "Failed to query PyPI (HTTP $RESPONSE)"
+            exit 1
+          fi
+          
+          PYPI_VERSION=$(curl -s https://pypi.org/pypi/$PACKAGE_NAME/json | jq -r '.info.version')
+          echo "Current PyPI version: $PYPI_VERSION"
+          
+          # Compare versions using Python's packaging module
+          uv run python - <<EOF
+          from packaging.version import Version
+          local = Version("$LOCAL_VERSION")
+          pypi = Version("$PYPI_VERSION")
+          if local <= pypi:
+              raise SystemExit(f"Error: Local version {local} is not greater than PyPI version {pypi}")
+          print("Version check passed: $LOCAL_VERSION > $PYPI_VERSION")
+          EOF
+
+      - name: Tag the commit
+        if: matrix.python-version == '3.14'
+        run: |
+          git config user.name "github-actions"
+          git config user.email "github-actions@github.com"
+          git tag v${{ steps.metadata.outputs.version }}
+          git push origin v${{ steps.metadata.outputs.version }}
+
+      - name: Build package with uv
+        if: matrix.python-version == '3.14'
+        run: uv build
+
+      - name: Publish to PyPI using Trusted Publishing
+        if: matrix.python-version == '3.14'
+        run: uv publish

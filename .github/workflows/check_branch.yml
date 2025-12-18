@@ -16,4 +16,3 @@ jobs:
         with:
           comment: Please re-open this PR against the dev branch. For more information, consult CONTRIBUTING.md.
       - run: echo PR against master that is not based on dev && exit 1
-        
