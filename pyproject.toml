@@ -30,9 +30,6 @@ dependencies = [
     "pandas>=1.1",
 ]
 
-[project.optional-dependencies]
-dev = ['pytest', 'black', 'pre-commit', 'build', 'twine']
-
 [build-system]
 requires = ["setuptools >= 77.0.3"]
 build-backend = "setuptools.build_meta"
@@ -82,7 +79,6 @@ dev = [
     "black>=24.8.0",
     "build>=1.2.2.post1",
     "pandas-stubs>=2.0.3.230814",
-    "pre-commit>=3.5.0",
     "pytest>=8.3.5",
     "twine>=6.1.0",
 ]
