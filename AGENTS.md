@@ -121,8 +121,6 @@ Violating this rule makes the suggestion completely unusable.
     - Fast suite (skip slow): `uv run --no-sync pytest -m "not slow"`
     - Quiet summary: `uv run --no-sync pytest -q`
     - Target a path/file: `uv run --no-sync pytest -q tests` or a single file
-    - Parallel (dev extra): `uv run --no-sync pytest -n auto -m "not slow"`
-    - Coverage (dev extra): `uv run --no-sync pytest --cov=pandas_market_calendars --cov-report=term-missing`
 
 - Adding tests: conventions
     - All tests must pass without errors or warnings. If the tests produce warnings, modify the tests until they no
