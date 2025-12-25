@@ -794,11 +794,16 @@ def _calc_time_series(session_times, timestep, closed, force_close, start, end, 
 
     starts = session_times.start.repeat(num_bars)  # type: ignore
 
+    # Optimized: Replace groupby().cumcount() with vectorized range generation
+    # This is significantly faster than pandas groupby operations
+    num_bars_arr = num_bars.astype(int).values
+    cumcount = np.concatenate([np.arange(n) for n in num_bars_arr])
+
     if closed == "right":
         # Right side of addition is cumulative time since session start in multiples of timestep
-        time_series = starts + (starts.groupby(starts.index).cumcount() + 1) * timestep
+        time_series = starts + (cumcount + 1) * timestep
     else:
-        time_series = starts + (starts.groupby(starts.index).cumcount()) * timestep
+        time_series = starts + cumcount * timestep
 
     if force_close is not None:
         # Trim off all timestamps that stretched beyond their intended session
@@ -807,7 +812,11 @@ def _calc_time_series(session_times, timestep, closed, force_close, start, end, 
         if force_close:
             time_series = pd.concat([time_series, session_times.end])
 
-    time_series = time_series.drop_duplicates().sort_values()  # type: ignore
+    # Optimized: use sort_values first only if force_close appended values, otherwise data is already sorted
+    if force_close:
+        time_series = time_series.sort_values().drop_duplicates()
+    else:
+        time_series = time_series.drop_duplicates()  # type: ignore
 
     if periods is not None and len(time_series) > 0:
         # Although likely redundant, Fine Trim to desired period count.

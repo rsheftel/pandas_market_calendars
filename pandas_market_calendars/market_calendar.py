@@ -493,24 +493,22 @@ class MarketCalendar(metaclass=MarketCalendarMeta):
         dtype: datetime64[ns, UTC]
         """
         col = col.dropna()  # Python 3.8, pandas 2.0.3 cannot create time deltas from NaT
-        try:
-            times = col.str[0]
-        except AttributeError:  # no tuples, only offset 0
-            return (
-                (pd.to_timedelta(col.astype("string").fillna(""), errors="coerce") + col.index)
-                .dt.tz_localize(self.tz)
-                .dt.tz_convert("UTC")
-            )
+        if len(col) == 0:
+            return pd.Series([], dtype="datetime64[ns, UTC]")
 
-        return (
-            (
-                    pd.to_timedelta(times.fillna(col).astype("string").fillna(""), errors="coerce")
-                    + pd.to_timedelta(col.str[1].fillna(0), unit="D")
-                    + col.index
-            )
-            .dt.tz_localize(self.tz)
-            .dt.tz_convert("UTC")
-        )
+        # Optimized: Use direct timedelta computation instead of string parsing
+        def time_to_timedelta(t):
+            if t is None:
+                return pd.NaT
+            if isinstance(t, tuple):
+                time_obj, day_offset = t
+                return pd.Timedelta(hours=time_obj.hour, minutes=time_obj.minute,
+                                   seconds=time_obj.second) + pd.Timedelta(days=day_offset)
+            return pd.Timedelta(hours=t.hour, minutes=t.minute, seconds=t.second)
+
+        timedeltas = col.apply(time_to_timedelta)
+        result = pd.Series(col.index + timedeltas.values, index=col.index)
+        return result.dt.tz_localize(self.tz).dt.tz_convert("UTC")
 
     @staticmethod
     def _col_name(n: int):
@@ -536,17 +534,32 @@ class MarketCalendar(metaclass=MarketCalendarMeta):
         Returns the complete CustomBusinessDay object of holidays that can be used in any Pandas function that take
         that input.
 
+        Uses class-level caching to share the CustomBusinessDay object across all instances of the same calendar class.
+
         :return: CustomBusinessDay object of holidays
         """
-        try:
-            return self._holidays
-        except AttributeError:
-            self._holidays = CustomBusinessDay(
+        # Use class-level cache for efficiency across instances
+        cache_attr = "_holidays_cache"
+        cls = self.__class__
+
+        if not hasattr(cls, cache_attr):
+            cls._holidays_cache = {}
+
+        # Create a cache key based on the calendar's unique configuration
+        cache_key = (
+            tuple(self.adhoc_holidays) if self.adhoc_holidays else (),
+            id(self.regular_holidays),
+            self.weekmask,
+        )
+
+        if cache_key not in cls._holidays_cache:
+            cls._holidays_cache[cache_key] = CustomBusinessDay(
                 holidays=self.adhoc_holidays,
                 calendar=self.regular_holidays,
                 weekmask=self.weekmask,
             )
-        return self._holidays
+
+        return cls._holidays_cache[cache_key]
 
     def valid_days(self, start_date, end_date, tz="UTC") -> pd.DatetimeIndex:
         """
@@ -629,7 +642,8 @@ class MarketCalendar(metaclass=MarketCalendarMeta):
         indexes += [self.days_at_time(dates, time_) for time_, dates in ad_hoc_dates]
 
         if indexes:
-            dates = pd.concat(indexes).sort_index().drop_duplicates()
+            # Optimized: drop_duplicates first (reduces data), then sort
+            dates = pd.concat(indexes, ignore_index=False).drop_duplicates().sort_index()
             return dates.loc[start: end.replace(hour=23, minute=59, second=59)]
 
         return pd.Series([], dtype="datetime64[ns, UTC]", index=pd.DatetimeIndex([]))
@@ -646,6 +660,15 @@ class MarketCalendar(metaclass=MarketCalendarMeta):
         :return: schedule DatetimeIndex
         """
         start_date, end_date = self.clean_dates(start_date, end_date)
+
+        # Check instance-level cache for special dates
+        if not hasattr(self, "_special_dates_cache"):
+            self._special_dates_cache = {}
+
+        cache_key = (market_time, start_date, end_date, filter_holidays)
+        if cache_key in self._special_dates_cache:
+            return self._special_dates_cache[cache_key]
+
         calendars = self.get_special_times(market_time)
         ad_hoc = self.get_special_times_adhoc(market_time)
         special = self._special_dates(calendars, ad_hoc, start_date, end_date)
@@ -653,6 +676,8 @@ class MarketCalendar(metaclass=MarketCalendarMeta):
         if filter_holidays:
             valid = self.valid_days(start_date, end_date, tz=None)
             special = special[special.index.isin(valid)]  # some sources of special times don't exclude holidays
+
+        self._special_dates_cache[cache_key] = special
         return special
 
     def schedule(
@@ -811,7 +836,9 @@ class MarketCalendar(metaclass=MarketCalendarMeta):
             schedule = schedule.dropna(how="all", axis=1)
 
         if tz != "UTC":
-            schedule = schedule.apply(lambda s: s.dt.tz_convert(tz))
+            # Vectorized timezone conversion - faster than apply(lambda)
+            for col in schedule.columns:
+                schedule[col] = schedule[col].dt.tz_convert(tz)
 
         return schedule
 
