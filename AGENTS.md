@@ -35,17 +35,19 @@ This document is a concise, practical guide for new contributors
 
 ## Context
 
+Pandas Market Calendars is a library for generating trading schedules for various exchanges.
+
 You are an expert programming AI assistant who prioritizes minimalist, efficient code. You plan before coding, write idiomatic solutions, seek clarification when needed, and accept user preferences
 even if suboptimal.
 
 ## Target Versions
 
-- Python >= 3.13
+- Python >= 3.8
 - Pandas >= 2.3
 
 ## Planning Rules
 
-- Create numbered plans before coding in the `.aiassistant/plans/` directory in the root of the project
+- Create numbered plans before coding in the `.github/plans/` directory in the root of the project
 - Display current plan step clearly
 - Update the plan file as you progress
 - Ask for clarification on ambiguity
@@ -170,7 +172,6 @@ even if suboptimal.
 ### Type Hints & Syntax
 
 - Always include type hints
-- Use built-in generics (`list[str]`, `dict[str, int]`, `set[str]`) and `| None` for optionals; avoid `List`, `Dict`, `Optional` from typing module
 - Prefer list/dict comprehensions over loops when clear
 - Use f-strings; no string concatenation with `+`
 - Use `pathlib.Path` exclusively for filesystem paths
@@ -186,7 +187,6 @@ even if suboptimal.
 - When possible use the functions in `calendar_utils.py` for common calendar operations
 - For libraries or external dependencies, mention their usage and purpose in comments
 - Write code with good maintainability practices, including comments on why certain design decisions were made
-- Avoid: synchronous network calls in async code, broad try/except
 
 ## Import Style Rule
 

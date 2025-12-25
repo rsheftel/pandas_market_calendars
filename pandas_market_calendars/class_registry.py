@@ -2,7 +2,7 @@ import inspect
 from pprint import pformat
 
 
-def _regmeta_instance_factory(cls, name, *args, **kwargs):
+def _regmeta_instance_factory(cls, name: str, *args, **kwargs):
     """
     :param cls(RegisteryMeta): registration meta class
     :param name(str): name of class that needs to be instantiated
@@ -19,7 +19,7 @@ def _regmeta_instance_factory(cls, name, *args, **kwargs):
     return class_(*args, **kwargs)
 
 
-def _regmeta_register_class(cls, regcls, name):
+def _regmeta_register_class(cls, regcls, name: str):
     """
     :param cls(RegisteryMeta): registration base class
     :param regcls(class): class to be registered
@@ -74,10 +74,10 @@ class ProtectedDict(dict):
         # without the _INIT_RAN_NORMALLY flag
         self._INIT_RAN_NORMALLY = True
 
-    def _set(self, key, value):
+    def _set(self, key: str, value) -> None:
         return super().__setitem__(key, value)
 
-    def _del(self, key):
+    def _del(self, key: str) -> None:
         return super().__delitem__(key)
 
     def __setitem__(self, key, value):
