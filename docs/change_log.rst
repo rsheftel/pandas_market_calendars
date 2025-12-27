@@ -5,6 +5,7 @@ Change Log
 ~~~~~~~~~~~~~~~~~~
 - Added AGENTS.md as instructions file for agentic AI agents
 - Added Chinese holidays for 2026 #413
+- Fixed missing early close for Independence Day in CBOE calendars (CFE, CBOE_Index_Options, CBOE_Equity_Options)
 
 5.1.3 (11/01/2025)
 ~~~~~~~~~~~~~~~~~~
