@@ -30,6 +30,9 @@ from pandas_market_calendars.holidays.us import (
     HurricaneSandyClosings,
     USNationalDaysofMourning,
     USJuneteenthAfter2022,
+    MonTuesThursBeforeIndependenceDay,
+    FridayAfterIndependenceDayPre2013,
+    WednesdayBeforeIndependenceDayPost2013,
 )
 from pandas_market_calendars.market_calendar import MarketCalendar
 
@@ -119,6 +122,9 @@ class CFEExchangeCalendar(MarketCalendar):
                 time(12, 15),
                 AbstractHolidayCalendar(
                     rules=[
+                        MonTuesThursBeforeIndependenceDay,
+                        FridayAfterIndependenceDayPre2013,
+                        WednesdayBeforeIndependenceDayPost2013,
                         USBlackFridayInOrAfter1993,
                     ]
                 ),
@@ -142,6 +148,22 @@ class CBOEEquityOptionsExchangeCalendar(CFEExchangeCalendar):
         "market_open": ((None, time(8, 30)),),
         "market_close": ((None, time(15)),),
     }
+
+    @property
+    def special_closes(self):
+        return [
+            (
+                time(12),
+                AbstractHolidayCalendar(
+                    rules=[
+                        MonTuesThursBeforeIndependenceDay,
+                        FridayAfterIndependenceDayPre2013,
+                        WednesdayBeforeIndependenceDayPost2013,
+                        USBlackFridayInOrAfter1993,
+                    ]
+                ),
+            )
+        ]
 
 
 class CBOEIndexOptionsExchangeCalendar(CFEExchangeCalendar):
