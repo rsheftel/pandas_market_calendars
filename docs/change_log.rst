@@ -5,6 +5,8 @@ Change Log
 ~~~~~~~~~~~~~~~~~~
 - Fixed missing early close for Independence Day in CBOE calendars (CFE, CBOE_Index_Options, CBOE_Equity_Options)
 - Fixed #260
+- Fixed #230
+- Fixed #407
 - Multiple fixes to the build process and to incorporate more AI capabilities
 
 5.2.0 (12/17/2025)

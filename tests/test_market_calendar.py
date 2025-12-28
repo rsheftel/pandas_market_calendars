@@ -1351,13 +1351,13 @@ def test_open_at_time_interruptions():
     assert cal.open_at_time(sched, "2010-01-12 16:00:00") is True
     assert cal.open_at_time(sched, "2010-01-12 16:56:00") is False
     assert cal.open_at_time(sched, "2010-01-12 16:55:00", include_close=True) is True
-    assert cal.open_at_time(sched, "2010-01-12 16:57:00", include_close=True) is False
+    assert cal.open_at_time(sched, "2010-01-12 16:57:00", include_close=True) is True
 
     # interruption between market_close/post
     sched.iloc[2, [-2, -1]] += pd.Timedelta("1h")
     assert cal.open_at_time(sched, "2010-01-12 17:56:00") is False
-    assert cal.open_at_time(sched, "2010-01-12 17:55:00", include_close=True) is False
-    assert cal.open_at_time(sched, "2010-01-12 17:57:00", include_close=True) is False
+    assert cal.open_at_time(sched, "2010-01-12 17:55:00", include_close=True) is True
+    assert cal.open_at_time(sched, "2010-01-12 17:57:00", include_close=True) is True
     assert cal.open_at_time(sched, "2010-01-12 17:57:00", include_close=False) is True
 
     assert cal.open_at_time(sched, "2010-01-13 14:00:00", only_rth=True) is False

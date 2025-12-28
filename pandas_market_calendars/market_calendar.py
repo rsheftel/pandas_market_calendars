@@ -955,11 +955,14 @@ class MarketCalendar(metaclass=MarketCalendarMeta):
         day.loc[day.eq("market_close") & day.shift(-1).eq("post")] = "market_open"
         day = day.map(lambda x: (self.open_close_map.get(x) if x in self.open_close_map.keys() else x))
 
-        if include_close:
-            below = day.index < timestamp
+        below = day.index <= timestamp
+        last_below = day[below]
+        last_event = last_below.iat[-1]
+        last_time = last_below.index[-1]
+        if not last_event and last_time == timestamp:
+            return include_close
         else:
-            below = day.index <= timestamp
-        return bool(day[below].iat[-1])  # returns numpy.bool_ if not bool(...)
+            return bool(last_event)
 
     # need this to make is_open_now testable
     @staticmethod
