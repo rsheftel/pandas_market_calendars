@@ -317,8 +317,25 @@ from pandas_market_calendars.market_calendar import MarketCalendar
 # http://www.nyse.com/pdfs/closings.pdf
 # http://www.stevemorse.org/jcal/whendid.html
 
-# Overwrite the default holiday calendar start_date of 1/1/70
-AbstractHolidayCalendar.start_date = "1885-01-01"
+
+class NYSEHolidayCalendar(AbstractHolidayCalendar):
+    """
+    Custom holiday calendar for NYSE with start_date of 1885-01-01.
+    This avoids mutating the global AbstractHolidayCalendar.start_date.
+    """
+    start_date = "1885-01-01"
+    
+    def holidays(self, start=None, end=None, return_name=False):
+        """
+        Override to use self.start_date instead of AbstractHolidayCalendar.start_date.
+        This fixes a pandas bug where AbstractHolidayCalendar.holidays() uses the base
+        class start_date instead of the subclass/instance start_date.
+        """
+        if start is None:
+            start = self.start_date
+        if end is None:
+            end = self.end_date
+        return super().holidays(start=start, end=end, return_name=return_name)
 
 
 class NYSEExchangeCalendar(MarketCalendar):
@@ -870,39 +887,41 @@ class NYSEExchangeCalendar(MarketCalendar):
 
     @property
     def regular_holidays(self):
-        return AbstractHolidayCalendar(
-            rules=[
-                USNewYearsDayNYSEpost1952,
-                USNewYearsDayNYSEpre1952,
-                USMartinLutherKingJrAfter1998,
-                USPresidentsDay,
-                USWashingtonsBirthDayBefore1952,
-                USWashingtonsBirthDay1952to1963,
-                USWashingtonsBirthDay1964to1970,
-                USLincolnsBirthDayBefore1954,
-                GoodFriday,
-                GoodFridayPre1898,
-                GoodFriday1899to1905,
-                USMemorialDay,
-                USMemorialDayBefore1952,
-                USMemorialDay1952to1964,
-                USMemorialDay1964to1969,
-                USIndependenceDay,
-                USIndependenceDayPre1952,
-                USIndependenceDay1952to1954,
-                USLaborDayStarting1887,
-                USColumbusDayBefore1954,
-                USElectionDay1848to1967,
-                USVeteransDay1934to1953,
-                USThanksgivingDay,
-                USThanksgivingDayBefore1939,
-                USThanksgivingDay1939to1941,
-                ChristmasNYSE,
-                Christmas54to98NYSE,
-                ChristmasBefore1954,
-                USJuneteenthAfter2022,
-            ]
-        )
+        if not hasattr(self, "_regular_holidays"):
+            self._regular_holidays = NYSEHolidayCalendar(
+                rules=[
+                    USNewYearsDayNYSEpost1952,
+                    USNewYearsDayNYSEpre1952,
+                    USMartinLutherKingJrAfter1998,
+                    USPresidentsDay,
+                    USWashingtonsBirthDayBefore1952,
+                    USWashingtonsBirthDay1952to1963,
+                    USWashingtonsBirthDay1964to1970,
+                    USLincolnsBirthDayBefore1954,
+                    GoodFriday,
+                    GoodFridayPre1898,
+                    GoodFriday1899to1905,
+                    USMemorialDay,
+                    USMemorialDayBefore1952,
+                    USMemorialDay1952to1964,
+                    USMemorialDay1964to1969,
+                    USIndependenceDay,
+                    USIndependenceDayPre1952,
+                    USIndependenceDay1952to1954,
+                    USLaborDayStarting1887,
+                    USColumbusDayBefore1954,
+                    USElectionDay1848to1967,
+                    USVeteransDay1934to1953,
+                    USThanksgivingDay,
+                    USThanksgivingDayBefore1939,
+                    USThanksgivingDay1939to1941,
+                    ChristmasNYSE,
+                    Christmas54to98NYSE,
+                    ChristmasBefore1954,
+                    USJuneteenthAfter2022,
+                ]
+            )
+        return self._regular_holidays
 
     @property
     def adhoc_holidays(self):
