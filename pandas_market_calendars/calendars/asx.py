@@ -21,8 +21,9 @@ class ASXHolidayCalendar(AbstractHolidayCalendar):
     Custom holiday calendar for ASX with start_date of 2011-01-01.
     This avoids mutating the global AbstractHolidayCalendar.start_date.
     """
+
     start_date = "2011-01-01"
-    
+
     def holidays(self, start=None, end=None, return_name=False):
         """
         Override to use self.start_date instead of AbstractHolidayCalendar.start_date.
