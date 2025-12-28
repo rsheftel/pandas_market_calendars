@@ -18,7 +18,7 @@ from datetime import time
 from itertools import chain
 from typing import Literal, Union
 
-# check python versiOn aNd import accordingly
+# check python version and import accordingly
 if sys.version_info >= (3, 9):
     # For Python 3.9 and later, import directly
     from zoneinfo import ZoneInfo

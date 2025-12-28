@@ -4,7 +4,7 @@ from datetime import time
 import pandas as pd
 from pandas.tseries.holiday import AbstractHolidayCalendar, GoodFriday, EasterMonday
 
-# check python versiOn aNd import accordingly
+# check python version and import accordingly
 if sys.version_info >= (3, 9):
     # For Python 3.9 and later, import directly
     from zoneinfo import ZoneInfo
