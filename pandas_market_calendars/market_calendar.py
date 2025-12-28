@@ -318,6 +318,7 @@ class MarketCalendar(metaclass=MarketCalendarMeta):
         if times is None:
             return None
 
+        # Normalize date to midnight to properly match against special dates index
         date = pd.Timestamp(date).normalize()
 
         # Check for special times on this specific date
