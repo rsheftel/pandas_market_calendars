@@ -1,8 +1,5 @@
 """
 Test that importing pandas_market_calendars does not mutate pandas' AbstractHolidayCalendar.
-
-This addresses the issue reported in:
-https://github.com/rsheftel/pandas_market_calendars/issues/XXX
 """
 import pandas as pd
 from pandas.tseries.holiday import MO, AbstractHolidayCalendar, Holiday

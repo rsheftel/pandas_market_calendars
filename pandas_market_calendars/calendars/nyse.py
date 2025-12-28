@@ -1024,18 +1024,19 @@ class NYSEExchangeCalendar(MarketCalendar):
 
     @property
     def special_closes(self):
-        return [
-            (
-                time(11, tzinfo=ZoneInfo("America/New_York")),
-                AbstractHolidayCalendar(
-                    rules=[
-                        KingEdwardDeath11amyClose1910,
-                    ]
+        if not hasattr(self, "_special_closes"):
+            self._special_closes = [
+                (
+                    time(11, tzinfo=ZoneInfo("America/New_York")),
+                    NYSEHolidayCalendar(
+                        rules=[
+                            KingEdwardDeath11amyClose1910,
+                        ]
+                    ),
                 ),
-            ),
             (
                 time(12, tzinfo=ZoneInfo("America/New_York")),
-                AbstractHolidayCalendar(
+                NYSEHolidayCalendar(
                     rules=[
                         ParadeOfNationalGuardEarlyClose1917,
                         LibertyDay12pmEarlyClose1917,
@@ -1047,7 +1048,7 @@ class NYSEExchangeCalendar(MarketCalendar):
             ),
             (
                 time(hour=12, minute=30, tzinfo=ZoneInfo("America/New_York")),
-                AbstractHolidayCalendar(
+                NYSEHolidayCalendar(
                     rules=[
                         RooseveltFuneral1230EarlyClose1919,
                         WoodrowWilsonFuneral1230EarlyClose1924,
@@ -1058,7 +1059,7 @@ class NYSEExchangeCalendar(MarketCalendar):
             ),
             (
                 time(13, tzinfo=ZoneInfo("America/New_York")),
-                AbstractHolidayCalendar(
+                NYSEHolidayCalendar(
                     rules=[
                         FridayAfterIndependenceDayNYSEpre2013,
                         MonTuesThursBeforeIndependenceDay,
@@ -1071,7 +1072,7 @@ class NYSEExchangeCalendar(MarketCalendar):
             ),
             (
                 time(14, tzinfo=ZoneInfo("America/New_York")),
-                AbstractHolidayCalendar(
+                NYSEHolidayCalendar(
                     rules=[
                         DayAfterThanksgiving2pmEarlyCloseBefore1993,
                         HooverFuneral1400EarlyClose1964,
@@ -1083,7 +1084,7 @@ class NYSEExchangeCalendar(MarketCalendar):
             ),
             (
                 time(14, 7, tzinfo=ZoneInfo("America/New_York")),
-                AbstractHolidayCalendar(
+                NYSEHolidayCalendar(
                     rules=[
                         KennedyAssassination1407EarlyClose,
                     ]
@@ -1091,7 +1092,7 @@ class NYSEExchangeCalendar(MarketCalendar):
             ),
             (
                 time(hour=14, minute=30, tzinfo=ZoneInfo("America/New_York")),
-                AbstractHolidayCalendar(
+                NYSEHolidayCalendar(
                     rules=[
                         FalseArmisticeReport1430EarlyClose1918,
                         CromwellFuneral1430EarlyClose1925,
@@ -1102,7 +1103,7 @@ class NYSEExchangeCalendar(MarketCalendar):
             ),
             (
                 time(15, tzinfo=ZoneInfo("America/New_York")),
-                AbstractHolidayCalendar(
+                NYSEHolidayCalendar(
                     rules=[
                         HurricaneWatch3pmEarlyClose1976,
                     ]
@@ -1110,7 +1111,7 @@ class NYSEExchangeCalendar(MarketCalendar):
             ),
             (
                 time(15, 17, tzinfo=ZoneInfo("America/New_York")),
-                AbstractHolidayCalendar(
+                NYSEHolidayCalendar(
                     rules=[
                         ReaganAssassAttempt317pmEarlyClose1981,
                     ]
@@ -1118,7 +1119,7 @@ class NYSEExchangeCalendar(MarketCalendar):
             ),
             (
                 time(15, 28, tzinfo=ZoneInfo("America/New_York")),
-                AbstractHolidayCalendar(
+                NYSEHolidayCalendar(
                     rules=[
                         ConEdPowerFail328pmEarlyClose1981,
                     ]
@@ -1126,7 +1127,7 @@ class NYSEExchangeCalendar(MarketCalendar):
             ),
             (
                 time(15, 30, tzinfo=ZoneInfo("America/New_York")),
-                AbstractHolidayCalendar(
+                NYSEHolidayCalendar(
                     rules=[
                         CircuitBreakerTriggered330pmEarlyClose1997,
                     ]
@@ -1134,13 +1135,14 @@ class NYSEExchangeCalendar(MarketCalendar):
             ),
             (
                 time(15, 56, tzinfo=ZoneInfo("America/New_York")),
-                AbstractHolidayCalendar(
+                NYSEHolidayCalendar(
                     rules=[
                         SystemProb356pmEarlyClose2005,
                     ]
                 ),
             ),
         ]
+        return self._special_closes
 
     @property
     def special_closes_adhoc(self):
@@ -1190,7 +1192,7 @@ class NYSEExchangeCalendar(MarketCalendar):
         return [
             (
                 time(hour=9, minute=31, tzinfo=ZoneInfo("America/New_York")),
-                AbstractHolidayCalendar(
+                NYSEHolidayCalendar(
                     rules=[
                         ConEdXformer931amLateOpen1990,
                         EnduringFreedomMomentSilence931amLateOpen2001,
@@ -1199,7 +1201,7 @@ class NYSEExchangeCalendar(MarketCalendar):
             ),
             (
                 time(hour=9, minute=32, tzinfo=ZoneInfo("America/New_York")),
-                AbstractHolidayCalendar(
+                NYSEHolidayCalendar(
                     rules=[
                         IraqiFreedom932amLateOpen2003,
                         ReaganMomentSilence932amLateOpen2004,
@@ -1209,7 +1211,7 @@ class NYSEExchangeCalendar(MarketCalendar):
             ),
             (
                 time(hour=9, minute=33, tzinfo=ZoneInfo("America/New_York")),
-                AbstractHolidayCalendar(
+                NYSEHolidayCalendar(
                     rules=[
                         Sept11MomentSilence933amLateOpen2001,
                     ]
@@ -1217,7 +1219,7 @@ class NYSEExchangeCalendar(MarketCalendar):
             ),
             (
                 time(hour=10, minute=15, tzinfo=ZoneInfo("America/New_York")),
-                AbstractHolidayCalendar(
+                NYSEHolidayCalendar(
                     rules=[
                         Snow1015LateOpen1967,
                         MerrillLynchComputer1015LateOpen1974,
@@ -1228,7 +1230,7 @@ class NYSEExchangeCalendar(MarketCalendar):
             ),
             (
                 time(hour=10, minute=30, tzinfo=ZoneInfo("America/New_York")),
-                AbstractHolidayCalendar(
+                NYSEHolidayCalendar(
                     rules=[
                         TrafficBlockLateOpen1919,
                         TrafficBlockLateOpen1920,
@@ -1238,7 +1240,7 @@ class NYSEExchangeCalendar(MarketCalendar):
             ),
             (
                 time(hour=10, minute=45, tzinfo=ZoneInfo("America/New_York")),
-                AbstractHolidayCalendar(
+                NYSEHolidayCalendar(
                     rules=[
                         EclipseOfSunLateOpen1925,
                         Storm1045LateOpen1969,
@@ -1247,7 +1249,7 @@ class NYSEExchangeCalendar(MarketCalendar):
             ),
             (
                 time(11, tzinfo=ZoneInfo("America/New_York")),
-                AbstractHolidayCalendar(
+                NYSEHolidayCalendar(
                     rules=[
                         Snow11amLateOpen1934,
                         KingGeorgeVFuneral11amLateOpen1936,
@@ -1262,7 +1264,7 @@ class NYSEExchangeCalendar(MarketCalendar):
             ),
             (
                 time(11, 5, tzinfo=ZoneInfo("America/New_York")),
-                AbstractHolidayCalendar(
+                NYSEHolidayCalendar(
                     rules=[
                         PowerFail1105LateOpen,
                     ]
@@ -1270,7 +1272,7 @@ class NYSEExchangeCalendar(MarketCalendar):
             ),
             (
                 time(11, 15, tzinfo=ZoneInfo("America/New_York")),
-                AbstractHolidayCalendar(
+                NYSEHolidayCalendar(
                     rules=[
                         Storm1115LateOpen1976,
                     ]
@@ -1278,7 +1280,7 @@ class NYSEExchangeCalendar(MarketCalendar):
             ),
             (
                 time(12, tzinfo=ZoneInfo("America/New_York")),
-                AbstractHolidayCalendar(
+                NYSEHolidayCalendar(
                     rules=[
                         KingEdwardFuneral12pmOpen1910,
                         JPMorganFuneral12pmOpen1913,
@@ -1290,7 +1292,7 @@ class NYSEExchangeCalendar(MarketCalendar):
             ),
             (
                 time(13, tzinfo=ZoneInfo("America/New_York")),
-                AbstractHolidayCalendar(
+                NYSEHolidayCalendar(
                     rules=[
                         AnnunciatorBoardFire1pmLateOpen1921,
                     ]
