@@ -318,7 +318,20 @@ class MarketCalendar(metaclass=MarketCalendarMeta):
         if times is None:
             return None
 
-        date = pd.Timestamp(date)
+        # Normalize date to midnight to properly match against special dates index
+        date = pd.Timestamp(date).normalize()
+
+        # Check for special times on this specific date
+        # Use the date itself for both start and end to check just this one day
+        special = self.special_dates(market_time, date, date, filter_holidays=False)
+
+        # If there's a special time for this date, return it
+        if len(special) > 0 and date in special.index:
+            # special is a Series with dates as index and times as values
+            # The time is already in UTC, convert to local timezone
+            return special.loc[date].tz_convert(self.tz).time().replace(tzinfo=self.tz)
+
+        # Otherwise, return the regular time
         for d, t in times[::-1]:
             if d is None or pd.Timestamp(d) < date:
                 return t.replace(tzinfo=self.tz)
@@ -502,8 +515,9 @@ class MarketCalendar(metaclass=MarketCalendarMeta):
                 return pd.NaT
             if isinstance(t, tuple):
                 time_obj, day_offset = t
-                return pd.Timedelta(hours=time_obj.hour, minutes=time_obj.minute,
-                                   seconds=time_obj.second) + pd.Timedelta(days=day_offset)
+                return pd.Timedelta(
+                    hours=time_obj.hour, minutes=time_obj.minute, seconds=time_obj.second
+                ) + pd.Timedelta(days=day_offset)
             return pd.Timedelta(hours=t.hour, minutes=t.minute, seconds=t.second)
 
         timedeltas = col.apply(time_to_timedelta)
@@ -574,7 +588,7 @@ class MarketCalendar(metaclass=MarketCalendarMeta):
 
     def _get_market_times(self, start, end):
         mts = self._market_times
-        return mts[mts.index(start): mts.index(end) + 1]
+        return mts[mts.index(start) : mts.index(end) + 1]
 
     def days_at_time(self, days, market_time, day_offset=0):
         """
@@ -644,7 +658,7 @@ class MarketCalendar(metaclass=MarketCalendarMeta):
         if indexes:
             # Optimized: drop_duplicates first (reduces data), then sort
             dates = pd.concat(indexes, ignore_index=False).drop_duplicates().sort_index()
-            return dates.loc[start: end.replace(hour=23, minute=59, second=59)]
+            return dates.loc[start : end.replace(hour=23, minute=59, second=59)]
 
         return pd.Series([], dtype="datetime64[ns, UTC]", index=pd.DatetimeIndex([]))
 
@@ -681,15 +695,15 @@ class MarketCalendar(metaclass=MarketCalendarMeta):
         return special
 
     def schedule(
-            self,
-            start_date,
-            end_date,
-            tz="UTC",
-            start="market_open",
-            end="market_close",
-            force_special_times=True,
-            market_times=None,
-            interruptions=False,
+        self,
+        start_date,
+        end_date,
+        tz="UTC",
+        start="market_open",
+        end="market_close",
+        force_special_times=True,
+        market_times=None,
+        interruptions=False,
     ) -> pd.DataFrame:
         """
         Generates the schedule DataFrame. The resulting DataFrame will have all the valid business days as the index
@@ -736,14 +750,14 @@ class MarketCalendar(metaclass=MarketCalendarMeta):
         return self.schedule_from_days(_all_days, tz, start, end, force_special_times, market_times, interruptions)
 
     def schedule_from_days(
-            self,
-            days: pd.DatetimeIndex,
-            tz="UTC",
-            start="market_open",
-            end="market_close",
-            force_special_times=True,
-            market_times=None,
-            interruptions=False,
+        self,
+        days: pd.DatetimeIndex,
+        tz="UTC",
+        start="market_open",
+        end="market_close",
+        force_special_times=True,
+        market_times=None,
+        interruptions=False,
     ) -> pd.DataFrame:
         """
         Generates a schedule DataFrame for the days provided. The days are assumed to be valid trading days.
@@ -843,15 +857,15 @@ class MarketCalendar(metaclass=MarketCalendarMeta):
         return schedule
 
     def date_range_htf(
-            self,
-            frequency: Union[str, pd.Timedelta, int, float],
-            start: Union[str, pd.Timestamp, int, float, None] = None,
-            end: Union[str, pd.Timestamp, int, float, None] = None,
-            periods: Union[int, None] = None,
-            closed: Union[Literal["left", "right"], None] = "right",
-            *,
-            day_anchor: u.Day_Anchor = "SUN",
-            month_anchor: u.Month_Anchor = "JAN",
+        self,
+        frequency: Union[str, pd.Timedelta, int, float],
+        start: Union[str, pd.Timestamp, int, float, None] = None,
+        end: Union[str, pd.Timestamp, int, float, None] = None,
+        periods: Union[int, None] = None,
+        closed: Union[Literal["left", "right"], None] = "right",
+        *,
+        day_anchor: u.Day_Anchor = "SUN",
+        month_anchor: u.Month_Anchor = "JAN",
     ) -> pd.DatetimeIndex:
         """
         Returns a Normalized DatetimeIndex from the start-date to End-Date for Time periods of 1D and Higher.
