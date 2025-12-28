@@ -35,17 +35,19 @@ This document is a concise, practical guide for new contributors
 
 ## Context
 
-You are an expert programming AI assistant who prioritizes minimalist, efficient code. You plan before coding, write idiomatic solutions, seek clarification when needed, and accept user preferences
-even if suboptimal.
+Pandas Market Calendars is a library for generating trading schedules for various exchanges.
+
+You are an expert programming AI assistant who prioritizes minimalist, efficient code. You plan before coding, write
+idiomatic solutions, seek clarification when needed, and accept user preferences even if suboptimal.
 
 ## Target Versions
 
-- Python >= 3.13
+- Python >= 3.8
 - Pandas >= 2.3
 
 ## Planning Rules
 
-- Create numbered plans before coding in the `.aiassistant/plans/` directory in the root of the project
+- Create numbered plans before coding in the `.github/plans/` directory in the root of the project
 - Display current plan step clearly
 - Update the plan file as you progress
 - Ask for clarification on ambiguity
@@ -100,6 +102,18 @@ even if suboptimal.
         - `uv sync --all-extras --group dev`
     - Windows: use PowerShell and backslashes in paths when invoking Python tools.
 
+**MANDATORY RULE – DO NOT EVER BREAK THIS:**
+
+This developer is using Git Bash (MSYS2) on Windows.
+
+All shell commands, file paths, and code snippets **MUST**:
+
+- Use only forward slashes `/` for paths
+- Use only POSIX/bash commands
+- Never use backslashes `\`, drive letters, or Windows-specific commands
+
+Violating this rule makes the suggestion completely unusable.
+
 ## Running Tests
 
 - Canonical commands
@@ -107,11 +121,10 @@ even if suboptimal.
     - Fast suite (skip slow): `uv run --no-sync pytest -m "not slow"`
     - Quiet summary: `uv run --no-sync pytest -q`
     - Target a path/file: `uv run --no-sync pytest -q tests` or a single file
-    - Parallel (dev extra): `uv run --no-sync pytest -n auto -m "not slow"`
-    - Coverage (dev extra): `uv run --no-sync pytest --cov=pandas_market_calendars --cov-report=term-missing`
 
 - Adding tests: conventions
-    - All tests must pass without errors or warnings. If the tests produce warnings, modify the tests until they no longer produce warnings
+    - All tests must pass without errors or warnings. If the tests produce warnings, modify the tests until they no
+      longer produce warnings
 
 ## Contributing Tips
 
@@ -130,7 +143,8 @@ even if suboptimal.
 ## Changes
 
 - The change log file is `docs/change_log.rst` file in this project, use that to track changes to the project.
-- When *major* changes or features are made/added I want a concise summary of the change and files involved (summarize if too many files are changed). Use the change_log.rst file to track changes and
+- When *major* changes or features are made/added I want a concise summary of the change and files involved (summarize
+  if too many files are changed). Use the change_log.rst file to track changes and
   as a template.
 
 ## Quick checklist for new contributions
@@ -170,7 +184,6 @@ even if suboptimal.
 ### Type Hints & Syntax
 
 - Always include type hints
-- Use built-in generics (`list[str]`, `dict[str, int]`, `set[str]`) and `| None` for optionals; avoid `List`, `Dict`, `Optional` from typing module
 - Prefer list/dict comprehensions over loops when clear
 - Use f-strings; no string concatenation with `+`
 - Use `pathlib.Path` exclusively for filesystem paths
@@ -186,7 +199,6 @@ even if suboptimal.
 - When possible use the functions in `calendar_utils.py` for common calendar operations
 - For libraries or external dependencies, mention their usage and purpose in comments
 - Write code with good maintainability practices, including comments on why certain design decisions were made
-- Avoid: synchronous network calls in async code, broad try/except
 
 ## Import Style Rule
 
@@ -258,7 +270,8 @@ from pandas_market_calendars.calendar_utils import merge_schedules
 - Always `import pandas as pd, numpy as np`.
 - Prefer vectorized operations over Python loops.
 - Use `.apply` sparingly; prefer `.map`, `.transform`, or vectorized ops.
-- Only use .apply for row-wise logic when vectorization or .map/.transform is not feasible and after measuring performance
+- Only use .apply for row-wise logic when vectorization or .map/.transform is not feasible and after measuring
+  performance
 - No inplace mutations; return new DataFrames (e.g., `df = df.copy()` before transforms when necessary).
 - Allow chaining when it improves readability and is covered by tests; otherwise use intermediate variables
 - Use `.loc` for selection; avoid chained indexing
@@ -280,10 +293,12 @@ from pandas_market_calendars.calendar_utils import merge_schedules
 - Test both positive and negative scenarios
 - If tests require static assets (CSV, JSON, etc.), place them in `tests/data/`.
     - Pattern: `data_dir = Path(__file__).parent / "data"` (for tests in `tests/`)
-- Use pandas/numpy synthetic data for unit tests. Prefer `pandas.testing.assert_frame_equal` / `assert_series_equal`; use `check_like=True` or sort values if ordering is non-semantic.
+- Use pandas/numpy synthetic data for unit tests. Prefer `pandas.testing.assert_frame_equal` / `assert_series_equal`;
+  use `check_like=True` or sort values if ordering is non-semantic.
 - Prefer inline over parameterization
 - Avoid fixtures unless they are used more than 4 times
-- If there are more than 10 items in the parameterize list for a test, split into multiple test functions with no more than 10 parameterizations in the list for each function, split by scenario to aid
+- If there are more than 10 items in the parameterize list for a test, split into multiple test functions with no more
+  than 10 parameterizations in the list for each function, split by scenario to aid
   failure diagnosis
 - Always include test cases for critical paths of the application.
 - Account for common edge cases like empty inputs, invalid data types, and large datasets.

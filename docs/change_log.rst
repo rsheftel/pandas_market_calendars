@@ -1,6 +1,14 @@
 Change Log
 ==========
 
+5.2.3 (12/27/2025)
+~~~~~~~~~~~~~~~~~~
+- Fixed missing early close for Independence Day in CBOE calendars (CFE, CBOE_Index_Options, CBOE_Equity_Options)
+- Fixed #260
+- Fixed #230
+- Fixed #407
+- Multiple fixes to the build process and to incorporate more AI capabilities
+
 5.2.0 (12/17/2025)
 ~~~~~~~~~~~~~~~~~~
 - Added AGENTS.md as instructions file for agentic AI agents

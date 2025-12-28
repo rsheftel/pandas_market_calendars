@@ -1,7 +1,9 @@
 name: test_runner
 on:
+  push:
+    branches: [ dev, master ]
   pull_request:
-    branches: [ dev ]
+    branches: [ dev, master ]
   workflow_call:
   workflow_dispatch:
 

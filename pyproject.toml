@@ -1,6 +1,6 @@
 [project]
 name = "pandas_market_calendars"
-version = "5.2.2"
+version = "5.2.3"
 authors = [
     { name = "Ryan Sheftel", email = "rsheftel@alumni.upenn.edu" },
 ]
@@ -11,12 +11,9 @@ keywords = ["trading", "exchanges", "markets", "OTC", "datetime", "holiday", "bu
 license = { text = "MIT" }
 classifiers = [
     'Development Status :: 5 - Production/Stable',
-    # Indicate who your project is intended for
     'Intended Audience :: Developers',
     'Topic :: Software Development',
-    # Pick your license as you wish (should match "license" above)
     'License :: OSI Approved :: MIT License',
-    # Specify the Python versions you support here.
     'Programming Language :: Python :: 3.8',
     'Programming Language :: Python :: 3.9',
     'Programming Language :: Python :: 3.10',

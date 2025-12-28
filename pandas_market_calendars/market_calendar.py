@@ -16,7 +16,7 @@
 import warnings
 from abc import ABCMeta, abstractmethod
 from datetime import time
-from typing import Literal, Union
+from typing import Literal, Union, List
 
 import pandas as pd
 from pandas.tseries.offsets import CustomBusinessDay
@@ -66,7 +66,7 @@ class MarketCalendar(metaclass=MarketCalendarMeta):
     }
 
     @staticmethod
-    def _tdelta(t, day_offset=0):
+    def _tdelta(t: Union[time, tuple], day_offset: int = 0) -> pd.Timedelta:
         try:
             return pd.Timedelta(days=day_offset, hours=t.hour, minutes=t.minute, seconds=t.second)
         except AttributeError:
@@ -74,14 +74,14 @@ class MarketCalendar(metaclass=MarketCalendarMeta):
             return pd.Timedelta(days=day_offset, hours=t.hour, minutes=t.minute, seconds=t.second)
 
     @staticmethod
-    def _off(tple):
+    def _off(tple) -> int:
         try:
             return tple[2]
         except IndexError:
             return 0
 
     @classmethod
-    def calendar_names(cls):
+    def calendar_names(cls) -> List[str]:
         """All Market Calendar names and aliases that can be used in "factory"
         :return: list(str)
         """
@@ -318,7 +318,20 @@ class MarketCalendar(metaclass=MarketCalendarMeta):
         if times is None:
             return None
 
-        date = pd.Timestamp(date)
+        # Normalize date to midnight to properly match against special dates index
+        date = pd.Timestamp(date).normalize()
+
+        # Check for special times on this specific date
+        # Use the date itself for both start and end to check just this one day
+        special = self.special_dates(market_time, date, date, filter_holidays=False)
+
+        # If there's a special time for this date, return it
+        if len(special) > 0 and date in special.index:
+            # special is a Series with dates as index and times as values
+            # The time is already in UTC, convert to local timezone
+            return special.loc[date].tz_convert(self.tz).time().replace(tzinfo=self.tz)
+
+        # Otherwise, return the regular time
         for d, t in times[::-1]:
             if d is None or pd.Timestamp(d) < date:
                 return t.replace(tzinfo=self.tz)
@@ -493,24 +506,23 @@ class MarketCalendar(metaclass=MarketCalendarMeta):
         dtype: datetime64[ns, UTC]
         """
         col = col.dropna()  # Python 3.8, pandas 2.0.3 cannot create time deltas from NaT
-        try:
-            times = col.str[0]
-        except AttributeError:  # no tuples, only offset 0
-            return (
-                (pd.to_timedelta(col.astype("string").fillna(""), errors="coerce") + col.index)
-                .dt.tz_localize(self.tz)
-                .dt.tz_convert("UTC")
-            )
+        if len(col) == 0:
+            return pd.Series([], dtype="datetime64[ns, UTC]")
 
-        return (
-            (
-                pd.to_timedelta(times.fillna(col).astype("string").fillna(""), errors="coerce")
-                + pd.to_timedelta(col.str[1].fillna(0), unit="D")
-                + col.index
-            )
-            .dt.tz_localize(self.tz)
-            .dt.tz_convert("UTC")
-        )
+        # Optimized: Use direct timedelta computation instead of string parsing
+        def time_to_timedelta(t):
+            if t is None:
+                return pd.NaT
+            if isinstance(t, tuple):
+                time_obj, day_offset = t
+                return pd.Timedelta(
+                    hours=time_obj.hour, minutes=time_obj.minute, seconds=time_obj.second
+                ) + pd.Timedelta(days=day_offset)
+            return pd.Timedelta(hours=t.hour, minutes=t.minute, seconds=t.second)
+
+        timedeltas = col.apply(time_to_timedelta)
+        result = pd.Series(col.index + timedeltas.values, index=col.index)
+        return result.dt.tz_localize(self.tz).dt.tz_convert("UTC")
 
     @staticmethod
     def _col_name(n: int):
@@ -536,17 +548,32 @@ class MarketCalendar(metaclass=MarketCalendarMeta):
         Returns the complete CustomBusinessDay object of holidays that can be used in any Pandas function that take
         that input.
 
+        Uses class-level caching to share the CustomBusinessDay object across all instances of the same calendar class.
+
         :return: CustomBusinessDay object of holidays
         """
-        try:
-            return self._holidays
-        except AttributeError:
-            self._holidays = CustomBusinessDay(
+        # Use class-level cache for efficiency across instances
+        cache_attr = "_holidays_cache"
+        cls = self.__class__
+
+        if not hasattr(cls, cache_attr):
+            cls._holidays_cache = {}
+
+        # Create a cache key based on the calendar's unique configuration
+        cache_key = (
+            tuple(self.adhoc_holidays) if self.adhoc_holidays else (),
+            id(self.regular_holidays),
+            self.weekmask,
+        )
+
+        if cache_key not in cls._holidays_cache:
+            cls._holidays_cache[cache_key] = CustomBusinessDay(
                 holidays=self.adhoc_holidays,
                 calendar=self.regular_holidays,
                 weekmask=self.weekmask,
             )
-        return self._holidays
+
+        return cls._holidays_cache[cache_key]
 
     def valid_days(self, start_date, end_date, tz="UTC") -> pd.DatetimeIndex:
         """
@@ -629,7 +656,8 @@ class MarketCalendar(metaclass=MarketCalendarMeta):
         indexes += [self.days_at_time(dates, time_) for time_, dates in ad_hoc_dates]
 
         if indexes:
-            dates = pd.concat(indexes).sort_index().drop_duplicates()
+            # Optimized: drop_duplicates first (reduces data), then sort
+            dates = pd.concat(indexes, ignore_index=False).drop_duplicates().sort_index()
             return dates.loc[start : end.replace(hour=23, minute=59, second=59)]
 
         return pd.Series([], dtype="datetime64[ns, UTC]", index=pd.DatetimeIndex([]))
@@ -646,6 +674,15 @@ class MarketCalendar(metaclass=MarketCalendarMeta):
         :return: schedule DatetimeIndex
         """
         start_date, end_date = self.clean_dates(start_date, end_date)
+
+        # Check instance-level cache for special dates
+        if not hasattr(self, "_special_dates_cache"):
+            self._special_dates_cache = {}
+
+        cache_key = (market_time, start_date, end_date, filter_holidays)
+        if cache_key in self._special_dates_cache:
+            return self._special_dates_cache[cache_key]
+
         calendars = self.get_special_times(market_time)
         ad_hoc = self.get_special_times_adhoc(market_time)
         special = self._special_dates(calendars, ad_hoc, start_date, end_date)
@@ -653,6 +690,8 @@ class MarketCalendar(metaclass=MarketCalendarMeta):
         if filter_holidays:
             valid = self.valid_days(start_date, end_date, tz=None)
             special = special[special.index.isin(valid)]  # some sources of special times don't exclude holidays
+
+        self._special_dates_cache[cache_key] = special
         return special
 
     def schedule(
@@ -811,7 +850,9 @@ class MarketCalendar(metaclass=MarketCalendarMeta):
             schedule = schedule.dropna(how="all", axis=1)
 
         if tz != "UTC":
-            schedule = schedule.apply(lambda s: s.dt.tz_convert(tz))
+            # Vectorized timezone conversion - faster than apply(lambda)
+            for col in schedule.columns:
+                schedule[col] = schedule[col].dt.tz_convert(tz)
 
         return schedule
 
@@ -928,11 +969,14 @@ class MarketCalendar(metaclass=MarketCalendarMeta):
         day.loc[day.eq("market_close") & day.shift(-1).eq("post")] = "market_open"
         day = day.map(lambda x: (self.open_close_map.get(x) if x in self.open_close_map.keys() else x))
 
-        if include_close:
-            below = day.index < timestamp
+        below = day.index <= timestamp
+        last_below = day[below]
+        last_event = last_below.iat[-1]
+        last_time = last_below.index[-1]
+        if not last_event and last_time == timestamp:
+            return include_close
         else:
-            below = day.index <= timestamp
-        return bool(day[below].iat[-1])  # returns numpy.bool_ if not bool(...)
+            return bool(last_event)
 
     # need this to make is_open_now testable
     @staticmethod
