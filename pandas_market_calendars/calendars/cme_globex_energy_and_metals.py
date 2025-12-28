@@ -161,6 +161,10 @@ class CMEGlobexEnergyAndMetalsExchangeCalendar(CMEGlobexBaseExchangeCalendar):
         "TIO",
     ]
 
+    @property
+    def tz(self):
+        return ZoneInfo("America/Chicago")
+
     regular_market_times = {
         "market_open": ((None, time(17), -1),),  # Sunday offset. Central Timezone (CT)
         "market_close": ((None, time(16)),),
@@ -188,7 +192,7 @@ class CMEGlobexEnergyAndMetalsExchangeCalendar(CMEGlobexBaseExchangeCalendar):
     def special_closes(self):
         return [
             (
-                time(12, tzinfo=ZoneInfo("America/Chicago")),
+                time(12),
                 AbstractHolidayCalendar(
                     rules=[
                         USMartinLutherKingJrPre2022,
@@ -201,7 +205,7 @@ class CMEGlobexEnergyAndMetalsExchangeCalendar(CMEGlobexBaseExchangeCalendar):
                 ),
             ),
             (
-                time(12, 45, tzinfo=ZoneInfo("America/Chicago")),
+                time(12, 45),
                 AbstractHolidayCalendar(
                     rules=[
                         FridayAfterThanksgiving,
@@ -209,7 +213,7 @@ class CMEGlobexEnergyAndMetalsExchangeCalendar(CMEGlobexBaseExchangeCalendar):
                 ),
             ),
             (
-                time(13, 30, tzinfo=ZoneInfo("America/Chicago")),
+                time(13, 30),
                 AbstractHolidayCalendar(
                     rules=[
                         USMartinLutherKingJrFrom2022,
