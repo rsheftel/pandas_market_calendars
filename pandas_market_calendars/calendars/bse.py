@@ -396,6 +396,35 @@ BSEClosedDay = [
     Timestamp("2024-11-01", tz="UTC"),  # Fri, Diwali
     Timestamp("2024-11-15", tz="UTC"),  # Fri, Guru Nanak's Birthday
     Timestamp("2024-12-25", tz="UTC"),  # Wed, Christmas
+    Timestamp("2025-02-26", tz="UTC"),  # Wed, Mahashivratri
+    Timestamp("2025-03-14", tz="UTC"),  # Fri, Holi
+    Timestamp("2025-03-31", tz="UTC"),  # Mon, Id-Ul-Fitr (Ramadan Eid)
+    Timestamp("2025-04-10", tz="UTC"),  # Thu, Shri Mahavir Jayanti
+    Timestamp("2025-04-14", tz="UTC"),  # Mon, Dr. Baba Saheb Ambedkar Jayanti
+    Timestamp("2025-04-18", tz="UTC"),  # Fri, Good Friday
+    Timestamp("2025-05-01", tz="UTC"),  # Thu, Maharashtra Day
+    Timestamp("2025-08-15", tz="UTC"),  # Fri, Independence Day / Parsi New Year
+    Timestamp("2025-08-27", tz="UTC"),  # Wed, Shri Ganesh Chaturthi
+    Timestamp("2025-10-02", tz="UTC"),  # Thu, Mahatma Gandhi Jayanti / Dussehra
+    Timestamp("2025-10-21", tz="UTC"),  # Tue, Diwali Laxmi Pujan
+    Timestamp("2025-10-22", tz="UTC"),  # Wed, Balipratipada
+    Timestamp("2025-11-05", tz="UTC"),  # Wed, Prakash Gurpurb Sri Guru Nanak Dev
+    Timestamp("2025-12-25", tz="UTC"),  # Thu, Christmas
+    Timestamp("2026-01-26", tz="UTC"),  # Mon, Republic Day
+    Timestamp("2026-03-03", tz="UTC"),  # Tue, Holi
+    Timestamp("2026-03-26", tz="UTC"),  # Thu, Shri Ram Navami
+    Timestamp("2026-03-31", tz="UTC"),  # Tue, Shri Mahavir Jayanti
+    Timestamp("2026-04-03", tz="UTC"),  # Fri, Good Friday
+    Timestamp("2026-04-14", tz="UTC"),  # Tue, Dr. Baba Saheb Ambedkar Jayanti
+    Timestamp("2026-05-01", tz="UTC"),  # Fri, Maharashtra Day
+    Timestamp("2026-05-28", tz="UTC"),  # Thu, Bakri Id
+    Timestamp("2026-06-26", tz="UTC"),  # Fri, Muharram
+    Timestamp("2026-09-14", tz="UTC"),  # Mon, Ganesh Chaturthi
+    Timestamp("2026-10-02", tz="UTC"),  # Fri, Mahatma Gandhi Jayanti
+    Timestamp("2026-10-20", tz="UTC"),  # Tue, Dussehra
+    Timestamp("2026-11-10", tz="UTC"),  # Tue, Diwali-Balipratipada
+    Timestamp("2026-11-24", tz="UTC"),  # Tue, Prakash Gurpurb Sri Guru Nanak Dev
+    Timestamp("2026-12-25", tz="UTC"),  # Fri, Christmas
 ]
 
 
