@@ -548,32 +548,17 @@ class MarketCalendar(metaclass=MarketCalendarMeta):
         Returns the complete CustomBusinessDay object of holidays that can be used in any Pandas function that take
         that input.
 
-        Uses class-level caching to share the CustomBusinessDay object across all instances of the same calendar class.
-
         :return: CustomBusinessDay object of holidays
         """
-        # Use class-level cache for efficiency across instances
-        cache_attr = "_holidays_cache"
-        cls = self.__class__
-
-        if not hasattr(cls, cache_attr):
-            cls._holidays_cache = {}
-
-        # Create a cache key based on the calendar's unique configuration
-        cache_key = (
-            tuple(self.adhoc_holidays) if self.adhoc_holidays else (),
-            id(self.regular_holidays),
-            self.weekmask,
-        )
-
-        if cache_key not in cls._holidays_cache:
-            cls._holidays_cache[cache_key] = CustomBusinessDay(
+        try:
+            return self._holidays
+        except AttributeError:
+            self._holidays = CustomBusinessDay(
                 holidays=self.adhoc_holidays,
                 calendar=self.regular_holidays,
                 weekmask=self.weekmask,
             )
-
-        return cls._holidays_cache[cache_key]
+        return self._holidays
 
     def valid_days(self, start_date, end_date, tz="UTC") -> pd.DatetimeIndex:
         """

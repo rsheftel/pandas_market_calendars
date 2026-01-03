@@ -1,6 +1,10 @@
 Change Log
 ==========
 
+5.2.3 (xx/xx/2026)
+~~~~~~~~~~~~~~~~~~
+- removed caching of holidays
+
 5.2.3 (12/27/2025)
 ~~~~~~~~~~~~~~~~~~
 - Fixed missing early close for Independence Day in CBOE calendars (CFE, CBOE_Index_Options, CBOE_Equity_Options)
