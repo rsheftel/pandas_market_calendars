@@ -188,6 +188,6 @@ class TSXExchangeCalendar(MarketCalendar):
         return [
             (
                 self.regular_early_close,
-                AbstractHolidayCalendar([ChristmasEveEarlyClose2010Onwards]),
+                AbstractHolidayCalendar(rules=[ChristmasEveEarlyClose2010Onwards]),
             )
         ]
