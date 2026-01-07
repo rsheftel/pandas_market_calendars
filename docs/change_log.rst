@@ -1,9 +1,11 @@
 Change Log
 ==========
 
-5.2.3 (xx/xx/2026)
+5.2.4 (01/07/2026)
 ~~~~~~~~~~~~~~~~~~
 - removed caching of holidays
+- fix: TSX calendar not respecting early close on Christmas Eve #433
+- Update list of BSE holidays for 2025 and 2026 #430
 
 5.2.3 (12/27/2025)
 ~~~~~~~~~~~~~~~~~~
