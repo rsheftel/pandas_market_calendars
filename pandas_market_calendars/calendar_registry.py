@@ -23,6 +23,7 @@ from .calendars.cme_globex_fx import CMEGlobexFXExchangeCalendar
 from .calendars.cme_globex_fixed_income import CMEGlobexFixedIncomeCalendar
 from .calendars.eurex import EUREXExchangeCalendar
 from .calendars.eurex_fixed_income import EUREXFixedIncomeCalendar
+from .calendars.forex import ForexExchangeCalendar
 from .calendars.hkex import HKEXExchangeCalendar
 from .calendars.ice import ICEExchangeCalendar
 from .calendars.iex import IEXExchangeCalendar
