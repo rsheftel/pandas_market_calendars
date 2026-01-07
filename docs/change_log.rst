@@ -1,6 +1,12 @@
 Change Log
 ==========
 
+5.2.4 (01/07/2026)
+~~~~~~~~~~~~~~~~~~
+- removed caching of holidays
+- fix: TSX calendar not respecting early close on Christmas Eve #433
+- Update list of BSE holidays for 2025 and 2026 #430
+
 5.2.3 (12/27/2025)
 ~~~~~~~~~~~~~~~~~~
 - Fixed missing early close for Independence Day in CBOE calendars (CFE, CBOE_Index_Options, CBOE_Equity_Options)
