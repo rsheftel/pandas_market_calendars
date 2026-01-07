@@ -1,6 +1,10 @@
+import sys
 from datetime import time
 
-from zoneinfo import ZoneInfo
+if sys.version_info >= (3, 9):
+    from zoneinfo import ZoneInfo
+else:
+    from backports.zoneinfo import ZoneInfo
 
 from pandas_market_calendars.market_calendar import MarketCalendar
 
@@ -31,4 +35,3 @@ class ForexExchangeCalendar(MarketCalendar):
     @property
     def weekmask(self):
         return "Sun Mon Tue Wed Thu Fri"
-

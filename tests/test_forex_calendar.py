@@ -1,5 +1,4 @@
 import pandas as pd
-from pandas.testing import assert_index_equal
 
 import pandas_market_calendars as mcal
 from pandas_market_calendars.calendars.forex import ForexExchangeCalendar
@@ -60,7 +59,7 @@ def test_open_on_holidays():
     cal = ForexExchangeCalendar()
     schedule = cal.schedule("2024-01-01", "2024-01-01")
     assert pd.Timestamp("2024-01-01") in schedule.index
-    
+
     schedule = cal.schedule("2023-12-25", "2023-12-25")
     if pd.Timestamp("2023-12-25").weekday() != 5:
         assert pd.Timestamp("2023-12-25") in schedule.index
@@ -73,4 +72,3 @@ def test_sunday_to_friday_continuous():
     for day in expected_days:
         assert pd.Timestamp(day) in schedule.index
     assert pd.Timestamp("2024-01-13") not in schedule.index
-
