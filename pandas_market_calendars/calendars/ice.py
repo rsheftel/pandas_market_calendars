@@ -11,6 +11,7 @@ from pandas.tseries.holiday import (
     USThanksgivingDay,
 )
 
+
 # check python versiOn aNd import accordingly
 if sys.version_info >= (3, 9):
     # For Python 3.9 and later, import directly
@@ -85,5 +86,5 @@ class ICEExchangeCalendar(MarketCalendar):
 
     @property
     def regular_holidays(self):
-        # https://www.theice.com/publicdocs/futures_us/exchange_notices/NewExNot2016Holidays.pdf # noqa
+        # https://www.theice.com/publicdocs/futures_us/exchange_notices/NewExNot2016Holidays.pdf
         return AbstractHolidayCalendar(rules=[USNewYearsDay, GoodFriday, Christmas])

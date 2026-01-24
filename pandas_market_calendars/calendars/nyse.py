@@ -18,6 +18,7 @@ from datetime import time
 from itertools import chain
 from typing import Literal, Union
 
+
 # check python versiOn aNd import accordingly
 if sys.version_info >= (3, 9):
     # For Python 3.9 and later, import directly
@@ -32,179 +33,190 @@ from pandas.tseries.offsets import CustomBusinessDay
 
 from pandas_market_calendars import calendar_utils as u
 from pandas_market_calendars.holidays.nyse import (
-    # Always Celebrated Holidays
-    USNewYearsDayNYSEpost1952,
-    USNewYearsDayNYSEpre1952,
-    SatBeforeNewYearsAdhoc,
-    USPresidentsDay,
-    USWashingtonsBirthDay1964to1970,
-    USWashingtonsBirthDayBefore1952,
-    USWashingtonsBirthDay1952to1963,
-    USLincolnsBirthDayBefore1954,
-    LincolnsBirthDayAdhoc,
-    SatBeforeWashingtonsBirthdayAdhoc,
-    SatAfterWashingtonsBirthdayAdhoc,
-    SatBeforeAfterLincolnsBirthdayAdhoc,
-    GrantsBirthDayAdhoc,
-    USMartinLutherKingJrAfter1998,
-    GoodFriday,
-    GoodFridayPre1898,
-    GoodFriday1899to1905,
-    SatAfterGoodFridayAdhoc,
-    USMemorialDay,
-    USMemorialDayBefore1952,
-    USMemorialDay1952to1964,
-    USMemorialDay1964to1969,
-    SatBeforeDecorationAdhoc,
-    SatAfterDecorationAdhoc,
-    DayBeforeDecorationAdhoc,
-    USJuneteenthAfter2022,
-    USIndependenceDay,
-    USIndependenceDayPre1952,
-    USIndependenceDay1952to1954,
-    SatBeforeIndependenceDayAdhoc,
-    SatAfterIndependenceDayAdhoc,
-    MonTuesThursBeforeIndependenceDay,
-    FridayAfterIndependenceDayNYSEpre2013,
-    WednesdayBeforeIndependenceDayPost2013,
-    MonBeforeIndependenceDayAdhoc,
-    DaysAfterIndependenceDayAdhoc,
-    # DaysBeforeIndependenceDay1pmEarlyCloseAdhoc,
-    USColumbusDayBefore1954,
-    USElectionDay1848to1967,
-    USLaborDayStarting1887,
-    SatBeforeLaborDayAdhoc,
-    USThanksgivingDay,
-    USThanksgivingDay1939to1941,
-    USThanksgivingDayBefore1939,
-    DayAfterThanksgiving2pmEarlyCloseBefore1993,
-    DayAfterThanksgiving1pmEarlyCloseInOrAfter1993,
-    FridayAfterThanksgivingAdHoc,
-    USElectionDay1968to1980Adhoc,
-    ChristmasNYSE,
-    Christmas54to98NYSE,
-    ChristmasBefore1954,
-    ChristmasEvesAdhoc,
-    DayAfterChristmasAdhoc,
-    DayAfterChristmas1pmEarlyCloseAdhoc,
-    ChristmasEvePost1999Early1pmClose,
-    ChristmasEve1pmEarlyCloseAdhoc,
-    ChristmasEve2pmEarlyCloseAdhoc,
-    SatBeforeChristmasAdhoc,
-    SatAfterChristmasAdhoc,
-    # Retired Holidays
-    USVetransDayAdHoc,
-    SatAfterColumbusDayAdHoc,
-    USVeteransDay1934to1953,
-    # Adhoc Holidays
-    # 1885
-    UlyssesGrantFuneral1885,
-    # 1892
-    ColumbianCelebration1892,
-    # 1888
-    GreatBlizzardOf1888,
-    # 1889
-    WashingtonInaugurationCentennialCelebration1889,
-    # 1898
-    CharterDay1898,
-    WelcomeNavalCommander1898,
     # 1899
     AdmiralDeweyCelebration1899,
-    GarretHobartFuneral1899,
-    # 1901
-    McKinleyDeathAndFuneral1901,
-    QueenVictoriaFuneral1901,
-    MovedToProduceExchange1901,
-    EnlargedProduceExchange1901,
-    # 1902
-    KingEdwardVIIcoronation1902,
-    # 1903
-    NYSEnewBuildingOpen1903,
-    # 1908
-    GroverClevelandFuneral1pmClose1908,
-    # 1909
-    HudsonFultonCelebration1909,
-    # 1910
-    KingEdwardDeath11amyClose1910,
-    KingEdwardFuneral12pmOpen1910,
-    # 1912
-    JamesShermanFuneral1912,
-    # 1913
-    JPMorganFuneral12pmOpen1913,
-    WilliamGaynorFuneral12pmOpen1913,
-    # 1914
-    OnsetOfWWI1914,
-    # 1917
-    WeatherHeatClosing1917,
-    ParadeOfNationalGuardEarlyClose1917,
-    LibertyDay12pmEarlyClose1917,
-    DraftRegistrationDay1917,
-    # 1918
-    WeatherNoHeatClosing1918,
-    DraftRegistrationDay1918,
-    LibertyDay12pmEarlyClose1918,
-    FalseArmisticeReport1430EarlyClose1918,
-    ArmisticeSigned1918,
-    # 1919
-    RooseveltFuneral1230EarlyClose1919,
-    Homecoming27Division1919,
-    ParadeOf77thDivision1919,
-    BacklogRelief1919,
-    GeneralPershingReturn1919,
-    TrafficBlockLateOpen1919,
-    # 1920
-    TrafficBlockLateOpen1920,
-    OfficeLocationChange1920,
-    WallStreetExplosionEarlyClose1920,
     # 1921
     AnnunciatorBoardFire1pmLateOpen1921,
+    ArmisticeSigned1918,
+    Backlog2pmEarlyCloses1967,
+    # 1968
+    Backlog2pmEarlyCloses1968,
+    # 1987
+    Backlog2pmEarlyCloses1987,
+    Backlog3pmEarlyCloses1987,
+    Backlog230pmEarlyCloses1987,
+    Backlog330pmEarlyCloses1987,
+    BacklogRelief1pmEarlyClose1929,
+    BacklogRelief2pmEarlyClose1928,
+    BacklogRelief12pmLateOpen1929,
+    BacklogRelief1919,
+    # 1928
+    BacklogRelief1928,
+    # 1929
+    BacklogRelief1929,
+    BankHolidays1933,
+    # 1898
+    CharterDay1898,
+    Christmas54to98NYSE,
+    ChristmasBefore1954,
+    ChristmasEve1pmEarlyCloseAdhoc,
+    ChristmasEve2pmEarlyCloseAdhoc,
+    ChristmasEvePost1999Early1pmClose,
+    ChristmasEvesAdhoc,
+    ChristmasNYSE,
+    # 1997
+    CircuitBreakerTriggered330pmEarlyClose1997,
+    # 1892
+    ColumbianCelebration1892,
+    # 1995
+    Computer1030LateOpen1995,
+    ConEdPowerFail328pmEarlyClose1981,
+    # 1990
+    ConEdXformer931amLateOpen1990,
+    # 1933
+    CoolidgeFuneral1933,
+    CromwellFuneral1430EarlyClose1925,
+    DayAfterChristmas1pmEarlyCloseAdhoc,
+    DayAfterChristmasAdhoc,
+    DayAfterThanksgiving1pmEarlyCloseInOrAfter1993,
+    DayAfterThanksgiving2pmEarlyCloseBefore1993,
+    DayBeforeDecorationAdhoc,
+    DaysAfterIndependenceDayAdhoc,
+    DraftRegistrationDay1917,
+    DraftRegistrationDay1918,
+    # 1925
+    EclipseOfSunLateOpen1925,
+    EisenhowerFuneral1969,
+    EnduringFreedomMomentSilence931amLateOpen2001,
+    EnlargedProduceExchange1901,
+    FalseArmisticeReport1430EarlyClose1918,
+    # 1989
+    Fire11amLateOpen1989,
+    FireDrill1015LateOpen1974,
+    FireDrill1015LateOpen1976,
+    FirstLunarLandingClosing1969,
+    # 2006
+    FordMomentSilence932amLateOpen2006,
+    # 2007
+    FordMourning2007,
+    FridayAfterIndependenceDayNYSEpre2013,
+    FridayAfterThanksgivingAdHoc,
+    GarretHobartFuneral1899,
+    GasFumesOnTradingFloor1230EarlyClose1933,
+    GeneralPershingReturn1919,
+    # 2018
+    GeorgeHWBushDeath2018,
+    GoodFriday,
+    GoodFriday1899to1905,
+    GoodFridayPre1898,
+    GrantsBirthDayAdhoc,
+    # 1888
+    GreatBlizzardOf1888,
+    # 1908
+    GroverClevelandFuneral1pmClose1908,
     # 1923
     HardingDeath1923,
     HardingFuneral1923,
-    # 1924
-    WoodrowWilsonFuneral1230EarlyClose1924,
-    # 1925
-    EclipseOfSunLateOpen1925,
-    CromwellFuneral1430EarlyClose1925,
-    # 1927
-    LindberghParade1927,
-    # 1928
-    BacklogRelief1928,
-    BacklogRelief2pmEarlyClose1928,
-    # 1929
-    BacklogRelief1929,
-    BacklogRelief1pmEarlyClose1929,
-    BacklogRelief12pmLateOpen1929,
-    # 1930
-    TaftFuneral1230EarlyClose1930,
-    # 1933
-    CoolidgeFuneral1933,
-    BankHolidays1933,
-    GasFumesOnTradingFloor1230EarlyClose1933,
-    HeavyVolume1933,
-    HeavyVolume12pmLateOpen1933,
-    HeavyVolume11amLateOpen1933,
     HeavyVolume2pmEarlyClose1933,
-    NRAdemonstration12pmEarlyClose1933,
-    # 1924
-    Snow11amLateOpen1934,
+    HeavyVolume11amLateOpen1933,
+    HeavyVolume12pmLateOpen1933,
+    HeavyVolume1933,
+    Homecoming27Division1919,
+    # 1964
+    HooverFuneral1400EarlyClose1964,
+    # 1909
+    HudsonFultonCelebration1909,
+    # 1985
+    HurricaneGloriaClosings1985,
+    # 2012
+    HurricaneSandyClosings2012,
+    HurricaneWatch3pmEarlyClose1976,
+    Ice11amLateOpen1973,
+    # 2003
+    IraqiFreedom932amLateOpen2003,
+    # 1912
+    JamesShermanFuneral1912,
+    # 2025
+    JimmyCarterDeath2025,
+    # 1973
+    JohnsonFuneral1973,
+    # 1913
+    JPMorganFuneral12pmOpen1913,
+    # 1963
+    KennedyAssassination1407EarlyClose,
+    KennedyFuneral1963,
+    # 1910
+    KingEdwardDeath11amyClose1910,
+    KingEdwardFuneral12pmOpen1910,
+    # 1902
+    KingEdwardVIIcoronation1902,
     # 1936
     KingGeorgeVFuneral11amLateOpen1936,
-    # 1944
-    SatClosings1944,
-    # 1945
-    RooseveltDayOfMourning1945,
-    SatClosings1945,
-    VJday1945,
+    LibertyDay12pmEarlyClose1917,
+    LibertyDay12pmEarlyClose1918,
+    LincolnsBirthDayAdhoc,
+    # 1927
+    LindberghParade1927,
+    # 1901
+    McKinleyDeathAndFuneral1901,
+    # 1974
+    MerrillLynchComputer1015LateOpen1974,
+    MLKdayOfMourning1968,
+    MonBeforeIndependenceDayAdhoc,
+    MonTuesThursBeforeIndependenceDay,
+    MovedToProduceExchange1901,
     NavyDay1945,
+    # 1977
+    NewYorkCityBlackout77,
+    NixonFuneral1994,
+    NRAdemonstration12pmEarlyClose1933,
+    # 1903
+    NYSEnewBuildingOpen1903,
+    OfficeLocationChange1920,
+    # 1914
+    OnsetOfWWI1914,
+    # 1969 - 1970
+    PaperworkCrisis2pmEarlyCloses1969,
+    PaperworkCrisis3pmEarlyCloses1969to1970,
+    PaperworkCrisis230pmEarlyCloses1969,
+    PaperworkCrisis1968,
+    ParadeOf77thDivision1919,
+    ParadeOfNationalGuardEarlyClose1917,
+    # 1965
+    PowerFail1105LateOpen,
+    QueenVictoriaFuneral1901,
     # 1946
     RailroadStrike1946,
+    # 1981
+    ReaganAssassAttempt317pmEarlyClose1981,
+    # 2004
+    ReaganMomentSilence932amLateOpen2004,
+    ReaganMourning2004,
+    # 1945
+    RooseveltDayOfMourning1945,
+    # 1919
+    RooseveltFuneral1230EarlyClose1919,
+    SatAfterChristmasAdhoc,
+    SatAfterColumbusDayAdHoc,
+    SatAfterDecorationAdhoc,
+    SatAfterGoodFridayAdhoc,
+    SatAfterIndependenceDayAdhoc,
+    SatAfterWashingtonsBirthdayAdhoc,
+    SatBeforeAfterLincolnsBirthdayAdhoc,
+    SatBeforeChristmasAdhoc,
+    SatBeforeDecorationAdhoc,
+    SatBeforeIndependenceDayAdhoc,
+    SatBeforeLaborDayAdhoc,
+    SatBeforeNewYearsAdhoc,
+    SatBeforeWashingtonsBirthdayAdhoc,
+    # 1944
+    SatClosings1944,
+    SatClosings1945,
     SatClosings1946,
     # 1947
     SatClosings1947,
     # 1948
     SatClosings1948,
-    SevereWeather1948,
     # 1949
     SatClosings1949,
     # 1950
@@ -213,105 +225,95 @@ from pandas_market_calendars.holidays.nyse import (
     SatClosings1951,
     # 1952
     SatClosings1952,
-    # 1960
-    Snow11amLateOpening1960,
-    # 1963
-    KennedyAssassination1407EarlyClose,
-    KennedyFuneral1963,
-    # 1964
-    HooverFuneral1400EarlyClose1964,
-    # 1965
-    PowerFail1105LateOpen,
-    # 1966
-    TransitStrike2pmEarlyClose1966,
-    # 1967
-    Snow1015LateOpen1967,
-    Snow2pmEarlyClose1967,
-    Backlog2pmEarlyCloses1967,
-    # 1968
-    Backlog2pmEarlyCloses1968,
-    MLKdayOfMourning1968,
-    PaperworkCrisis1968,
-    # 1969 - 1970
-    PaperworkCrisis2pmEarlyCloses1969,
-    SnowClosing1969,
-    Snow11amLateOpen1969,
-    EisenhowerFuneral1969,
-    Storm1045LateOpen1969,
-    PaperworkCrisis230pmEarlyCloses1969,
-    FirstLunarLandingClosing1969,
-    PaperworkCrisis3pmEarlyCloses1969to1970,
-    # 1972
-    TrumanFuneral1972,
-    # 1973
-    JohnsonFuneral1973,
-    Ice11amLateOpen1973,
-    # 1974
-    MerrillLynchComputer1015LateOpen1974,
-    FireDrill1015LateOpen1974,
-    # 1975
-    Snow230EarlyClose1975,
-    # 1976
-    Storm1115LateOpen1976,
-    FireDrill1015LateOpen1976,
-    HurricaneWatch3pmEarlyClose1976,
-    # 1977
-    NewYorkCityBlackout77,
-    # 1978
-    Snow12pmLateOpen1978,
-    Snow2pmEarlyClose1978,
-    Snow11amLateOpen1978,
-    # 1981
-    ReaganAssassAttempt317pmEarlyClose1981,
-    ConEdPowerFail328pmEarlyClose1981,
-    # 1985
-    HurricaneGloriaClosings1985,
-    # 1987
-    Backlog2pmEarlyCloses1987,
-    Backlog230pmEarlyCloses1987,
-    Backlog3pmEarlyCloses1987,
-    Backlog330pmEarlyCloses1987,
-    # 1989
-    Fire11amLateOpen1989,
-    # 1990
-    ConEdXformer931amLateOpen1990,
-    # 1991
-    TroopsInGulf931LateOpens1991,
-    # 1994
-    Snow230pmEarlyClose1994,
-    NixonFuneral1994,
-    # 1995
-    Computer1030LateOpen1995,
-    # 1996
-    Snow11amLateOpen1996,
-    Snow2pmEarlyClose1996,
-    # 1997
-    CircuitBreakerTriggered330pmEarlyClose1997,
-    # 2001
-    September11Closings2001,
-    Sept11MomentSilence933amLateOpen2001,
-    EnduringFreedomMomentSilence931amLateOpen2001,
     # 2002
     Sept11Anniversary12pmLateOpen2002,
-    # 2003
-    IraqiFreedom932amLateOpen2003,
-    # 2004
-    ReaganMomentSilence932amLateOpen2004,
-    ReaganMourning2004,
+    Sept11MomentSilence933amLateOpen2001,
+    # 2001
+    September11Closings2001,
+    SevereWeather1948,
+    Snow2pmEarlyClose1967,
+    Snow2pmEarlyClose1978,
+    Snow2pmEarlyClose1996,
+    # 1924
+    Snow11amLateOpen1934,
+    Snow11amLateOpen1969,
+    Snow11amLateOpen1978,
+    # 1996
+    Snow11amLateOpen1996,
+    # 1960
+    Snow11amLateOpening1960,
+    # 1978
+    Snow12pmLateOpen1978,
+    # 1975
+    Snow230EarlyClose1975,
+    # 1994
+    Snow230pmEarlyClose1994,
+    # 1967
+    Snow1015LateOpen1967,
+    SnowClosing1969,
+    Storm1045LateOpen1969,
+    # 1976
+    Storm1115LateOpen1976,
     # 2005
     SystemProb356pmEarlyClose2005,
-    # 2006
-    FordMomentSilence932amLateOpen2006,
-    # 2007
-    FordMourning2007,
-    # 2012
-    HurricaneSandyClosings2012,
-    # 2018
-    GeorgeHWBushDeath2018,
-    # 2025
-    JimmyCarterDeath2025,
+    # 1930
+    TaftFuneral1230EarlyClose1930,
+    TrafficBlockLateOpen1919,
+    # 1920
+    TrafficBlockLateOpen1920,
+    # 1966
+    TransitStrike2pmEarlyClose1966,
+    # 1991
+    TroopsInGulf931LateOpens1991,
+    # 1972
+    TrumanFuneral1972,
+    # Adhoc Holidays
+    # 1885
+    UlyssesGrantFuneral1885,
+    # DaysBeforeIndependenceDay1pmEarlyCloseAdhoc,
+    USColumbusDayBefore1954,
+    USElectionDay1848to1967,
+    USElectionDay1968to1980Adhoc,
+    USIndependenceDay,
+    USIndependenceDay1952to1954,
+    USIndependenceDayPre1952,
+    USJuneteenthAfter2022,
+    USLaborDayStarting1887,
+    USLincolnsBirthDayBefore1954,
+    USMartinLutherKingJrAfter1998,
+    USMemorialDay,
+    USMemorialDay1952to1964,
+    USMemorialDay1964to1969,
+    USMemorialDayBefore1952,
+    # Always Celebrated Holidays
+    USNewYearsDayNYSEpost1952,
+    USNewYearsDayNYSEpre1952,
+    USPresidentsDay,
+    USThanksgivingDay,
+    USThanksgivingDay1939to1941,
+    USThanksgivingDayBefore1939,
+    USVeteransDay1934to1953,
+    # Retired Holidays
+    USVetransDayAdHoc,
+    USWashingtonsBirthDay1952to1963,
+    USWashingtonsBirthDay1964to1970,
+    USWashingtonsBirthDayBefore1952,
+    VJday1945,
+    WallStreetExplosionEarlyClose1920,
+    # 1889
+    WashingtonInaugurationCentennialCelebration1889,
+    # 1917
+    WeatherHeatClosing1917,
+    # 1918
+    WeatherNoHeatClosing1918,
+    WednesdayBeforeIndependenceDayPost2013,
+    WelcomeNavalCommander1898,
+    WilliamGaynorFuneral12pmOpen1913,
+    # 1924
+    WoodrowWilsonFuneral1230EarlyClose1924,
 )
 from pandas_market_calendars.market_calendar import MarketCalendar
+
 
 # Useful resources for making changes to this file:
 # http://www.nyse.com/pdfs/closings.pdf

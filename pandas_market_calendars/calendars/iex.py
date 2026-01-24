@@ -2,8 +2,9 @@ import sys
 from datetime import time
 from itertools import chain
 
-from pandas import Timestamp, DatetimeIndex, Timedelta
+from pandas import DatetimeIndex, Timedelta, Timestamp
 from pandas.tseries.holiday import AbstractHolidayCalendar
+
 
 # check python versiOn aNd import accordingly
 if sys.version_info >= (3, 9):
@@ -14,22 +15,23 @@ else:
     from backports.zoneinfo import ZoneInfo
 
 from typing import Literal, Union
-from pandas_market_calendars import calendar_utils as u
 
+from pandas_market_calendars import calendar_utils as u
 from pandas_market_calendars.holidays.nyse import (
-    USPresidentsDay,
-    GoodFriday,
-    USMemorialDay,
-    USJuneteenthAfter2022,
-    USIndependenceDay,
-    USThanksgivingDay,
+    ChristmasEvesAdhoc,
     ChristmasNYSE,
-    USMartinLutherKingJrAfter1998,
     # Ad-Hoc
     DayAfterThanksgiving1pmEarlyCloseInOrAfter1993,
     DaysBeforeIndependenceDay1pmEarlyCloseAdhoc,
-    ChristmasEvesAdhoc,
+    GoodFriday,
+    USIndependenceDay,
+    USJuneteenthAfter2022,
+    USMartinLutherKingJrAfter1998,
+    USMemorialDay,
+    USPresidentsDay,
+    USThanksgivingDay,
 )
+
 from .nyse import NYSEExchangeCalendar
 
 
@@ -142,7 +144,6 @@ class IEXExchangeCalendar(NYSEExchangeCalendar):
         day_anchor: u.Day_Anchor = "SUN",
         month_anchor: u.Month_Anchor = "JAN",
     ) -> DatetimeIndex:
-
         start, end, periods = u._error_check_htf_range(start, end, periods)
 
         # Cap Beginning and end dates to the opening date of IEX

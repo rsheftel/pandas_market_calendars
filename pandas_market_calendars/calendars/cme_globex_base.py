@@ -24,6 +24,7 @@ from pandas.tseries.holiday import (
     USThanksgivingDay,
 )
 
+
 # check python versiOn aNd import accordingly
 if sys.version_info >= (3, 9):
     # For Python 3.9 and later, import directly
@@ -38,9 +39,9 @@ from pandas_market_calendars.holidays.us import (
     ChristmasEveInOrAfter1993,
     USBlackFridayInOrAfter1993,
     USIndependenceDay,
+    USJuneteenthAfter2022,
     USMartinLutherKingJrAfter1998,
     USMemorialDay,
-    USJuneteenthAfter2022,
     USNewYearsDay,
 )
 from pandas_market_calendars.market_calendar import MarketCalendar

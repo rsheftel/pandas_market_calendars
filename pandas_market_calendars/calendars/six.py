@@ -11,6 +11,7 @@ from pandas.tseries.holiday import (
     previous_friday,
 )
 
+
 # check python versiOn aNd import accordingly
 if sys.version_info >= (3, 9):
     # For Python 3.9 and later, import directly
@@ -22,11 +23,12 @@ else:
 from pandas_market_calendars.market_calendar import (
     FRIDAY,
     MONDAY,
-    MarketCalendar,
     THURSDAY,
     TUESDAY,
     WEDNESDAY,
+    MarketCalendar,
 )
+
 
 # New Year's Eve
 NewYearsEve = Holiday(

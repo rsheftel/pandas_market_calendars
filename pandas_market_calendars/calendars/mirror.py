@@ -8,6 +8,7 @@ import exchange_calendars
 
 from pandas_market_calendars.market_calendar import MarketCalendar
 
+
 DAYMASKS = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"]
 
 
@@ -109,14 +110,14 @@ class TradingCalendar(MarketCalendar):
             return "Mon Tue Wed Thu Fri"
 
 
-calendars = exchange_calendars.calendar_utils._default_calendar_factories  # noqa
+calendars = exchange_calendars.calendar_utils._default_calendar_factories
 
-time_props = dict(
-    open_times="market_open",
-    close_times="market_close",
-    break_start_times="break_start",
-    break_end_times="break_end",
-)
+time_props = {
+    "open_times": "market_open",
+    "close_times": "market_close",
+    "break_start_times": "break_start",
+    "break_end_times": "break_end",
+}
 
 for exchange in calendars:
     cal = calendars[exchange]

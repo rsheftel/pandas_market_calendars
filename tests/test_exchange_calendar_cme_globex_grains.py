@@ -4,6 +4,7 @@ from pandas_market_calendars.calendars.cme_globex_agriculture import (
     CMEGlobexGrainsAndOilseedsExchangeCalendar,
 )
 
+
 cal = CMEGlobexGrainsAndOilseedsExchangeCalendar()
 
 

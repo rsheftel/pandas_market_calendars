@@ -25,6 +25,7 @@ from pandas.tseries.holiday import (
     Holiday,
 )
 
+
 # check python versiOn aNd import accordingly
 if sys.version_info >= (3, 9):
     # For Python 3.9 and later, import directly
@@ -34,6 +35,7 @@ else:
     from backports.zoneinfo import ZoneInfo
 
 from pandas_market_calendars.market_calendar import FRIDAY, MarketCalendar
+
 
 # Universal Confraternization (new years day)
 ConfUniversal = Holiday(

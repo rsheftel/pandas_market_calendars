@@ -26,6 +26,7 @@ from pandas.tseries.holiday import (
     USThanksgivingDay,
 )
 
+
 # check python versiOn aNd import accordingly
 if sys.version_info >= (3, 9):
     # For Python 3.9 and later, import directly
@@ -34,27 +35,27 @@ else:
     # For Python 3.8 and earlier, import from backports
     from backports.zoneinfo import ZoneInfo
 
+from pandas_market_calendars.holidays.cme import (
+    USIndependenceDayBefore2022PreviousDay,
+)
 from pandas_market_calendars.holidays.us import (
     Christmas,
     ChristmasEveBefore1993,
     ChristmasEveInOrAfter1993,
     USBlackFridayInOrAfter1993,
-    USJuneteenthAfter2022,
     USIndependenceDay,
+    USJuneteenthAfter2022,
     USMartinLutherKingJrAfter1998,
     USMemorialDay,
     USNationalDaysofMourning,
     USNewYearsDay,
 )
 from pandas_market_calendars.market_calendar import MarketCalendar
-from pandas_market_calendars.holidays.cme import (
-    USIndependenceDayBefore2022PreviousDay,
-)
 
 
 # Useful resources for making changes to this file: http://www.cmegroup.com/tools-information/holiday-calendar.html
 # The CME has different holiday rules depending on the type of instrument.
-# For example, http://www.cmegroup.com/tools-information/holiday-calendar/files/2016-4th-of-july-holiday-schedule.pdf # noqa
+# For example, http://www.cmegroup.com/tools-information/holiday-calendar/files/2016-4th-of-july-holiday-schedule.pdf
 # shows that Equity, Interest Rate, FX, Energy, Metals & DME Products close at 1200 CT on July 4, 2016, while Grain,
 # Oilseed & MGEX Products and Livestock, Dairy & Lumber products are completely closed.
 
@@ -160,7 +161,7 @@ class CMEAgricultureExchangeCalendar(MarketCalendar):
         # Ignore gap between 13:20 CST and 14:30 CST for regular trading hours
         #
         # The CME has different holiday rules depending on the type of
-        # instrument. For example, http://www.cmegroup.com/tools-information/holiday-calendar/files/2016-4th-of-july-holiday-schedule.pdf # noqa
+        # instrument. For example, http://www.cmegroup.com/tools-information/holiday-calendar/files/2016-4th-of-july-holiday-schedule.pdf
         # shows that Equity, Interest Rate, FX, Energy, Metals & DME Products
         # close at 1200 CT on July 4, 2016, while Grain, Oilseed & MGEX
         # Products and Livestock, Dairy & Lumber products are completely

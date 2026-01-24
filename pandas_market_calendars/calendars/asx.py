@@ -1,7 +1,8 @@
 import sys
 from datetime import time
 
-from pandas.tseries.holiday import AbstractHolidayCalendar, GoodFriday, EasterMonday
+from pandas.tseries.holiday import AbstractHolidayCalendar, EasterMonday, GoodFriday
+
 
 # check python versiOn aNd import accordingly
 if sys.version_info >= (3, 9):
@@ -13,6 +14,7 @@ else:
 
 from pandas_market_calendars.holidays.oz import *
 from pandas_market_calendars.market_calendar import MarketCalendar
+
 
 AbstractHolidayCalendar.start_date = "2011-01-01"
 

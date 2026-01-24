@@ -3,6 +3,7 @@ from datetime import time
 
 from pandas.tseries.holiday import AbstractHolidayCalendar
 
+
 # check python versiOn aNd import accordingly
 if sys.version_info >= (3, 9):
     # For Python 3.9 and later, import directly
@@ -12,34 +13,35 @@ else:
     from backports.zoneinfo import ZoneInfo
 
 from pandas_market_calendars.holidays.cme import (
-    USMartinLutherKingJrAfter1998Before2015,
-    USMartinLutherKingJrAfter2015,
-    USPresidentsDayBefore2015,
-    USPresidentsDayAfter2015,
-    GoodFridayBefore2021NotEarlyClose,
     GoodFriday2010,
     GoodFriday2012,
     GoodFriday2015,
     GoodFriday2021,
     GoodFriday2022,
     GoodFridayAfter2022,
+    GoodFridayBefore2021NotEarlyClose,
+    USIndependenceDayAfter2014,
+    USIndependenceDayBefore2014,
+    USIndependenceDayBefore2022PreviousDay,
+    USLaborDayStarting1887After2014,
+    USLaborDayStarting1887Before2014,
+    USMartinLutherKingJrAfter1998Before2015,
+    USMartinLutherKingJrAfter2015,
     USMemorialDay2013AndPrior,
     USMemorialDayAfter2013,
-    USIndependenceDayBefore2022PreviousDay,
-    USIndependenceDayBefore2014,
-    USIndependenceDayAfter2014,
-    USLaborDayStarting1887Before2014,
-    USLaborDayStarting1887After2014,
-    USThanksgivingBefore2014,
+    USPresidentsDayAfter2015,
+    USPresidentsDayBefore2015,
     USThanksgivingAfter2014,
+    USThanksgivingBefore2014,
     USThanksgivingFriday,
 )
 from pandas_market_calendars.holidays.us import (
-    USNewYearsDay,
-    ChristmasEveInOrAfter1993,
     Christmas,
+    ChristmasEveInOrAfter1993,
     USJuneteenthAfter2022,
+    USNewYearsDay,
 )
+
 from .cme_globex_base import CMEGlobexBaseExchangeCalendar
 
 

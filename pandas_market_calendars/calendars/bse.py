@@ -7,6 +7,7 @@ from datetime import time
 
 from pandas import Timestamp
 
+
 # check python versiOn aNd import accordingly
 if sys.version_info >= (3, 9):
     # For Python 3.9 and later, import directly
@@ -16,6 +17,7 @@ else:
     from backports.zoneinfo import ZoneInfo
 
 from pandas_market_calendars.market_calendar import MarketCalendar
+
 
 BSEClosedDay = [
     Timestamp("1997-01-23", tz="UTC"),

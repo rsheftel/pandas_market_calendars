@@ -20,6 +20,7 @@ from pandas.tseries.holiday import (
     AbstractHolidayCalendar,
 )  # , GoodFriday, USLaborDay, USPresidentsDay, USThanksgivingDay
 
+
 # check python versiOn aNd import accordingly
 if sys.version_info >= (3, 9):
     # For Python 3.9 and later, import directly
@@ -29,23 +30,24 @@ else:
     from backports.zoneinfo import ZoneInfo
 
 from pandas_market_calendars.holidays.cme_globex import (
+    ChristmasCME,
+    FridayAfterThanksgiving,
+    GoodFriday,
+    USIndependenceDayFrom2022,
+    USIndependenceDayPre2022,
+    USJuneteenthFrom2022,
+    USLaborDay,
     USMartinLutherKingJrFrom2022,
     USMartinLutherKingJrPre2022,
+    USMemorialDayFrom2022,
+    USMemorialDayPre2022,
     USNewYearsDay,
     USPresidentsDayFrom2022,
     USPresidentsDayPre2022,
-    GoodFriday,
-    USMemorialDayFrom2022,
-    USMemorialDayPre2022,
-    USJuneteenthFrom2022,
-    USIndependenceDayFrom2022,
-    USIndependenceDayPre2022,
-    USLaborDay,
     USThanksgivingDayFrom2022,
     USThanksgivingDayPre2022,
-    FridayAfterThanksgiving,
-    ChristmasCME,
 )
+
 from .cme_globex_base import CMEGlobexBaseExchangeCalendar
 
 

@@ -6,11 +6,12 @@ import pandas as pd
 from pandas.tseries.holiday import (
     AbstractHolidayCalendar,
     GoodFriday,
+    Holiday,
     USLaborDay,
     USPresidentsDay,
     USThanksgivingDay,
-    Holiday,
 )
+
 
 # check python versiOn aNd import accordingly
 if sys.version_info >= (3, 9):
@@ -22,16 +23,16 @@ else:
 
 from pandas_market_calendars.holidays.us import (
     Christmas,
+    FridayAfterIndependenceDayPre2013,
+    HurricaneSandyClosings,
+    MonTuesThursBeforeIndependenceDay,
     USBlackFridayInOrAfter1993,
     USIndependenceDay,
+    USJuneteenthAfter2022,
     USMartinLutherKingJrAfter1998,
     USMemorialDay,
-    USNewYearsDay,
-    HurricaneSandyClosings,
     USNationalDaysofMourning,
-    USJuneteenthAfter2022,
-    MonTuesThursBeforeIndependenceDay,
-    FridayAfterIndependenceDayPre2013,
+    USNewYearsDay,
     WednesdayBeforeIndependenceDayPost2013,
 )
 from pandas_market_calendars.market_calendar import MarketCalendar

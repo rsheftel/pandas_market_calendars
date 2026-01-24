@@ -3,13 +3,6 @@ from datetime import time
 from pandas.tseries.holiday import AbstractHolidayCalendar
 
 from pandas_market_calendars.holidays.cme import (
-    USMartinLutherKingJrAfter1998Before2015,
-    USMartinLutherKingJrAfter1998Before2016FridayBefore,
-    USMartinLutherKingJrAfter2015,
-    USPresidentsDayBefore2016FridayBefore,
-    USPresidentsDayBefore2015,
-    USPresidentsDayAfter2015,
-    GoodFridayBefore2021NotEarlyClose,
     GoodFriday2009,
     GoodFriday2010,
     GoodFriday2012,
@@ -17,24 +10,32 @@ from pandas_market_calendars.holidays.cme import (
     GoodFriday2021,
     GoodFriday2022,
     GoodFridayAfter2022,
-    USMemorialDay2013AndPrior,
-    USMemorialDayAfter2013,
-    USMemorialDay2015AndPriorFridayBefore,
-    USIndependenceDayBefore2014,
+    GoodFridayBefore2021NotEarlyClose,
     USIndependenceDayAfter2014,
+    USIndependenceDayBefore2014,
+    USLaborDayStarting1887After2014,
     USLaborDayStarting1887Before2014,
     USLaborDayStarting1887Before2015FridayBefore,
-    USLaborDayStarting1887After2014,
-    USThanksgivingBefore2014,
+    USMartinLutherKingJrAfter1998Before2015,
+    USMartinLutherKingJrAfter1998Before2016FridayBefore,
+    USMartinLutherKingJrAfter2015,
+    USMemorialDay2013AndPrior,
+    USMemorialDay2015AndPriorFridayBefore,
+    USMemorialDayAfter2013,
+    USPresidentsDayAfter2015,
+    USPresidentsDayBefore2015,
+    USPresidentsDayBefore2016FridayBefore,
     USThanksgivingAfter2014,
+    USThanksgivingBefore2014,
     USThanksgivingFriday,
 )
 from pandas_market_calendars.holidays.us import (
-    USNewYearsDay,
-    ChristmasEveInOrAfter1993,
     Christmas,
+    ChristmasEveInOrAfter1993,
     USJuneteenthAfter2022,
+    USNewYearsDay,
 )
+
 from .cme_globex_base import CMEGlobexBaseExchangeCalendar
 
 
@@ -46,11 +47,11 @@ class CMEGlobexFixedIncomeCalendar(CMEGlobexBaseExchangeCalendar):
         "market_close": ((None, time(17)),),
     }
 
-    """ 
+    """
     Not yet implemented:
         Christmas/New_Years
             5am special open for a couple years (see tests)
-        
+
         regular market_open/market_close changed from 17/16 to 18/17?
     """
 
