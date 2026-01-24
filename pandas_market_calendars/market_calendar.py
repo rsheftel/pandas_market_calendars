@@ -24,6 +24,7 @@ from pandas.tseries.offsets import CustomBusinessDay
 
 from . import calendar_utils as u
 from .class_registry import ProtectedDict, RegisteryMeta
+from .sources import Source, get_sources
 
 
 MONDAY, TUESDAY, WEDNESDAY, THURSDAY, FRIDAY, SATURDAY, SUNDAY = range(7)
@@ -138,6 +139,18 @@ class MarketCalendar(metaclass=MarketCalendarMeta):
         :return: string name
         """
         return self.name
+
+    @property
+    def sources(self) -> tuple[Source, ...]:
+        """
+        Source references for this calendar's data.
+
+        Returns a tuple of Source objects containing information about where
+        the calendar's trading hours, holidays, and other data originated from.
+
+        :return: tuple of Source namedtuples with fields (name, url, last_verified, covers, notes)
+        """
+        return get_sources(self.name)
 
     @property
     @abstractmethod
