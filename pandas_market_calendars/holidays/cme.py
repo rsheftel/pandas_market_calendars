@@ -1,9 +1,10 @@
 import datetime
 
-from dateutil.relativedelta import MO, TH, FR
+from dateutil.relativedelta import FR, MO, TH
 from pandas import DateOffset, Timestamp
-from pandas.tseries.holiday import Holiday, Easter, nearest_workday
+from pandas.tseries.holiday import Easter, Holiday, nearest_workday
 from pandas.tseries.offsets import Day
+
 
 #########
 # Martin Luther King
@@ -50,7 +51,7 @@ USMartinLutherKingJrAfter1998Before2016FridayBefore = Holiday(
 # President's Day
 #########
 USPresidentsDayBefore2022 = Holiday(
-    "President" "s Day",
+    "Presidents Day",
     start_date=Timestamp("1971-01-01"),
     end_date=Timestamp("2021-12-31"),
     month=2,
@@ -58,7 +59,7 @@ USPresidentsDayBefore2022 = Holiday(
     offset=DateOffset(weekday=MO(3)),
 )
 USPresidentsDayBefore2015 = Holiday(
-    "President" "s Day",
+    "Presidents Day",
     start_date=Timestamp("1971-01-01"),
     end_date=Timestamp("2014-12-31"),
     month=2,
@@ -67,7 +68,7 @@ USPresidentsDayBefore2015 = Holiday(
 )
 
 USPresidentsDayAfter2015 = Holiday(
-    "President" "s Day",
+    "Presidents Day",
     start_date=Timestamp("2015-01-01"),
     month=2,
     day=1,
@@ -75,7 +76,7 @@ USPresidentsDayAfter2015 = Holiday(
 )
 
 USPresidentsDayBefore2016FridayBefore = Holiday(
-    "President" "s Day",
+    "Presidents Day",
     start_date=Timestamp("1971-01-01"),
     end_date=Timestamp("2015-12-31"),
     month=2,

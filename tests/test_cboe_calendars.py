@@ -1,10 +1,11 @@
 import pandas as pd
 
 from pandas_market_calendars.calendars.cboe import (
-    CFEExchangeCalendar,
     CBOEEquityOptionsExchangeCalendar,
     CBOEIndexOptionsExchangeCalendar,
+    CFEExchangeCalendar,
 )
+
 
 calendars = (CFEExchangeCalendar, CBOEEquityOptionsExchangeCalendar, CBOEIndexOptionsExchangeCalendar)
 
@@ -137,18 +138,18 @@ def test_independence_day_early_closes():
 
                 # CBOE_Equity_Options closes at 12:00, others at 12:15
                 if calendar == CBOEEquityOptionsExchangeCalendar:
-                    assert (
-                        market_close.hour == 12 and market_close.minute == 0
-                    ), f"{date_str} should close at 12:00 for {cal.name}, got {market_close.time()}"
+                    assert market_close.hour == 12 and market_close.minute == 0, (
+                        f"{date_str} should close at 12:00 for {cal.name}, got {market_close.time()}"
+                    )
                 else:
-                    assert (
-                        market_close.hour == 12 and market_close.minute == 15
-                    ), f"{date_str} should close at 12:15 for {cal.name}, got {market_close.time()}"
+                    assert market_close.hour == 12 and market_close.minute == 15, (
+                        f"{date_str} should close at 12:15 for {cal.name}, got {market_close.time()}"
+                    )
             else:
                 # Verify it's NOT an early close
-                assert (
-                    dt not in cal.early_closes(schedule).index
-                ), f"{date_str} should NOT be an early close for {cal.name}"
+                assert dt not in cal.early_closes(schedule).index, (
+                    f"{date_str} should NOT be an early close for {cal.name}"
+                )
 
 
 if __name__ == "__main__":

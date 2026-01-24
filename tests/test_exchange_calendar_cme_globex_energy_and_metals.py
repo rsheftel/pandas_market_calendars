@@ -1,11 +1,11 @@
-from zoneinfo import ZoneInfo
-
 import pandas as pd
 from pandas.testing import assert_index_equal
+from zoneinfo import ZoneInfo
 
 from pandas_market_calendars.calendars.cme_globex_energy_and_metals import (
     CMEGlobexEnergyAndMetalsExchangeCalendar,
 )
+
 
 cal = CMEGlobexEnergyAndMetalsExchangeCalendar()
 

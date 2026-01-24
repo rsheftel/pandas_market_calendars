@@ -13,18 +13,10 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-import sys
 from datetime import time
 
 from pandas.tseries.holiday import AbstractHolidayCalendar, EasterMonday, GoodFriday
-
-# check python versiOn aNd import accordingly
-if sys.version_info >= (3, 9):
-    # For Python 3.9 and later, import directly
-    from zoneinfo import ZoneInfo
-else:
-    # For Python 3.8 and earlier, import from backports
-    from backports.zoneinfo import ZoneInfo
+from zoneinfo import ZoneInfo
 
 from pandas_market_calendars.holidays.uk import (
     BoxingDay,
@@ -32,17 +24,17 @@ from pandas_market_calendars.holidays.uk import (
     ChristmasEve,
     LSENewYearsDay,
     LSENewYearsEve,
-    MayBank_pre_1995,
     MayBank_post_1995_pre_2020,
     MayBank_post_2020,
-    SpringBank_pre_2002,
+    MayBank_pre_1995,
     SpringBank_post_2002_pre_2012,
     SpringBank_post_2012_pre_2022,
     SpringBank_post_2022,
+    SpringBank_pre_2002,
     SummerBank,
+    UniqueCloses,
     WeekendBoxingDay,
     WeekendChristmas,
-    UniqueCloses,
 )
 from pandas_market_calendars.market_calendar import MarketCalendar
 

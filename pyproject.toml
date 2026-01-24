@@ -6,7 +6,7 @@ authors = [
 ]
 description = "Market and exchange trading calendars for pandas"
 readme = "README.rst"
-requires-python = ">=3.8"
+requires-python = ">=3.10"
 keywords = ["trading", "exchanges", "markets", "OTC", "datetime", "holiday", "business days"]
 license = { text = "MIT" }
 classifiers = [
@@ -14,8 +14,6 @@ classifiers = [
     'Intended Audience :: Developers',
     'Topic :: Software Development',
     'License :: OSI Approved :: MIT License',
-    'Programming Language :: Python :: 3.8',
-    'Programming Language :: Python :: 3.9',
     'Programming Language :: Python :: 3.10',
     'Programming Language :: Python :: 3.11',
     'Programming Language :: Python :: 3.12',
@@ -61,21 +59,73 @@ exclude_also = [
 
 ignore_errors = true
 
-[tool.black]
+[tool.ruff]
 line-length = 120
+target-version = "py38"
+exclude = [
+    ".git",
+    ".venv",
+    "build",
+    "dist",
+    "*.egg-info",
+]
 
-[tool.isort]
-profile = "black"
-line_length = 88
-skip_gitignore = true
-skip_glob = ["tests/data", "profiling"]
-known_first_party = ["black", "blib2to3", "blackd", "_black_version"]
+[tool.ruff.lint]
+select = [
+    "E",      # pycodestyle errors
+    "W",      # pycodestyle warnings
+    "F",      # pyflakes
+    "I",      # isort
+    "B",      # flake8-bugbear
+    "C4",     # flake8-comprehensions
+    "UP",     # pyupgrade
+    "SIM",    # flake8-simplify
+    "RUF",    # Ruff-specific rules
+]
+ignore = [
+    "E501",   # line length (handled by formatter)
+    "F403",   # star imports (used extensively in calendar imports)
+    "F405",   # names from star imports (consequence of F403)
+    "E402",   # module level import not at top (used in sifma.py)
+    "B019",   # lru_cache on methods (used intentionally in sifma.py)
+    "B028",   # stacklevel in warnings (follow-up work)
+    "B904",   # raise from (follow-up work)
+    "SIM101", # merge isinstance calls (follow-up work)
+    "SIM105", # contextlib.suppress (follow-up work)
+    "SIM108", # ternary operator (can reduce readability)
+    "SIM102", # nested if statements (can reduce readability)
+    "UP031",  # printf-style formatting (allow in notebooks)
+    "RUF005", # iterable unpacking (follow-up work)
+    "RUF012", # mutable class attributes (used in calendar definitions)
+]
+
+[tool.ruff.lint.per-file-ignores]
+"tests/*" = ["F841", "B018", "B011"]  # unused variables, useless expressions, assert False OK in tests
+"examples/*" = ["E731", "B018"]  # lambdas and useless expressions OK in notebooks
+
+[tool.ruff.lint.isort]
+known-first-party = ["pandas_market_calendars"]
+force-single-line = false
+lines-after-imports = 2
+
+[tool.ruff.format]
+quote-style = "double"
+indent-style = "space"
+skip-magic-trailing-comma = false
+line-ending = "auto"
+docstring-code-format = true
+
+[tool.ty]
+# Suppress pandas/numpy type errors until pandas 3.x stubs are available
+# pandas-stubs only supports up to pandas 2.3.x
+# See: https://github.com/pandas-dev/pandas-stubs/issues/1101
+[tool.ty.rules]
+invalid-argument-type = "ignore"  # pandas type mismatches
+unresolved-attribute = "ignore"   # pandas attributes not typed
 
 [dependency-groups]
 dev = [
-    "black>=24.8.0",
-    "build>=1.2.2.post1",
-    "pandas-stubs>=2.0.3.230814",
+    "ruff>=0.14.0",
+    "ty>=0.0.13",
     "pytest>=8.3.5",
-    "twine>=6.1.0",
 ]

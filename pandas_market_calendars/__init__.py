@@ -17,10 +17,11 @@
 from importlib import metadata
 
 from .calendar_registry import get_calendar, get_calendar_names
-from .calendar_utils import convert_freq, date_range, merge_schedules, mark_session
+from .calendar_utils import convert_freq, date_range, mark_session, merge_schedules
 
 # TODO: is the below needed? Can I replace all the imports on the calendars with ".market_calendar"
 from .market_calendar import MarketCalendar
+
 
 # if running in development there may not be a package
 try:
@@ -30,10 +31,10 @@ except metadata.PackageNotFoundError:
 
 __all__ = [
     "MarketCalendar",
+    "convert_freq",
+    "date_range",
     "get_calendar",
     "get_calendar_names",
-    "merge_schedules",
-    "date_range",
     "mark_session",
-    "convert_freq",
+    "merge_schedules",
 ]

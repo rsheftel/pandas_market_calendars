@@ -1,9 +1,9 @@
 import datetime
 import os
-from zoneinfo import ZoneInfo
 
 import pandas as pd
 from pandas.testing import assert_index_equal
+from zoneinfo import ZoneInfo
 
 from pandas_market_calendars.calendars.jpx import JPXExchangeCalendar
 
@@ -240,7 +240,7 @@ def test_jpx_trading_days_since_1949(request):
     start_date = expected[0]
     end_date = expected[-1]
     reg_holidays = jpx_calendar.regular_holidays.holidays(start_date, end_date)
-    adhoc_dates = map(lambda dt: dt.tz_localize(None), jpx_calendar.adhoc_holidays)
+    adhoc_dates = (dt.tz_localize(None) for dt in jpx_calendar.adhoc_holidays)
     adhoc_index = pd.DatetimeIndex(adhoc_dates).sort_values()
     slice_locs = adhoc_index.slice_locs(start_date, end_date)
     adhoc_holidays = adhoc_index[slice_locs[0] : slice_locs[1]]

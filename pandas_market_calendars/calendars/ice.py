@@ -1,4 +1,3 @@
-import sys
 from datetime import time
 from itertools import chain
 
@@ -10,14 +9,7 @@ from pandas.tseries.holiday import (
     USPresidentsDay,
     USThanksgivingDay,
 )
-
-# check python versiOn aNd import accordingly
-if sys.version_info >= (3, 9):
-    # For Python 3.9 and later, import directly
-    from zoneinfo import ZoneInfo
-else:
-    # For Python 3.8 and earlier, import from backports
-    from backports.zoneinfo import ZoneInfo
+from zoneinfo import ZoneInfo
 
 from pandas_market_calendars.holidays.us import (
     Christmas,
@@ -85,5 +77,5 @@ class ICEExchangeCalendar(MarketCalendar):
 
     @property
     def regular_holidays(self):
-        # https://www.theice.com/publicdocs/futures_us/exchange_notices/NewExNot2016Holidays.pdf # noqa
+        # https://www.theice.com/publicdocs/futures_us/exchange_notices/NewExNot2016Holidays.pdf
         return AbstractHolidayCalendar(rules=[USNewYearsDay, GoodFriday, Christmas])

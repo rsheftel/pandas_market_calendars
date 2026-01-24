@@ -2,9 +2,10 @@
 
 import pandas as pd
 from pandas import DateOffset, Timestamp
-from pandas.tseries.holiday import Holiday, MO, previous_friday, weekend_to_monday
+from pandas.tseries.holiday import MO, Holiday, previous_friday, weekend_to_monday
 
 from pandas_market_calendars.market_calendar import MONDAY, TUESDAY
+
 
 # New Year's Eve
 LSENewYearsEve = Holiday(

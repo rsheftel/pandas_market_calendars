@@ -8,6 +8,7 @@ from pandas_market_calendars.calendars.cme_globex_crypto import (
     CMEGlobexCryptoExchangeCalendar,
 )
 
+
 TZ = "America/Chicago"
 
 

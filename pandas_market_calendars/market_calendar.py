@@ -13,16 +13,18 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
+import contextlib
 import warnings
 from abc import ABCMeta, abstractmethod
 from datetime import time
-from typing import Literal, Union, List
+from typing import List, Literal, Union
 
 import pandas as pd
 from pandas.tseries.offsets import CustomBusinessDay
 
 from . import calendar_utils as u
-from .class_registry import RegisteryMeta, ProtectedDict
+from .class_registry import ProtectedDict, RegisteryMeta
+
 
 MONDAY, TUESDAY, WEDNESDAY, THURSDAY, FRIDAY, SATURDAY, SUNDAY = range(7)
 
@@ -85,7 +87,7 @@ class MarketCalendar(metaclass=MarketCalendarMeta):
         """All Market Calendar names and aliases that can be used in "factory"
         :return: list(str)
         """
-        return [cal for cal in cls._regmeta_class_registry.keys() if cal not in ["MarketCalendar", "TradingCalendar"]]
+        return [cal for cal in cls._regmeta_class_registry if cal not in ["MarketCalendar", "TradingCalendar"]]
 
     @classmethod
     def factory(cls, name, *args, **kwargs):  # Will be set by Meta, keeping it there for tests
@@ -217,10 +219,8 @@ class MarketCalendar(metaclass=MarketCalendarMeta):
             self.open_close_map._set(market_time, opens)
 
         elif opens is None:  # make sure it's ignored
-            try:
+            with contextlib.suppress(KeyError):
                 self.open_close_map._del(market_time)
-            except KeyError:
-                pass
         else:
             raise ValueError("when you pass `opens`, it needs to be True, False, or None")
 
@@ -247,7 +247,7 @@ class MarketCalendar(metaclass=MarketCalendarMeta):
         :return: None
         """
         assert market_time in self.regular_market_times, (
-            f"{market_time} is not in regular_market_times:" f"\n{self._market_times}."
+            f"{market_time} is not in regular_market_times:\n{self._market_times}."
         )
         return self._set_time(market_time, times, opens)
 
@@ -261,7 +261,7 @@ class MarketCalendar(metaclass=MarketCalendarMeta):
         :return: None
         """
         assert market_time not in self.regular_market_times, (
-            f"{market_time} is already in regular_market_times:" f"\n{self._market_times}"
+            f"{market_time} is already in regular_market_times:\n{self._market_times}"
         )
 
         return self._set_time(market_time, times, opens)
@@ -275,10 +275,8 @@ class MarketCalendar(metaclass=MarketCalendarMeta):
         """
 
         self.regular_market_times._del(market_time)
-        try:
+        with contextlib.suppress(KeyError):
             self.open_close_map._del(market_time)
-        except KeyError:
-            pass
 
         self._prepare_regular_market_times()
         if self.is_custom(market_time):
@@ -583,9 +581,11 @@ class MarketCalendar(metaclass=MarketCalendarMeta):
         March 13th is the daylight savings transition for US/Eastern.  All the
         times are still 8:45 when interpreted in US/Eastern.
 
-        >>> import pandas as pd; import datetime; import pprint
-        >>> dts = pd.date_range('2016-03-12', '2016-03-14')
-        >>> dts_at_845 = days_at_time(dts, datetime.time(8, 45), 'US/Eastern')
+        >>> import pandas as pd
+        ... import datetime
+        ... import pprint
+        >>> dts = pd.date_range("2016-03-12", "2016-03-14")
+        >>> dts_at_845 = days_at_time(dts, datetime.time(8, 45), "US/Eastern")
         >>> pprint.pprint([str(dt) for dt in dts_at_845])
         ['2016-03-12 13:45:00+00:00',
          '2016-03-13 12:45:00+00:00',
@@ -917,10 +917,8 @@ class MarketCalendar(metaclass=MarketCalendarMeta):
         :return: True if the timestamp is a valid open date and time, False if not
         """
         timestamp = pd.Timestamp(timestamp)
-        try:
+        with contextlib.suppress(TypeError):
             timestamp = timestamp.tz_localize("UTC")
-        except TypeError:
-            pass
 
         cols = schedule.columns
         interrs = cols.str.startswith("interruption_")
@@ -952,7 +950,7 @@ class MarketCalendar(metaclass=MarketCalendarMeta):
 
         # When post follows market_close, market_close should not be considered a close
         day.loc[day.eq("market_close") & day.shift(-1).eq("post")] = "market_open"
-        day = day.map(lambda x: (self.open_close_map.get(x) if x in self.open_close_map.keys() else x))
+        day = day.map(lambda x: (self.open_close_map.get(x) if x in self.open_close_map else x))
 
         below = day.index <= timestamp
         last_below = day[below]

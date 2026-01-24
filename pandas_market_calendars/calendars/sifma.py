@@ -1,18 +1,10 @@
 import functools
-import sys
 from datetime import time
+from itertools import chain
 
 import pandas as pd
 from pandas.tseries.holiday import AbstractHolidayCalendar
-
-# check python versiOn aNd import accordingly
-if sys.version_info >= (3, 9):
-    # For Python 3.9 and later, import directly
-    from zoneinfo import ZoneInfo
-else:
-    # For Python 3.8 and earlier, import from backports
-    from backports.zoneinfo import ZoneInfo
-from itertools import chain
+from zoneinfo import ZoneInfo
 
 ########################################################################################################################
 # SIFMA Financial Markets Calendar for US, UK, JP
@@ -28,48 +20,46 @@ from itertools import chain
 # UK: 8:00 to 17:00
 # JP: 8:30 to 18:30
 ########################################################################################################################
-
-
 from pandas_market_calendars.holidays.sifma import (
-    # US Holidays
-    USNewYearsDay,  # Not observed if a Saturday
-    USNewYearsEve2pmEarlyClose,
-    MartinLutherKingJr,
-    USPresidentsDay,
-    # --- Good Friday Rules --- #
-    is_first_friday,
-    GoodFridayThru2020,
-    DayBeforeGoodFriday2pmEarlyCloseThru2020,
-    GoodFridayPotentialPost2020,  # Potential dates, filtered later
-    DayBeforeGoodFridayPotentialPost2020,  # Potential dates, filtered later
-    # --- End Good Friday Rules --- #
-    DayBeforeUSMemorialDay2pmEarlyClose,
-    USMemorialDay,
-    USJuneteenthAfter2022,
-    USIndependenceDay,
-    DayBeforeUSIndependenceDay2pmEarlyClose,
-    ThursdayBeforeUSIndependenceDay2pmEarlyClose,
-    USLaborDay,
-    USColumbusDay,
-    USVeteransDay,
-    USThanksgivingDay,
-    DayAfterThanksgiving2pmEarlyClose,
     Christmas,
     ChristmasEve2pmEarlyClose,
     ChristmasEveThursday2pmEarlyClose,
+    DayAfterThanksgiving2pmEarlyClose,
+    DayBeforeGoodFriday2pmEarlyCloseThru2020,
+    DayBeforeGoodFridayPotentialPost2020,  # Potential dates, filtered later
+    DayBeforeUSIndependenceDay2pmEarlyClose,
+    # --- End Good Friday Rules --- #
+    DayBeforeUSMemorialDay2pmEarlyClose,
+    GoodFridayPotentialPost2020,  # Potential dates, filtered later
+    GoodFridayThru2020,
+    MartinLutherKingJr,
+    ThursdayBeforeUSIndependenceDay2pmEarlyClose,
+    UKBoxingDay,
+    UKChristmaEve,
+    UKChristmas,
+    UKEasterMonday,
+    UKGoodFriday,
+    UKMayDay,
     # UK Specific Holidays
     UKNewYearsDay,  # Saturdays observed on Monday
-    UKGoodFriday,
-    UKEasterMonday,
-    UKMayDay,
+    UKPlatinumJubilee2022,
     UKSpringBankAdHoc,  # Usually follows US Memorial Day but not always
     UKSummerBank,
-    UKChristmas,
-    UKChristmaEve,
-    UKWeekendChristmas,  # Observed Tuesday when Boxing Day is on Monday
-    UKBoxingDay,
     UKWeekendBoxingDay,
-    UKPlatinumJubilee2022,
+    UKWeekendChristmas,  # Observed Tuesday when Boxing Day is on Monday
+    USColumbusDay,
+    USIndependenceDay,
+    USJuneteenthAfter2022,
+    USLaborDay,
+    USMemorialDay,
+    # US Holidays
+    USNewYearsDay,  # Not observed if a Saturday
+    USNewYearsEve2pmEarlyClose,
+    USPresidentsDay,
+    USThanksgivingDay,
+    USVeteransDay,
+    # --- Good Friday Rules --- #
+    is_first_friday,
 )
 from pandas_market_calendars.market_calendar import MarketCalendar
 
@@ -130,7 +120,7 @@ class SIFMAUSExchangeCalendar(MarketCalendar):
         return ZoneInfo("America/New_York")
 
     # Helper method to calculate and cache dynamic dates
-    @functools.lru_cache()
+    @functools.lru_cache
     def _get_dynamic_gf_rules(self):
         # Calculate rules for a wide fixed range to avoid arbitrary cutoffs
         # while preventing infinite generation. 1970-2100 is a reasonable range.
@@ -288,23 +278,23 @@ class SIFMAUKExchangeCalendar(MarketCalendar):
 # Japan
 ############################################################
 from pandas_market_calendars.holidays.jp import (
-    JapanComingOfAgeDay,
-    JapanNationalFoundationDay,
-    JapanEmperorsBirthday,
-    JapanVernalEquinox,
-    JapanShowaDay,
-    JapanConstitutionMemorialDay,
-    JapanGreeneryDay,
+    JapanAutumnalEquinox,
     JapanChildrensDay,
+    JapanComingOfAgeDay,
+    JapanConstitutionMemorialDay,
+    JapanCultureDay,
+    JapanEmperorsBirthday,
+    JapanGreeneryDay,
+    JapanHealthAndSportsDay2000To2019,
+    JapanLaborThanksgivingDay,
     JapanMarineDay,
     JapanMountainDay,
+    JapanNationalFoundationDay,
     JapanRespectForTheAgedDay,
-    JapanAutumnalEquinox,
-    JapanHealthAndSportsDay2000To2019,
-    JapanSportsDay2020,
+    JapanShowaDay,
     JapanSportsDay,
-    JapanCultureDay,
-    JapanLaborThanksgivingDay,
+    JapanSportsDay2020,
+    JapanVernalEquinox,
 )
 
 

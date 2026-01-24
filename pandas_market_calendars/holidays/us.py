@@ -53,7 +53,7 @@ USMartinLutherKingJrAfter1998 = Holiday(
     offset=DateOffset(weekday=MO(3)),
 )
 USLincolnsBirthDayBefore1954 = Holiday(
-    "Lincoln" "s Birthday",
+    "Lincolns Birthday",
     month=2,
     day=12,
     start_date=Timestamp("1874-01-01"),
@@ -61,7 +61,7 @@ USLincolnsBirthDayBefore1954 = Holiday(
     observance=sunday_to_monday,
 )
 USWashingtonsBirthDayBefore1964 = Holiday(
-    "Washington" "s Birthday",
+    "Washingtons Birthday",
     month=2,
     day=22,
     start_date=Timestamp("1880-01-01"),
@@ -69,7 +69,7 @@ USWashingtonsBirthDayBefore1964 = Holiday(
     observance=sunday_to_monday,
 )
 USWashingtonsBirthDay1964to1970 = Holiday(
-    "Washington" "s Birthday",
+    "Washingtons Birthday",
     month=2,
     day=22,
     start_date=Timestamp("1964-01-01"),
@@ -77,7 +77,7 @@ USWashingtonsBirthDay1964to1970 = Holiday(
     observance=nearest_workday,
 )
 USPresidentsDay = Holiday(
-    "President" "s Day",
+    "Presidents Day",
     start_date=Timestamp("1971-01-01"),
     month=2,
     day=1,

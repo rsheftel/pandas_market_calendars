@@ -1,18 +1,11 @@
-import sys
 from datetime import time
 
-from pandas.tseries.holiday import AbstractHolidayCalendar, GoodFriday, EasterMonday
-
-# check python versiOn aNd import accordingly
-if sys.version_info >= (3, 9):
-    # For Python 3.9 and later, import directly
-    from zoneinfo import ZoneInfo
-else:
-    # For Python 3.8 and earlier, import from backports
-    from backports.zoneinfo import ZoneInfo
+from pandas.tseries.holiday import AbstractHolidayCalendar, EasterMonday, GoodFriday
+from zoneinfo import ZoneInfo
 
 from pandas_market_calendars.holidays.oz import *
 from pandas_market_calendars.market_calendar import MarketCalendar
+
 
 AbstractHolidayCalendar.start_date = "2011-01-01"
 

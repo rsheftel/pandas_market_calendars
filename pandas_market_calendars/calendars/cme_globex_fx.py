@@ -6,23 +6,24 @@ from pandas_market_calendars.calendars.cme_globex_base import (
     CMEGlobexBaseExchangeCalendar,
 )
 from pandas_market_calendars.holidays.cme import (
-    USMartinLutherKingJrAfter1998Before2022,
-    USPresidentsDayBefore2022,
-    GoodFridayBefore2021,
     GoodFriday2021,
     GoodFriday2022,
     GoodFridayAfter2022,
-    USMemorialDay2021AndPrior,
+    GoodFridayBefore2021,
     USIndependenceDayBefore2022,
     USLaborDayStarting1887Before2022,
+    USMartinLutherKingJrAfter1998Before2022,
+    USMemorialDay2021AndPrior,
+    USPresidentsDayBefore2022,
     USThanksgivingBefore2022,
     USThanksgivingFriday,
 )
 from pandas_market_calendars.holidays.us import (
-    USNewYearsDay,
-    ChristmasEveInOrAfter1993,
     Christmas,
+    ChristmasEveInOrAfter1993,
+    USNewYearsDay,
 )
+
 
 _1015 = time(10, 15)
 _1200 = time(12, 0)
