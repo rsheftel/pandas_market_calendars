@@ -41,8 +41,9 @@ class RegisteryMeta(type):
     def __new__(mcs, name, bases, attr):
         cls = super().__new__(mcs, name, bases, attr)
         if not hasattr(cls, "_regmeta_class_registry"):
-            cls._regmeta_class_registry = {}
-            cls.factory = classmethod(_regmeta_instance_factory)
+            # Metaclass dynamically adds class registry and factory method
+            cls._regmeta_class_registry = {}  # type: ignore[assignment]
+            cls.factory = classmethod(_regmeta_instance_factory)  # type: ignore[assignment]
 
         return cls
 

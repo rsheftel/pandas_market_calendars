@@ -40,6 +40,8 @@ def good_friday_unless_christmas_nye_friday(dt):
         raise NotImplementedError()
 
     year = dt.year
+    assert Christmas.observance is not None  # Christmas always has weekend observance
+    assert USNewYearsDay.observance is not None  # USNewYearsDay always has weekend observance
     christmas_weekday = Christmas.observance(pd.Timestamp(year=year, month=12, day=25)).weekday()
     nyd_weekday = USNewYearsDay.observance(pd.Timestamp(year=year, month=1, day=1)).weekday()
     if christmas_weekday != 4 and nyd_weekday != 4:

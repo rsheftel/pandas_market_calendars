@@ -53,12 +53,13 @@ class MarketCalendar(metaclass=MarketCalendarMeta):
     Unless otherwise noted all times are in UTC and use Pandas data structures.
     """
 
-    regular_market_times = {
+    # Type annotations - these dict literals get converted to ProtectedDict by metaclass
+    regular_market_times: ProtectedDict = {  # type: ignore[assignment]
         "market_open": ((None, time(0)),),
         "market_close": ((None, time(23)),),
     }
 
-    open_close_map = {
+    open_close_map: ProtectedDict = {  # type: ignore[assignment]
         "market_open": True,
         "market_close": False,
         "break_start": False,
@@ -67,13 +68,15 @@ class MarketCalendar(metaclass=MarketCalendarMeta):
         "post": False,
     }
 
+    discontinued_market_times: ProtectedDict
+
     @staticmethod
     def _tdelta(t: Union[time, tuple], day_offset: int = 0) -> pd.Timedelta:
-        try:
+        if isinstance(t, time):
             return pd.Timedelta(days=day_offset, hours=t.hour, minutes=t.minute, seconds=t.second)
-        except AttributeError:
-            t, day_offset = t
-            return pd.Timedelta(days=day_offset, hours=t.hour, minutes=t.minute, seconds=t.second)
+        # t is a tuple of (time, day_offset)
+        t_time, day_offset = t
+        return pd.Timedelta(days=day_offset, hours=t_time.hour, minutes=t_time.minute, seconds=t_time.second)
 
     @staticmethod
     def _off(tple) -> int:
@@ -536,7 +539,7 @@ class MarketCalendar(metaclass=MarketCalendarMeta):
         intr = pd.DataFrame(self.interruptions)
         intr.index = pd.to_datetime(intr.pop(0))
 
-        intr.columns = map(self._col_name, intr.columns)
+        intr.columns = pd.Index(map(self._col_name, intr.columns))
         intr.index.name = None
 
         return intr.apply(self._convert).sort_index()
@@ -615,9 +618,12 @@ class MarketCalendar(metaclass=MarketCalendarMeta):
             # If the Calendar is all single Observance Holidays then it is far
             # more efficient to extract and return those dates
             observed_dates = u.all_single_observance_rules(cal)
-            if observed_dates is not None:
+            if observed_dates:
+                # Non-empty list of single observance dates - filter by date range
                 return pd.DatetimeIndex([date for date in observed_dates if s <= date <= e])
             else:
+                # Either None (mixed rules) or empty list (no rules, e.g. custom holidays method)
+                # Fall back to the calendar's holidays() method
                 return cal.holidays(s, e)
         except ValueError:
             return pd.DatetimeIndex([])
@@ -943,6 +949,8 @@ class MarketCalendar(metaclass=MarketCalendarMeta):
         day = day.index.to_series(index=day)
 
         if interrs.any():
+            # Convert to object dtype to allow mixed string/bool values (pandas 3.0 compatibility)
+            day = day.astype(object)
             starts = day.str.startswith("interruption_start_")
             ends = day.str.startswith("interruption_end_")
             day.loc[starts] = False

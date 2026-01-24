@@ -6,7 +6,7 @@ import itertools
 import warnings
 from math import ceil, floor
 from re import finditer, split
-from typing import TYPE_CHECKING, Any, Dict, Iterable, List, Literal, Optional, Set, Tuple, Type, Union
+from typing import TYPE_CHECKING, Any, Dict, Iterable, List, Literal, Optional, Set, Tuple, Type, Union, cast
 
 import numpy as np
 import pandas as pd
@@ -184,7 +184,9 @@ def is_single_observance(holiday: "Holiday") -> Union[pd.Timestamp, None]:
 def all_single_observance_rules(calendar: "AbstractHolidayCalendar") -> Optional[List[pd.Timestamp]]:
     "Returns a list of timestamps if the Calendar's Rules are all single observance holidays, None Otherwise"
     observances = [is_single_observance(rule) for rule in calendar.rules]
-    return observances if all(observances) else None
+    if all(observances):
+        return cast(List[pd.Timestamp], observances)
+    return None
 
 
 def convert_freq(index: pd.DatetimeIndex, frequency: str) -> pd.DatetimeIndex:
@@ -917,9 +919,11 @@ def date_range_htf(
     mult, _period_code = _standardize_htf_freq(frequency)
 
     if _period_code == "D":
-        if mult == 1:
-            # When desiring a frequency of '1D' default to pd.date_range. It will give the same
-            # answer but it is more performant than the method in _cal_day_range.
+        if mult == 1 and start is not None and end is not None:
+            # When desiring a frequency of '1D' with explicit start and end dates,
+            # default to pd.date_range. It will give the same answer but is more performant.
+            # Note: pd.date_range has issues when using periods with end date that needs
+            # rollback (it loses one period), so we only use it for the start+end case.
             return pd.date_range(start, end, periods, freq=cal)
         else:
             return _cal_day_range(cal, start, end, periods, mult)
@@ -1124,7 +1128,19 @@ def _cal_WMQY_range(
             _dr_start = normalized_start if start <= roll_func(normalized_start) else start
 
         if end is not None:
-            if periods is not None:
+            if periods is not None and start is None:
+                # When computing periods from end, we need to ensure the end date aligns
+                # with the frequency boundary. If end is before the first trading day of
+                # its period, use the previous period's start to get correct period count.
+                normalized_end = end.to_period(grouping_period).start_time
+                _dr_end = (
+                    (end.to_period(grouping_period) - 1).start_time
+                    if end < roll_func(normalized_end)
+                    else normalized_end
+                )
+                # For weekly frequency, the grouping_period boundary (e.g., Sunday for W-SAT start)
+                # already aligns with the freq boundary (W-SUN), so no adjustment needed here.
+            elif periods is not None:
                 normalized_end = end.to_period(grouping_period).start_time
                 _dr_end = (
                     normalized_end - pd.Timedelta("1D")  # Shift into preceding group
@@ -1149,7 +1165,22 @@ def _cal_WMQY_range(
 
         if end is not None:
             normalized_end = end.to_period(grouping_period).end_time.normalize()
-            _dr_end = normalized_end if end >= roll_func(normalized_end) else end
+            if periods is not None and start is None:
+                # When computing periods from end, we need to ensure the end date aligns
+                # with the frequency boundary. If end is before the last trading day of
+                # its period, use the previous period's end to get correct period count.
+                _dr_end = (
+                    (end.to_period(grouping_period) - 1).end_time.normalize()
+                    if end < roll_func(normalized_end)
+                    else normalized_end
+                )
+                # For weekly frequency, the grouping_period boundary (e.g., Saturday for W-SAT)
+                # differs from the freq boundary (e.g., Sunday for W-SUN) by 1 day.
+                # Adjust _dr_end to align with the freq boundary.
+                if "W-" in freq:
+                    _dr_end = _dr_end + pd.Timedelta("1D")
+            else:
+                _dr_end = normalized_end if end >= roll_func(normalized_end) else end
 
     _range = pd.date_range(_dr_start, _dr_end, periods, freq).to_series().apply(roll_func)
 
