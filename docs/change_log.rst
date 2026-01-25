@@ -1,6 +1,22 @@
 Change Log
 ==========
 
+5.3.0 (01/25/2026)
+~~~~~~~~~~~~~~~~~~
+- Major refactoring from PR #439 to improve code maintainability and performance
+    - Replace Black and isort with Ruff for faster, unified formatting and linting
+    - Add ty type checker (Astral) to dev dependencies
+    - Enable comprehensive linting rules with sensible defaults for this codebase
+    - Fix mutable default argument bugs in calendar_utils.py
+    - Fix pandas 3.0 compatibility - All datetime64 dtype issues resolved
+    - Fix XTAE calendar - Correct weekmask for Tel Aviv Stock Exchange
+    - Fix date_range_htf - Period boundary calculation fixes
+    - Add calendar source references - Closes Add reference/source for calendars informations #392
+- Added BSE holidays for 2026 and 2027 #438
+- Added NSE holidays for 2026 and 2027 #437
+- Added CN holidays for 2026 and 2027 #436
+- Added JPX holidays for 2026 and 2027 #435
+
 5.2.4 (01/07/2026)
 ~~~~~~~~~~~~~~~~~~
 - removed caching of holidays
