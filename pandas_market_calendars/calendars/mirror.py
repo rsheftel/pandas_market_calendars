@@ -5,10 +5,18 @@ GitHub: https://github.com/gerrymanoim/exchange_calendars
 """
 
 import exchange_calendars
+import pandas as pd
+from pandas.tseries.offsets import CustomBusinessDay
 
 from pandas_market_calendars.market_calendar import MarketCalendar
 
+
 DAYMASKS = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"]
+
+# XTAE (Tel Aviv Stock Exchange) changed from Sun-Thu to Mon-Fri on Jan 5, 2026
+XTAE_TRANSITION_DATE = pd.Timestamp("2026-01-05")
+XTAE_WEEKMASK_OLD = "Sun Mon Tue Wed Thu"  # Before Jan 5, 2026
+XTAE_WEEKMASK_NEW = "Mon Tue Wed Thu Fri"  # From Jan 5, 2026
 
 
 class TradingCalendar(MarketCalendar):
@@ -109,14 +117,14 @@ class TradingCalendar(MarketCalendar):
             return "Mon Tue Wed Thu Fri"
 
 
-calendars = exchange_calendars.calendar_utils._default_calendar_factories  # noqa
+calendars = exchange_calendars.calendar_utils._default_calendar_factories
 
-time_props = dict(
-    open_times="market_open",
-    close_times="market_close",
-    break_start_times="break_start",
-    break_end_times="break_end",
-)
+time_props = {
+    "open_times": "market_open",
+    "close_times": "market_close",
+    "break_start_times": "break_start",
+    "break_end_times": "break_end",
+}
 
 for exchange in calendars:
     cal = calendars[exchange]
@@ -139,3 +147,89 @@ for exchange in calendars:
         },
     )
     locals()[f"{exchange}ExchangeCalendar"] = cal
+
+
+class XTAEExchangeCalendar(TradingCalendar):
+    """
+    Custom XTAE (Tel Aviv Stock Exchange) calendar that handles the weekmask transition.
+
+    TASE changed its trading week from Sunday-Thursday to Monday-Friday on January 5, 2026
+    to align with international markets. This calendar properly handles both schedules
+    based on the requested date range.
+
+    See: https://github.com/gerrymanoim/exchange_calendars/issues/518
+    """
+
+    _ec_class = calendars["XTAE"]
+    aliases = ["XTAE"]  # Note: must be "aliases" (plural) for registry to pick it up
+
+    # Get regular_market_times from the exchange_calendars XTAE
+    regular_market_times = {}
+    for prop, new in time_props.items():
+        times = getattr(calendars["XTAE"], prop)
+        if times is not None and not isinstance(times, property):
+            regular_market_times[new] = times
+
+    @property
+    def weekmask(self):
+        # Default to the new weekmask (Mon-Fri) for the base property
+        # The actual date-dependent logic is in valid_days
+        return XTAE_WEEKMASK_NEW
+
+    def _get_holidays_for_weekmask(self, weekmask: str) -> CustomBusinessDay:
+        """Create a CustomBusinessDay with the specified weekmask."""
+        return CustomBusinessDay(
+            holidays=self.adhoc_holidays,
+            calendar=self.regular_holidays,
+            weekmask=weekmask,
+        )
+
+    def valid_days(self, start_date, end_date, tz="UTC") -> pd.DatetimeIndex:
+        """
+        Get a DatetimeIndex of valid open business days, handling the XTAE weekmask transition.
+
+        Before Jan 5, 2026: Sunday-Thursday
+        From Jan 5, 2026: Monday-Friday
+
+        :param start_date: start date
+        :param end_date: end date
+        :param tz: time zone in either string or pytz.timezone
+        :return: DatetimeIndex of valid business days
+        """
+        start_date = pd.Timestamp(start_date).normalize()
+        end_date = pd.Timestamp(end_date).normalize()
+
+        # If entirely before transition, use old weekmask
+        if end_date < XTAE_TRANSITION_DATE:
+            holidays = self._get_holidays_for_weekmask(XTAE_WEEKMASK_OLD)
+            return pd.date_range(start_date, end_date, freq=holidays, normalize=True, tz=tz)
+
+        # If entirely after transition, use new weekmask
+        if start_date >= XTAE_TRANSITION_DATE:
+            holidays = self._get_holidays_for_weekmask(XTAE_WEEKMASK_NEW)
+            return pd.date_range(start_date, end_date, freq=holidays, normalize=True, tz=tz)
+
+        # Spans the transition - need to combine both
+        holidays_old = self._get_holidays_for_weekmask(XTAE_WEEKMASK_OLD)
+        holidays_new = self._get_holidays_for_weekmask(XTAE_WEEKMASK_NEW)
+
+        # Get days before transition (up to and including last day before transition)
+        days_before = pd.date_range(
+            start_date,
+            XTAE_TRANSITION_DATE - pd.Timedelta(days=1),
+            freq=holidays_old,
+            normalize=True,
+            tz=tz,
+        )
+
+        # Get days from transition onwards
+        days_after = pd.date_range(
+            XTAE_TRANSITION_DATE,
+            end_date,
+            freq=holidays_new,
+            normalize=True,
+            tz=tz,
+        )
+
+        # Combine and return
+        return days_before.union(days_after)

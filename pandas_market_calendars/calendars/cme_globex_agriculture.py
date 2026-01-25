@@ -34,6 +34,7 @@ from pandas_market_calendars.holidays.us import (
     USMemorialDay,
     USNewYearsDay,
 )
+
 from .cme_globex_base import CMEGlobexBaseExchangeCalendar
 
 

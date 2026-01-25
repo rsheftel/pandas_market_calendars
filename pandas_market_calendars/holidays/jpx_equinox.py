@@ -15,6 +15,7 @@ For a double check, see:  https://aa.usno.navy.mil/data/docs/EarthSeasons.php
 import pandas as pd
 from pandas.tseries.holiday import sunday_to_monday
 
+
 vernal_year_to_march_mapping = {
     1875: 21,
     1876: 20,

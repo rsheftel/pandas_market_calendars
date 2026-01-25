@@ -1,24 +1,16 @@
-import sys
 from datetime import time
 from itertools import chain
 
 import pandas as pd
 from pandas.tseries.holiday import (
+    MO,
     AbstractHolidayCalendar,
     DateOffset,
     GoodFriday,
     Holiday,
-    MO,
     weekend_to_monday,
 )
-
-# check python versiOn aNd import accordingly
-if sys.version_info >= (3, 9):
-    # For Python 3.9 and later, import directly
-    from zoneinfo import ZoneInfo
-else:
-    # For Python 3.8 and earlier, import from backports
-    from backports.zoneinfo import ZoneInfo
+from zoneinfo import ZoneInfo
 
 from pandas_market_calendars.holidays.uk import (
     BoxingDay,
@@ -26,13 +18,14 @@ from pandas_market_calendars.holidays.uk import (
     WeekendChristmas,
 )
 from pandas_market_calendars.market_calendar import (
-    MarketCalendar,
+    FRIDAY,
     MONDAY,
+    THURSDAY,
     TUESDAY,
     WEDNESDAY,
-    THURSDAY,
-    FRIDAY,
+    MarketCalendar,
 )
+
 
 # New Year's Day
 TSXNewYearsDay = Holiday(

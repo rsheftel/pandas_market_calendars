@@ -1,5 +1,4 @@
 #!/usr/bin/env python3
-# -*- coding: utf-8 -*-
 
 # -- Project information -----------------------------------------------------
 project = "pandas_market_calendars"

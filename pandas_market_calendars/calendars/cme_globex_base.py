@@ -13,7 +13,6 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-import sys
 from abc import ABC, abstractmethod
 
 from pandas.tseries.holiday import (
@@ -23,14 +22,7 @@ from pandas.tseries.holiday import (
     USPresidentsDay,
     USThanksgivingDay,
 )
-
-# check python versiOn aNd import accordingly
-if sys.version_info >= (3, 9):
-    # For Python 3.9 and later, import directly
-    from zoneinfo import ZoneInfo
-else:
-    # For Python 3.8 and earlier, import from backports
-    from backports.zoneinfo import ZoneInfo
+from zoneinfo import ZoneInfo
 
 from pandas_market_calendars.holidays.us import (
     Christmas,
@@ -38,9 +30,9 @@ from pandas_market_calendars.holidays.us import (
     ChristmasEveInOrAfter1993,
     USBlackFridayInOrAfter1993,
     USIndependenceDay,
+    USJuneteenthAfter2022,
     USMartinLutherKingJrAfter1998,
     USMemorialDay,
-    USJuneteenthAfter2022,
     USNewYearsDay,
 )
 from pandas_market_calendars.market_calendar import MarketCalendar

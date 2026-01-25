@@ -2,20 +2,13 @@
 Bombay Stock Exchnage
 """
 
-import sys
 from datetime import time
 
 from pandas import Timestamp
-
-# check python versiOn aNd import accordingly
-if sys.version_info >= (3, 9):
-    # For Python 3.9 and later, import directly
-    from zoneinfo import ZoneInfo
-else:
-    # For Python 3.8 and earlier, import from backports
-    from backports.zoneinfo import ZoneInfo
+from zoneinfo import ZoneInfo
 
 from pandas_market_calendars.market_calendar import MarketCalendar
+
 
 BSEClosedDay = [
     Timestamp("1997-01-23", tz="UTC"),

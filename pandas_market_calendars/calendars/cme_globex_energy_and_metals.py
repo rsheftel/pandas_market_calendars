@@ -13,39 +13,32 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-import sys
 from datetime import time
 
 from pandas.tseries.holiday import (
     AbstractHolidayCalendar,
 )  # , GoodFriday, USLaborDay, USPresidentsDay, USThanksgivingDay
-
-# check python versiOn aNd import accordingly
-if sys.version_info >= (3, 9):
-    # For Python 3.9 and later, import directly
-    from zoneinfo import ZoneInfo
-else:
-    # For Python 3.8 and earlier, import from backports
-    from backports.zoneinfo import ZoneInfo
+from zoneinfo import ZoneInfo
 
 from pandas_market_calendars.holidays.cme_globex import (
+    ChristmasCME,
+    FridayAfterThanksgiving,
+    GoodFriday,
+    USIndependenceDayFrom2022,
+    USIndependenceDayPre2022,
+    USJuneteenthFrom2022,
+    USLaborDay,
     USMartinLutherKingJrFrom2022,
     USMartinLutherKingJrPre2022,
+    USMemorialDayFrom2022,
+    USMemorialDayPre2022,
     USNewYearsDay,
     USPresidentsDayFrom2022,
     USPresidentsDayPre2022,
-    GoodFriday,
-    USMemorialDayFrom2022,
-    USMemorialDayPre2022,
-    USJuneteenthFrom2022,
-    USIndependenceDayFrom2022,
-    USIndependenceDayPre2022,
-    USLaborDay,
     USThanksgivingDayFrom2022,
     USThanksgivingDayPre2022,
-    FridayAfterThanksgiving,
-    ChristmasCME,
 )
+
 from .cme_globex_base import CMEGlobexBaseExchangeCalendar
 
 

@@ -1,5 +1,6 @@
 from pandas import Timestamp
 
+
 # Chinese holidays are quite irregular because
 # 1. some of the holidays are base on traditional Chinese calendar (lunisolar)
 # 2. the government tries very hard to arrange multi-day holidays

@@ -6,8 +6,9 @@ These methods should return the actual time (regular or special) for a given dat
 
 import datetime
 
-import pandas_market_calendars as mcal
 import pytest
+
+import pandas_market_calendars as mcal
 
 
 class TestNYSETimeOnMethods:

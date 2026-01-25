@@ -8,6 +8,7 @@ from pandas_market_calendars.holidays.jpx_equinox import (
     vernal_equinox,
 )
 
+
 AscensionDays = [
     Timestamp("2019-04-30", tz="UTC"),  # National Holiday
     Timestamp("2019-05-01", tz="UTC"),  # Ascension Day

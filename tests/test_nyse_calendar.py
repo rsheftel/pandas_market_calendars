@@ -1,10 +1,10 @@
 import datetime as dt
 import os
-from zoneinfo import ZoneInfo
 
 import pandas as pd
 import pytest
 from pandas.testing import assert_index_equal, assert_series_equal
+from zoneinfo import ZoneInfo
 
 from pandas_market_calendars.calendars.nyse import NYSEExchangeCalendar
 

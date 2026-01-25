@@ -2,17 +2,17 @@ from datetime import timedelta
 
 from dateutil.relativedelta import MO, TH, TU
 from pandas import DateOffset, Timestamp, date_range
-from pandas.tseries.holiday import Holiday, nearest_workday, sunday_to_monday, Easter
-from pandas.tseries.offsets import Day, CustomBusinessDay
+from pandas.tseries.holiday import Easter, Holiday, nearest_workday, sunday_to_monday
+from pandas.tseries.offsets import CustomBusinessDay, Day
 
 from pandas_market_calendars.market_calendar import (
-    MONDAY,
-    TUESDAY,
-    WEDNESDAY,
-    THURSDAY,
     FRIDAY,
+    MONDAY,
     SATURDAY,
     SUNDAY,
+    THURSDAY,
+    TUESDAY,
+    WEDNESDAY,
 )
 
 
@@ -114,7 +114,7 @@ USMartinLutherKingJrAfter1998 = Holiday(
 #    Grant's birthday was celebrated once in 1897
 ##########################################################################
 USPresidentsDay = Holiday(
-    "President" "s Day",
+    "Presidents Day",
     start_date=Timestamp("1971-01-01"),
     month=2,
     day=1,
@@ -129,7 +129,7 @@ USPresidentsDay = Holiday(
 )
 
 USWashingtonsBirthDayBefore1952 = Holiday(
-    "Washington" "s Birthday",
+    "Washingtons Birthday",
     month=2,
     day=22,
     end_date=Timestamp("1952-09-28"),
@@ -144,7 +144,7 @@ USWashingtonsBirthDayBefore1952 = Holiday(
     observance=sunday_to_monday,
 )
 USWashingtonsBirthDay1952to1963 = Holiday(
-    "Washington" "s Birthday",
+    "Washingtons Birthday",
     month=2,
     day=22,
     start_date=Timestamp("1952-09-29"),
@@ -160,7 +160,7 @@ USWashingtonsBirthDay1952to1963 = Holiday(
 )
 
 USWashingtonsBirthDay1964to1970 = Holiday(
-    "Washington" "s Birthday",
+    "Washingtons Birthday",
     month=2,
     day=22,
     start_date=Timestamp("1964-01-01"),
@@ -180,7 +180,7 @@ SatAfterWashingtonsBirthdayAdhoc = [
 ]
 
 USLincolnsBirthDayBefore1954 = Holiday(
-    "Lincoln" "s Birthday",
+    "Lincolns Birthday",
     month=2,
     day=12,
     start_date=Timestamp("1896-01-01"),

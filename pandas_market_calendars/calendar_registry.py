@@ -1,5 +1,5 @@
-# fmt: off
-# @formatter:off
+# ruff: noqa: F401, I001
+# Calendar imports register calendars via metaclass side-effect
 import datetime
 
 from .market_calendar import MarketCalendar
@@ -41,12 +41,11 @@ from .calendars.sse import SSEExchangeCalendar
 from .calendars.tase import TASEExchangeCalendar
 from .calendars.tsx import TSXExchangeCalendar
 from .calendars.mirror import *
-# @formatter:on
-# fmt: on
 
 
-def get_calendar(name: str, open_time: datetime.time | None = None,
-                 close_time: datetime.time | None = None) -> MarketCalendar:
+def get_calendar(
+    name: str, open_time: datetime.time | None = None, close_time: datetime.time | None = None
+) -> MarketCalendar:
     """
     Retrieves an instance of an MarketCalendar whose name is given.
 

@@ -1,6 +1,5 @@
-from zoneinfo import ZoneInfo
-
 import pandas as pd
+from zoneinfo import ZoneInfo
 
 from pandas_market_calendars.calendars.six import SIXExchangeCalendar
 

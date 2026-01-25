@@ -6,17 +6,17 @@ from pandas.testing import assert_index_equal
 
 import pandas_market_calendars as mcal
 from pandas_market_calendars.calendar_utils import (
+    DisappearingSessionWarning,
     InsufficientScheduleWarning,
     MissingSessionWarning,
-    _make_session_list,
-    DisappearingSessionWarning,
     OverlappingSessionWarning,
+    _make_session_list,
     date_range_htf,
     filter_date_range_warnings,
-    parse_missing_session_warning,
     parse_insufficient_schedule_warning,
+    parse_missing_session_warning,
 )
-from tests.test_market_calendar import FakeCalendar, FakeBreakCalendar, FakeETHCalendar
+from tests.test_market_calendar import FakeBreakCalendar, FakeCalendar, FakeETHCalendar
 
 
 # region ---- ---- ---- Date Range LTF ---- ---- ----
@@ -811,7 +811,6 @@ def test_date_range_w_breaks():
 
 @pytest.mark.parametrize("tz", ["America/New_York", "Asia/Ulaanbaatar", "UTC"])
 def test_date_range_ETH(tz):
-
     cal = FakeETHCalendar()
     schedule = cal.schedule("2016-12-30", "2017-01-03", market_times="all", tz=tz)
 
@@ -1015,7 +1014,7 @@ def test_date_range_catch_periods_err(tz):
     if _bool:
         schedule = pd.concat([cal.schedule(t1, t2, market_times="all", tz=tz), schedule])
     else:
-        assert False
+        raise AssertionError()
 
     # Retest with the updated schedule
     assert_index_equal(
@@ -1049,7 +1048,7 @@ def test_date_range_catch_periods_err(tz):
     # Update the Schedule to what is needed in a recovery attempt
     _bool, t1, t2 = parse_insufficient_schedule_warning(e1.value)
     if _bool:
-        assert False
+        raise AssertionError()
     else:
         schedule = pd.concat([schedule, cal.schedule(t1, t2, market_times="all", tz=tz)])
 
@@ -1085,7 +1084,7 @@ def test_date_range_catch_periods_err(tz):
     # Update the Schedule to what is needed in a recovery attempt
     _bool, t1, t2 = parse_insufficient_schedule_warning(e1.value)
     if _bool:
-        assert False
+        raise AssertionError()
     else:
         schedule = pd.concat([schedule, cal.schedule(t1, t2, market_times="all", tz=tz)])
 
@@ -1117,7 +1116,7 @@ def test_date_range_catch_periods_err(tz):
     if _bool:
         schedule = pd.concat([cal.schedule(t1, t2, market_times="all", tz=tz), schedule])
     else:
-        assert False
+        raise AssertionError()
 
     # Retest with the updated schedule
     assert_index_equal(
