@@ -1,16 +1,8 @@
-import sys
 from datetime import time, timedelta
 from functools import partial
 
 from pandas.tseries.holiday import AbstractHolidayCalendar, Holiday, next_monday
-
-# check python versiOn aNd import accordingly
-if sys.version_info >= (3, 9):
-    # For Python 3.9 and later, import directly
-    from zoneinfo import ZoneInfo
-else:
-    # For Python 3.8 and earlier, import from backports
-    from backports.zoneinfo import ZoneInfo
+from zoneinfo import ZoneInfo
 
 from pandas_market_calendars.holidays.cn import *
 from pandas_market_calendars.market_calendar import MarketCalendar
@@ -266,9 +258,7 @@ def second_day_in_lieu(dt):
     dow = dt.weekday()
     if dow == 0:  # Holiday is Sunday, use Saturday
         return dt - timedelta(2)
-    elif dow == 1:  # Holiday is Monday, use Saturday
-        return dt - timedelta(3)
-    elif dow == 2:  # Holiday is Tuesday, use Sunday
+    elif dow == 1 or dow == 2:  # Holiday is Monday, use Saturday
         return dt - timedelta(3)
     elif dow == 3:  # Holiday is Wednesday, use Saturday
         return dt - timedelta(5)
@@ -282,9 +272,7 @@ def third_day_in_lieu(dt):
         return dt - timedelta(1)
     elif dow == 1:  # Holiday is Sunday, use Sunday
         return dt - timedelta(2)
-    elif dow == 2:  # Holiday is Monday, use Sunday
-        return dt - timedelta(3)
-    elif dow == 3:  # Holiday is Tuesday, use Monday
+    elif dow == 2 or dow == 3:  # Holiday is Monday, use Sunday
         return dt - timedelta(3)
     elif dow == 4:  # Holiday is Wednesday, use Sunday
         return dt - timedelta(5)

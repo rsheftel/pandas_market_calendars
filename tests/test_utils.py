@@ -1,13 +1,13 @@
 import datetime
-from zoneinfo import ZoneInfo
 
 import pandas as pd
 import pytest
 from pandas.testing import assert_frame_equal, assert_series_equal
+from zoneinfo import ZoneInfo
 
 import pandas_market_calendars as mcal
 from pandas_market_calendars.calendars.nyse import NYSEExchangeCalendar
-from tests.test_market_calendar import FakeCalendar, FakeBreakCalendar, FakeETHCalendar
+from tests.test_market_calendar import FakeBreakCalendar, FakeCalendar, FakeETHCalendar
 
 
 def test_get_calendar():

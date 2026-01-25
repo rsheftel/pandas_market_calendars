@@ -13,9 +13,7 @@ def _regmeta_instance_factory(cls, name: str, *args, **kwargs):
     try:
         class_ = cls._regmeta_class_registry[name]
     except KeyError:
-        raise RuntimeError(
-            "Class {} is not one of the registered classes: {}".format(name, cls._regmeta_class_registry.keys())
-        )
+        raise RuntimeError(f"Class {name} is not one of the registered classes: {cls._regmeta_class_registry.keys()}")
     return class_(*args, **kwargs)
 
 
@@ -41,10 +39,11 @@ class RegisteryMeta(type):
     """
 
     def __new__(mcs, name, bases, attr):
-        cls = super(RegisteryMeta, mcs).__new__(mcs, name, bases, attr)
+        cls = super().__new__(mcs, name, bases, attr)
         if not hasattr(cls, "_regmeta_class_registry"):
-            cls._regmeta_class_registry = {}
-            cls.factory = classmethod(_regmeta_instance_factory)
+            # Metaclass dynamically adds class registry and factory method
+            cls._regmeta_class_registry = {}  # type: ignore[assignment]
+            cls.factory = classmethod(_regmeta_instance_factory)  # type: ignore[assignment]
 
         return cls
 
@@ -55,7 +54,7 @@ class RegisteryMeta(type):
                 if hasattr(b, "_regmeta_class_registry"):
                     _regmeta_register_class(b, cls, name)
 
-        super(RegisteryMeta, cls).__init__(name, bases, attr)
+        super().__init__(name, bases, attr)
 
         cls.regular_market_times = ProtectedDict(cls.regular_market_times)
         cls.open_close_map = ProtectedDict(cls.open_close_map)

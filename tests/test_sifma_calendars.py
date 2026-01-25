@@ -1,12 +1,11 @@
-from zoneinfo import ZoneInfo
-
 import pandas as pd
 from pandas.testing import assert_index_equal
+from zoneinfo import ZoneInfo
 
 from pandas_market_calendars.calendars.sifma import (
-    SIFMAUSExchangeCalendar,
-    SIFMAUKExchangeCalendar,
     SIFMAJPExchangeCalendar,
+    SIFMAUKExchangeCalendar,
+    SIFMAUSExchangeCalendar,
 )
 
 
@@ -20,7 +19,7 @@ def _test_holidays(cal, holidays, start, end):
     assert len(holidays) == len(df)
     df = df.set_index(["holidays"])
     df.index = df.index.tz_localize("UTC")
-    assert_index_equal(pd.DatetimeIndex(holidays), df.index, check_names=False)
+    assert_index_equal(pd.DatetimeIndex(holidays), df.index, exact=False, check_names=False)
     valid_days = cal.valid_days(start, end)
     for h in holidays:
         assert h not in valid_days

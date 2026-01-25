@@ -38,6 +38,14 @@ CME        CMEGlobex_Grains   CMEGlobexGrainsExchangeCalendar     Yes         ru
 EUREX      EUREX_Bond         EUREXFixedIncomeCalendar            Yes         rundef
 ========== ================= =================================== ============ ============
 
+Forex/OTC Market Calendars
+##########################
+========== ================= =================================== ============ ============
+ Type            Name             Class                          Unit Tests    Creator
+========== ================= =================================== ============ ============
+OTC        FOREX             ForexExchangeCalendar                Yes         wiktorkisielewski
+========== ================= =================================== ============ ============
+
 Bond Market Calendars
 #####################
 ========== ================ =================================== ============ ============

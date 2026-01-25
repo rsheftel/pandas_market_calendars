@@ -6,6 +6,7 @@ from pandas_market_calendars.calendars.cme_globex_fixed_income import (
     CMEGlobexFixedIncomeCalendar,
 )
 
+
 TZ = "America/Chicago"
 
 

@@ -7,12 +7,12 @@ https://www.oslobors.no/obnewsletter/download/1e05ee05a9c1a472da4c715435ff1314/f
 - https://www.oslobors.no/ob_eng/Oslo-Boers/About-Oslo-Boers/Opening-hours
 """
 
-from zoneinfo import ZoneInfo
-
 import pandas as pd
 import pytest
+from zoneinfo import ZoneInfo
 
 from pandas_market_calendars.calendars.ose import OSEExchangeCalendar
+
 
 TIMEZONE = ZoneInfo("Europe/Oslo")
 

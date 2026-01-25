@@ -1,4 +1,3 @@
-import sys
 from datetime import time
 
 from pandas.tseries.holiday import (
@@ -8,16 +7,10 @@ from pandas.tseries.holiday import (
     Holiday,
 )
 from pandas.tseries.offsets import Day, Easter
-
-# check python versiOn aNd import accordingly
-if sys.version_info >= (3, 9):
-    # For Python 3.9 and later, import directly
-    from zoneinfo import ZoneInfo
-else:
-    # For Python 3.8 and earlier, import from backports
-    from backports.zoneinfo import ZoneInfo
+from zoneinfo import ZoneInfo
 
 from pandas_market_calendars.market_calendar import MarketCalendar
+
 
 OSENewYearsDay = Holiday("New Year's Day", month=1, day=1)
 

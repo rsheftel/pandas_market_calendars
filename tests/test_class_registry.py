@@ -4,11 +4,11 @@ from pprint import pformat
 
 import pytest
 
-from pandas_market_calendars.class_registry import RegisteryMeta, ProtectedDict
+from pandas_market_calendars.class_registry import ProtectedDict, RegisteryMeta
 
 
 def test_inheritance():
-    class Base(object):
+    class Base:
         regular_market_times = {
             "market_open": {None: time(0)},
             "market_close": {None: time(23)},
@@ -22,7 +22,7 @@ def test_inheritance():
         def __init__(self, arg0, kw0=None):
             self.arg0 = arg0
             self.kw0 = kw0
-            super(Base, self).__init__()
+            super().__init__()
 
         def special_opens(self):
             return []
@@ -33,7 +33,7 @@ def test_inheritance():
         def __init__(self, arg0, arg1, kw1=None, **kwargs):
             self.arg1 = arg1
             self.kw1 = kw1
-            super(Class1, self).__init__(arg0, **kwargs)
+            super().__init__(arg0, **kwargs)
 
     factory1 = Class1.factory
 
@@ -43,7 +43,7 @@ def test_inheritance():
         def __init__(self, arg0, arg2, kw2=None, **kwargs):
             self.arg2 = arg2
             self.kw2 = kw2
-            super(Class2, self).__init__(arg0, **kwargs)
+            super().__init__(arg0, **kwargs)
 
     factory2 = Class2.factory
 
@@ -53,13 +53,13 @@ def test_inheritance():
         def __init__(self, arg0, arg1, arg1a, kw1a=None, **kwargs):
             self.arg1a = arg1a
             self.kw1a = kw1a
-            super(Class1a, self).__init__(arg0, arg1, **kwargs)
+            super().__init__(arg0, arg1, **kwargs)
 
     class Class1b(Class1):
         def __init__(self, arg0, arg1, arg1b, kw1b=None, **kwargs):
             self.arg1b = arg1b
             self.kw1b = kw1b
-            super(Class1b, self).__init__(arg0, arg1, **kwargs)
+            super().__init__(arg0, arg1, **kwargs)
 
     class Class12a(Class1, Class2):
         aliases = ["class 12a"]
@@ -67,7 +67,7 @@ def test_inheritance():
         def __init__(self, arg0, arg1, arg2, arg12a, kw12a=None, **kwargs):
             self.arg12a = arg12a
             self.kw12a = kw12a
-            super(Class12a, self).__init__(arg0=arg0, arg1=arg1, arg2=arg2, **kwargs)
+            super().__init__(arg0=arg0, arg1=arg1, arg2=arg2, **kwargs)
 
     assert set(Class1._regmeta_class_registry.keys()) == {
         "Class1",
@@ -173,7 +173,7 @@ def test_metamixing():
 
 
 def test_protected_dict():
-    dct = ProtectedDict(dict(a=1, b=2))
+    dct = ProtectedDict({"a": 1, "b": 2})
 
     with pytest.raises(TypeError):
         dct["a"] = 2
@@ -184,7 +184,7 @@ def test_protected_dict():
     del dct._INIT_RAN_NORMALLY
     del dct["b"]
 
-    dct = ProtectedDict(dict(a=1, b=2))
+    dct = ProtectedDict({"a": 1, "b": 2})
 
     s = "ProtectedDict(\n" + pformat(dict(dct), sort_dicts=False) + "\n)"
     assert str(dct) == s

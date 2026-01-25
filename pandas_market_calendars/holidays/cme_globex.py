@@ -1,15 +1,16 @@
 from dateutil.relativedelta import MO, TH
 from pandas import DateOffset, Timestamp
-from pandas.tseries.holiday import Holiday, nearest_workday, Easter
+from pandas.tseries.holiday import Easter, Holiday, nearest_workday
 from pandas.tseries.offsets import Day
 
 from pandas_market_calendars.market_calendar import (
+    FRIDAY,
     MONDAY,
+    THURSDAY,
     TUESDAY,
     WEDNESDAY,
-    THURSDAY,
-    FRIDAY,
 )
+
 
 ####################################################
 # US New Years Day Jan 1
@@ -61,7 +62,7 @@ USMartinLutherKingJrPre2022 = Holiday(
 # US Presidents Day Feb
 ##########################################################################
 USPresidentsDayFrom2022 = Holiday(
-    "President" "s Day",
+    "Presidents Day",
     start_date=Timestamp("2022-01-01"),
     month=2,
     day=1,
@@ -69,7 +70,7 @@ USPresidentsDayFrom2022 = Holiday(
 )
 
 USPresidentsDayPre2022 = Holiday(
-    "President" "s Day",
+    "Presidents Day",
     end_date=Timestamp("2021-12-31"),
     month=2,
     day=1,

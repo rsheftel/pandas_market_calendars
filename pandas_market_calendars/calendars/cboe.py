@@ -1,4 +1,3 @@
-import sys
 from datetime import time
 from itertools import chain
 
@@ -6,32 +5,25 @@ import pandas as pd
 from pandas.tseries.holiday import (
     AbstractHolidayCalendar,
     GoodFriday,
+    Holiday,
     USLaborDay,
     USPresidentsDay,
     USThanksgivingDay,
-    Holiday,
 )
-
-# check python versiOn aNd import accordingly
-if sys.version_info >= (3, 9):
-    # For Python 3.9 and later, import directly
-    from zoneinfo import ZoneInfo
-else:
-    # For Python 3.8 and earlier, import from backports
-    from backports.zoneinfo import ZoneInfo
+from zoneinfo import ZoneInfo
 
 from pandas_market_calendars.holidays.us import (
     Christmas,
+    FridayAfterIndependenceDayPre2013,
+    HurricaneSandyClosings,
+    MonTuesThursBeforeIndependenceDay,
     USBlackFridayInOrAfter1993,
     USIndependenceDay,
+    USJuneteenthAfter2022,
     USMartinLutherKingJrAfter1998,
     USMemorialDay,
-    USNewYearsDay,
-    HurricaneSandyClosings,
     USNationalDaysofMourning,
-    USJuneteenthAfter2022,
-    MonTuesThursBeforeIndependenceDay,
-    FridayAfterIndependenceDayPre2013,
+    USNewYearsDay,
     WednesdayBeforeIndependenceDayPost2013,
 )
 from pandas_market_calendars.market_calendar import MarketCalendar
@@ -48,6 +40,8 @@ def good_friday_unless_christmas_nye_friday(dt):
         raise NotImplementedError()
 
     year = dt.year
+    assert Christmas.observance is not None  # Christmas always has weekend observance
+    assert USNewYearsDay.observance is not None  # USNewYearsDay always has weekend observance
     christmas_weekday = Christmas.observance(pd.Timestamp(year=year, month=12, day=25)).weekday()
     nyd_weekday = USNewYearsDay.observance(pd.Timestamp(year=year, month=1, day=1)).weekday()
     if christmas_weekday != 4 and nyd_weekday != 4:
