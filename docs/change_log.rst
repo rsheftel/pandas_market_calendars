@@ -1,6 +1,11 @@
 Change Log
 ==========
 
+5.3.1 (01/25/2026)
+~~~~~~~~~~~~~~~~~~
+- PR #443 to fix issue #343 on CME calendars
+- PR #444 to fix issues with SIFMA calendars
+
 5.3.0 (01/25/2026)
 ~~~~~~~~~~~~~~~~~~
 - Major refactoring from PR #439 to improve code maintainability and performance
