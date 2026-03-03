@@ -310,6 +310,12 @@ UKSummerBank = Holiday(
 
 # UK observes Christmas on Tuesday when Boxing Day is on Monday
 # UK observes Christmas on Monday when Christmas is on Saturday
+FridayChristmasEve = Holiday(
+    "Friday Christmas Eve",
+    month=12,
+    day=24,
+    days_of_week=(FRIDAY,),
+)
 
 UKChristmas = Holiday(
     "Christmas",
