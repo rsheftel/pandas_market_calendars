@@ -51,6 +51,54 @@ from pandas_market_calendars.market_calendar import MarketCalendar
 # Oilseed & MGEX Products and Livestock, Dairy & Lumber products are completely closed.
 
 
+class CMETradeDateCalendar(MarketCalendar):
+    """
+    Calendar of CME 'trade dates'. This is the calendar used for deciding what
+    days are eligble business days for contract expiries and `trade_dates`. Note
+    that the markets are open on other days, so the opening hours for this are not
+    meaningful (and hence are fixed to 5pm Central T-1 -> 4pm Central T)
+    """
+    
+    regular_market_times = {
+        "market_open": ((None, time(17), -1),),  # offset by -1 day
+        "market_close": ((None, time(16)),),
+    }
+    @property
+    def name(self):
+        return "CME_TradeDate"
+
+    @property
+    def tz(self):
+        return ZoneInfo("America/Chicago")
+
+    @property
+    def regular_holidays(self):
+        return AbstractHolidayCalendar(
+            rules=[
+                USNewYearsDay,
+                USMartinLutherKingJrAfter1998,
+                USPresidentsDay,
+                GoodFriday,
+                USMemorialDay,
+                USLaborDay,
+                USJuneteenthAfter2022,
+                USIndependenceDay,
+                USIndependenceDayBefore2022PreviousDay,
+                USThanksgivingDay,
+                Christmas,
+            ]
+        )
+
+    
+    @property
+    def adhoc_holidays(self):
+        # FIXME: This is unverified currently.
+        return USNationalDaysofMourning
+
+    @property
+    def special_closes(self):
+        return []
+
 class CMEEquityExchangeCalendar(MarketCalendar):
     """
     Exchange calendar for CME for Equity products
