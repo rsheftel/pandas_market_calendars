@@ -304,18 +304,12 @@ UKPlatinumJubilee2022 = [
 UKSummerBank = Holiday(
     "Summer Bank Holiday",
     month=8,
-    day=30,
+    day=31,
     offset=DateOffset(weekday=MO(-1)),
 )
 
 # UK observes Christmas on Tuesday when Boxing Day is on Monday
 # UK observes Christmas on Monday when Christmas is on Saturday
-UKChristmaEve = Holiday(
-    "Christmas",
-    month=12,
-    day=24,
-    days_of_week=(FRIDAY,),
-)
 
 UKChristmas = Holiday(
     "Christmas",
