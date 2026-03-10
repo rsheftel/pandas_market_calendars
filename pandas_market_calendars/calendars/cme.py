@@ -83,7 +83,6 @@ class CMETradeDateCalendar(MarketCalendar):
                 USLaborDay,
                 USJuneteenthAfter2022,
                 USIndependenceDay,
-                USIndependenceDayBefore2022PreviousDay,
                 USThanksgivingDay,
                 Christmas,
             ]
