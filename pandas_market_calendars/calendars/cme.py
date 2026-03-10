@@ -58,7 +58,7 @@ class CMETradeDateCalendar(MarketCalendar):
     that the markets are open on other days, so the opening hours for this are not
     meaningful (and hence are fixed to 5pm Central T-1 -> 4pm Central T)
     """
-    
+    aliases = ["CME_TradeDate"]
     regular_market_times = {
         "market_open": ((None, time(17), -1),),  # offset by -1 day
         "market_close": ((None, time(16)),),
@@ -83,7 +83,6 @@ class CMETradeDateCalendar(MarketCalendar):
                 USLaborDay,
                 USJuneteenthAfter2022,
                 USIndependenceDay,
-                USIndependenceDayBefore2022PreviousDay,
                 USThanksgivingDay,
                 Christmas,
             ]
