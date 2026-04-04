@@ -27,6 +27,13 @@ from pandas.tseries.holiday import (
 from zoneinfo import ZoneInfo
 
 from pandas_market_calendars.holidays.cme import (
+    GoodFriday2010,
+    GoodFriday2012,
+    GoodFriday2015,
+    GoodFriday2021,
+    GoodFriday2022,
+    GoodFridayAfter2022,
+    GoodFridayBefore2021NotEarlyClose,
     USIndependenceDayBefore2022PreviousDay,
 )
 from pandas_market_calendars.holidays.us import (
@@ -129,7 +136,8 @@ class CMEEquityExchangeCalendar(MarketCalendar):
         return AbstractHolidayCalendar(
             rules=[
                 USNewYearsDay,
-                GoodFriday,
+                GoodFridayBefore2021NotEarlyClose,
+                GoodFriday2022,
                 Christmas,
             ]
         )
@@ -141,6 +149,18 @@ class CMEEquityExchangeCalendar(MarketCalendar):
     @property
     def special_closes(self):
         return [
+            (
+                time(8, 15),
+                AbstractHolidayCalendar(
+                    rules=[
+                        GoodFriday2010,
+                        GoodFriday2012,
+                        GoodFriday2015,
+                        GoodFriday2021,
+                        GoodFridayAfter2022,
+                    ]
+                ),
+            ),
             (
                 time(12),
                 AbstractHolidayCalendar(
