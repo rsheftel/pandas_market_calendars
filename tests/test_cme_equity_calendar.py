@@ -58,3 +58,12 @@ def test_dec_jan():
 
     assert schedule["market_open"].iloc[0] == pd.Timestamp("2016-12-29 23:00:00", tz="UTC")
     assert schedule["market_close"].iloc[6] == pd.Timestamp("2017-01-10 22:00:00", tz="UTC")
+
+
+def test_good_friday_2026_has_early_close_session():
+    cme = CMEEquityExchangeCalendar()
+    schedule = cme.schedule("2026-04-01", "2026-04-07", tz="America/New_York")
+
+    session = schedule.loc["2026-04-03"]
+    assert session.market_open == pd.Timestamp("2026-04-02 18:00:00", tz="America/New_York")
+    assert session.market_close == pd.Timestamp("2026-04-03 09:15:00", tz="America/New_York")

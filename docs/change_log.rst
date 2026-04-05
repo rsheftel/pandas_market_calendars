@@ -1,6 +1,10 @@
 Change Log
 ==========
 
+5.3.2 (04/04/2026)
+~~~~~~~~~~~~~~~~~~
+- PR #456 to fix issue on CME calendars
+
 5.3.1 (03/03/2026)
 ~~~~~~~~~~~~~~~~~~
 - PR #443 to fix issue #343 on CME calendars
