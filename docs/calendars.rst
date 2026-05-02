@@ -27,16 +27,17 @@ Exchange  IEX    IEXExchangeCalendar     Yes        carterjfulcher
 
 Futures Calendars
 #################
-========== ================= =================================== ============ ============
- Exchange        Name             Class                          Unit Tests    Creator
-========== ================= =================================== ============ ============
-CME        CME_Equity         CMEEquityExchangeCalendar           Yes         rsheftel
-CME        CME_Bond           CMEBondExchangeCalendar             Yes         rsheftel
-CME        CME_Agriculture    CMEAgriculturalExchangeCalendar     Yes         lionelyoung
-CME        CME Globex Crypto  CMEGlobexCryptoExchangeCalendar     Yes         Coinbase Asset Management
-CME        CMEGlobex_Grains   CMEGlobexGrainsExchangeCalendar     Yes         rundef
-EUREX      EUREX_Bond         EUREXFixedIncomeCalendar            Yes         rundef
-========== ================= =================================== ============ ============
+========== =========================== ========================================== ============ =========================
+ Exchange              Name                         Class                         Unit Tests           Creator
+========== =========================== ========================================== ============ =========================
+CME        CME_Equity                   CMEEquityExchangeCalendar                 Yes          rsheftel
+CME        CME_Bond                     CMEBondExchangeCalendar                   Yes          rsheftel
+CME        CME_Agriculture              CMEAgriculturalExchangeCalendar           Yes          lionelyoung
+CME        CME Globex Crypto            CMEGlobexCryptoExchangeCalendar           Yes          Coinbase Asset Management
+CME        CMEGlobex_Grains             CMEGlobexGrainsExchangeCalendar           Yes          rundef
+CME        CMEGlobex_EnergyAndMetals    CMEGlobexEnergyAndMetalsExchangeCalendar  Yes
+EUREX      EUREX_Bond                   EUREXFixedIncomeCalendar                  Yes          rundef
+========== =========================== ========================================== ============ =========================
 
 Forex/OTC Market Calendars
 ##########################
