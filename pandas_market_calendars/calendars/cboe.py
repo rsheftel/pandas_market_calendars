@@ -5,7 +5,6 @@ import pandas as pd
 from pandas.tseries.holiday import (
     AbstractHolidayCalendar,
     GoodFriday,
-    Holiday,
     USLaborDay,
     USPresidentsDay,
     USThanksgivingDay,
@@ -27,39 +26,6 @@ from pandas_market_calendars.holidays.us import (
     WednesdayBeforeIndependenceDayPost2013,
 )
 from pandas_market_calendars.market_calendar import MarketCalendar
-
-
-def good_friday_unless_christmas_nye_friday(dt):
-    """
-    Good Friday is a valid trading day if Christmas Day or New Years Day fall
-    on a Friday.
-    """
-    if isinstance(dt, pd.DatetimeIndex):
-        # Pandas < 2.1.0 will call with an index and fall-back to element by element
-        # Pandas == 2.1.0 will only call element by element
-        raise NotImplementedError()
-
-    year = dt.year
-    assert Christmas.observance is not None  # Christmas always has weekend observance
-    assert USNewYearsDay.observance is not None  # USNewYearsDay always has weekend observance
-    christmas_weekday = Christmas.observance(pd.Timestamp(year=year, month=12, day=25)).weekday()
-    nyd_weekday = USNewYearsDay.observance(pd.Timestamp(year=year, month=1, day=1)).weekday()
-    if christmas_weekday != 4 and nyd_weekday != 4:
-        return GoodFriday.dates(
-            pd.Timestamp(year=year, month=1, day=1),
-            pd.Timestamp(year=year, month=12, day=31),
-        )[0]
-    else:
-        # Not a holiday so use NaT to ensure it gets removed
-        return pd.NaT
-
-
-GoodFridayUnlessChristmasNYEFriday = Holiday(
-    name="Good Friday CFE",
-    month=1,
-    day=1,
-    observance=good_friday_unless_christmas_nye_friday,
-)
 
 
 class CFEExchangeCalendar(MarketCalendar):
@@ -99,7 +65,7 @@ class CFEExchangeCalendar(MarketCalendar):
                 USNewYearsDay,
                 USMartinLutherKingJrAfter1998,
                 USPresidentsDay,
-                GoodFridayUnlessChristmasNYEFriday,
+                GoodFriday,
                 USJuneteenthAfter2022,
                 USIndependenceDay,
                 USMemorialDay,

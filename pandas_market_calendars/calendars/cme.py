@@ -27,6 +27,13 @@ from pandas.tseries.holiday import (
 from zoneinfo import ZoneInfo
 
 from pandas_market_calendars.holidays.cme import (
+    GoodFriday2010,
+    GoodFriday2012,
+    GoodFriday2015,
+    GoodFriday2021,
+    GoodFriday2022,
+    GoodFridayAfter2022,
+    GoodFridayBefore2021NotEarlyClose,
     USIndependenceDayBefore2022PreviousDay,
 )
 from pandas_market_calendars.holidays.us import (
@@ -58,7 +65,7 @@ class CMETradeDateCalendar(MarketCalendar):
     that the markets are open on other days, so the opening hours for this are not
     meaningful (and hence are fixed to 5pm Central T-1 -> 4pm Central T)
     """
-    
+    aliases = ["CME_TradeDate"]
     regular_market_times = {
         "market_open": ((None, time(17), -1),),  # offset by -1 day
         "market_close": ((None, time(16)),),
@@ -83,7 +90,6 @@ class CMETradeDateCalendar(MarketCalendar):
                 USLaborDay,
                 USJuneteenthAfter2022,
                 USIndependenceDay,
-                USIndependenceDayBefore2022PreviousDay,
                 USThanksgivingDay,
                 Christmas,
             ]
@@ -130,7 +136,8 @@ class CMEEquityExchangeCalendar(MarketCalendar):
         return AbstractHolidayCalendar(
             rules=[
                 USNewYearsDay,
-                GoodFriday,
+                GoodFridayBefore2021NotEarlyClose,
+                GoodFriday2022,
                 Christmas,
             ]
         )
@@ -142,6 +149,18 @@ class CMEEquityExchangeCalendar(MarketCalendar):
     @property
     def special_closes(self):
         return [
+            (
+                time(8, 15),
+                AbstractHolidayCalendar(
+                    rules=[
+                        GoodFriday2010,
+                        GoodFriday2012,
+                        GoodFriday2015,
+                        GoodFriday2021,
+                        GoodFridayAfter2022,
+                    ]
+                ),
+            ),
             (
                 time(12),
                 AbstractHolidayCalendar(

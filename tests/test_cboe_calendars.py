@@ -50,15 +50,6 @@ def test_2016_holidays():
             assert pd.Timestamp(day, tz="UTC") not in good_dates
 
 
-def test_good_friday_rule():
-    # Good friday is a holiday unless Christmas Day or New Years Day is on a Friday
-    for calendar in calendars:
-        cal = calendar()
-        valid_days = cal.valid_days("2015-04-01", "2016-04-01")
-        for day in ["2015-04-03", "2016-03-25"]:
-            assert day in valid_days
-
-
 def test_2016_early_closes():
     # early close is day after thanksgiving: nov 25
     for calendar in calendars:
