@@ -358,7 +358,7 @@ HKClosedDay = [
 
 class HKEXExchangeCalendar(MarketCalendar):
     """
-    Exchange calendar for Hong Kong Stock Exchange
+    Exchange calendar for Hong Kong Stock Exchange (Stock market)
 
     Open Time: 9:30 AM, Asia/Shanghai
     LUNCH BREAK :facepalm: : 12:00 AM - 1:00 PM Asia/Shanghai
@@ -427,3 +427,220 @@ class HKEXExchangeCalendar(MarketCalendar):
     @property
     def adhoc_holidays(self):
         return HKClosedDay
+
+# ---------------------------------------------------------------------------
+# HKFE Derivatives Calendars
+# Append this block to pandas_market_calendars/calendars/hkex.py
+#
+# All holiday rules referenced below (SpringFestivalDay*, TombSweepingDay,
+# GoodFriday, EasterMonday, LabourDay, BuddhaShakyamuniDay,
+# DragonBoatFestivalDay, HKRegionEstablishmentDay, MidAutumnFestivalDay*,
+# NationalDay, DoubleNinthFestivalDay, Christmas, BoxingDay, HKNewYearsDay,
+# HKClosedDay, process_date, etc.) are already defined above in this file.
+# ---------------------------------------------------------------------------
+
+
+# ---------------------------------------------------------------------------
+# Shared building blocks
+# ---------------------------------------------------------------------------
+
+# When Ching Ming Festival and Easter Monday coincide, HK observes an extra
+# holiday on the following Tuesday. This is ad-hoc — add each occurrence.
+HKFEExtraHolidays = [
+    Timestamp("2015-04-07", tz="UTC"),  # Ching Ming + Easter Monday coincidence
+    Timestamp("2026-04-07", tz="UTC"),  # Ching Ming + Easter Monday coincidence
+]
+
+# Lunar New Year Eve: non-holiday contracts have morning session only.
+# Ad-hoc because the date moves with the lunar calendar each year.
+# Weekend LNY Eves are omitted (no trading day to affect).
+_LNYEveEarlyClose = [
+    Timestamp("2020-01-24"),
+    Timestamp("2021-02-11"),
+    Timestamp("2022-01-31"),
+    # 2023 LNY Eve = Sat 21 Jan — no trading day
+    Timestamp("2024-02-08"),
+    Timestamp("2025-01-28"),
+    Timestamp("2026-02-16"),
+    Timestamp("2027-02-05"),
+]
+
+# Christmas Eve and New Year's Eve: morning session only (close 12:00 HKT).
+_HKChristmasEve = Holiday("Christmas Eve", month=12, day=24)
+_HKNewYearsEve = Holiday("New Year's Eve", month=12, day=31)
+
+
+# ---------------------------------------------------------------------------
+# 1. HKFE Non-Holiday Trading Calendar
+#    Contracts: HSI, MHI, HHI, MCH, HTI
+# ---------------------------------------------------------------------------
+
+class HKFENonHolidayExchangeCalendar(MarketCalendar):
+    """
+    HKFE — Non-Holiday Trading contracts
+    (HSI  — Hang Seng Index Futures,
+     MHI  — Mini Hang Seng Index Futures,
+     HHI  — Hang Seng China Enterprises Index (HSCEI) Futures,
+     MCH  — Mini-HSCEI Futures,
+     HTI  — Hang Seng Tech Index Futures)
+
+    Closed on ALL Hong Kong public holidays.
+
+    Regular session (HKT = UTC+8):
+        Morning   : 09:15 – 12:00
+        Afternoon : 13:00 – 16:30
+        After-hours T+1 session (17:15 – 23:59) not modelled —
+        pandas_market_calendars supports one break only.
+
+    Early closes (morning session only, close 12:00 HKT):
+        - Lunar New Year Eve (day before LNY Day 1)
+        - Christmas Eve (24 Dec)
+        - New Year's Eve (31 Dec)
+
+    Source: HKFE Circular MO/DT/120/25 (June 2025)
+    """
+
+    aliases = ["HKFE", "HKFE_INDEX"]
+
+    regular_market_times = {
+        "market_open":  ((None, time(9, 15)),),
+        "market_close": ((None, time(23, 59)),),   # T+1 session closes 23:59 HKT same day
+        "break_start":  ((None, time(16, 30)),),   # T session closes 16:30
+        "break_end":    ((None, time(17, 15)),),   # T+1 session opens 17:15
+    }
+
+    @property
+    def name(self):
+        return "HKFE"
+
+    @property
+    def tz(self):
+        return ZoneInfo("Asia/Hong_Kong")
+
+    @property
+    def regular_holidays(self):
+        return AbstractHolidayCalendar(
+            rules=[
+                HKNewYearsDay,
+                # Lunar New Year (3 days) — current and historical rules
+                SpringFestivalDay,
+                SpringFestivalDay2,
+                SpringFestivalDay3,
+                SpringFestivalDayBefore1983,
+                SpringFestivalDay2Before1983,
+                SpringFestivalDay3Before1983,
+                SpringFestivalDayBefore2010,
+                SpringFestivalDay2Before2010,
+                SpringFestivalDay3Before2010,
+                GoodFriday,
+                EasterMonday,
+                TombSweepingDay,          # Ching Ming (day after)
+                LabourDay,
+                BuddhaShakyamuniDay,      # Day following Buddha's Birthday
+                DragonBoatFestivalDay,    # Tuen Ng Festival
+                HKRegionEstablishmentDay,
+                MidAutumnFestivalDay,
+                MidAutumnFestivalDayBefore1983,
+                MidAutumnFestivalDayBefore2010,
+                NationalDay,
+                DoubleNinthFestivalDay,   # Chung Yeung (day after)
+                Christmas,
+                BoxingDay,
+                # Historical-only rules
+                CommemoratingAlliedVictory,
+                QueenBirthday,
+                QueenBirthday2,
+                IDontKnow,
+            ]
+        )
+
+    @property
+    def adhoc_holidays(self):
+        return HKClosedDay + HKFEExtraHolidays
+
+    @property
+    def special_closes(self):
+        return [
+            (time(12, 0), AbstractHolidayCalendar(rules=[
+                _HKChristmasEve,
+                _HKNewYearsEve,
+            ])),
+        ]
+
+    @property
+    def special_closes_adhoc(self):
+        return [(time(12, 0), _LNYEveEarlyClose)]
+
+
+# ---------------------------------------------------------------------------
+# 2. HKFE Holiday Trading Calendar
+#    Contracts: MTW, MCA, CUS
+# ---------------------------------------------------------------------------
+
+class HKFEHolidayTradingExchangeCalendar(MarketCalendar):
+    """
+    HKFE — Holiday Trading contracts
+    (MTW — MSCI Taiwan (USD) Index Futures,
+     MCA — MSCI China A50 Connect (USD) Index Futures,
+     CUS — USD/CNH Futures)
+
+    Per HKFE Circulars MO/DT/085/22 and EBF/FIC/003/24, these contracts
+    trade THROUGH most Hong Kong public holidays. The only full closure
+    is New Year's Day (1 January).
+
+    Regular session (HKT = UTC+8):
+        Morning   : 09:15 – 12:00
+        Afternoon : 13:00 – 16:30
+        After-hours T+1 session (17:15 – 23:59) not modelled.
+
+    Early closes (morning session only, close 12:00 HKT):
+        - Lunar New Year Eve (day before LNY Day 1)
+        - Christmas Eve (24 Dec)
+        - New Year's Eve (31 Dec)
+
+    Note: The after-hours (T+1) session is additionally cancelled on days
+    when BOTH UK and US markets are bank holidays (e.g. UK Spring Bank
+    Holiday / US Memorial Day; Christmas Day). This affects T+1 only and
+    is not modelled here as the library does not support multiple sessions.
+
+    Source: HKFE Circulars MO/DT/085/22, EBF/FIC/003/24, MO/DT/120/25
+    """
+
+    aliases = ["HKFE_MSCI", "HKFE_FX"]
+
+    regular_market_times = {
+        "market_open":  ((None, time(9, 15)),),
+        "market_close": ((None, time(23, 59)),),   # T+1 session closes 23:59 HKT same day
+        "break_start":  ((None, time(16, 30)),),   # T session closes 16:30
+        "break_end":    ((None, time(17, 15)),),   # T+1 session opens 17:15
+    }
+
+    @property
+    def name(self):
+        return "HKFE_MSCI"
+
+    @property
+    def tz(self):
+        return ZoneInfo("Asia/Hong_Kong")
+
+    @property
+    def regular_holidays(self):
+        # Only New Year's Day — all other HK public holidays are trading days
+        return AbstractHolidayCalendar(rules=[HKNewYearsDay])
+
+    @property
+    def adhoc_holidays(self):
+        return []
+
+    @property
+    def special_closes(self):
+        return [
+            (time(12, 0), AbstractHolidayCalendar(rules=[
+                _HKChristmasEve,
+                _HKNewYearsEve,
+            ])),
+        ]
+
+    @property
+    def special_closes_adhoc(self):
+        return [(time(12, 0), _LNYEveEarlyClose)]
