@@ -58,7 +58,9 @@ from .calendars.jpx import (
 )
 from .calendars.krx import KRXEquityIndexFuturesCalendar, KRXFXFuturesCalendar, KRXGovernmentBondFuturesCalendar
 from .calendars.lse import LSEExchangeCalendar
+from .calendars.meff import MEFFIBEXFuturesCalendar
 from .calendars.nyse import NYSEExchangeCalendar
+from .calendars.omx import NasdaqStockholmDerivsCalendar
 from .calendars.ose import OSEExchangeCalendar
 from .calendars.sgx import (
     SGXIndianRupeeExchangeCalendar,
