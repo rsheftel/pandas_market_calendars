@@ -19,7 +19,7 @@ Contracts covered and their holiday groups:
   SGX_IronOre
     FEF   — SGX IODEX Iron Ore (62% Fe) Futures
  
-  SGX_Rubber
+  SGX_Rubber (SG + NYE)
     TF    — SICOM Rubber (TSR20) Futures
 
   SGX_NK    (SG + Japan holidays):
@@ -64,6 +64,7 @@ from pandas.tseries.holiday import (
     GoodFriday,
     Holiday,
     weekend_to_monday,
+    previous_friday
 )
 from pandas.tseries.offsets import Day
 
@@ -76,6 +77,10 @@ from pandas_market_calendars.market_calendar import MarketCalendar
 
 _SGNewYearsDay = Holiday(
     "New Year's Day", month=1, day=1, observance=weekend_to_monday
+)
+
+_SGNewYearsEve = Holiday(
+    "New Year's Eve", month=12, day=31, observance=previous_friday
 )
 
 _SGLabourDay = Holiday(
@@ -455,8 +460,8 @@ _KRLunarHolidays = [
     # 2025: Seollal Jan 28-30, Chuseok Oct 5-7, Buddha May 5
     Timestamp("2025-01-28"), Timestamp("2025-01-29"), Timestamp("2025-01-30"),
     Timestamp("2025-10-05"), Timestamp("2025-10-06"), Timestamp("2025-10-07"),
-    # 2026: Seollal Feb 17-19, Chuseok Sep 24-26, Buddha May 24
-    Timestamp("2026-02-17"), Timestamp("2026-02-18"), Timestamp("2026-02-19"),
+    # 2026: Seollal Feb 16-18, Chuseok Sep 24-26, Buddha May 24
+    Timestamp("2026-02-16"),Timestamp("2026-02-17"), Timestamp("2026-02-18"), 
     Timestamp("2026-05-25"),  # May 24 Sun -> Mon
     Timestamp("2026-09-24"), Timestamp("2026-09-25"), Timestamp("2026-09-28"),
     # 2027: Seollal Feb 6-8, Chuseok Sep 14-16, Buddha May 13
@@ -600,6 +605,18 @@ class SGXIronOreExchangeCalendar(_SGXBase):
 
 class SGXRubberExchangeCalendar(_SGXBase):
     aliases = ["SGX_Rubber"]
+
+
+    @property
+    def regular_holidays(self):
+        return AbstractHolidayCalendar(rules=[
+            _SGNewYearsDay,
+            GoodFriday,
+            _SGLabourDay,
+            _SGNationalDay,
+            _SGChristmasDay,
+            _SGNewYearsEve,
+        ])
 
     regular_market_times = {
         "market_open":  ((None, time(7, 55)),),
