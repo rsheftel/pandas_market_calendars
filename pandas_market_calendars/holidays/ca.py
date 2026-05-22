@@ -105,7 +105,7 @@ DayBeforeThanksgiving = Holiday(
 
 TruthAndReconiliationDay = Holiday(
     "Canada Truth and Reconciliation Day",
-    month=10,
+    month=9,
     day=30,
     observance=weekend_to_monday,
     start_date="2021-01-01"
