@@ -69,7 +69,7 @@ from .calendars.sgx import (
     SGXMSCISingaporeExchangeCalendar,
     SGXCNHExchangeCalendar,
     SGXIronOreExchangeCalendar,
-    SGXRubberExchangeCalendar
+    SGXRubberExchangeCalendar,
 )
 from .calendars.sifma import (
     SIFMAUSExchangeCalendar,

@@ -569,7 +569,7 @@ class SGXMSCISingaporeExchangeCalendar(_SGXBase):
     Source: SGX DT Trading Calendar 2025
     """
 
-    aliases = ["SGX"]
+    aliases = ["SGX_Singapore"]
 
     regular_market_times = {
         "market_open":  ((None, time(8,30)),),
