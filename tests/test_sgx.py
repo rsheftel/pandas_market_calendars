@@ -31,7 +31,8 @@ def _is_trading(cal, date):
 # ---------------------------------------------------------------------------
 
 def test_sgx_base_instantiates():
-    assert SGXIndexCNExchangeCalendar() is not None
+    assert (cal := SGXIndexCNExchangeCalendar()) is not None
+    cal.name 
 
 
 def test_sgx_base_closes_good_friday():
@@ -68,7 +69,8 @@ def test_sgx_base_early_close_christmas_eve():
 # ---------------------------------------------------------------------------
 
 def test_sgx_nikkei_instantiates():
-    assert SGXNikkeiExchangeCalendar() is not None
+    assert (cal := SGXNikkeiExchangeCalendar()) is not None
+    cal.name
 
 
 def test_sgx_nikkei_closes_on_japan_holiday():
@@ -87,7 +89,8 @@ def test_sgx_nikkei_closes_on_sg_holiday():
 # ---------------------------------------------------------------------------
 
 def test_sgx_taiwan_instantiates():
-    assert SGXTaiwanExchangeCalendar() is not None
+    assert (cal:=SGXTaiwanExchangeCalendar()) is not None
+    cal.name
 
 
 def test_sgx_taiwan_closes_on_taiwan_cny():
@@ -106,7 +109,8 @@ def test_sgx_taiwan_closes_on_sg_holiday():
 # ---------------------------------------------------------------------------
 
 def test_sgx_nifty_instantiates():
-    assert SGXNiftyExchangeCalendar() is not None
+    assert (cal := SGXNiftyExchangeCalendar()) is not None
+    cal.name
 
 
 def test_sgx_nifty_closes_on_india_holiday():
@@ -125,8 +129,8 @@ def test_sgx_nifty_closes_on_sg_holiday():
 # ---------------------------------------------------------------------------
 
 def test_sgx_indian_rupee_instantiates():
-    assert SGXIndianRupeeExchangeCalendar() is not None
-
+    assert (cal := SGXIndianRupeeExchangeCalendar()) is not None
+    cal.name
 
 def test_sgx_indian_rupee_closes_on_independence_day():
     cal = SGXIndianRupeeExchangeCalendar()
@@ -140,7 +144,8 @@ def test_sgx_indian_rupee_closes_on_independence_day():
 # ---------------------------------------------------------------------------
 
 def test_sgx_korean_won_instantiates():
-    assert SGXKoreanWonExchangeCalendar() is not None
+    assert (cal := SGXKoreanWonExchangeCalendar()) is not None
+    cal.name
 
 
 def test_sgx_korean_won_closes_on_chuseok():
