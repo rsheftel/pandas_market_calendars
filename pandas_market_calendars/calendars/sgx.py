@@ -517,17 +517,13 @@ class _SGXBase(MarketCalendar):
 
 
 # ---------------------------------------------------------------------------
-# 1. SGX Base — SG holidays only
+# 1. SGX Index — SG holidays only
 #    Contracts: CN, SGP, FCH, UC, FEF, TF
 # ---------------------------------------------------------------------------
 
-class SGXIndexExchangeCalendar(_SGXBase):
+class SGXIndexCNExchangeCalendar(_SGXBase):
     """
-    SGX — Singapore-holiday-only contracts
-     CN  — FTSE China A50 Index Futures,
-     SGP — MSCI Singapore Index Futures,
-     FCH — FTSE China H50 Futures,
-     
+    A50 & H50 Futures 
 
     Closed only on Singapore public holidays.
 
@@ -543,13 +539,43 @@ class SGXIndexExchangeCalendar(_SGXBase):
     Source: SGX DT Trading Calendar 2025
     """
 
-    aliases = ["SGX_Index"]
+    aliases = ["SGX_CN"]
 
     regular_market_times = {
-        "market_open":  ((None, time(7,0)),),
-        "market_close": ((None, time(18, 0)),),
-        "break_start":  ((None, time(17, 30)),),   # T session closes 17:30
-        "break_end":    ((None, time(18, 0)),),    # T+1 session opens 18:00
+        "market_open":  ((None, time(9,0)),),
+        "market_close": ((None, time(5, 15), 1),),   # T+1 session closes 05:15 T+1
+        "break_start":  ((None, time(16, 30)),),   # T session closes 17:30
+        "break_end":    ((None, time(16, 45)),),    # T+1 session opens 18:00
+    }
+
+    @property
+    def name(self):
+        return "SGX_CN"
+
+
+class SGXMSCISingaporeExchangeCalendar(_SGXBase):
+    """
+    Closed only on Singapore public holidays.
+
+    Regular session (SGT = UTC+8):
+        T session  : 08:30 – 17:30
+        T+1 session: 18:00 – 02:00 T+1
+
+    Early closes (12:30 SGT):
+        - CNY Eve (day before Chinese New Year Day 1)
+        - Christmas Eve (24 Dec)
+        - New Year's Eve (31 Dec)
+
+    Source: SGX DT Trading Calendar 2025
+    """
+
+    aliases = ["SGX"]
+
+    regular_market_times = {
+        "market_open":  ((None, time(8,30)),),
+        "market_close": ((None, time(5, 15)),),   # T+1 session closes 05:15 T+1
+        "break_start":  ((None, time(17, 20)),),   # T session closes 17:30
+        "break_end":    ((None, time(17, 35)),),    # T+1 session opens 18:00
     }
 
     @property
@@ -607,10 +633,10 @@ class SGXNikkeiExchangeCalendar(_SGXBase):
     aliases = ["SGX_NK", "SGX_NIKKEI"]
 
     regular_market_times = {
-        "market_open":  ((None, time(8, 30)),),
-        "market_close": ((None, time(2, 0), 1),),  # T+1 session closes 02:00 SGT next day
-        "break_start":  ((None, time(17, 30)),),   # T session closes 17:30
-        "break_end":    ((None, time(18, 0)),),    # T+1 session opens 18:00
+        "market_open":  ((None, time(7, 30)),),
+        "market_close": ((None, time(5, 15), 1),),  # T+1 session closes 05:15 SGT next day
+        "break_start":  ((None, time(15, 0)),),  
+        "break_end":    ((None, time(15, 10)),),    # T+1 session opens 15:00
     }
 
     @property
@@ -656,10 +682,10 @@ class SGXTaiwanExchangeCalendar(_SGXBase):
     aliases = ["SGX_TWN", "SGX_TAIWAN"]
 
     regular_market_times = {
-        "market_open":  ((None, time(8, 30)),),
-        "market_close": ((None, time(2, 0), 1),),  # T+1 session closes 02:00 SGT next day
-        "break_start":  ((None, time(17, 30)),),   # T session closes 17:30
-        "break_end":    ((None, time(18, 0)),),    # T+1 session opens 18:00
+        "market_open":  ((None, time(8, 45)),),
+        "market_close": ((None, time(5, 15), 1),),  # T+1 session closes 05:15 SGT next day
+        "break_start":  ((None, time(13, 45)),),   
+        "break_end":    ((None, time(13, 0)),),    # T+1 session opens 14:00
     }
 
     @property
@@ -703,10 +729,10 @@ class SGXNiftyExchangeCalendar(_SGXBase):
     aliases = ["SGX_NIFTY"]
 
     regular_market_times = {
-        "market_open":  ((None, time(8, 30)),),
-        "market_close": ((None, time(2, 0), 1),),  # T+1 session closes 02:00 SGT next day
-        "break_start":  ((None, time(17, 30)),),   # T session closes 17:30
-        "break_end":    ((None, time(18, 0)),),    # T+1 session opens 18:00
+        "market_open":  ((None, time(9, 0)),),
+        "market_close": ((None, time(5, 15), 1),),  # T+1 session closes 05:15 SGT next day
+        "break_start":  ((None, time(18, 10)),),   
+        "break_end":    ((None, time(18, 35)),),    # T+1 session opens 18:35
     }
 
     @property

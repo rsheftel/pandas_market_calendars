@@ -566,7 +566,7 @@ class HKFEDomesticExchangeCalendar(MarketCalendar):
 #    Contracts: MTW, MCA, CUS
 # ---------------------------------------------------------------------------
 
-class HKFEForeignTradingExchangeCalendar(MarketCalendar):
+class HKFEForeignExchangeCalendar(MarketCalendar):
     """
     HKFE — Holiday Trading contracts
     (MTW — MSCI Taiwan (USD) Index Futures,

@@ -6,8 +6,8 @@ from zoneinfo import ZoneInfo
 
 from pandas_market_calendars.calendars.hkex import (
     HKEXExchangeCalendar,
-    HKFENonHolidayExchangeCalendar,
-    HKFEHolidayTradingExchangeCalendar,
+    HKFEDomesticExchangeCalendar,
+    HKFEForeignExchangeCalendar,
 )
 
 
@@ -77,23 +77,23 @@ def test_hkex_closes_at_lunch():
 # ---------------------------------------------------------------------------
 
 def test_hkfe_non_holiday_instantiates():
-    assert HKFENonHolidayExchangeCalendar() is not None
+    assert HKFEDomesticExchangeCalendar() is not None
 
 
 def test_hkfe_non_holiday_closes_on_hk_holiday():
-    cal = HKFENonHolidayExchangeCalendar()
+    cal = HKFEDomesticExchangeCalendar()
     # Labour Day 2026 — standard HK public holiday
     assert _is_holiday(cal, "2026-05-01")
 
 
 def test_hkfe_non_holiday_closes_on_lunar_new_year():
-    cal = HKFENonHolidayExchangeCalendar()
+    cal = HKFEDomesticExchangeCalendar()
     # LNY Day 1 2026 — 17 Feb
     assert _is_holiday(cal, "2026-02-17")
 
 
 def test_hkfe_non_holiday_early_close_lny_eve():
-    cal = HKFENonHolidayExchangeCalendar()
+    cal = HKFEDomesticExchangeCalendar()
     # LNY Eve 2026 — 16 Feb, morning session only (close 12:00 HKT = 04:00 UTC)
     sched = cal.schedule("2026-02-16", "2026-02-16")
     assert not sched.empty
@@ -102,7 +102,7 @@ def test_hkfe_non_holiday_early_close_lny_eve():
 
 
 def test_hkfe_non_holiday_t1_session_modelled():
-    cal = HKFENonHolidayExchangeCalendar()
+    cal = HKFEDomesticExchangeCalendar()
     # Normal day: break_start=16:30 HKT=08:30 UTC, break_end=17:15 HKT=09:15 UTC
     sched = cal.schedule("2026-03-10", "2026-03-10")
     assert "break_start" in sched.columns
@@ -118,23 +118,23 @@ def test_hkfe_non_holiday_t1_session_modelled():
 # ---------------------------------------------------------------------------
 
 def test_hkfe_holiday_trading_instantiates():
-    assert HKFEHolidayTradingExchangeCalendar() is not None
+    assert HKFEForeignExchangeCalendar() is not None
 
 
 def test_hkfe_holiday_trading_open_on_hk_holiday():
-    cal = HKFEHolidayTradingExchangeCalendar()
+    cal = HKFEForeignExchangeCalendar()
     # Labour Day 2026 — HK holiday but MSCI/FX contracts trade
     assert _is_trading(cal, "2026-05-01")
 
 
 def test_hkfe_holiday_trading_closed_new_years_day():
-    cal = HKFEHolidayTradingExchangeCalendar()
+    cal = HKFEForeignExchangeCalendar()
     # New Year's Day is the one exception — all contracts closed
     assert _is_holiday(cal, "2026-01-01")
 
 
 def test_hkfe_holiday_trading_open_on_lunar_new_year():
-    cal = HKFEHolidayTradingExchangeCalendar()
+    cal = HKFEForeignExchangeCalendar()
     # LNY Day 1 2026 — MSCI/FX contracts trade through HK public holidays
     assert _is_trading(cal, "2026-02-17")
 

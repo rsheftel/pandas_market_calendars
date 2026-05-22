@@ -31,18 +31,15 @@ Half-trading-day closes (inherited from cash calendars via special_closes):
 from datetime import time
 from zoneinfo import ZoneInfo
 
-import pandas_market_calendars as mcal
 from pandas_market_calendars.market_calendar import MarketCalendar
-
-# ---------------------------------------------------------------------------
-# Cached cash calendar instances — holiday source of truth
-# ---------------------------------------------------------------------------
-_xpar = mcal.get_calendar("XPAR")   # Paris  — same holidays as AMS/BRU/LIS
-_xams = mcal.get_calendar("XAMS")   # Amsterdam
-_xbru = mcal.get_calendar("XBRU")   # Brussels
-_xlis = mcal.get_calendar("XLIS")   # Lisbon
-_xmil = mcal.get_calendar("XMIL")   # Milan
-_xosl = mcal.get_calendar("XOSL")   # Oslo
+from pandas_market_calendars.calendars.mirror import (
+    XPARExchangeCalendar,
+    XAMSExchangeCalendar,
+    XBRUExchangeCalendar,
+    XLISExchangeCalendar,
+    XMILExchangeCalendar,
+    XOSLExchangeCalendar
+)
 
 
 # ---------------------------------------------------------------------------
@@ -106,7 +103,7 @@ class EuronextParisIndexDerivsCalendar(_EuronextDerivsMixin, MarketCalendar):
     """
 
     aliases = ["ENX_PAR_INDEX", "ENX_FCE"]
-    _cash_cal = _xpar
+    _cash_cal = XPARExchangeCalendar()
 
     regular_market_times = {
         "market_open":  ((None, time(7, 30)),),
@@ -148,7 +145,7 @@ class EuronextAmsterdamIndexDerivsCalendar(_EuronextDerivsMixin, MarketCalendar)
     """
 
     aliases = ["ENX_AMS_INDEX", "ENX_FTI", "ENX_AEX"]
-    _cash_cal = _xams
+    _cash_cal = XAMSExchangeCalendar()
 
     regular_market_times = {
         "market_open":  ((None, time(7, 30)),),
@@ -189,7 +186,7 @@ class EuronextBrusselsIndexDerivsCalendar(_EuronextDerivsMixin, MarketCalendar):
     """
 
     aliases = ["ENX_BRU_INDEX", "ENX_BXF", "ENX_BEL20"]
-    _cash_cal = _xbru
+    _cash_cal = XBRUExchangeCalendar()
 
     regular_market_times = {
         "market_open":  ((None, time(7, 30)),),
@@ -230,7 +227,7 @@ class EuronextLisbonIndexDerivsCalendar(_EuronextDerivsMixin, MarketCalendar):
     """
 
     aliases = ["ENX_LIS_INDEX", "ENX_PSI"]
-    _cash_cal = _xlis
+    _cash_cal = XLISExchangeCalendar()
 
     regular_market_times = {
         # Times published as CET; Lisbon is UTC+0/+1, so 1h behind CET in winter.
@@ -280,7 +277,7 @@ class EuronextMilanIndexDerivsCalendar(_EuronextDerivsMixin, MarketCalendar):
     """
 
     aliases = ["ENX_MIL_INDEX", "ENX_FIB", "ENX_FTSEMIB"]
-    _cash_cal = _xmil
+    _cash_cal = XMILExchangeCalendar()
 
     regular_market_times = {
         "market_open":  ((None, time(7, 30)),),
@@ -332,7 +329,7 @@ class EuronextOsloIndexDerivsCalendar(_EuronextDerivsMixin, MarketCalendar):
     """
 
     aliases = ["ENX_OSL_INDEX", "ENX_OBF", "ENX_OBX"]
-    _cash_cal = _xosl
+    _cash_cal = XOSLExchangeCalendar()
 
     regular_market_times = {
         "market_open":  ((None, time(7, 30)),),
@@ -381,7 +378,7 @@ class EuronextParisCommodityDerivsCalendar(_EuronextDerivsMixin, MarketCalendar)
     """
 
     aliases = ["ENX_PAR_COMM", "ENX_WHEAT", "ENX_AGRI"]
-    _cash_cal = _xpar
+    _cash_cal = XPARExchangeCalendar()
 
     regular_market_times = {
         "market_open":  ((None, time(7, 30)),),

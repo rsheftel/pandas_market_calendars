@@ -11,7 +11,7 @@ from pandas.tseries.holiday import (
     next_monday,
     next_monday_or_tuesday,
 )
-from pandas_market_calendars import MarketCalendar
+from pandas_market_calendars.market_calendar import MarketCalendar
 
 
 # ---------------------------------------------------------------------------

@@ -9,7 +9,7 @@ import pytest
 import pandas as pd
 
 from pandas_market_calendars.calendars.sgx import (
-    SGXBaseExchangeCalendar,
+    SGXIndexCNExchangeCalendar,
     SGXNikkeiExchangeCalendar,
     SGXTaiwanExchangeCalendar,
     SGXNiftyExchangeCalendar,
@@ -31,31 +31,31 @@ def _is_trading(cal, date):
 # ---------------------------------------------------------------------------
 
 def test_sgx_base_instantiates():
-    assert SGXBaseExchangeCalendar() is not None
+    assert SGXIndexCNExchangeCalendar() is not None
 
 
 def test_sgx_base_closes_good_friday():
-    cal = SGXBaseExchangeCalendar()
+    cal = SGXIndexCNExchangeCalendar()
     assert _is_holiday(cal, "2026-04-03")
 
 
 def test_sgx_base_closes_deepavali():
-    cal = SGXBaseExchangeCalendar()
+    cal = SGXIndexCNExchangeCalendar()
     # Deepavali 2026 — Nov 8 Sun -> observed Mon Nov 9
     assert _is_holiday(cal, "2026-11-09")
 
 
 def test_sgx_base_t1_session_modelled():
-    cal = SGXBaseExchangeCalendar()
-    # T+1 close is 02:00 SGT next day = 18:00 UTC same date row
+    cal = SGXIndexCNExchangeCalendar()
+    # T+1 close is 05:15 SGT next day = 18:00 UTC same date row
     sched = cal.schedule("2026-03-10", "2026-03-10")
     assert "break_start" in sched.columns
     close = sched["market_close"].iloc[0]
-    assert close == pd.Timestamp("2026-03-10 18:00:00+00:00")
+    assert close == pd.Timestamp("2026-03-10 21:15:00+00:00")
 
 
 def test_sgx_base_early_close_christmas_eve():
-    cal = SGXBaseExchangeCalendar()
+    cal = SGXIndexCNExchangeCalendar()
     # 24 Dec 2026 — half day, close 12:30 SGT = 04:30 UTC
     sched = cal.schedule("2026-12-24", "2026-12-24")
     assert not sched.empty
