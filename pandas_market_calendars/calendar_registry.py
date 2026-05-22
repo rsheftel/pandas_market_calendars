@@ -3,7 +3,7 @@
 import datetime
 
 from .market_calendar import MarketCalendar
-from .calendars.asx import ASXExchangeCalendar
+from .calendars.asx import ASXExchangeCalendar, ASX24FuturesCalendar
 from .calendars.bmf import BMFExchangeCalendar
 from .calendars.bse import BSEExchangeCalendar
 from .calendars.bursa_malaysia import BursaMalaysiaFCPOExchangeCalendar, BursaMalaysiaFKLIExchangeCalendar
@@ -54,10 +54,13 @@ from .calendars.iceeu import (
 )
 from .calendars.iex import IEXExchangeCalendar
 from .calendars.jpx import (
-    JPXExchangeCalendar, OSEIndexFuturesCalendar, OSEJGBFuturesCalendar
+    JPXExchangeCalendar, OSEIndexFuturesCalendar, OSEJGBFuturesCalendar, OSEPreciousMetalsFuturesCalendar
 )
+from .calendars.krx import KRXEquityIndexFuturesCalendar, KRXFXFuturesCalendar, KRXGovernmentBondFuturesCalendar
 from .calendars.lse import LSEExchangeCalendar
+from .calendars.meff import MEFFIBEXFuturesCalendar
 from .calendars.nyse import NYSEExchangeCalendar
+from .calendars.omx import NasdaqStockholmDerivsCalendar
 from .calendars.ose import OSEExchangeCalendar
 from .calendars.sgx import (
     SGXIndianRupeeExchangeCalendar,

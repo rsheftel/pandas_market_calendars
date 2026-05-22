@@ -275,7 +275,7 @@ class SGXMSCISingaporeExchangeCalendar(_SGXBase):
 
     regular_market_times = {
         "market_open":  ((None, time(8,30)),),
-        "market_close": ((None, time(5, 15)),),   # T+1 session closes 05:15 T+1
+        "market_close": ((None, time(5, 15), 1),),   # T+1 session closes 05:15 T+1
         "break_start":  ((None, time(17, 20)),),   # T session closes 17:30
         "break_end":    ((None, time(17, 35)),),    # T+1 session opens 18:00
     }
