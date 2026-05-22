@@ -3,18 +3,23 @@ SGX Derivatives Exchange Calendars
 ====================================
 Singapore Exchange (SGX) Derivatives Market.
 
-Each contract family has a different holiday closure set, combining:
+Each contract family is a snowflake and has a different opening hours and
+a different holiday closure set, combining:
   1. Singapore public holidays (the base for all SGX contracts)
   2. Reference market holidays for the underlying index/asset
 
 Contracts covered and their holiday groups:
 
-  SGX_BASE  (SG holidays only):
+  SGX_Index  (SG holidays only):
     CN    — FTSE China A50 Index Futures
     SGP   — MSCI Singapore Index Futures
     FCH   — FTSE China H50 Futures
-    UC    — SGX USD/CNH Futures
+
+  
+  SGX_IronOre
     FEF   — SGX IODEX Iron Ore (62% Fe) Futures
+ 
+  SGX_Rubber
     TF    — SICOM Rubber (TSR20) Futures
 
   SGX_NK    (SG + Japan holidays):
@@ -31,6 +36,10 @@ Contracts covered and their holiday groups:
 
   SGX_KU    (SG + Korean holidays):
     KU    — SGX Korean Won in USD (Mini) Futures
+
+  SGX_UC
+    UC    — SGX USD/CNH Futures
+
 
 Trading hours (SGT = Asia/Singapore = UTC+8, no DST):
   T session  : 08:30 – 17:30  (break-free continuous)
@@ -512,39 +521,33 @@ class _SGXBase(MarketCalendar):
 #    Contracts: CN, SGP, FCH, UC, FEF, TF
 # ---------------------------------------------------------------------------
 
-class SGXBaseExchangeCalendar(_SGXBase):
+class SGXIndexExchangeCalendar(_SGXBase):
     """
     SGX — Singapore-holiday-only contracts
-    (CN  — FTSE China A50 Index Futures,
+     CN  — FTSE China A50 Index Futures,
      SGP — MSCI Singapore Index Futures,
      FCH — FTSE China H50 Futures,
-     UC  — SGX USD/CNH Futures,
-     FEF — SGX IODEX Iron Ore (62% Fe) Futures,
-     TF  — SICOM Rubber (TSR20) Futures)
+     
 
     Closed only on Singapore public holidays.
 
     Regular session (SGT = UTC+8):
         T session  : 08:30 – 17:30
-        T+1 session: 18:00 – 02:00 (next day SGT) — not modelled.
+        T+1 session: 18:00 – 02:00 T+1
 
     Early closes (12:30 SGT):
         - CNY Eve (day before Chinese New Year Day 1)
         - Christmas Eve (24 Dec)
         - New Year's Eve (31 Dec)
 
-    Note: UC (FX) trades different hours (07:00–18:00 SGT) and FEF/TF
-    trade 09:00–18:30 SGT. Hours here are modelled as the equity-index
-    session for consistency; override per-contract if precision is needed.
-
     Source: SGX DT Trading Calendar 2025
     """
 
-    aliases = ["SGX", "SGX_CN", "SGX_BASE"]
+    aliases = ["SGX_Index"]
 
     regular_market_times = {
-        "market_open":  ((None, time(8, 30)),),
-        "market_close": ((None, time(2, 0), 1),),  # T+1 session closes 02:00 SGT next day
+        "market_open":  ((None, time(7,0)),),
+        "market_close": ((None, time(18, 0)),),
         "break_start":  ((None, time(17, 30)),),   # T session closes 17:30
         "break_end":    ((None, time(18, 0)),),    # T+1 session opens 18:00
     }
@@ -552,6 +555,36 @@ class SGXBaseExchangeCalendar(_SGXBase):
     @property
     def name(self):
         return "SGX"
+
+
+class SGXIronOreExchangeCalendar(_SGXBase):
+    aliases = ["SGX_IronOre"]
+
+    regular_market_times = {
+        "market_open":  ((None, time(7, 25)),),
+        "market_close": ((None, time(5, 15), 1),),  # T+1 session closes 05:15 SGT next day
+        "break_start":  ((None, time(20, 0)),),   # T session closes 8pm
+        "break_end":    ((None, time(20, 15)),),    # T+1 session opens 8:15pm
+    }
+
+    @property
+    def name(self):
+        return "SGX_IronOre"
+
+
+class SGXRubberExchangeCalendar(_SGXBase):
+    aliases = ["SGX_Rubber"]
+
+    regular_market_times = {
+        "market_open":  ((None, time(7, 55)),),
+        "market_close": ((None, time(11, 0) ),),  
+        "break_start":  ((None, time(18, 0)),),   # T session closes 6pm
+        "break_end":    ((None, time(18, 15)),),    # T+1 session opens 6:15pm
+    }
+
+    @property
+    def name(self):
+        return "SGX_Rubber"
 
 
 # ---------------------------------------------------------------------------
@@ -705,19 +738,16 @@ class SGXIndianRupeeExchangeCalendar(_SGXBase):
     covering Republic Day, Independence Day, Gandhi Jayanti, and
     major religious holidays.
 
-    Regular session: 07:30 – 18:00 SGT (FX/currency hours).
-    Modelled as 08:30 – 17:30 for consistency.
-
     Source: SGX DT Trading Calendar 2025; RBI holiday notices.
     """
 
     aliases = ["SGX_IU", "SGX_INR"]
 
     regular_market_times = {
-        "market_open":  ((None, time(8, 30)),),
-        "market_close": ((None, time(2, 0), 1),),  # T+1 session closes 02:00 SGT next day
-        "break_start":  ((None, time(17, 30)),),   # T session closes 17:30
-        "break_end":    ((None, time(18, 0)),),    # T+1 session opens 18:00
+        "market_open":  ((None, time(7, 25)),),
+        "market_close": ((None, time(5, 15), 1),),  # T+1 session closes 05:15 SGT next day
+        "break_start":  ((None, time(19, 30)),),   # T session closes 17:30
+        "break_end":    ((None, time(19, 50)),),    # T+1 session opens 18:00
     }
 
     @property
@@ -756,10 +786,10 @@ class SGXKoreanWonExchangeCalendar(_SGXBase):
     aliases = ["SGX_KU", "SGX_KRW"]
 
     regular_market_times = {
-        "market_open":  ((None, time(8, 30)),),
-        "market_close": ((None, time(2, 0), 1),),  # T+1 session closes 02:00 SGT next day
-        "break_start":  ((None, time(17, 30)),),   # T session closes 17:30
-        "break_end":    ((None, time(18, 0)),),    # T+1 session opens 18:00
+        "market_open":  ((None, time(7, 25)),),
+        "market_close": ((None, time(5, 15), 1),),  # T+1 session closes 05:15 SGT next day
+        "break_start":  ((None, time(19, 30)),),   # T session closes 19:30
+        "break_end":    ((None, time(19, 50)),),    # T+1 session opens 19:50
     }
 
     @property
@@ -779,3 +809,19 @@ class SGXKoreanWonExchangeCalendar(_SGXBase):
     @property
     def adhoc_holidays(self):
         return list(_SG_ADHOC) + _KR_ADHOC
+
+    
+
+class SGXCNHExchangeCalendar(_SGXBase):
+    aliases = ["SGX_UC", "SGX_CNH"]
+
+    regular_market_times = {
+        "market_open":  ((None, time(7, 25)),),
+        "market_close": ((None, time(5, 15), 1),),  # T+1 session closes 05:15 SGT next day
+        "break_start":  ((None, time(18, 0)),),   # T session closes 18:00
+        "break_end":    ((None, time(18, 15)),),    # T+1 session opens 18:15
+    }
+
+    @property
+    def name(self):
+        return "SGX_UC"

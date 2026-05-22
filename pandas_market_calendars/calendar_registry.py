@@ -38,8 +38,8 @@ from .calendars.euronext import (
 from .calendars.forex import ForexExchangeCalendar
 from .calendars.hkex import (
     HKEXExchangeCalendar, 
-    HKFEHolidayTradingExchangeCalendar, 
-    HKFENonHolidayExchangeCalendar
+    HKFEDomesticExchangeCalendar, 
+    HKFEForeignTradingExchangeCalendar
 )
 from .calendars.ice import ICEExchangeCalendar
 from .calendars.iceeu import (
@@ -65,7 +65,10 @@ from .calendars.sgx import (
     SGXNiftyExchangeCalendar,
     SGXNikkeiExchangeCalendar,
     SGXTaiwanExchangeCalendar,
-    SGXBaseExchangeCalendar
+    SGXIndexExchangeCalendar,
+    SGXCNHExchangeCalendar,
+    SGXIronOreExchangeCalendar,
+    SGXRubberExchangeCalendar
 )
 from .calendars.sifma import (
     SIFMAUSExchangeCalendar,

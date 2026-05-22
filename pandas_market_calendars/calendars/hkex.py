@@ -428,17 +428,6 @@ class HKEXExchangeCalendar(MarketCalendar):
     def adhoc_holidays(self):
         return HKClosedDay
 
-# ---------------------------------------------------------------------------
-# HKFE Derivatives Calendars
-# Append this block to pandas_market_calendars/calendars/hkex.py
-#
-# All holiday rules referenced below (SpringFestivalDay*, TombSweepingDay,
-# GoodFriday, EasterMonday, LabourDay, BuddhaShakyamuniDay,
-# DragonBoatFestivalDay, HKRegionEstablishmentDay, MidAutumnFestivalDay*,
-# NationalDay, DoubleNinthFestivalDay, Christmas, BoxingDay, HKNewYearsDay,
-# HKClosedDay, process_date, etc.) are already defined above in this file.
-# ---------------------------------------------------------------------------
-
 
 # ---------------------------------------------------------------------------
 # Shared building blocks
@@ -471,11 +460,11 @@ _HKNewYearsEve = Holiday("New Year's Eve", month=12, day=31)
 
 
 # ---------------------------------------------------------------------------
-# 1. HKFE Non-Holiday Trading Calendar
+# 1. HKFE Domestic Trading Calendar
 #    Contracts: HSI, MHI, HHI, MCH, HTI
 # ---------------------------------------------------------------------------
 
-class HKFENonHolidayExchangeCalendar(MarketCalendar):
+class HKFEDomesticExchangeCalendar(MarketCalendar):
     """
     HKFE — Non-Holiday Trading contracts
     (HSI  — Hang Seng Index Futures,
@@ -573,11 +562,11 @@ class HKFENonHolidayExchangeCalendar(MarketCalendar):
 
 
 # ---------------------------------------------------------------------------
-# 2. HKFE Holiday Trading Calendar
+# 2. HKFE Foreign Trading Calendar
 #    Contracts: MTW, MCA, CUS
 # ---------------------------------------------------------------------------
 
-class HKFEHolidayTradingExchangeCalendar(MarketCalendar):
+class HKFEForeignTradingExchangeCalendar(MarketCalendar):
     """
     HKFE — Holiday Trading contracts
     (MTW — MSCI Taiwan (USD) Index Futures,
