@@ -16,7 +16,8 @@ from pandas_market_calendars.calendars.sgx import (
     SGXIndianRupeeExchangeCalendar,
     SGXKoreanWonExchangeCalendar,
     SGXRubberExchangeCalendar,
-    SGXIronOreExchangeCalendar
+    SGXIronOreExchangeCalendar,
+    SGXMSCISingaporeExchangeCalendar
 )
 
 
@@ -67,6 +68,11 @@ def test_ironore_closes_on_christmas_holiday():
     cal = SGXIronOreExchangeCalendar()
     assert _is_holiday(cal, "2026-12-25") 
 
+
+def test_sgx_signapore_non_empty():
+    cal = SGXMSCISingaporeExchangeCalendar()
+    # Republic Day 2026 — Jan 26 (Mon)
+    assert _is_trading(cal, "2026-01-26")
 
 
 # ---------------------------------------------------------------------------
@@ -121,6 +127,7 @@ def test_sgx_nifty_closes_on_india_holiday():
     cal = SGXNiftyExchangeCalendar()
     # Republic Day 2026 — Jan 26 (Mon)
     assert _is_holiday(cal, "2026-01-26")
+
 
 def test_sgx_nifty_open_on_ny():
     cal = SGXNiftyExchangeCalendar()
