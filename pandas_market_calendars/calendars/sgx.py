@@ -10,34 +10,34 @@ a different holiday closure set, combining:
 
 Contracts covered and their holiday groups:
 
-  SGX_Index  (SG holidays only):
+  SGX_CN  (NY only):
     CN    — FTSE China A50 Index Futures
-    SGP   — MSCI Singapore Index Futures
     FCH   — FTSE China H50 Futures
 
+  SGX_Singapore
   
-  SGX_IronOre
+  SGX_IronOre 
     FEF   — SGX IODEX Iron Ore (62% Fe) Futures
  
   SGX_Rubber (SG + NYE)
     TF    — SICOM Rubber (TSR20) Futures
 
-  SGX_NK    (SG + Japan holidays):
+  SGX_NK    (NY only):
     NK    — SGX Nikkei 225 Futures
 
-  SGX_TWN   (SG + Taiwan Stock Exchange holidays):
+  SGX_TWN   (NY only):
     TWN   — FTSE Taiwan RIC Capped (TWD) Index Futures
 
-  SGX_NIFTY (SG + NSE India holidays):
+  SGX_NIFTY (Subset of NSE India holidays):
     NIFTY — SGX NSE IFSC Nifty 50 Index Futures
 
-  SGX_IU    (SG + India RBI/bank holidays — a subset of NSE):
+  SGX_IU    (NY only):
     IU    — SGX Indian Rupee in USD Futures
 
-  SGX_KU    (SG + Korean holidays):
+  SGX_KU    (NY only):
     KU    — SGX Korean Won in USD (Mini) Futures
 
-  SGX_UC
+  SGX_UC    (NY only)
     UC    — SGX USD/CNH Futures
 
 
@@ -361,7 +361,7 @@ class SGXMSCISingaporeExchangeCalendar(_SGXBase):
 
     @property
     def name(self):
-        return "SGX"
+        return "SGX_Singapore"
 
 
 class SGXIronOreExchangeCalendar(_SGXBase):
