@@ -367,10 +367,13 @@ _NSEHolidays = [
     Timestamp("2026-01-26"), Timestamp("2026-03-03"), Timestamp("2026-03-20"),
     Timestamp("2026-04-02"), Timestamp("2026-04-03"), Timestamp("2026-04-14"),
     Timestamp("2026-05-01"), Timestamp("2026-05-27"), Timestamp("2026-08-15"),
-    Timestamp("2026-10-02"), Timestamp("2026-10-29"), Timestamp("2026-11-24"),
-    Timestamp("2026-12-25"),
+    Timestamp("2026-10-02"), 
 ]
 
+_GIFTConnectHolidays = [
+    Timestamp("2024-01-26"),  Timestamp("2024-10-02"),
+    Timestamp("2026-01-26"), Timestamp("2026-10-02"), 
+]
 
 # ---------------------------------------------------------------------------
 # India RBI/bank holidays (for IU — Indian Rupee futures)
@@ -411,7 +414,7 @@ _RBIHolidays = [
 
 # ---------------------------------------------------------------------------
 # Korean public holidays (for KU — Korean Won futures)
-# Fixed + lunar ad-hoc
+# Fixed + lunar s-hoc
 # ---------------------------------------------------------------------------
 
 _KRFixedHolidays = [
@@ -492,34 +495,6 @@ class _SGXBase(MarketCalendar):
     def tz(self):
         return ZoneInfo("Asia/Singapore")
 
-    @property
-    def regular_holidays(self):
-        return AbstractHolidayCalendar(rules=[
-            _SGNewYearsDay,
-            GoodFriday,
-            _SGLabourDay,
-            _SGNationalDay,
-            _SGChristmasDay,
-        ])
-
-    @property
-    def adhoc_holidays(self):
-        return list(_SG_ADHOC)
-
-    @property
-    def special_closes(self):
-        # Half-day sessions (close 12:30 SGT)
-        return [
-            (time(12, 30), AbstractHolidayCalendar(rules=[
-                _SGChristmasEve,
-                _SGNewYearsEve,
-            ])),
-        ]
-
-    @property
-    def special_closes_adhoc(self):
-        return [(time(12, 30), _SGCNYEveEarlyClose)]
-
 
 # ---------------------------------------------------------------------------
 # 1. SGX Index — SG holidays only
@@ -554,23 +529,18 @@ class SGXIndexCNExchangeCalendar(_SGXBase):
     }
 
     @property
+    def regular_holidays(self):
+        return AbstractHolidayCalendar(rules=[
+            _SGNewYearsDay,
+        ])
+
+    @property
     def name(self):
         return "SGX_CN"
 
 
 class SGXMSCISingaporeExchangeCalendar(_SGXBase):
     """
-    Closed only on Singapore public holidays.
-
-    Regular session (SGT = UTC+8):
-        T session  : 08:30 – 17:30
-        T+1 session: 18:00 – 02:00 T+1
-
-    Early closes (12:30 SGT):
-        - CNY Eve (day before Chinese New Year Day 1)
-        - Christmas Eve (24 Dec)
-        - New Year's Eve (31 Dec)
-
     Source: SGX DT Trading Calendar 2025
     """
 
@@ -582,6 +552,13 @@ class SGXMSCISingaporeExchangeCalendar(_SGXBase):
         "break_start":  ((None, time(17, 20)),),   # T session closes 17:30
         "break_end":    ((None, time(17, 35)),),    # T+1 session opens 18:00
     }
+
+    @property
+    def regular_holidays(self):
+        return AbstractHolidayCalendar(rules=[
+            _SGNewYearsDay,
+        ])
+
 
     @property
     def name(self):
@@ -601,6 +578,13 @@ class SGXIronOreExchangeCalendar(_SGXBase):
     @property
     def name(self):
         return "SGX_IronOre"
+
+    @property
+    def regular_holidays(self):
+        return AbstractHolidayCalendar(rules=[
+            _SGNewYearsDay,
+            _SGChristmasDay,
+        ])
 
 
 class SGXRubberExchangeCalendar(_SGXBase):
@@ -626,6 +610,11 @@ class SGXRubberExchangeCalendar(_SGXBase):
     }
 
     @property
+    def adhoc_holidays(self):
+        return list(_SG_ADHOC)
+
+
+    @property
     def name(self):
         return "SGX_Rubber"
 
@@ -637,12 +626,6 @@ class SGXRubberExchangeCalendar(_SGXBase):
 class SGXNikkeiExchangeCalendar(_SGXBase):
     """
     SGX — Nikkei 225 Futures (NK)
-
-    Closed on Singapore public holidays AND Japan national holidays.
-    Also closed Jan 2-3 and Dec 31 (Japan year-end convention).
-
-    Regular session (SGT = UTC+8): 07:30 – 14:30 (JST session proxy)
-    Modelled as standard SGX equity hours 08:30 – 17:30 for simplicity.
 
     Source: SGX DT Trading Calendar 2025
     """
@@ -662,22 +645,10 @@ class SGXNikkeiExchangeCalendar(_SGXBase):
 
     @property
     def regular_holidays(self):
-        sg_rules = [
-            _SGNewYearsDay, GoodFriday, _SGLabourDay,
-            _SGNationalDay, _SGChristmasDay,
-        ]
-        jp_rules = [
-            _JPNewYearsDay, _JPComingOfAgeDay, _JPNationalFoundationDay,
-            _JPEmperorBirthday, _JPShowaDay, _JPConstitutionDay,
-            _JPGreeneryDay, _JPChildrensDay, _JPMarineDay, _JPMountainDay,
-            _JPRespectForAgedDay, _JPSportsDay, _JPCultureDay,
-            _JPLabourThanksgivingDay,
-        ]
-        return AbstractHolidayCalendar(rules=sg_rules + jp_rules)
+        return AbstractHolidayCalendar(rules=[
+            _SGNewYearsDay,
+        ])
 
-    @property
-    def adhoc_holidays(self):
-        return list(_SG_ADHOC) + _JP_ADHOC
 
 
 # ---------------------------------------------------------------------------
@@ -687,11 +658,6 @@ class SGXNikkeiExchangeCalendar(_SGXBase):
 class SGXTaiwanExchangeCalendar(_SGXBase):
     """
     SGX — FTSE Taiwan RIC Capped (TWD) Index Futures (TWN)
-
-    Closed on Singapore public holidays AND Taiwan Stock Exchange holidays.
-
-    Regular session: 08:45 – 13:45 SGT (TWSE morning session proxy).
-    Modelled as 08:30 – 17:30 for consistency with other SGX contracts.
 
     Source: SGX DT Trading Calendar 2025; TWSE holiday announcements.
     """
@@ -712,15 +678,8 @@ class SGXTaiwanExchangeCalendar(_SGXBase):
     @property
     def regular_holidays(self):
         return AbstractHolidayCalendar(rules=[
-            _SGNewYearsDay, GoodFriday, _SGLabourDay,
-            _SGNationalDay, _SGChristmasDay,
-            _TWNewYearsDay, _TWPeaceMemorialDay,
-            _TWChildrensDay, _TWNationalDay,
+            _SGNewYearsDay, 
         ])
-
-    @property
-    def adhoc_holidays(self):
-        return list(_SG_ADHOC) + _TW_ADHOC
 
 
 # ---------------------------------------------------------------------------
@@ -731,16 +690,11 @@ class SGXNiftyExchangeCalendar(_SGXBase):
     """
     SGX — SGX NSE IFSC Nifty 50 Index Futures (NIFTY)
 
-    Closed on Singapore public holidays AND NSE India holidays.
-    NSE holidays are gazetted annually and must be updated each year.
+    Closed only on some indian holidays, and not every year.
 
-    Regular session: 09:00 – 18:30 SGT (NSE session proxy).
-    Modelled as 08:30 – 17:30 for consistency.
+    Regular session: 09:00 – 18:10 SGT (NSE session proxy).
 
-    NB: 2026 NSE holidays are approximate — verify against official NSE
-    announcement when published.
-
-    Source: SGX DT Trading Calendar 2025; NSE India holiday lists.
+    Source: SGX DT Trading Calendar 2024-2026;
     """
 
     aliases = ["SGX_NIFTY"]
@@ -759,13 +713,12 @@ class SGXNiftyExchangeCalendar(_SGXBase):
     @property
     def regular_holidays(self):
         return AbstractHolidayCalendar(rules=[
-            _SGNewYearsDay, GoodFriday, _SGLabourDay,
-            _SGNationalDay, _SGChristmasDay,
+            
         ])
 
     @property
     def adhoc_holidays(self):
-        return list(_SG_ADHOC) + _NSEHolidays
+        return _GIFTConnectHolidays
 
 
 # ---------------------------------------------------------------------------
@@ -775,11 +728,6 @@ class SGXNiftyExchangeCalendar(_SGXBase):
 class SGXIndianRupeeExchangeCalendar(_SGXBase):
     """
     SGX — SGX Indian Rupee in USD Futures (IU)
-
-    Closed on Singapore public holidays AND India RBI/bank holidays.
-    The RBI holiday set is a subset of the full NSE holiday list,
-    covering Republic Day, Independence Day, Gandhi Jayanti, and
-    major religious holidays.
 
     Source: SGX DT Trading Calendar 2025; RBI holiday notices.
     """
@@ -800,13 +748,9 @@ class SGXIndianRupeeExchangeCalendar(_SGXBase):
     @property
     def regular_holidays(self):
         return AbstractHolidayCalendar(rules=[
-            _SGNewYearsDay, GoodFriday, _SGLabourDay,
-            _SGNationalDay, _SGChristmasDay,
+            _SGNewYearsDay, 
         ])
 
-    @property
-    def adhoc_holidays(self):
-        return list(_SG_ADHOC) + _RBIHolidays
 
 
 # ---------------------------------------------------------------------------
@@ -816,12 +760,6 @@ class SGXIndianRupeeExchangeCalendar(_SGXBase):
 class SGXKoreanWonExchangeCalendar(_SGXBase):
     """
     SGX — SGX Korean Won in USD (Mini) Futures (KU)
-
-    Closed on Singapore public holidays AND South Korean public holidays.
-    KRX also closes on Dec 31 (last trading day convention).
-
-    Regular session: 07:30 – 18:00 SGT (FX hours).
-    Modelled as 08:30 – 17:30 for consistency.
 
     Source: SGX DT Trading Calendar 2025; KRX holiday announcements.
     """
@@ -842,16 +780,9 @@ class SGXKoreanWonExchangeCalendar(_SGXBase):
     @property
     def regular_holidays(self):
         return AbstractHolidayCalendar(rules=[
-            _SGNewYearsDay, GoodFriday, _SGLabourDay,
-            _SGNationalDay, _SGChristmasDay,
-            _KRSamil, _KRChildrensDay, _KRMemorialDay,
-            _KRLiberationDay, _KRNationalFoundationDay,
-            _KRHangeulDay, _KRChristmas,
+            _SGNewYearsDay,
         ])
 
-    @property
-    def adhoc_holidays(self):
-        return list(_SG_ADHOC) + _KR_ADHOC
 
     
 
@@ -864,6 +795,12 @@ class SGXCNHExchangeCalendar(_SGXBase):
         "break_start":  ((None, time(18, 0)),),   # T session closes 18:00
         "break_end":    ((None, time(18, 15)),),    # T+1 session opens 18:15
     }
+
+    @property
+    def regular_holidays(self):
+        return AbstractHolidayCalendar(rules=[
+            _SGNewYearsDay,
+        ])
 
     @property
     def name(self):
