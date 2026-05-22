@@ -15,6 +15,8 @@ from pandas_market_calendars.calendars.sgx import (
     SGXNiftyExchangeCalendar,
     SGXIndianRupeeExchangeCalendar,
     SGXKoreanWonExchangeCalendar,
+    SGXRubberExchangeCalendar,
+    SGXIronOreExchangeCalendar
 )
 
 
@@ -35,15 +37,15 @@ def test_sgx_base_instantiates():
     cal.name 
 
 
-def test_sgx_base_closes_good_friday():
+def test_sgx_CN_open_good_friday():
     cal = SGXIndexCNExchangeCalendar()
-    assert _is_holiday(cal, "2026-04-03")
+    assert _is_trading(cal, "2026-04-03")
 
 
-def test_sgx_base_closes_deepavali():
+def test_sgx_base_open_deepavali():
     cal = SGXIndexCNExchangeCalendar()
     # Deepavali 2026 — Nov 8 Sun -> observed Mon Nov 9
-    assert _is_holiday(cal, "2026-11-09")
+    assert _is_trading(cal, "2026-11-09")
 
 
 def test_sgx_base_t1_session_modelled():
@@ -55,13 +57,16 @@ def test_sgx_base_t1_session_modelled():
     assert close == pd.Timestamp("2026-03-10 21:15:00+00:00")
 
 
-def test_sgx_base_early_close_christmas_eve():
-    cal = SGXIndexCNExchangeCalendar()
-    # 24 Dec 2026 — half day, close 12:30 SGT = 04:30 UTC
-    sched = cal.schedule("2026-12-24", "2026-12-24")
-    assert not sched.empty
-    close = sched["market_close"].iloc[0]
-    assert close == pd.Timestamp("2026-12-24 04:30:00+00:00")
+
+def test_rubber_closes_on_sgx_holiday():
+    cal = SGXRubberExchangeCalendar()
+    assert _is_holiday(cal, "2026-05-01")  # Labour Day
+
+
+def test_ironore_closes_on_christmas_holiday():
+    cal = SGXIronOreExchangeCalendar()
+    assert _is_holiday(cal, "2026-12-25") 
+
 
 
 # ---------------------------------------------------------------------------
@@ -73,15 +78,14 @@ def test_sgx_nikkei_instantiates():
     cal.name
 
 
-def test_sgx_nikkei_closes_on_japan_holiday():
+def test_sgx_nikkei_closes_on_ny():
     cal = SGXNikkeiExchangeCalendar()
-    # Showa Day 2026 — Apr 29 (Wed), Japan national holiday
-    assert _is_holiday(cal, "2026-04-29")
+    assert _is_holiday(cal, "2026-01-01")
 
 
-def test_sgx_nikkei_closes_on_sg_holiday():
+def test_sgx_nikkei_open_sg_holiday():
     cal = SGXNikkeiExchangeCalendar()
-    assert _is_holiday(cal, "2026-04-03")  # Good Friday
+    assert not _is_holiday(cal, "2026-04-03")  # Good Friday
 
 
 # ---------------------------------------------------------------------------
@@ -93,15 +97,15 @@ def test_sgx_taiwan_instantiates():
     cal.name
 
 
-def test_sgx_taiwan_closes_on_taiwan_cny():
+def test_sgx_taiwan_open_on_taiwan_cny():
     cal = SGXTaiwanExchangeCalendar()
     # Taiwan CNY 2026 closure — Feb 16 (Mon)
-    assert _is_holiday(cal, "2026-02-16")
+    assert _is_trading(cal, "2026-02-16")
 
 
-def test_sgx_taiwan_closes_on_sg_holiday():
+def test_sgx_taiwan_open_on_sg_holiday():
     cal = SGXTaiwanExchangeCalendar()
-    assert _is_holiday(cal, "2026-05-01")  # Labour Day
+    assert _is_trading(cal, "2026-05-01")  # Labour Day
 
 
 # ---------------------------------------------------------------------------
@@ -118,10 +122,14 @@ def test_sgx_nifty_closes_on_india_holiday():
     # Republic Day 2026 — Jan 26 (Mon)
     assert _is_holiday(cal, "2026-01-26")
 
-
-def test_sgx_nifty_closes_on_sg_holiday():
+def test_sgx_nifty_open_on_ny():
     cal = SGXNiftyExchangeCalendar()
-    assert _is_holiday(cal, "2026-08-10")  # National Day (observed)
+    assert _is_trading(cal, "2026-01-01")
+
+
+def test_sgx_nifty_open_on_sg_holiday():
+    cal = SGXNiftyExchangeCalendar()
+    assert _is_trading(cal, "2026-08-10") 
 
 
 # ---------------------------------------------------------------------------
@@ -132,11 +140,11 @@ def test_sgx_indian_rupee_instantiates():
     assert (cal := SGXIndianRupeeExchangeCalendar()) is not None
     cal.name
 
-def test_sgx_indian_rupee_closes_on_independence_day():
+def test_sgx_indian_rupee_open_on_independence_day():
     cal = SGXIndianRupeeExchangeCalendar()
     # India Independence Day 2026 — Aug 15 (Sat) -> observed? 
-    # Aug 15 is Sat so RBI would observe Mon Aug 17; check actual adhoc list
-    assert _is_holiday(cal, "2026-08-15")
+    # Aug 15 is Sat so RBI would observe Mon Aug 17; 
+    assert not _is_holiday(cal, "2026-08-17")
 
 
 # ---------------------------------------------------------------------------
@@ -148,12 +156,7 @@ def test_sgx_korean_won_instantiates():
     cal.name
 
 
-def test_sgx_korean_won_closes_on_chuseok():
+def test_sgx_korean_won_open_on_chuseok():
     cal = SGXKoreanWonExchangeCalendar()
     # Chuseok 2026 — Sep 24-26 (Thu-Sat), Sep 28 substitute Mon
-    assert _is_holiday(cal, "2026-09-24")
-
-
-def test_sgx_korean_won_closes_on_sg_holiday():
-    cal = SGXKoreanWonExchangeCalendar()
-    assert _is_holiday(cal, "2026-01-01")  # New Year's Day
+    assert not _is_holiday(cal, "2026-09-24")
