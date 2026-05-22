@@ -217,3 +217,42 @@ class OSEJGBFuturesCalendar(JPXExchangeCalendar):
     @property
     def name(self):
         return "OSE_JGB"
+
+
+
+ 
+class OSEPreciousMetalsFuturesCalendar(JPXExchangeCalendar):
+    """
+    Osaka Exchange (OSE) — Precious Metals Futures & Options
+    (Gold Standard Futures, Gold Mini Futures, Gold Rolling-Spot Futures,
+     Options on Gold Futures, Pocket Gold 100 Futures,
+     Silver Futures,
+     Platinum Standard Futures, Platinum Mini Futures,
+     Platinum Rolling-Spot Futures, Pocket Platinum 100 Futures,
+     Palladium Futures)
+ 
+    Day session  (JST): 08:45 – 15:45
+    Night session (JST): 17:00 – 06:00 next day
+    Modelled as: open=08:45, break_start=15:45, break_end=17:00, close=06:00+1.
+ 
+    Night session is cancelled when the following calendar day is a holiday
+    — not modelled (library limitation).
+ 
+    Holidays: inherited from JPX.
+ 
+    Source: https://www.jpx.co.jp/english/derivatives/rules/trading-hours/
+    """
+ 
+    aliases = ["OSE_PRECIOUS"]
+ 
+    regular_market_times = {
+        "market_open":  ((None, time(8, 45)),),
+        "market_close": ((None, time(6, 0), 1),),  # 06:00 JST next calendar day
+        "break_start":  ((None, time(15, 45)),),    # end of day session
+        "break_end":    ((None, time(17, 0)),),     # start of night session
+    }
+ 
+    @property
+    def name(self):
+        return "OSE_PRECIOUS"
+ 

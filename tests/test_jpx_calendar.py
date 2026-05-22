@@ -6,7 +6,7 @@ from pandas.testing import assert_index_equal
 from zoneinfo import ZoneInfo
 
 from pandas_market_calendars.calendars.jpx import (
-    JPXExchangeCalendar, OSEIndexFuturesCalendar, OSEJGBFuturesCalendar
+    JPXExchangeCalendar, OSEIndexFuturesCalendar, OSEJGBFuturesCalendar, OSEPreciousMetalsFuturesCalendar
 )
 
 def _sched(cal, date):
@@ -351,3 +351,19 @@ def test_ose_jgb_normal_hours():
     assert sched["break_start"].iloc[0] == pd.Timestamp("2026-03-10 06:02:00+00:00")
     assert sched["break_end"].iloc[0]   == pd.Timestamp("2026-03-10 06:30:00+00:00")
     assert _close(OSEJGBFuturesCalendar(), "2026-03-10") == pd.Timestamp("2026-03-10 21:00:00+00:00")
+
+
+
+def test_ose_precious_instantiates():
+    assert OSEPreciousMetalsFuturesCalendar() is not None
+ 
+ 
+def test_ose_precious_showa_day_closed():
+    assert OSEPreciousMetalsFuturesCalendar().schedule("2026-04-29", "2026-04-29").empty
+ 
+ 
+def test_ose_precious_normal_hours():
+    sched = OSEPreciousMetalsFuturesCalendar().schedule("2026-03-10", "2026-03-10")
+    assert sched["market_open"].iloc[0] == pd.Timestamp("2026-03-09 23:45:00+00:00")
+    assert sched["market_close"].iloc[0] == pd.Timestamp("2026-03-10 21:00:00+00:00")
+ 

@@ -54,7 +54,7 @@ from .calendars.iceeu import (
 )
 from .calendars.iex import IEXExchangeCalendar
 from .calendars.jpx import (
-    JPXExchangeCalendar, OSEIndexFuturesCalendar, OSEJGBFuturesCalendar
+    JPXExchangeCalendar, OSEIndexFuturesCalendar, OSEJGBFuturesCalendar, OSEPreciousMetalsFuturesCalendar
 )
 from .calendars.lse import LSEExchangeCalendar
 from .calendars.nyse import NYSEExchangeCalendar
