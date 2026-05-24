@@ -828,6 +828,7 @@ class MarketCalendar(metaclass=MarketCalendarMeta):
         _adj_others = force_special_times is True
         _adj_col = force_special_times is not None
         _open_adj = _close_adj = []
+        _special_dates_by_time = {}
 
         schedule = pd.DataFrame()
         for market_time in market_times:
@@ -840,6 +841,8 @@ class MarketCalendar(metaclass=MarketCalendarMeta):
                     special.index.isin(temp.index)
                 ]  # some sources of special times don't exclude holidays
                 temp.loc[specialix] = special
+                if len(specialix) > 0:
+                    _special_dates_by_time[market_time] = specialix
 
                 if _adj_others:
                     if market_time == "market_open":
@@ -864,11 +867,16 @@ class MarketCalendar(metaclass=MarketCalendarMeta):
         if _adj_others and len(_close_adj) > 0:
             mkt_close_ind = cols.get_loc("market_close")
 
-            def adjust_closes(x):
-                x[x >= x[mkt_close_ind]] = x[mkt_close_ind]
-                return x
+            def adjust_closes(row):
+                adjusted = row.copy()
+                mask = adjusted >= adjusted.iloc[mkt_close_ind]
+                for market_time, special_dates in _special_dates_by_time.items():
+                    if market_time != "market_close" and row.name in special_dates and market_time in mask.index:
+                        mask.loc[market_time] = False
+                adjusted.loc[mask] = adjusted.iloc[mkt_close_ind]
+                return adjusted
 
-            adjusted = schedule.loc[_close_adj].apply(adjust_closes, axis=1, raw=True)
+            adjusted = schedule.loc[_close_adj].apply(adjust_closes, axis=1)
             schedule.loc[_close_adj] = adjusted
 
         if interruptions:

@@ -1115,6 +1115,23 @@ class NYSEExchangeCalendar(MarketCalendar):
         ]
 
     @property
+    def special_post(self):
+        return [
+            (
+                time(17, tzinfo=ZoneInfo("America/New_York")),
+                AbstractHolidayCalendar(
+                    rules=[
+                        FridayAfterIndependenceDayNYSEpre2013,
+                        MonTuesThursBeforeIndependenceDay,
+                        WednesdayBeforeIndependenceDayPost2013,
+                        DayAfterThanksgiving1pmEarlyCloseInOrAfter1993,
+                        ChristmasEvePost1999Early1pmClose,
+                    ]
+                ),
+            )
+        ]
+
+    @property
     def special_closes_adhoc(self):
         def _union_many(indexes):
             # Merges a list of pd.DatetimeIndex objects, returns merged DatetimeIndex
@@ -1155,6 +1172,15 @@ class NYSEExchangeCalendar(MarketCalendar):
                 time(15, 30, tzinfo=ZoneInfo("America/New_York")),
                 Backlog330pmEarlyCloses1987,  # index
             ),
+        ]
+
+    @property
+    def special_post_adhoc(self):
+        return [
+            (
+                time(17, tzinfo=ZoneInfo("America/New_York")),
+                ChristmasEve1pmEarlyCloseAdhoc + DayAfterChristmas1pmEarlyCloseAdhoc + BacklogRelief1pmEarlyClose1929,
+            )
         ]
 
     @property

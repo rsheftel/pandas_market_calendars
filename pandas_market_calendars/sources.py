@@ -85,7 +85,7 @@ CALENDAR_SOURCES: dict[str, tuple[Source, ...]] = {
             url="https://www.nseindia.com/resources/exchange-communication-holidays",
             last_verified="2025-01-24",
             covers="holidays",
-            notes="BSE and NSE India share the same holiday schedule",
+            notes="BSE and NSE holidays are modeled as separate calendars because exchange holidays can diverge",
         ),
     ),
     "NSE": (

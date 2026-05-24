@@ -8,7 +8,7 @@ import exchange_calendars
 import pandas as pd
 from pandas.tseries.offsets import CustomBusinessDay
 
-from pandas_market_calendars.market_calendar import MarketCalendar
+from pandas_market_calendars.market_calendar import HolidayCalendar, MarketCalendar
 
 
 DAYMASKS = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"]
@@ -83,7 +83,10 @@ class TradingCalendar(MarketCalendar):
 
     @property
     def regular_holidays(self):
-        return self._ec.regular_holidays
+        regular_holidays = self._ec.regular_holidays
+        if regular_holidays is None or not hasattr(regular_holidays, "rules"):
+            return regular_holidays
+        return HolidayCalendar(rules=regular_holidays.rules, start_date="1885-01-01")
 
     @property
     def adhoc_holidays(self):

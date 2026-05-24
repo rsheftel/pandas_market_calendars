@@ -90,8 +90,9 @@ class EUREXExchangeCalendar(MarketCalendar):
 
     aliases = ["EUREX"]
     regular_market_times = {
-        "market_open": ((None, time(9)),),
-        "market_close": ((None, time(17, 30)),),
+        "pre": ((None, time(1)),),
+        "market_open": ((None, time(8)),),
+        "market_close": ((None, time(22)),),
     }
 
     @property

@@ -9,6 +9,25 @@ def test_time_zone():
     assert EUREXExchangeCalendar().name == "EUREX"
 
 
+def test_regular_market_times():
+    eurex = EUREXExchangeCalendar()
+
+    assert eurex.regular_market_times["pre"] == ((None, pd.Timestamp("01:00").time()),)
+    assert eurex.regular_market_times["market_open"] == ((None, pd.Timestamp("08:00").time()),)
+    assert eurex.regular_market_times["market_close"] == ((None, pd.Timestamp("22:00").time()),)
+
+    schedule = eurex.schedule(
+        "2025-03-07",
+        "2025-03-07",
+        market_times=["pre", "market_open", "market_close"],
+        tz="Europe/Berlin",
+    )
+    session = schedule.loc["2025-03-07"]
+    assert session.pre == pd.Timestamp("2025-03-07 01:00", tz=eurex.tz)
+    assert session.market_open == pd.Timestamp("2025-03-07 08:00", tz=eurex.tz)
+    assert session.market_close == pd.Timestamp("2025-03-07 22:00", tz=eurex.tz)
+
+
 def test_2016_holidays():
     # good friday: 2016-03-25
     # May 1st: on a weekend, not rolled forward
