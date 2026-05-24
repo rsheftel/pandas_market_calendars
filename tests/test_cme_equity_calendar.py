@@ -76,6 +76,22 @@ def test_historical_trade_date_open_before_2012_hours_change():
     assert cme.open_at_time(schedule, "2012-11-19 15:31:00-06:00") is True
 
 
+def test_historical_trade_date_time_helpers_match_schedule_cutovers():
+    cme = CMEEquityExchangeCalendar()
+
+    assert cme.open_time_on("2005-09-12").hour == 15
+    assert cme.open_time_on("2005-09-12").minute == 30
+    assert cme.close_time_on("2005-09-12").hour == 15
+    assert cme.close_time_on("2005-09-12").minute == 15
+    assert cme.break_end_on("2005-09-12").hour == 15
+    assert cme.break_end_on("2005-09-12").minute == 15
+
+    assert cme.open_time_on("2012-11-19").hour == 17
+    assert cme.close_time_on("2012-11-19").hour == 16
+    assert cme.break_end_on("2012-11-19").hour == 15
+    assert cme.break_end_on("2012-11-19").minute == 30
+
+
 def test_2023_good_friday_has_early_close_session():
     cme = CMEEquityExchangeCalendar()
     schedule = cme.schedule("2023-04-06", "2023-04-10", tz="America/New_York")

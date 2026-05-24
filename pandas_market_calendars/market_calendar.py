@@ -368,10 +368,8 @@ class MarketCalendar(metaclass=MarketCalendarMeta):
             # The time is already in UTC, convert to local timezone
             return special.loc[date].tz_convert(self.tz).time().replace(tzinfo=self.tz)
 
-        # Otherwise, return the regular time
-        for d, t in times[::-1]:
-            if d is None or pd.Timestamp(d) < date:
-                return t.replace(tzinfo=self.tz)
+        regular_time = self.days_at_time(pd.DatetimeIndex([date]), market_time).iloc[0]
+        return regular_time.tz_convert(self.tz).time().replace(tzinfo=self.tz)
 
     def open_time_on(self, date):
         return self.get_time_on("market_open", date)
@@ -828,7 +826,7 @@ class MarketCalendar(metaclass=MarketCalendarMeta):
         _adj_others = force_special_times is True
         _adj_col = force_special_times is not None
         _open_adj = _close_adj = []
-        _special_dates_by_time = {}
+        _special_dates = {}
 
         schedule = pd.DataFrame()
         for market_time in market_times:
@@ -836,21 +834,24 @@ class MarketCalendar(metaclass=MarketCalendarMeta):
             if _adj_col:
                 # create an array of special times
                 special = self.special_dates(market_time, days[0], days[-1], filter_holidays=False)
-                # overwrite standard times
-                specialix = special.index[
-                    special.index.isin(temp.index)
-                ]  # some sources of special times don't exclude holidays
-                temp.loc[specialix] = special
+                # some sources of special times don't exclude holidays
+                specialix = special.index[special.index.isin(temp.index)]
                 if len(specialix) > 0:
-                    _special_dates_by_time[market_time] = specialix
+                    special = special.loc[specialix]
+                    _special_dates[market_time] = special
 
-                if _adj_others:
-                    if market_time == "market_open":
-                        _open_adj = specialix
-                    elif market_time == "market_close":
-                        _close_adj = specialix
+                    if _adj_others:
+                        if market_time == "market_open":
+                            _open_adj = specialix
+                        elif market_time == "market_close":
+                            _close_adj = specialix
 
             schedule[market_time] = temp
+
+        for market_time in ("market_open", "market_close"):
+            special = _special_dates.get(market_time)
+            if special is not None:
+                schedule.loc[special.index, market_time] = special
 
         cols = schedule.columns
         if _adj_others and len(_open_adj) > 0:
@@ -867,17 +868,16 @@ class MarketCalendar(metaclass=MarketCalendarMeta):
         if _adj_others and len(_close_adj) > 0:
             mkt_close_ind = cols.get_loc("market_close")
 
-            def adjust_closes(row):
-                adjusted = row.copy()
-                mask = adjusted >= adjusted.iloc[mkt_close_ind]
-                for market_time, special_dates in _special_dates_by_time.items():
-                    if market_time != "market_close" and row.name in special_dates and market_time in mask.index:
-                        mask.loc[market_time] = False
-                adjusted.loc[mask] = adjusted.iloc[mkt_close_ind]
-                return adjusted
+            def adjust_closes(x):
+                x[x >= x[mkt_close_ind]] = x[mkt_close_ind]
+                return x
 
-            adjusted = schedule.loc[_close_adj].apply(adjust_closes, axis=1)
+            adjusted = schedule.loc[_close_adj].apply(adjust_closes, axis=1, raw=True)
             schedule.loc[_close_adj] = adjusted
+
+        for market_time, special in _special_dates.items():
+            if market_time not in ("market_open", "market_close"):
+                schedule.loc[special.index, market_time] = special
 
         if interruptions:
             interrs = self.interruptions_df
