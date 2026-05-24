@@ -30,6 +30,7 @@ from pandas_market_calendars.calendars.iceeu import (
     IFEUEquityExchangeCalendar,
     ICEEndexGasPowerExchangeCalendar,
     ICEEndexEmissionsExchangeCalendar,
+    IFEUBusinessDays
 )
 
 
@@ -63,6 +64,16 @@ def assert_early_close_utc(cal, date, expected_utc_close: str):
         f"{cal.name}: close on {date} expected {expected}, got {actual}"
     )
 
+@pytest.fixture
+def ifeu_busdays():
+    return IFEUBusinessDays()
+
+def test_ifeu_busdays_instantiates(ifeu_busdays):
+    assert ifeu_busdays is not None
+
+def test_ifeu_busdays_regular_trading_days(ifeu_busdays):
+    assert_is_holiday(ifeu_busdays, "2026-08-31")
+    assert_is_trading_day(ifeu_busdays, "2026-08-28")
 
 # ---------------------------------------------------------------------------
 # 2. IFEU Energy

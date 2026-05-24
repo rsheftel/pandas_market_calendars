@@ -11,6 +11,12 @@ from pandas.tseries.holiday import (
     next_monday,
     next_monday_or_tuesday,
 )
+from pandas_market_calendars.holidays.uk import (
+    UniqueCloses, MayBank_pre_1995, MayBank_post_1995_pre_2020,
+    MayBank_post_2020, SpringBank_pre_2002, SpringBank_post_2002_pre_2012,
+    SpringBank_post_2012_pre_2022, SpringBank_post_2022, SummerBank,
+    Christmas,WeekendChristmas, BoxingDay, WeekendBoxingDay
+)
 from pandas_market_calendars.market_calendar import MarketCalendar
 
 
@@ -74,9 +80,45 @@ class _IFEUBase(MarketCalendar):
     def tz(self):
         return ZoneInfo("Europe/London")
 
+class IFEUBusinessDays(_IFEUBase):
+    """
+    Calendar used for deciding business days for expiries (ICE Business days, as per brent 
+    contract definition). Unclear if this is also a clearing calendar...
+    """
+    aliases = ["IFEU_BUSDAYS", "ICE_BUSINESS_DAYS"]
+    regular_market_times = {
+        # Meaningless...
+        "market_open":  ((None, time(0, 0)),),
+        "market_close": ((None, time(0, 0), 1),),
+    }
+
+    @property
+    def regular_holidays(self):
+        return AbstractHolidayCalendar(rules=[
+            _NewYearsDay,                           
+            GoodFriday,
+            EasterMonday,
+            MayBank_pre_1995,
+            MayBank_post_1995_pre_2020,
+            MayBank_post_2020,
+            SpringBank_pre_2002,
+            SpringBank_post_2002_pre_2012,
+            SpringBank_post_2012_pre_2022,
+            SpringBank_post_2022,
+            SummerBank,
+            Christmas,
+            WeekendChristmas,
+            BoxingDay,
+            WeekendBoxingDay,
+        ])
+
+    @property
+    def name(self):
+        return "IFEU_BUSDAYS"
+
     @property
     def adhoc_holidays(self):
-        return list(_ADHOC_ALL)
+        return UniqueCloses
 
 
 # ---------------------------------------------------------------------------
@@ -93,6 +135,8 @@ class _IFEUBase(MarketCalendar):
 #      - Thanksgiving Friday:  20:00 UK  (status B)
 #      - Spring BH/Memorial Day: 18:30 UK (status D — same early close)
 # ---------------------------------------------------------------------------
+
+
 
 class IFEUEnergyExchangeCalendar(_IFEUBase):
     """
