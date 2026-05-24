@@ -36,6 +36,7 @@ CME        CME_Agriculture    CMEAgriculturalExchangeCalendar     Yes         li
 CME        CME Globex Crypto  CMEGlobexCryptoExchangeCalendar     Yes         Coinbase Asset Management
 CME        CMEGlobex_Grains   CMEGlobexGrainsExchangeCalendar     Yes         rundef
 EUREX      EUREX_Bond         EUREXFixedIncomeCalendar            Yes         rundef
+EUREX      EUREX_PrePost      EUREXPrePostExchangeCalendar       Yes         rsheftel
 ========== ================= =================================== ============ ============
 
 Forex/OTC Market Calendars

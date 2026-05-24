@@ -130,3 +130,30 @@ class EUREXExchangeCalendar(MarketCalendar):
                 ),
             )
         ]
+
+
+class EUREXPrePostExchangeCalendar(EUREXExchangeCalendar):
+    """
+    EUREX calendar variant with explicit pre and post sessions.
+
+    Issue #184 requested these session endpoints in UTC. This calendar keeps
+    those endpoints in UTC instead of interpreting them as Europe/Berlin wall
+    times, which would shift them across daylight-saving transitions.
+    """
+
+    aliases = ["EUREX_PrePost", "EUREX_Extended"]
+
+    regular_market_times = {
+        "pre": ((None, time(0, 15)),),
+        "market_open": ((None, time(8)),),
+        "market_close": ((None, time(16, 30)),),
+        "post": ((None, time(21)),),
+    }
+
+    @property
+    def name(self):
+        return "EUREX_PrePost"
+
+    @property
+    def tz(self):
+        return ZoneInfo("UTC")
