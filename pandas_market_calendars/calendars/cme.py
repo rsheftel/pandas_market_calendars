@@ -144,6 +144,22 @@ class CMEEquityExchangeCalendar(MarketCalendar):
     def tz(self):
         return ZoneInfo("America/Chicago")
 
+    def _trade_date_calendar(self):
+        try:
+            return self._cme_trade_date_calendar
+        except AttributeError:
+            self._cme_trade_date_calendar = CMETradeDateCalendar()
+            return self._cme_trade_date_calendar
+
+    def valid_days(self, start_date, end_date, tz="UTC"):
+        return self._trade_date_calendar().valid_days(start_date, end_date, tz=tz)
+
+    def _valid_days_for_schedule(self, start_date, end_date, tz="UTC"):
+        return MarketCalendar.valid_days(self, start_date, end_date, tz=tz)
+
+    def _valid_days_for_special_times(self, start_date, end_date, tz="UTC"):
+        return MarketCalendar.valid_days(self, start_date, end_date, tz=tz)
+
     @property
     def regular_holidays(self):
         # Many days that are holidays for the NYSE are an early close day for CME

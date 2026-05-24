@@ -13,6 +13,8 @@ def test_regular_market_times():
     eurex = EUREXExchangeCalendar()
 
     assert "pre" not in eurex.regular_market_times
+    assert "post" not in eurex.regular_market_times
+    assert eurex.market_times == ["market_open", "market_close"]
     assert eurex.regular_market_times["market_open"] == ((None, pd.Timestamp("08:00").time()),)
     assert eurex.regular_market_times["market_close"] == ((None, pd.Timestamp("22:00").time()),)
 

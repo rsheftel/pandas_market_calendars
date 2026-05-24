@@ -606,6 +606,12 @@ class MarketCalendar(metaclass=MarketCalendarMeta):
         """
         return pd.date_range(start_date, end_date, freq=self.holidays(), normalize=True, tz=tz)
 
+    def _valid_days_for_schedule(self, start_date, end_date, tz="UTC") -> pd.DatetimeIndex:
+        return self.valid_days(start_date, end_date, tz=tz)
+
+    def _valid_days_for_special_times(self, start_date, end_date, tz="UTC") -> pd.DatetimeIndex:
+        return self.valid_days(start_date, end_date, tz=tz)
+
     def _get_market_times(self, start, end):
         mts = self._market_times
         return mts[mts.index(start) : mts.index(end) + 1]
@@ -713,7 +719,7 @@ class MarketCalendar(metaclass=MarketCalendarMeta):
         special = self._special_dates(calendars, ad_hoc, start_date, end_date)
 
         if filter_holidays:
-            valid = self.valid_days(start_date, end_date, tz=None)
+            valid = self._valid_days_for_special_times(start_date, end_date, tz=None)
             special = special[special.index.isin(valid)]  # some sources of special times don't exclude holidays
 
         self._special_dates_cache[cache_key] = special
@@ -761,7 +767,7 @@ class MarketCalendar(metaclass=MarketCalendarMeta):
         if not (start_date <= end_date):
             raise ValueError("start_date must be before or equal to end_date.")
 
-        _all_days = self.valid_days(start_date, end_date)
+        _all_days = self._valid_days_for_schedule(start_date, end_date)
 
         # Setup all valid trading days and the requested market_times
         if market_times is None:
