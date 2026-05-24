@@ -303,15 +303,12 @@ from pandas_market_calendars.holidays.nyse import (
     # 1924
     WoodrowWilsonFuneral1230EarlyClose1924,
 )
-from pandas_market_calendars.market_calendar import MarketCalendar
+from pandas_market_calendars.market_calendar import HolidayCalendar, MarketCalendar
 
 
 # Useful resources for making changes to this file:
 # http://www.nyse.com/pdfs/closings.pdf
 # http://www.stevemorse.org/jcal/whendid.html
-
-# Overwrite the default holiday calendar start_date of 1/1/70
-AbstractHolidayCalendar.start_date = "1885-01-01"
 
 
 class NYSEExchangeCalendar(MarketCalendar):
@@ -863,7 +860,8 @@ class NYSEExchangeCalendar(MarketCalendar):
 
     @property
     def regular_holidays(self):
-        return AbstractHolidayCalendar(
+        return HolidayCalendar(
+            start_date="1885-01-01",
             rules=[
                 USNewYearsDayNYSEpost1952,
                 USNewYearsDayNYSEpre1952,
@@ -894,7 +892,7 @@ class NYSEExchangeCalendar(MarketCalendar):
                 Christmas54to98NYSE,
                 ChristmasBefore1954,
                 USJuneteenthAfter2022,
-            ]
+            ],
         )
 
     @property

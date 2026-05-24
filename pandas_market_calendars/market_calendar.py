@@ -20,6 +20,7 @@ from datetime import time
 from typing import List, Literal, Union
 
 import pandas as pd
+from pandas.tseries.holiday import AbstractHolidayCalendar
 from pandas.tseries.offsets import CustomBusinessDay
 
 from . import calendar_utils as u
@@ -38,6 +39,28 @@ WEEKMASK_ABBR = {
     SATURDAY: "Sat",
     SUNDAY: "Sun",
 }
+
+
+class HolidayCalendar(AbstractHolidayCalendar):
+    """
+    Holiday calendar with instance-local default bounds.
+
+    pandas' ``AbstractHolidayCalendar.holidays()`` reads the pandas base class
+    defaults when callers omit start/end. This class lets market calendars
+    choose wider or narrower defaults without mutating pandas global state.
+    """
+
+    def __init__(self, *args, start_date=None, end_date=None, **kwargs) -> None:
+        super().__init__(*args, **kwargs)
+        self.start_date = pd.Timestamp(start_date) if start_date is not None else AbstractHolidayCalendar.start_date
+        self.end_date = pd.Timestamp(end_date) if end_date is not None else AbstractHolidayCalendar.end_date
+
+    def holidays(self, start=None, end=None, return_name: bool = False) -> pd.DatetimeIndex | pd.Series:
+        if start is None:
+            start = self.start_date
+        if end is None:
+            end = self.end_date
+        return super().holidays(start=start, end=end, return_name=return_name)
 
 
 class DEFAULT:
