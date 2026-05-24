@@ -2,11 +2,26 @@ import pandas as pd
 from zoneinfo import ZoneInfo
 
 from pandas_market_calendars.calendars.cme import CMEAgricultureExchangeCalendar
+from pandas_market_calendars.calendars.cme_globex_agriculture import CMEGlobexGrainsAndOilseedsExchangeCalendar
 
 
 def test_time_zone():
     assert CMEAgricultureExchangeCalendar().tz == ZoneInfo("America/Chicago")
     assert CMEAgricultureExchangeCalendar().name == "CME_Agriculture"
+
+
+def test_regular_market_times_match_grains_union():
+    cme = CMEAgricultureExchangeCalendar()
+    grains = CMEGlobexGrainsAndOilseedsExchangeCalendar()
+
+    assert cme.regular_market_times == grains.regular_market_times
+
+    schedule = cme.schedule("2024-11-25", "2024-11-25", tz="America/Chicago")
+    session = schedule.loc["2024-11-25"]
+    assert session.market_open == pd.Timestamp("2024-11-24 19:00:00", tz=cme.tz)
+    assert session.break_start == pd.Timestamp("2024-11-25 07:45:00", tz=cme.tz)
+    assert session.break_end == pd.Timestamp("2024-11-25 08:30:00", tz=cme.tz)
+    assert session.market_close == pd.Timestamp("2024-11-25 13:20:00", tz=cme.tz)
 
 
 def test_2020_holidays():
@@ -44,5 +59,5 @@ def test_dec_jan():
     cme = CMEAgricultureExchangeCalendar()
     schedule = cme.schedule("2020-12-30", "2021-01-10")
 
-    assert schedule["market_open"].iloc[0] == pd.Timestamp("2020-12-29 23:01:00", tz="UTC")
-    assert schedule["market_close"].iloc[6] == pd.Timestamp("2021-01-08 23:00:00", tz="UTC")
+    assert schedule["market_open"].iloc[0] == pd.Timestamp("2020-12-30 01:00:00", tz="UTC")
+    assert schedule["market_close"].iloc[6] == pd.Timestamp("2021-01-08 19:20:00", tz="UTC")

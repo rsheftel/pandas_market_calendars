@@ -88,6 +88,19 @@ def _test_has_early_closes(early_closes, start, end):
 #########################################################################
 # YEARLY TESTS BEGIN
 #########################################################################
+def test_new_years_sunday_is_observed_on_monday():
+    valid_days = cal.valid_days("2022-12-30", "2023-01-04")
+
+    assert pd.Timestamp("2023-01-02", tz="UTC") not in valid_days
+    assert pd.Timestamp("2023-01-03", tz="UTC") in valid_days
+
+
+def test_new_years_saturday_is_not_observed_on_monday():
+    valid_days = cal.valid_days("2010-12-31", "2011-01-04")
+
+    assert pd.Timestamp("2011-01-03", tz="UTC") in valid_days
+
+
 def test_2022():
     start = "2022-01-01"
     end = "2022-12-31"

@@ -65,11 +65,13 @@ class CMETradeDateCalendar(MarketCalendar):
     that the markets are open on other days, so the opening hours for this are not
     meaningful (and hence are fixed to 5pm Central T-1 -> 4pm Central T)
     """
+
     aliases = ["CME_TradeDate"]
     regular_market_times = {
         "market_open": ((None, time(17), -1),),  # offset by -1 day
         "market_close": ((None, time(16)),),
     }
+
     @property
     def name(self):
         return "CME_TradeDate"
@@ -95,7 +97,6 @@ class CMETradeDateCalendar(MarketCalendar):
             ]
         )
 
-    
     @property
     def adhoc_holidays(self):
         # FIXME: This is unverified currently.
@@ -105,21 +106,34 @@ class CMETradeDateCalendar(MarketCalendar):
     def special_closes(self):
         return []
 
+
 class CMEEquityExchangeCalendar(MarketCalendar):
     """
     Exchange calendar for CME for Equity products
 
-    Open Time: 6:00 PM, America/New_York / 5:00 PM Chicago
-    Close Time: 5:00 PM, America/New_York / 4:00 PM Chicago
-    Break: 4:15 - 4:30pm America/New_York / 3:15 - 3:30 PM Chicago
+    Open Time: 5:00 PM, America/Chicago
+    Close Time: 4:00 PM, America/Chicago
+    Break: 3:15 - 3:30pm America/Chicago
     """
 
     aliases = ["CME_Equity", "CBOT_Equity"]
     regular_market_times = {
-        "market_open": ((None, time(17), -1),),  # offset by -1 day
-        "market_close": ((None, time(16)),),
+        "market_open": (
+            (None, time(17), -1),
+            ("2005-09-12", time(15, 30), -1),
+            ("2012-11-19", time(17), -1),
+        ),
+        "market_close": (
+            (None, time(16)),
+            ("2005-09-12", time(15, 15)),
+            ("2012-11-19", time(16)),
+        ),
         "break_start": ((None, time(15, 15)),),
-        "break_end": ((None, time(15, 30)),),
+        "break_end": (
+            (None, time(15, 30)),
+            ("2005-09-12", time(15, 15)),
+            ("2012-11-19", time(15, 30)),
+        ),
     }
 
     @property
@@ -178,7 +192,7 @@ class CMEEquityExchangeCalendar(MarketCalendar):
                         ChristmasEveInOrAfter1993,
                     ]
                 ),
-            )
+            ),
         ]
 
 
@@ -186,8 +200,8 @@ class CMEAgricultureExchangeCalendar(MarketCalendar):
     """
     Exchange calendar for CME for Agriculture products
 
-    Open Time: 5:00 PM, America/Chicago
-    Close Time: 5:00 PM, America/Chicago
+    Open Time: 7:00 PM, America/Chicago
+    Close Time: 1:20 PM, America/Chicago
 
     Regularly-Observed Holidays:
     - New Years Day
@@ -202,8 +216,10 @@ class CMEAgricultureExchangeCalendar(MarketCalendar):
         "NYMEX_Agriculture",
     ]
     regular_market_times = {
-        "market_open": ((None, time(17, 1), -1),),  # offset by -1 day
-        "market_close": ((None, time(17)),),
+        "market_open": ((None, time(19), -1),),
+        "market_close": ((None, time(13, 20)),),
+        "break_start": ((None, time(7, 45)),),
+        "break_end": ((None, time(8, 30)),),
     }
 
     @property

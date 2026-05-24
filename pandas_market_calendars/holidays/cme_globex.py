@@ -1,6 +1,6 @@
 from dateutil.relativedelta import MO, TH
 from pandas import DateOffset, Timestamp
-from pandas.tseries.holiday import Easter, Holiday, nearest_workday
+from pandas.tseries.holiday import Easter, Holiday, nearest_workday, sunday_to_monday
 from pandas.tseries.offsets import Day
 
 from pandas_market_calendars.market_calendar import (
@@ -20,7 +20,7 @@ USNewYearsDay = Holiday(
     month=1,
     day=1,
     start_date=Timestamp("1952-09-29"),
-    # observance=sunday_to_monday,
+    observance=sunday_to_monday,
     days_of_week=(
         MONDAY,
         TUESDAY,
