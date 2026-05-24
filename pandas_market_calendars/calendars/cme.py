@@ -26,6 +26,7 @@ from pandas.tseries.holiday import (
 )
 from zoneinfo import ZoneInfo
 
+from pandas_market_calendars.calendars.cme_globex_agriculture import GRAINS_AND_OILSEEDS_MARKET_TIMES
 from pandas_market_calendars.holidays.cme import (
     GoodFriday2010,
     GoodFriday2012,
@@ -144,21 +145,6 @@ class CMEEquityExchangeCalendar(MarketCalendar):
     def tz(self):
         return ZoneInfo("America/Chicago")
 
-    def _trade_date_calendar(self):
-        try:
-            return self._cme_trade_date_calendar
-        except AttributeError:
-            self._cme_trade_date_calendar = CMETradeDateCalendar()
-            return self._cme_trade_date_calendar
-
-    def valid_days(self, start_date, end_date, tz="UTC"):
-        return self._trade_date_calendar().valid_days(start_date, end_date, tz=tz)
-
-    def _valid_days_for_schedule(self, start_date, end_date, tz="UTC"):
-        return MarketCalendar.valid_days(self, start_date, end_date, tz=tz)
-
-    def _valid_days_for_special_times(self, start_date, end_date, tz="UTC"):
-        return MarketCalendar.valid_days(self, start_date, end_date, tz=tz)
 
     @property
     def regular_holidays(self):
@@ -231,12 +217,7 @@ class CMEAgricultureExchangeCalendar(MarketCalendar):
         "COMEX_Agriculture",
         "NYMEX_Agriculture",
     ]
-    regular_market_times = {
-        "market_open": ((None, time(19), -1),),
-        "market_close": ((None, time(13, 20)),),
-        "break_start": ((None, time(7, 45)),),
-        "break_end": ((None, time(8, 30)),),
-    }
+    regular_market_times = GRAINS_AND_OILSEEDS_MARKET_TIMES
 
     @property
     def name(self):

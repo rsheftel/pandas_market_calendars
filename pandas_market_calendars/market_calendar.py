@@ -606,12 +606,6 @@ class MarketCalendar(metaclass=MarketCalendarMeta):
         """
         return pd.date_range(start_date, end_date, freq=self.holidays(), normalize=True, tz=tz)
 
-    def _valid_days_for_schedule(self, start_date, end_date, tz="UTC") -> pd.DatetimeIndex:
-        return self.valid_days(start_date, end_date, tz=tz)
-
-    def _valid_days_for_special_times(self, start_date, end_date, tz="UTC") -> pd.DatetimeIndex:
-        return self.valid_days(start_date, end_date, tz=tz)
-
     def _get_market_times(self, start, end):
         mts = self._market_times
         return mts[mts.index(start) : mts.index(end) + 1]
@@ -719,7 +713,7 @@ class MarketCalendar(metaclass=MarketCalendarMeta):
         special = self._special_dates(calendars, ad_hoc, start_date, end_date)
 
         if filter_holidays:
-            valid = self._valid_days_for_special_times(start_date, end_date, tz=None)
+            valid = self.valid_days(start_date, end_date, tz=None)
             special = special[special.index.isin(valid)]  # some sources of special times don't exclude holidays
 
         self._special_dates_cache[cache_key] = special
@@ -767,7 +761,7 @@ class MarketCalendar(metaclass=MarketCalendarMeta):
         if not (start_date <= end_date):
             raise ValueError("start_date must be before or equal to end_date.")
 
-        _all_days = self._valid_days_for_schedule(start_date, end_date)
+        _all_days = self.valid_days(start_date, end_date)
 
         # Setup all valid trading days and the requested market_times
         if market_times is None:
@@ -809,7 +803,8 @@ class MarketCalendar(metaclass=MarketCalendarMeta):
         :param end: the last market_time to include as a column, default: "market_close"
         :param force_special_times: how to handle special times.
             True: overwrite regular times of the column itself, conform other columns to special times of
-                market_open/market_close if those are requested.
+                market_open/market_close if those are requested, and preserve any explicitly requested special time
+                for its own column.
             False: only overwrite regular times of the column itself, leave others alone
             None: completely ignore special times
         :param market_times: alternative to start/end, list of market_times that are in self.regular_market_times
@@ -881,6 +876,9 @@ class MarketCalendar(metaclass=MarketCalendarMeta):
             adjusted = schedule.loc[_close_adj].apply(adjust_closes, axis=1, raw=True)
             schedule.loc[_close_adj] = adjusted
 
+        # A market_time's own special value is authoritative. Apply non-open/close
+        # specials after open/close conformance so explicit values, such as NYSE
+        # early-close post sessions, are not silently clamped away.
         for market_time, special in _special_dates.items():
             if market_time not in ("market_open", "market_close"):
                 schedule.loc[special.index, market_time] = special

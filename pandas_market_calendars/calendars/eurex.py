@@ -157,3 +157,32 @@ class EUREXPrePostExchangeCalendar(EUREXExchangeCalendar):
     @property
     def tz(self):
         return ZoneInfo("UTC")
+
+    @property
+    def _extended_early_close_rules(self):
+        return [
+            ChristmasEve,
+            EUREXNewYearsEve,
+        ]
+
+    @property
+    def special_closes(self):
+        return [
+            (
+                time(11, 30),
+                AbstractHolidayCalendar(
+                    rules=self._extended_early_close_rules
+                ),
+            )
+        ]
+
+    @property
+    def special_post(self):
+        return [
+            (
+                time(11, 30),
+                AbstractHolidayCalendar(
+                    rules=self._extended_early_close_rules
+                ),
+            )
+        ]

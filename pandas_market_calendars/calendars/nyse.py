@@ -995,6 +995,20 @@ class NYSEExchangeCalendar(MarketCalendar):
         )
 
     @property
+    def _regular_1pm_post_close_rules(self):
+        return [
+            FridayAfterIndependenceDayNYSEpre2013,
+            MonTuesThursBeforeIndependenceDay,
+            WednesdayBeforeIndependenceDayPost2013,
+            DayAfterThanksgiving1pmEarlyCloseInOrAfter1993,
+            ChristmasEvePost1999Early1pmClose,
+        ]
+
+    @property
+    def _adhoc_1pm_post_close_dates(self):
+        return ChristmasEve1pmEarlyCloseAdhoc + DayAfterChristmas1pmEarlyCloseAdhoc + BacklogRelief1pmEarlyClose1929
+
+    @property
     def special_closes(self):
         return [
             (
@@ -1031,12 +1045,8 @@ class NYSEExchangeCalendar(MarketCalendar):
             (
                 time(13, tzinfo=ZoneInfo("America/New_York")),
                 AbstractHolidayCalendar(
-                    rules=[
-                        FridayAfterIndependenceDayNYSEpre2013,
-                        MonTuesThursBeforeIndependenceDay,
-                        WednesdayBeforeIndependenceDayPost2013,
-                        DayAfterThanksgiving1pmEarlyCloseInOrAfter1993,
-                        ChristmasEvePost1999Early1pmClose,
+                    rules=self._regular_1pm_post_close_rules
+                    + [
                         GroverClevelandFuneral1pmClose1908,
                     ]
                 ),
@@ -1120,13 +1130,7 @@ class NYSEExchangeCalendar(MarketCalendar):
             (
                 time(17, tzinfo=ZoneInfo("America/New_York")),
                 AbstractHolidayCalendar(
-                    rules=[
-                        FridayAfterIndependenceDayNYSEpre2013,
-                        MonTuesThursBeforeIndependenceDay,
-                        WednesdayBeforeIndependenceDayPost2013,
-                        DayAfterThanksgiving1pmEarlyCloseInOrAfter1993,
-                        ChristmasEvePost1999Early1pmClose,
-                    ]
+                    rules=self._regular_1pm_post_close_rules
                 ),
             )
         ]
@@ -1143,8 +1147,7 @@ class NYSEExchangeCalendar(MarketCalendar):
         return [
             (
                 time(13, tzinfo=ZoneInfo("America/New_York")),
-                # DaysBeforeIndependenceDay1pmEarlyCloseAdhoc # list
-                ChristmasEve1pmEarlyCloseAdhoc + DayAfterChristmas1pmEarlyCloseAdhoc + BacklogRelief1pmEarlyClose1929,
+                self._adhoc_1pm_post_close_dates,
             ),
             (
                 time(14, tzinfo=ZoneInfo("America/New_York")),
@@ -1179,7 +1182,7 @@ class NYSEExchangeCalendar(MarketCalendar):
         return [
             (
                 time(17, tzinfo=ZoneInfo("America/New_York")),
-                ChristmasEve1pmEarlyCloseAdhoc + DayAfterChristmas1pmEarlyCloseAdhoc + BacklogRelief1pmEarlyClose1929,
+                self._adhoc_1pm_post_close_dates,
             )
         ]
 

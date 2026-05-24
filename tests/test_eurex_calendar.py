@@ -55,6 +55,25 @@ def test_pre_post_market_times():
     assert session.market_close == pd.Timestamp("2025-03-07 16:30", tz="UTC")
     assert session.post == pd.Timestamp("2025-03-07 21:00", tz="UTC")
 
+    early_close = eurex.schedule(
+        "2025-12-24",
+        "2025-12-24",
+        start="pre",
+        end="post",
+    ).loc["2025-12-24"]
+    assert early_close.market_close == pd.Timestamp("2025-12-24 11:30", tz="UTC")
+    assert early_close.post == pd.Timestamp("2025-12-24 11:30", tz="UTC")
+
+    post_only = eurex.schedule(
+        "2025-12-24",
+        "2025-12-24",
+        market_times=["post"],
+    ).loc["2025-12-24"]
+    assert post_only.post == pd.Timestamp("2025-12-24 11:30", tz="UTC")
+
+    special_post = eurex.special_dates("post", "2025-12-24", "2025-12-24")
+    assert special_post.loc[pd.Timestamp("2025-12-24")] == pd.Timestamp("2025-12-24 11:30", tz="UTC")
+
 
 def test_2016_holidays():
     # good friday: 2016-03-25
