@@ -170,6 +170,7 @@ def merge_schedules(schedules: List[pd.DataFrame], how: Literal["outer", "inner"
         elif how == "inner":
             result["market_open"] = result[["market_open_x", "market_open_y"]].max(axis=1)
             result["market_close"] = result[["market_close_x", "market_close_y"]].min(axis=1)
+            result = result[result["market_open"] < result["market_close"]]
         else:
             raise ValueError('how argument must be "inner" or "outer"')
         result = result[["market_open", "market_close"]]
