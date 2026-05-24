@@ -99,10 +99,11 @@ def test_new_years_sunday_is_observed_on_monday():
     assert pd.Timestamp("2023-01-03", tz="UTC") in valid_days
 
 
-def test_new_years_saturday_is_not_observed_on_monday():
-    valid_days = cal.valid_days("2010-12-31", "2011-01-04")
+def test_new_years_saturday_keeps_documented_2011_sessions():
+    schedule = cal.schedule("2010-12-31", "2011-01-04", tz=cal.tz)
 
-    assert pd.Timestamp("2011-01-03", tz="UTC") in valid_days
+    assert schedule.loc["2010-12-31"].market_close == pd.Timestamp("2010-12-31 15:15:00", tz=cal.tz)
+    assert schedule.loc["2011-01-03"].market_open == pd.Timestamp("2011-01-02 17:00:00", tz=cal.tz)
 
 
 def test_energy_and_metals_new_years_2021_closed_but_2022_monday_open():

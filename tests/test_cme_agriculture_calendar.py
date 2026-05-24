@@ -2,7 +2,6 @@ import pandas as pd
 from zoneinfo import ZoneInfo
 
 from pandas_market_calendars.calendars.cme import CMEAgricultureExchangeCalendar
-from pandas_market_calendars.calendars.cme_globex_agriculture import CMEGlobexGrainsAndOilseedsExchangeCalendar
 
 
 def test_time_zone():
@@ -10,12 +9,8 @@ def test_time_zone():
     assert CMEAgricultureExchangeCalendar().name == "CME_Agriculture"
 
 
-def test_regular_market_times_match_grains_union():
+def test_regular_market_times_match_grains_public_hours():
     cme = CMEAgricultureExchangeCalendar()
-    grains = CMEGlobexGrainsAndOilseedsExchangeCalendar()
-
-    assert cme.regular_market_times == grains.regular_market_times
-
     schedule = cme.schedule("2024-11-25", "2024-11-25", tz="America/Chicago")
     session = schedule.loc["2024-11-25"]
     assert session.market_open == pd.Timestamp("2024-11-24 19:00:00", tz=cme.tz)

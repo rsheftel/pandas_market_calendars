@@ -26,7 +26,7 @@ from pandas.tseries.holiday import (
 )
 from zoneinfo import ZoneInfo
 
-from pandas_market_calendars.calendars.cme_globex_agriculture import GRAINS_AND_OILSEEDS_MARKET_TIMES
+from pandas_market_calendars.calendars.cme_market_times import GRAINS_AND_OILSEEDS_MARKET_TIMES
 from pandas_market_calendars.holidays.cme import (
     GoodFriday2010,
     GoodFriday2012,
@@ -57,6 +57,9 @@ from pandas_market_calendars.market_calendar import MarketCalendar
 # For example, http://www.cmegroup.com/tools-information/holiday-calendar/files/2016-4th-of-july-holiday-schedule.pdf
 # shows that Equity, Interest Rate, FX, Energy, Metals & DME Products close at 1200 CT on July 4, 2016, while Grain,
 # Oilseed & MGEX Products and Livestock, Dairy & Lumber products are completely closed.
+
+CME_EQUITY_LEGACY_HOURS_START = "2005-09-12"
+CME_EQUITY_MODERN_HOURS_START = "2012-11-19"
 
 
 class CMETradeDateCalendar(MarketCalendar):
@@ -118,22 +121,26 @@ class CMEEquityExchangeCalendar(MarketCalendar):
     """
 
     aliases = ["CME_Equity", "CBOT_Equity"]
+    # CME shortened its equity trading session between the 2005 Globex
+    # migration and the 2012 hours change.  The base calendar cannot model a
+    # temporary absence of a break, so that era is represented as a zero-length
+    # 15:15 break that coincides with the close.
     regular_market_times = {
         "market_open": (
             (None, time(17), -1),
-            ("2005-09-12", time(15, 30), -1),
-            ("2012-11-19", time(17), -1),
+            (CME_EQUITY_LEGACY_HOURS_START, time(15, 30), -1),
+            (CME_EQUITY_MODERN_HOURS_START, time(17), -1),
         ),
         "market_close": (
             (None, time(16)),
-            ("2005-09-12", time(15, 15)),
-            ("2012-11-19", time(16)),
+            (CME_EQUITY_LEGACY_HOURS_START, time(15, 15)),
+            (CME_EQUITY_MODERN_HOURS_START, time(16)),
         ),
         "break_start": ((None, time(15, 15)),),
         "break_end": (
             (None, time(15, 30)),
-            ("2005-09-12", time(15, 15)),
-            ("2012-11-19", time(15, 30)),
+            (CME_EQUITY_LEGACY_HOURS_START, time(15, 15)),
+            (CME_EQUITY_MODERN_HOURS_START, time(15, 30)),
         ),
     }
 
@@ -144,7 +151,6 @@ class CMEEquityExchangeCalendar(MarketCalendar):
     @property
     def tz(self):
         return ZoneInfo("America/Chicago")
-
 
     @property
     def regular_holidays(self):

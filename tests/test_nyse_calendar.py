@@ -207,6 +207,8 @@ def test_post_market_close_on_modern_early_close_days():
     session = schedule.loc["2019-12-24"]
     assert session.market_close == pd.Timestamp("2019-12-24 13:00", tz=nyse.tz)
     assert session.post == pd.Timestamp("2019-12-24 17:00", tz=nyse.tz)
+    post_only = nyse.schedule("2019-12-24", "2019-12-24", market_times=["post"], tz="America/New_York")
+    assert post_only.loc["2019-12-24"].post == session.post
 
 
 def test_special_holidays():

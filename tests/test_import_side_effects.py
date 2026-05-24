@@ -22,9 +22,14 @@ def test_import_does_not_change_pandas_holiday_calendar_defaults():
         baseline_end = AbstractHolidayCalendar.end_date
 
         import pandas_market_calendars
+        from pandas_market_calendars.market_calendar import HolidayCalendar
 
+        bounded = HolidayCalendar(rules=[USMemorialDay], start_date="2010-01-01", end_date="2010-12-31")
+        bounded_holidays = bounded.holidays()
         bday_after = CustomBusinessDay(calendar=ExampleCalendar())
+
         assert bday_before == bday_after
+        assert bounded_holidays[0] == pd.Timestamp("2010-05-31")
         assert AbstractHolidayCalendar.start_date == baseline_start
         assert AbstractHolidayCalendar.end_date == baseline_end
         """

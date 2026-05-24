@@ -23,7 +23,7 @@ def test_holidays():
         assert session_label not in trading_days
 
     nse_calendar = NSEExchangeCalendar()
-    nse_trading_days = nse_calendar.valid_days(pd.Timestamp("2004-01-01"), pd.Timestamp("2026-12-31"))
+    nse_trading_days = nse_calendar.valid_days(pd.Timestamp("1997-01-01"), pd.Timestamp("2026-12-31"))
     for session_label in NSEClosedDay:
         assert session_label not in nse_trading_days
 
@@ -33,7 +33,7 @@ def test_holidays():
 
 def test_bse_and_nse_aliases_are_separate_calendars():
     assert get_calendar("BSE").name == "BSE"
-    assert get_calendar("XBOM").name == "XBOM"
+    assert get_calendar("XBOM").name == "BSE"
     assert get_calendar("NSE").name == "NSE"
     assert get_calendar("XNSE").name == "NSE"
     assert get_calendar("XNSE").name != get_calendar("BSE").name

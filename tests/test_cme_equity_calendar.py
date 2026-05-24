@@ -111,7 +111,7 @@ def test_trade_date_calendar_excludes_equity_early_close_holidays():
 
 def test_trade_date_calendar_excludes_settlement_holidays_without_dropping_equity_sessions():
     cme = CMEEquityExchangeCalendar()
-    issue_dates = [
+    early_close_dates = [
         "2022-01-17",
         "2022-02-21",
         "2022-05-30",
@@ -131,12 +131,13 @@ def test_trade_date_calendar_excludes_settlement_holidays_without_dropping_equit
     ]
 
     trade_dates = CMETradeDateCalendar().valid_days("2022-01-01", "2024-02-29")
-    schedule = cme.schedule("2022-01-01", "2024-02-29")
+    schedule = cme.schedule("2022-01-01", "2024-02-29", tz=cme.tz)
 
-    for date in issue_dates:
+    for date in early_close_dates:
         timestamp = pd.Timestamp(date, tz="UTC")
+        expected_close = pd.Timestamp(f"{date} 12:00:00", tz=cme.tz)
         assert timestamp not in trade_dates
-        assert pd.Timestamp(date) in schedule.index
+        assert schedule.loc[date].market_close == expected_close
 
 
 def test_good_friday_2026_has_early_close_session():

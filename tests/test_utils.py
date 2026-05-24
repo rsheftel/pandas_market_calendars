@@ -88,6 +88,8 @@ def test_merge_schedules_inner_excludes_reported_non_overlapping_session():
 
     actual = mcal.merge_schedules([nyse_schedule, xetra_schedule], how="inner")
 
+    assert not actual.empty
+    assert pd.Timestamp("2024-12-02") in actual.index
     assert pd.Timestamp("2024-12-30") not in actual.index
     assert (actual["market_open"] < actual["market_close"]).all()
 

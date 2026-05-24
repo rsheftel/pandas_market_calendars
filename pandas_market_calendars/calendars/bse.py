@@ -421,7 +421,9 @@ BSEClosedDay = [
     Timestamp("2026-12-25", tz="UTC"),  # Fri, Christmas
 ]
 
-NSEClosedDay = BSEClosedDay.copy()
+# BSE and NSE currently share the same published closure set in this module.
+# Keep this as a shared object so future exchange-specific deltas are explicit.
+NSEClosedDay = BSEClosedDay
 
 
 class BSEExchangeCalendar(MarketCalendar):
@@ -435,7 +437,7 @@ class BSEExchangeCalendar(MarketCalendar):
     early closes or late opens.
     """
 
-    aliases = ["BSE"]
+    aliases = ["BSE", "XBOM"]
     regular_market_times = {
         "market_open": ((None, time(9, 15)),),
         "market_close": ((None, time(15, 30)),),
