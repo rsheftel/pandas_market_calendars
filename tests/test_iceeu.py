@@ -138,9 +138,9 @@ def test_ifeu_energy_early_close_thanksgiving_friday(ifeu_energy):
 
 
 def test_ifeu_energy_early_close_independence_day(ifeu_energy):
-    # 4 Jul 2026 = Saturday → observed Monday 6 Jul (summer, BST = UTC+1)
+    # 4 Jul 2026 = Saturday → observed Friday 3 Jul (summer, BST = UTC+1)
     # 18:30 London BST = 17:30 UTC
-    assert_early_close_utc(ifeu_energy, "2026-07-06", "2026-07-06 17:30:00+00:00")
+    assert_early_close_utc(ifeu_energy, "2026-07-03", "2026-07-03 17:30:00+00:00")
 
 
 def test_ifeu_energy_early_close_new_years_eve(ifeu_energy):
@@ -484,9 +484,9 @@ def test_endex_early_close_thanksgiving_friday(endex):
 
 
 def test_endex_early_close_independence_day(endex):
-    # 4 Jul 2026 = Saturday → observed Mon 6 Jul (summer, CEST = UTC+2)
+    # 4 Jul 2026 = Saturday → observed Fri 3 Jul (summer, CEST = UTC+2)
     # 19:30 CEST = 17:30 UTC
-    assert_early_close_utc(endex, "2026-07-06", "2026-07-06 17:30:00+00:00")
+    assert_early_close_utc(endex, "2026-07-03", "2026-07-03 17:30:00+00:00")
 
 
 def test_endex_early_close_labor_day(endex):

@@ -17,6 +17,21 @@ from pandas_market_calendars.holidays.uk import (
     SpringBank_post_2012_pre_2022, SpringBank_post_2022, SummerBank,
     Christmas,WeekendChristmas, BoxingDay, WeekendBoxingDay
 )
+from pandas_market_calendars.holidays.cme import (
+    USLaborDayStarting1887After2014, 
+    USLaborDayStarting1887Before2014,
+    USLaborDayStarting1887Before2015FridayBefore,
+    USLaborDayStarting1887Before2022,
+)
+from pandas_market_calendars.holidays.us import (
+    USMartinLutherKingJrAfter1998,
+    USPresidentsDay,
+    USMemorialDay,
+    USJuneteenthAfter2022,
+    USIndependenceDay,
+    USThanksgivingDay,
+    USBlackFridayInOrAfter1993,
+)
 from pandas_market_calendars.market_calendar import MarketCalendar
 
 
@@ -25,21 +40,9 @@ from pandas_market_calendars.market_calendar import MarketCalendar
 # ---------------------------------------------------------------------------
 
 _NewYearsDay = Holiday("New Year's Day", month=1, day=1, observance=weekend_to_monday)
-_LabourDay1May = Holiday("Labour Day (1 May)", month=5, day=1, observance=weekend_to_monday)
-_UKMayDay = Holiday("May Day Bank Holiday", month=5, day=1,
-                    offset=pd.offsets.WeekOfMonth(week=0, weekday=0))
-_UKSpringBankHoliday = Holiday("Spring Bank Holiday", month=5, day=1,
-                                offset=pd.offsets.LastWeekOfMonth(weekday=0))
-_UKSummerBankHoliday = Holiday("Summer Bank Holiday", month=8, day=1,
-                                offset=pd.offsets.LastWeekOfMonth(weekday=0))
-_ChristmasDay = Holiday("Christmas Day", month=12, day=25, observance=next_monday_or_tuesday)
-_BoxingDay = Holiday("Boxing Day", month=12, day=26, observance=next_monday_or_tuesday)
+_LabourDay1May = Holiday("Labour Day 1st May (European)", month=5, day=1)
 
-_ADHOC_ALL = [
-    pd.Timestamp("2022-06-03"),  # Platinum Jubilee
-    pd.Timestamp("2022-09-19"),  # Queen Elizabeth II funeral
-    pd.Timestamp("2023-05-08"),  # King Charles III coronation
-]
+
 
 # ---------------------------------------------------------------------------
 # Early-close holiday rules
@@ -51,23 +54,6 @@ _ADHOC_ALL = [
 _ChristmasEve = Holiday("Christmas Eve", month=12, day=24)
 _NewYearsEve  = Holiday("New Year's Eve", month=12, day=31)
 
-# US holidays that cause early closes on IFEU Energy (18:30 UK) and
-# some other segments. These are the standard observed dates.
-_MLKDay = Holiday("Martin Luther King Jr Day", month=1, day=1,
-                  offset=pd.offsets.WeekOfMonth(week=2, weekday=0))
-_PresidentsDay = Holiday("Presidents' Day", month=2, day=1,
-                         offset=pd.offsets.WeekOfMonth(week=2, weekday=0))
-_MemorialDay = Holiday("Memorial Day", month=5, day=1,
-                       offset=pd.offsets.LastWeekOfMonth(weekday=0))
-_Juneteenth = Holiday("Juneteenth", month=6, day=19, observance=weekend_to_monday)
-_IndependenceDay = Holiday("Independence Day", month=7, day=4, observance=weekend_to_monday)
-_LaborDay = Holiday("Labor Day", month=9, day=1,
-                    offset=pd.offsets.WeekOfMonth(week=0, weekday=0))
-_ThanksgivingDay = Holiday("Thanksgiving", month=11, day=1,
-                           offset=pd.offsets.WeekOfMonth(week=3, weekday=3))
-_ThanksgivingFriday = Holiday("Thanksgiving Friday", month=11, day=1,
-                               offset=[pd.offsets.WeekOfMonth(week=3, weekday=3)
-                               ,pd.offsets.Day(1)])
 
 
 # ---------------------------------------------------------------------------
@@ -171,7 +157,7 @@ class IFEUEnergyExchangeCalendar(_IFEUBase):
         return AbstractHolidayCalendar(rules=[
             _NewYearsDay,
             GoodFriday,
-            _ChristmasDay,
+            Christmas,
         ])
 
     @property
@@ -180,16 +166,19 @@ class IFEUEnergyExchangeCalendar(_IFEUBase):
             (time(19, 0), AbstractHolidayCalendar(rules=[_ChristmasEve])),
             (time(20, 0), AbstractHolidayCalendar(rules=[
                 _NewYearsEve,
-                _ThanksgivingFriday,
+                USBlackFridayInOrAfter1993,
             ])),
             (time(18, 30), AbstractHolidayCalendar(rules=[
-                _MLKDay,
-                _PresidentsDay,
-                _MemorialDay,       # also Spring Bank Holiday — same date
-                _Juneteenth,
-                _IndependenceDay,
-                _LaborDay,
-                _ThanksgivingDay,
+                USMartinLutherKingJrAfter1998,
+                USPresidentsDay,
+                USMemorialDay,       # also Spring Bank Holiday — same date
+                USJuneteenthAfter2022,
+                USIndependenceDay,
+                USLaborDayStarting1887After2014, 
+                USLaborDayStarting1887Before2014,
+                USLaborDayStarting1887Before2015FridayBefore,
+                USLaborDayStarting1887Before2022,
+                USThanksgivingDay,
             ])),
         ]
 
@@ -239,15 +228,26 @@ class IFEUNaturalGasAndEmissionsExchangeCalendar(_IFEUBase):
     @property
     def regular_holidays(self):
         return AbstractHolidayCalendar(rules=[
-            _NewYearsDay,
+            _NewYearsDay,                           
             GoodFriday,
             EasterMonday,
-            _UKMayDay,
-            _UKSpringBankHoliday,
-            _UKSummerBankHoliday,
-            _ChristmasDay,
-            _BoxingDay,
+            MayBank_pre_1995,
+            MayBank_post_1995_pre_2020,
+            MayBank_post_2020,
+            SpringBank_pre_2002,
+            SpringBank_post_2002_pre_2012,
+            SpringBank_post_2012_pre_2022,
+            SpringBank_post_2022,
+            SummerBank,
+            Christmas,
+            WeekendChristmas,
+            BoxingDay,
+            WeekendBoxingDay,
         ])
+
+    @property
+    def adhoc_holidays(self):
+        return UniqueCloses
 
     @property
     def special_closes(self):
@@ -305,15 +305,27 @@ class IFEUSoftCommoditiesExchangeCalendar(_IFEUBase):
     @property
     def regular_holidays(self):
         return AbstractHolidayCalendar(rules=[
-            _NewYearsDay,
+            _NewYearsDay,                           
             GoodFriday,
             EasterMonday,
-            _UKMayDay,
-            _UKSpringBankHoliday,
-            _UKSummerBankHoliday,
-            _ChristmasDay,
-            _BoxingDay,
+            MayBank_pre_1995,
+            MayBank_post_1995_pre_2020,
+            MayBank_post_2020,
+            SpringBank_pre_2002,
+            SpringBank_post_2002_pre_2012,
+            SpringBank_post_2012_pre_2022,
+            SpringBank_post_2022,
+            SummerBank,
+            Christmas,
+            WeekendChristmas,
+            BoxingDay,
+            WeekendBoxingDay,
         ])
+
+    @property
+    def adhoc_holidays(self):
+        return UniqueCloses
+
 
     @property
     def special_closes(self):
@@ -362,19 +374,32 @@ class IFEUUKFixedIncomeExchangeCalendar(_IFEUBase):
             "market_close": ((None, time(18, 0)),),
         }
 
+
     @property
     def regular_holidays(self):
         return AbstractHolidayCalendar(rules=[
-            _NewYearsDay,
+            _NewYearsDay,                           
             GoodFriday,
             EasterMonday,
             _LabourDay1May,
-            _UKMayDay,
-            _UKSpringBankHoliday,
-            _UKSummerBankHoliday,
-            _ChristmasDay,
-            _BoxingDay,
+            MayBank_pre_1995,
+            MayBank_post_1995_pre_2020,
+            MayBank_post_2020,
+            SpringBank_pre_2002,
+            SpringBank_post_2002_pre_2012,
+            SpringBank_post_2012_pre_2022,
+            SpringBank_post_2022,
+            SummerBank,
+            Christmas,
+            WeekendChristmas,
+            BoxingDay,
+            WeekendBoxingDay,
         ])
+
+    @property
+    def adhoc_holidays(self):
+        return UniqueCloses
+
 
     @property
     def special_closes(self):
@@ -440,7 +465,7 @@ class IFEUEuropeanFixedIncomeExchangeCalendar(_IFEUBase):
             GoodFriday,
             EasterMonday,
             _LabourDay1May,
-            _ChristmasDay,
+            Christmas,
         ])
 
     @property
@@ -498,15 +523,27 @@ class IFEUEquityExchangeCalendar(_IFEUBase):
     @property
     def regular_holidays(self):
         return AbstractHolidayCalendar(rules=[
-            _NewYearsDay,
+            _NewYearsDay,                           
             GoodFriday,
             EasterMonday,
-            _UKMayDay,
-            _UKSpringBankHoliday,
-            _UKSummerBankHoliday,
-            _ChristmasDay,
-            _BoxingDay,
+            MayBank_pre_1995,
+            MayBank_post_1995_pre_2020,
+            MayBank_post_2020,
+            SpringBank_pre_2002,
+            SpringBank_post_2002_pre_2012,
+            SpringBank_post_2012_pre_2022,
+            SpringBank_post_2022,
+            SummerBank,
+            Christmas,
+            WeekendChristmas,
+            BoxingDay,
+            WeekendBoxingDay,
         ])
+
+    @property
+    def adhoc_holidays(self):
+        return UniqueCloses
+
 
     @property
     def special_closes(self):
@@ -586,27 +623,26 @@ class ICEEndexGasPowerExchangeCalendar(MarketCalendar):
             _NewYearsDay,
             GoodFriday,
             EasterMonday,
-            _ChristmasDay,
+            Christmas,
         ])
-
-    @property
-    def adhoc_holidays(self):
-        return list(_ADHOC_ALL)
 
     @property
     def special_closes(self):
         return [
             (time(19, 30), AbstractHolidayCalendar(rules=[
-                _MLKDay,
-                _PresidentsDay,
-                _MemorialDay,
-                _Juneteenth,
-                _IndependenceDay,
-                _LaborDay,
-                _ThanksgivingDay,
+                USMartinLutherKingJrAfter1998,
+                USPresidentsDay,
+                USMemorialDay,
+                USJuneteenthAfter2022,
+                USIndependenceDay,
+                USLaborDayStarting1887After2014,
+                USLaborDayStarting1887Before2014,
+                USLaborDayStarting1887Before2015FridayBefore,
+                USLaborDayStarting1887Before2022,
+                USThanksgivingDay,
             ])),
             (time(21, 0), AbstractHolidayCalendar(rules=[
-                _ThanksgivingFriday,
+                USBlackFridayInOrAfter1993,
             ])),
         ]
 
@@ -657,12 +693,9 @@ class ICEEndexEmissionsExchangeCalendar(MarketCalendar):
             _NewYearsDay,
             GoodFriday,
             EasterMonday,
-            _ChristmasDay,
+            Christmas,
         ])
 
-    @property
-    def adhoc_holidays(self):
-        return list(_ADHOC_ALL)
 
     @property
     def special_closes(self):
