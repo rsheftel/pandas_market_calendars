@@ -426,7 +426,7 @@ NSEClosedDay = BSEClosedDay.copy()
 
 class BSEExchangeCalendar(MarketCalendar):
     """
-    Exchange calendar for the Bombay Stock Exchange (BSE, XBOM).
+    Exchange calendar for the Bombay Stock Exchange (BSE).
     Open Time: 9:15 AM, Asia/Calcutta
     Close Time: 3:30 PM, Asia/Calcutta
 
@@ -435,7 +435,7 @@ class BSEExchangeCalendar(MarketCalendar):
     early closes or late opens.
     """
 
-    aliases = ["BSE", "XBOM"]
+    aliases = ["BSE"]
     regular_market_times = {
         "market_open": ((None, time(9, 15)),),
         "market_close": ((None, time(15, 30)),),

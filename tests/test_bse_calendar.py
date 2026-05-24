@@ -33,10 +33,13 @@ def test_holidays():
 
 def test_bse_and_nse_aliases_are_separate_calendars():
     assert get_calendar("BSE").name == "BSE"
+    assert get_calendar("XBOM").name == "XBOM"
     assert get_calendar("NSE").name == "NSE"
     assert get_calendar("XNSE").name == "NSE"
     assert get_calendar("XNSE").name != get_calendar("BSE").name
+
     assert pd.Timestamp("2024-05-20", tz="UTC") not in get_calendar("XBOM").valid_days("2024-05-17", "2024-05-21")
+    assert pd.Timestamp("2024-05-20", tz="UTC") not in get_calendar("XNSE").valid_days("2024-05-17", "2024-05-21")
 
 
 def test_open_close_time():
