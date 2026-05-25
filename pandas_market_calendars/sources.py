@@ -59,7 +59,7 @@ CALENDAR_SOURCES: dict[str, tuple[Source, ...]] = {
             url="https://www.asx.com.au/markets/market-resources/asx-24-trading-calendar",
             last_verified="2026-05-25",
             covers="holidays, early closes",
-        )
+        ),
     ),
     "ASX24_Rates": (
         Source(
@@ -73,7 +73,7 @@ CALENDAR_SOURCES: dict[str, tuple[Source, ...]] = {
             url="https://www.asx.com.au/markets/market-resources/asx-24-trading-calendar",
             last_verified="2026-05-25",
             covers="holidays, early closes",
-        )
+        ),
     ),
     # endregion
     # region ---- Bursa Malaysia
@@ -89,7 +89,7 @@ CALENDAR_SOURCES: dict[str, tuple[Source, ...]] = {
             url="https://www.bursamalaysia.com/trade/our_products_services/derivatives/commodity_derivatives/crude_palm_oil_futures",
             last_verified="2026-05-25",
             covers="trading hours",
-        )
+        ),
     ),
     "BURSAMY_FKLI": (
         Source(
@@ -103,7 +103,7 @@ CALENDAR_SOURCES: dict[str, tuple[Source, ...]] = {
             url="https://www.bursamalaysia.com/trade/our_products_services/derivatives/equity_derivatives/ftse_bursa_malaysia_klci_futures",
             last_verified="2026-05-25",
             covers="trading hours",
-        )
+        ),
     ),
     # endregion
     # region ---- B3 (Brasil Bolsa Balcao) / BMF ----
@@ -353,6 +353,33 @@ CALENDAR_SOURCES: dict[str, tuple[Source, ...]] = {
             covers="trading hours, holidays",
         ),
     ),
+    # endregion
+    # region -- Euronext
+    **{
+        cal: (
+            Source(
+                name="Euronext trading hours",
+                url="https://live.euronext.com/en/media/295/download",
+                last_verified="2026-05-25",
+                covers="trading hours, early closes",
+            ),
+            Source(
+                name="Euronext holiday calendar",
+                url="https://www.euronext.com/en/trading/trading-hours-holidays",
+                last_verified="2026-05-25",
+                covers="holidays, early closes",
+            ),
+        )
+        for cal in [
+            "ENX_PAR_INDEX",
+            "ENX_AMS_INDEX",
+            "ENX_BRU_INDEX",
+            "ENX_LIS_INDEX",
+            "ENX_MIL_INDEX",
+            "ENX_OSL_INDEX",
+            "ENX_PAR_COMM",
+        ]
+    },
     # endregion
     # region ---- Hong Kong Stock Exchange ----
     "HKEX": (

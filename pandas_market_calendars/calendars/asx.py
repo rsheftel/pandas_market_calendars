@@ -144,7 +144,7 @@ class ASX24IndexFuturesCalendar(MarketCalendar):
     """
 
     aliases = ["ASX24_Index", "SFE_Index"]
-    _early_close_time = time(14,30)
+    _early_close_time = time(14, 30)
 
     regular_market_times = {
         "market_open": ((None, time(9, 50)),),
@@ -158,7 +158,6 @@ class ASX24IndexFuturesCalendar(MarketCalendar):
         return "ASX24_Index"
 
 
-
 class ASX24IRFuturesCalendar(MarketCalendar):
     """
     ASX 24 Derivatives Market — Interest Rate Futures
@@ -167,12 +166,12 @@ class ASX24IRFuturesCalendar(MarketCalendar):
      IR  — 90 Day Bank Bill Futures & Options)
 
      Markets open staggered between 08:28 and 08:34, we have picked the earliest here.
-     
+
     Source: https://www.asx.com.au/markets/market-resources/trading-hours-calendar/
     """
 
     aliases = ["ASX24_Rates", "SFE_Rates"]
-    _early_close_time = time(12,30)
+    _early_close_time = time(12, 30)
 
     regular_market_times = {
         "market_open": ((None, time(8, 28)),),
