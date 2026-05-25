@@ -1,4 +1,3 @@
-
 """
 ICE Futures U.S. (ICEUS) Exchange Calendars
 =============================================
@@ -64,8 +63,15 @@ from pandas_market_calendars.holidays.us import (
     USNewYearsDay,
 )
 from pandas_market_calendars.holidays.ca import (
-    RemembranceDay, TruthAndReconiliationDay, VictoriaDay, LaborDay, CivicHoliday, Christmas,
-    Thanksgiving,  FamilyDay, NewYears
+    RemembranceDay,
+    TruthAndReconiliationDay,
+    VictoriaDay,
+    LaborDay,
+    CivicHoliday,
+    Christmas,
+    Thanksgiving,
+    FamilyDay,
+    NewYears,
 )
 from pandas_market_calendars.holidays.uk import BoxingDay
 from pandas_market_calendars.market_calendar import MarketCalendar
@@ -74,16 +80,19 @@ from pandas_market_calendars.market_calendar import MarketCalendar
 # ---------------------------------------------------------------------------
 # Shared adhoc closures (national days of mourning etc.)
 # ---------------------------------------------------------------------------
-_ADHOC = list(chain(
-    USNationalDaysofMourning,
-    [Timestamp("2012-10-29", tz="UTC")],  # Hurricane Sandy
-))
+_ADHOC = list(
+    chain(
+        USNationalDaysofMourning,
+        [Timestamp("2012-10-29", tz="UTC")],  # Hurricane Sandy
+    )
+)
 
 
 # ---------------------------------------------------------------------------
 # 1. ICE US Softs Calendar
 #    Cocoa, Coffee "C", Cotton No.2, FCOJ-A, Sugar No.11, Sugar No.16
 # ---------------------------------------------------------------------------
+
 
 class ICEUSSoftsCalendar(MarketCalendar):
     """
@@ -112,13 +121,12 @@ class ICEUSSoftsCalendar(MarketCalendar):
         https://www.ice.com/publicdocs/futures_us/ICE_Futures_US_Regular_Trading_Hours.pdf
     """
 
-    aliases = ["ICEUS_SOFTS", "ICEUS_COCOA", "ICEUS_COFFEE",
-               "ICEUS_COTTON", "ICEUS_SUGAR"]
+    aliases = ["ICEUS_SOFTS", "ICEUS_COCOA", "ICEUS_COFFEE", "ICEUS_COTTON", "ICEUS_SUGAR"]
 
     regular_market_times = {
         # Widest window covering all softs contracts
         # Sugar 11 opens earliest at 03:30 ET; Sugar 16 closes latest at 17:00 ET
-        "market_open":  ((None, time(3, 30)),),
+        "market_open": ((None, time(3, 30)),),
         "market_close": ((None, time(17, 0)),),
     }
 
@@ -132,18 +140,20 @@ class ICEUSSoftsCalendar(MarketCalendar):
 
     @property
     def regular_holidays(self):
-        return AbstractHolidayCalendar(rules=[
-            USNewYearsDay,
-            USMartinLutherKingJrAfter1998,
-            USPresidentsDay,
-            GoodFriday,
-            USMemorialDay,
-            USJuneteenthAfter2022,
-            USIndependenceDay,
-            USLaborDay,
-            USThanksgivingDay,
-            Christmas,
-        ])
+        return AbstractHolidayCalendar(
+            rules=[
+                USNewYearsDay,
+                USMartinLutherKingJrAfter1998,
+                USPresidentsDay,
+                GoodFriday,
+                USMemorialDay,
+                USJuneteenthAfter2022,
+                USIndependenceDay,
+                USLaborDay,
+                USThanksgivingDay,
+                Christmas,
+            ]
+        )
 
     @property
     def adhoc_holidays(self):
@@ -197,7 +207,7 @@ class ICEUSFinancialsCalendar(MarketCalendar):
 
     regular_market_times = {
         # 20:00 ET previous business day open, 17:00 ET close
-        "market_open":  ((None, time(20, 0), -1),),
+        "market_open": ((None, time(20, 0), -1),),
         "market_close": ((None, time(17, 0)),),
     }
 
@@ -212,10 +222,12 @@ class ICEUSFinancialsCalendar(MarketCalendar):
     @property
     def regular_holidays(self):
         # Only New Year's Day and Christmas
-        return AbstractHolidayCalendar(rules=[
-            USNewYearsDay,
-            Christmas,
-        ])
+        return AbstractHolidayCalendar(
+            rules=[
+                USNewYearsDay,
+                Christmas,
+            ]
+        )
 
     @property
     def adhoc_holidays(self):
@@ -268,7 +280,7 @@ class ICEUSCanolaCalendar(MarketCalendar):
     aliases = ["ICEUS_CANOLA"]
 
     regular_market_times = {
-        "market_open":  ((None, time(20, 0), -1),),
+        "market_open": ((None, time(20, 0), -1),),
         "market_close": ((None, time(13, 0)),),
     }
 
@@ -282,19 +294,20 @@ class ICEUSCanolaCalendar(MarketCalendar):
 
     @property
     def regular_holidays(self):
-        return AbstractHolidayCalendar(rules=[
-            NewYears,
-            FamilyDay,
-            GoodFriday,
-            VictoriaDay,
-            CivicHoliday,
-            LaborDay,
-            TruthAndReconiliationDay,
-            Thanksgiving,
-            RemembranceDay,
-            Christmas,
-            BoxingDay,
-        ]
+        return AbstractHolidayCalendar(
+            rules=[
+                NewYears,
+                FamilyDay,
+                GoodFriday,
+                VictoriaDay,
+                CivicHoliday,
+                LaborDay,
+                TruthAndReconiliationDay,
+                Thanksgiving,
+                RemembranceDay,
+                Christmas,
+                BoxingDay,
+            ]
         )
 
     @property
@@ -316,6 +329,7 @@ class ICEUSCanolaCalendar(MarketCalendar):
 #    Financial Natural Gas, Oil, Power, NGL contracts
 # ---------------------------------------------------------------------------
 
+
 class ICEExchangeCalendar(MarketCalendar):
     """
     Exchange calendar for ICE US Energies
@@ -328,7 +342,7 @@ class ICEExchangeCalendar(MarketCalendar):
     https://www.theice.com/publicdocs/futures_us/ICE_Futures_US_Regular_Trading_Hours.pdf # noqa
     """
 
-    aliases = ["ICE", "ICEUS", "NYFE", "ICEUS_ENERGY"] # NYFE feels wrong here, but kept for legacy...
+    aliases = ["ICE", "ICEUS", "NYFE", "ICEUS_ENERGY"]  # NYFE feels wrong here, but kept for legacy...
     regular_market_times = {
         "market_open": ((None, time(20, 0), -1),),  # offset by -1 day
         "market_close": ((None, time(18)),),
@@ -377,10 +391,10 @@ class ICEExchangeCalendar(MarketCalendar):
         return AbstractHolidayCalendar(rules=[USNewYearsDay, GoodFriday, Christmas])
 
 
-
 # ---------------------------------------------------------------------------
 # 5. ICE US Daily Gold & Silver Calendar
 # ---------------------------------------------------------------------------
+
 
 class ICEUSDailyGoldSilverCalendar(MarketCalendar):
     """
@@ -407,7 +421,7 @@ class ICEUSDailyGoldSilverCalendar(MarketCalendar):
     aliases = ["ICEUS_GOLD", "ICEUS_SILVER"]
 
     regular_market_times = {
-        "market_open":  ((None, time(20, 0), -1),),
+        "market_open": ((None, time(20, 0), -1),),
         "market_close": ((None, time(18, 0)),),
     }
 
@@ -421,16 +435,17 @@ class ICEUSDailyGoldSilverCalendar(MarketCalendar):
 
     @property
     def regular_holidays(self):
-        return AbstractHolidayCalendar(rules=[
-            USNewYearsDay,
-            GoodFriday,
-            USMemorialDay,
-            Christmas,
-            # Boxing Day observed — Mon Dec 28 2026 (Dec 26 Sat -> Mon 28)
-            # Use next_monday_or_tuesday observance on Dec 26
-            Holiday("Boxing Day", month=12, day=26,
-                    observance=next_monday_or_tuesday),
-        ])
+        return AbstractHolidayCalendar(
+            rules=[
+                USNewYearsDay,
+                GoodFriday,
+                USMemorialDay,
+                Christmas,
+                # Boxing Day observed — Mon Dec 28 2026 (Dec 26 Sat -> Mon 28)
+                # Use next_monday_or_tuesday observance on Dec 26
+                Holiday("Boxing Day", month=12, day=26, observance=next_monday_or_tuesday),
+            ]
+        )
 
     @property
     def adhoc_holidays(self):

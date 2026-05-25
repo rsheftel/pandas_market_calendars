@@ -5,7 +5,8 @@ from pandas.testing import assert_index_equal
 from zoneinfo import ZoneInfo
 
 from pandas_market_calendars.calendars.bursa_malaysia import (
-    BursaMalaysiaFCPOExchangeCalendar, BursaMalaysiaFKLIExchangeCalendar
+    BursaMalaysiaFCPOExchangeCalendar,
+    BursaMalaysiaFKLIExchangeCalendar,
 )
 
 
@@ -14,13 +15,10 @@ def test_time_zone():
     assert BursaMalaysiaFKLIExchangeCalendar().tz == ZoneInfo("Asia/Kuala_Lumpur")
 
 
-
 def test_june_hols():
     cal = BursaMalaysiaFCPOExchangeCalendar()
     sched_2026 = cal.schedule("2026-05-20", "2026-06-10")
     assert pd.Timestamp("2026-06-01") not in sched_2026.index.get_level_values(0)
-
-
 
 
 def assert_is_holiday(cal, date):
@@ -33,7 +31,6 @@ def assert_is_trading_day(cal, date):
     """Date must appear as a row in the schedule."""
     sched = cal.schedule(date, date)
     assert not sched.empty, f"{cal.name}: expected {date} to be a trading day"
-
 
 
 @pytest.fixture
@@ -122,5 +119,3 @@ def test_bursa_christmas(bursa):
 def test_bursa_weekend_not_trading(bursa):
     assert_is_holiday(bursa, "2026-03-07")  # Saturday
     assert_is_holiday(bursa, "2026-03-08")  # Sunday
-
-

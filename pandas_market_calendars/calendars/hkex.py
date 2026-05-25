@@ -464,6 +464,7 @@ _HKNewYearsEve = Holiday("New Year's Eve", month=12, day=31)
 #    Contracts: HSI, MHI, HHI, MCH, HTI
 # ---------------------------------------------------------------------------
 
+
 class HKFEDomesticExchangeCalendar(MarketCalendar):
     """
     HKFE — Non-Holiday Trading contracts
@@ -492,10 +493,10 @@ class HKFEDomesticExchangeCalendar(MarketCalendar):
     aliases = ["HKFE", "HKFE_INDEX"]
 
     regular_market_times = {
-        "market_open":  ((None, time(9, 15)),),
-        "market_close": ((None, time(23, 59)),),   # T+1 session closes 23:59 HKT same day
-        "break_start":  ((None, time(16, 30)),),   # T session closes 16:30
-        "break_end":    ((None, time(17, 15)),),   # T+1 session opens 17:15
+        "market_open": ((None, time(9, 15)),),
+        "market_close": ((None, time(23, 59)),),  # T+1 session closes 23:59 HKT same day
+        "break_start": ((None, time(16, 30)),),  # T session closes 16:30
+        "break_end": ((None, time(17, 15)),),  # T+1 session opens 17:15
     }
 
     @property
@@ -523,16 +524,16 @@ class HKFEDomesticExchangeCalendar(MarketCalendar):
                 SpringFestivalDay3Before2010,
                 GoodFriday,
                 EasterMonday,
-                TombSweepingDay,          # Ching Ming (day after)
+                TombSweepingDay,  # Ching Ming (day after)
                 LabourDay,
-                BuddhaShakyamuniDay,      # Day following Buddha's Birthday
-                DragonBoatFestivalDay,    # Tuen Ng Festival
+                BuddhaShakyamuniDay,  # Day following Buddha's Birthday
+                DragonBoatFestivalDay,  # Tuen Ng Festival
                 HKRegionEstablishmentDay,
                 MidAutumnFestivalDay,
                 MidAutumnFestivalDayBefore1983,
                 MidAutumnFestivalDayBefore2010,
                 NationalDay,
-                DoubleNinthFestivalDay,   # Chung Yeung (day after)
+                DoubleNinthFestivalDay,  # Chung Yeung (day after)
                 Christmas,
                 BoxingDay,
                 # Historical-only rules
@@ -550,10 +551,15 @@ class HKFEDomesticExchangeCalendar(MarketCalendar):
     @property
     def special_closes(self):
         return [
-            (time(12, 0), AbstractHolidayCalendar(rules=[
-                _HKChristmasEve,
-                _HKNewYearsEve,
-            ])),
+            (
+                time(12, 0),
+                AbstractHolidayCalendar(
+                    rules=[
+                        _HKChristmasEve,
+                        _HKNewYearsEve,
+                    ]
+                ),
+            ),
         ]
 
     @property
@@ -565,6 +571,7 @@ class HKFEDomesticExchangeCalendar(MarketCalendar):
 # 2. HKFE Foreign Trading Calendar
 #    Contracts: MTW, MCA, CUS
 # ---------------------------------------------------------------------------
+
 
 class HKFEForeignExchangeCalendar(MarketCalendar):
     """
@@ -598,10 +605,10 @@ class HKFEForeignExchangeCalendar(MarketCalendar):
     aliases = ["HKFE_MSCI", "HKFE_FX"]
 
     regular_market_times = {
-        "market_open":  ((None, time(9, 15)),),
-        "market_close": ((None, time(23, 59)),),   # T+1 session closes 23:59 HKT same day
-        "break_start":  ((None, time(16, 30)),),   # T session closes 16:30
-        "break_end":    ((None, time(17, 15)),),   # T+1 session opens 17:15
+        "market_open": ((None, time(9, 15)),),
+        "market_close": ((None, time(23, 59)),),  # T+1 session closes 23:59 HKT same day
+        "break_start": ((None, time(16, 30)),),  # T session closes 16:30
+        "break_end": ((None, time(17, 15)),),  # T+1 session opens 17:15
     }
 
     @property
@@ -624,10 +631,15 @@ class HKFEForeignExchangeCalendar(MarketCalendar):
     @property
     def special_closes(self):
         return [
-            (time(12, 0), AbstractHolidayCalendar(rules=[
-                _HKChristmasEve,
-                _HKNewYearsEve,
-            ])),
+            (
+                time(12, 0),
+                AbstractHolidayCalendar(
+                    rules=[
+                        _HKChristmasEve,
+                        _HKNewYearsEve,
+                    ]
+                ),
+            ),
         ]
 
     @property

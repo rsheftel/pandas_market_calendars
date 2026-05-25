@@ -38,13 +38,14 @@ from pandas_market_calendars.calendars.mirror import (
     XBRUExchangeCalendar,
     XLISExchangeCalendar,
     XMILExchangeCalendar,
-    XOSLExchangeCalendar
+    XOSLExchangeCalendar,
 )
 
 
 # ---------------------------------------------------------------------------
 # Helper mixin — delegates all holiday properties to a cash calendar instance
 # ---------------------------------------------------------------------------
+
 
 class _EuronextDerivsMixin:
     """
@@ -53,6 +54,7 @@ class _EuronextDerivsMixin:
     Subclasses must set _cash_cal at class level and define
     regular_market_times, name, and tz.
     """
+
     _cash_cal = None  # set in each subclass
 
     @property
@@ -84,6 +86,7 @@ class _EuronextDerivsMixin:
 #    Modelled open: 07:30 (call phase start)
 # ---------------------------------------------------------------------------
 
+
 class EuronextParisIndexDerivsCalendar(_EuronextDerivsMixin, MarketCalendar):
     """
     Euronext Paris — Index & Equity Derivatives
@@ -106,7 +109,7 @@ class EuronextParisIndexDerivsCalendar(_EuronextDerivsMixin, MarketCalendar):
     _cash_cal = XPARExchangeCalendar()
 
     regular_market_times = {
-        "market_open":  ((None, time(7, 30)),),
+        "market_open": ((None, time(7, 30)),),
         "market_close": ((None, time(22, 0)),),
     }
 
@@ -125,6 +128,7 @@ class EuronextParisIndexDerivsCalendar(_EuronextDerivsMixin, MarketCalendar):
 #    AEX Dividend Index (AXF), AMX-Index® (FMX)
 #    Amsterdam Single Stock Futures (AF.), Amsterdam Power Futures (RF.)
 # ---------------------------------------------------------------------------
+
 
 class EuronextAmsterdamIndexDerivsCalendar(_EuronextDerivsMixin, MarketCalendar):
     """
@@ -148,7 +152,7 @@ class EuronextAmsterdamIndexDerivsCalendar(_EuronextDerivsMixin, MarketCalendar)
     _cash_cal = XAMSExchangeCalendar()
 
     regular_market_times = {
-        "market_open":  ((None, time(7, 30)),),
+        "market_open": ((None, time(7, 30)),),
         "market_close": ((None, time(22, 0)),),
     }
 
@@ -168,6 +172,7 @@ class EuronextAmsterdamIndexDerivsCalendar(_EuronextDerivsMixin, MarketCalendar)
 #    COB: 09:01–17:40  (call phase 07:30–09:01)
 #    Modelled as 07:30 – 17:40
 # ---------------------------------------------------------------------------
+
 
 class EuronextBrusselsIndexDerivsCalendar(_EuronextDerivsMixin, MarketCalendar):
     """
@@ -189,7 +194,7 @@ class EuronextBrusselsIndexDerivsCalendar(_EuronextDerivsMixin, MarketCalendar):
     _cash_cal = XBRUExchangeCalendar()
 
     regular_market_times = {
-        "market_open":  ((None, time(7, 30)),),
+        "market_open": ((None, time(7, 30)),),
         "market_close": ((None, time(17, 40)),),
     }
 
@@ -208,6 +213,7 @@ class EuronextBrusselsIndexDerivsCalendar(_EuronextDerivsMixin, MarketCalendar):
 #
 #    COB: 09:01–17:40  (call phase 07:30–09:01)
 # ---------------------------------------------------------------------------
+
 
 class EuronextLisbonIndexDerivsCalendar(_EuronextDerivsMixin, MarketCalendar):
     """
@@ -232,7 +238,7 @@ class EuronextLisbonIndexDerivsCalendar(_EuronextDerivsMixin, MarketCalendar):
     regular_market_times = {
         # Times published as CET; Lisbon is UTC+0/+1, so 1h behind CET in winter.
         # Storing as local Lisbon time: 06:30 – 16:40
-        "market_open":  ((None, time(6, 30)),),
+        "market_open": ((None, time(6, 30)),),
         "market_close": ((None, time(16, 40)),),
     }
 
@@ -254,6 +260,7 @@ class EuronextLisbonIndexDerivsCalendar(_EuronextDerivsMixin, MarketCalendar):
 #    COB: 08:00–22:00  (call phase 07:30–08:00)
 #    Milan is fully closed on Xmas Eve and NYE (not a half day).
 # ---------------------------------------------------------------------------
+
 
 class EuronextMilanIndexDerivsCalendar(_EuronextDerivsMixin, MarketCalendar):
     """
@@ -280,7 +287,7 @@ class EuronextMilanIndexDerivsCalendar(_EuronextDerivsMixin, MarketCalendar):
     _cash_cal = XMILExchangeCalendar()
 
     regular_market_times = {
-        "market_open":  ((None, time(7, 30)),),
+        "market_open": ((None, time(7, 30)),),
         "market_close": ((None, time(22, 0)),),
     }
 
@@ -302,6 +309,7 @@ class EuronextMilanIndexDerivsCalendar(_EuronextDerivsMixin, MarketCalendar):
 #    Oslo is fully closed on Xmas Eve and NYE, and has a half-day
 #    session on the Wednesday before Easter.
 # ---------------------------------------------------------------------------
+
 
 class EuronextOsloIndexDerivsCalendar(_EuronextDerivsMixin, MarketCalendar):
     """
@@ -332,7 +340,7 @@ class EuronextOsloIndexDerivsCalendar(_EuronextDerivsMixin, MarketCalendar):
     _cash_cal = XOSLExchangeCalendar()
 
     regular_market_times = {
-        "market_open":  ((None, time(7, 30)),),
+        "market_open": ((None, time(7, 30)),),
         "market_close": ((None, time(16, 20)),),
     }
 
@@ -356,6 +364,7 @@ class EuronextOsloIndexDerivsCalendar(_EuronextDerivsMixin, MarketCalendar):
 #    Modelled as 07:30–18:30 (widest window).
 #    Same holiday set as XPAR.
 # ---------------------------------------------------------------------------
+
 
 class EuronextParisCommodityDerivsCalendar(_EuronextDerivsMixin, MarketCalendar):
     """
@@ -381,7 +390,7 @@ class EuronextParisCommodityDerivsCalendar(_EuronextDerivsMixin, MarketCalendar)
     _cash_cal = XPARExchangeCalendar()
 
     regular_market_times = {
-        "market_open":  ((None, time(7, 30)),),
+        "market_open": ((None, time(7, 30)),),
         "market_close": ((None, time(18, 30)),),
     }
 

@@ -8,9 +8,7 @@ from .calendars.bmf import BMFExchangeCalendar
 from .calendars.bse import BSEExchangeCalendar
 from .calendars.bursa_malaysia import BursaMalaysiaFCPOExchangeCalendar, BursaMalaysiaFKLIExchangeCalendar
 from .calendars.cboe import CFEExchangeCalendar
-from .calendars.cme import (
-    CMEEquityExchangeCalendar, CMEBondExchangeCalendar, CMETradeDateCalendar
-)
+from .calendars.cme import CMEEquityExchangeCalendar, CMEBondExchangeCalendar, CMETradeDateCalendar
 from .calendars.cme_globex_base import CMEGlobexBaseExchangeCalendar
 from .calendars.cme_globex_agriculture import (
     CMEGlobexAgricultureExchangeCalendar,
@@ -27,20 +25,16 @@ from .calendars.cme_globex_fixed_income import CMEGlobexFixedIncomeCalendar
 from .calendars.eurex import EUREXExchangeCalendar
 from .calendars.eurex_fixed_income import EUREXFixedIncomeCalendar
 from .calendars.euronext import (
-    EuronextAmsterdamIndexDerivsCalendar, 
+    EuronextAmsterdamIndexDerivsCalendar,
     EuronextBrusselsIndexDerivsCalendar,
     EuronextLisbonIndexDerivsCalendar,
     EuronextMilanIndexDerivsCalendar,
     EuronextOsloIndexDerivsCalendar,
     EuronextParisCommodityDerivsCalendar,
-    EuronextParisIndexDerivsCalendar
+    EuronextParisIndexDerivsCalendar,
 )
 from .calendars.forex import ForexExchangeCalendar
-from .calendars.hkex import (
-    HKEXExchangeCalendar, 
-    HKFEDomesticExchangeCalendar, 
-    HKFEForeignExchangeCalendar
-)
+from .calendars.hkex import HKEXExchangeCalendar, HKFEDomesticExchangeCalendar, HKFEForeignExchangeCalendar
 from .calendars.ice import ICEExchangeCalendar
 from .calendars.iceeu import (
     ICEEndexEmissionsExchangeCalendar,
@@ -50,11 +44,14 @@ from .calendars.iceeu import (
     IFEUEuropeanFixedIncomeExchangeCalendar,
     IFEUNaturalGasAndEmissionsExchangeCalendar,
     IFEUSoftCommoditiesExchangeCalendar,
-    IFEUUKFixedIncomeExchangeCalendar
+    IFEUUKFixedIncomeExchangeCalendar,
 )
 from .calendars.iex import IEXExchangeCalendar
 from .calendars.jpx import (
-    JPXExchangeCalendar, OSEIndexFuturesCalendar, OSEJGBFuturesCalendar, OSEPreciousMetalsFuturesCalendar
+    JPXExchangeCalendar,
+    OSEIndexFuturesCalendar,
+    OSEJGBFuturesCalendar,
+    OSEPreciousMetalsFuturesCalendar,
 )
 from .calendars.krx import KRXEquityIndexFuturesCalendar, KRXFXFuturesCalendar, KRXGovernmentBondFuturesCalendar
 from .calendars.lse import LSEExchangeCalendar

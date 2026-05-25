@@ -21,9 +21,23 @@ from pandas_market_calendars.holidays.uk import (
 )
 
 from pandas_market_calendars.holidays.my import (
-    ChineseNewYear1, ChineseNewYear2, Thaipusam, WesakDay, HariRayaPuasa1, HariRayaPuasa2, NuzulAlQuran,
-    HariRayaHaji, MaalHijrah, MaulidNabi, Deepavali, NewYearsDay, LabourDay, YangDiPertuanAgongBirthday,
-    NationalDay, MalaysiaDay, ChristmasDay,
+    ChineseNewYear1,
+    ChineseNewYear2,
+    Thaipusam,
+    WesakDay,
+    HariRayaPuasa1,
+    HariRayaPuasa2,
+    NuzulAlQuran,
+    HariRayaHaji,
+    MaalHijrah,
+    MaulidNabi,
+    Deepavali,
+    NewYearsDay,
+    LabourDay,
+    YangDiPertuanAgongBirthday,
+    NationalDay,
+    MalaysiaDay,
+    ChristmasDay,
 )
 
 
@@ -74,6 +88,7 @@ class BursaMalaysiaBaseExchangeCalendar(MarketCalendar):
           CNY or Hari Raya Aidilfitri; full-day normal hours apply.
         - Source: https://www.bursamalaysia.com/about_bursa/about_us/calendar
     """
+
     @property
     def tz(self):
         return ZoneInfo("Asia/Kuala_Lumpur")
@@ -83,9 +98,12 @@ class BursaMalaysiaBaseExchangeCalendar(MarketCalendar):
         # Collect all ad-hoc lunar/Islamic dates as Holiday rules
         adhoc_rules = []
         for cal in [
-            ChineseNewYear1, ChineseNewYear2,
-            Thaipusam, WesakDay,
-            HariRayaPuasa1, HariRayaPuasa2,
+            ChineseNewYear1,
+            ChineseNewYear2,
+            Thaipusam,
+            WesakDay,
+            HariRayaPuasa1,
+            HariRayaPuasa2,
             NuzulAlQuran,
             HariRayaHaji,
             MaalHijrah,
@@ -108,9 +126,9 @@ class BursaMalaysiaBaseExchangeCalendar(MarketCalendar):
 
 
 class BursaMalaysiaFCPOExchangeCalendar(BursaMalaysiaBaseExchangeCalendar):
-
-    aliases = ["BURSAMY_FCPO", ]
-
+    aliases = [
+        "BURSAMY_FCPO",
+    ]
 
     @property
     def name(self):
@@ -124,13 +142,15 @@ class BursaMalaysiaFCPOExchangeCalendar(BursaMalaysiaBaseExchangeCalendar):
         "market_open": ((None, time(10, 30)),),
         "break_start": ((None, time(12, 30)),),
         "break_end": ((None, time(14, 30)),),
-        "market_close": ((None, time(18)),),   
+        "market_close": ((None, time(18)),),
         # T+1 session - 21:00 -> 23:00 except on fridays
     }
 
-class BursaMalaysiaFKLIExchangeCalendar(BursaMalaysiaBaseExchangeCalendar):
 
-    aliases = ["BURSAMY_FKLI", ]
+class BursaMalaysiaFKLIExchangeCalendar(BursaMalaysiaBaseExchangeCalendar):
+    aliases = [
+        "BURSAMY_FKLI",
+    ]
 
     @property
     def name(self):
@@ -144,6 +164,6 @@ class BursaMalaysiaFKLIExchangeCalendar(BursaMalaysiaBaseExchangeCalendar):
         "market_open": ((None, time(8, 45)),),
         "break_start": ((None, time(12, 45)),),
         "break_end": ((None, time(14, 30)),),
-        "market_close": ((None, time(17, 15)),),   
+        "market_close": ((None, time(17, 15)),),
         # T+1 session - 21:00 -> 02:30 T+1 except on fridays
     }

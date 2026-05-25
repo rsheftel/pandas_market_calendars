@@ -18,7 +18,13 @@ from pandas_market_calendars.holidays.uk import (
     WeekendChristmas,
 )
 from pandas_market_calendars.holidays.ca import (
-    FamilyDay, VictoriaDay, CanadaDay, CivicHoliday, LaborDay, Thanksgiving, Christmas
+    FamilyDay,
+    VictoriaDay,
+    CanadaDay,
+    CivicHoliday,
+    LaborDay,
+    Thanksgiving,
+    Christmas,
 )
 from pandas_market_calendars.market_calendar import (
     FRIDAY,
@@ -28,7 +34,6 @@ from pandas_market_calendars.market_calendar import (
     WEDNESDAY,
     MarketCalendar,
 )
-
 
 
 # New Year's Day

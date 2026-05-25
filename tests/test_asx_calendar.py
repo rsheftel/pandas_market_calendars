@@ -95,9 +95,9 @@ def test_asx24_boxing_day_observed_closed():
 def test_asx24_normal_day_hours():
     # June = AEST (UTC+10, no DST)
     sched = _sched("2026-06-10")
-    assert sched["market_open"].iloc[0]  == pd.Timestamp("2026-06-09 22:30:00+00:00")
+    assert sched["market_open"].iloc[0] == pd.Timestamp("2026-06-09 22:30:00+00:00")
     assert sched["break_start"].iloc[0] == pd.Timestamp("2026-06-10 06:30:00+00:00")
-    assert sched["break_end"].iloc[0]   == pd.Timestamp("2026-06-10 07:10:00+00:00")
+    assert sched["break_end"].iloc[0] == pd.Timestamp("2026-06-10 07:10:00+00:00")
     assert sched["market_close"].iloc[0] == pd.Timestamp("2026-06-10 22:00:00+00:00")
 
 

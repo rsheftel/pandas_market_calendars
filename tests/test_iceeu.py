@@ -30,7 +30,7 @@ from pandas_market_calendars.calendars.iceeu import (
     IFEUEquityExchangeCalendar,
     ICEEndexGasPowerExchangeCalendar,
     ICEEndexEmissionsExchangeCalendar,
-    IFEUBusinessDays
+    IFEUBusinessDays,
 )
 
 
@@ -60,20 +60,22 @@ def assert_early_close_utc(cal, date, expected_utc_close: str):
     assert not sched.empty, f"{cal.name}: {date} not in schedule (is it a holiday?)"
     actual = sched["market_close"].iloc[0]
     expected = pd.Timestamp(expected_utc_close)
-    assert actual == expected, (
-        f"{cal.name}: close on {date} expected {expected}, got {actual}"
-    )
+    assert actual == expected, f"{cal.name}: close on {date} expected {expected}, got {actual}"
+
 
 @pytest.fixture
 def ifeu_busdays():
     return IFEUBusinessDays()
 
+
 def test_ifeu_busdays_instantiates(ifeu_busdays):
     assert ifeu_busdays is not None
+
 
 def test_ifeu_busdays_regular_trading_days(ifeu_busdays):
     assert_is_holiday(ifeu_busdays, "2026-08-31")
     assert_is_trading_day(ifeu_busdays, "2026-08-28")
+
 
 # ---------------------------------------------------------------------------
 # 2. IFEU Energy
@@ -81,6 +83,7 @@ def test_ifeu_busdays_regular_trading_days(ifeu_busdays):
 #    Early close C (US holidays): 18:30 London winter = 18:30 UTC
 #    Early close Christmas Eve: 19:00 London winter = 19:00 UTC
 # ---------------------------------------------------------------------------
+
 
 @pytest.fixture
 def ifeu_energy():
@@ -156,6 +159,7 @@ def test_ifeu_energy_early_close_new_years_eve(ifeu_energy):
 #    (same as normal — effectively no change in close time for this segment)
 # ---------------------------------------------------------------------------
 
+
 @pytest.fixture
 def ifeu_gas():
     return IFEUNaturalGasAndEmissionsExchangeCalendar()
@@ -208,6 +212,7 @@ def test_ifeu_gas_open_on_us_holidays(ifeu_gas):
 #    Early close Christmas Eve: 12:23 London
 # ---------------------------------------------------------------------------
 
+
 @pytest.fixture
 def ifeu_softs():
     return IFEUSoftCommoditiesExchangeCalendar()
@@ -253,6 +258,7 @@ def test_ifeu_softs_normal_new_years_eve(ifeu_softs):
 #    Normal close: 18:00 London
 #    Early close Christmas Eve + NYE: 12:15 London
 # ---------------------------------------------------------------------------
+
 
 @pytest.fixture
 def ifeu_gilts():
@@ -309,6 +315,7 @@ def test_ifeu_gilts_early_close_new_years_eve(ifeu_gilts):
 #    Full closures: ECB set only (no UK bank holidays)
 #    Early close Christmas Eve + NYE: 12:15 London
 # ---------------------------------------------------------------------------
+
 
 @pytest.fixture
 def ifeu_eur_fi():
@@ -367,6 +374,7 @@ def test_ifeu_eur_fi_early_close_new_years_eve(ifeu_eur_fi):
 #    Normal close: 21:00 London
 #    Early close Christmas Eve + NYE: 12:50 London
 # ---------------------------------------------------------------------------
+
 
 @pytest.fixture
 def ifeu_equity():
@@ -427,6 +435,7 @@ def test_ifeu_equity_early_close_new_years_eve(ifeu_equity):
 #    Early close B (Thanksgiving Friday): 21:00 CET = 20:00 UTC (winter)
 #    No early close on Christmas Eve / NYE (status A = early settlement only)
 # ---------------------------------------------------------------------------
+
 
 @pytest.fixture
 def endex():
@@ -506,6 +515,7 @@ def test_endex_early_close_memorial_day(endex):
 #    Normal close: 18:00 CET = 17:00 UTC (winter) / 16:00 UTC (summer)
 #    No early closes at all
 # ---------------------------------------------------------------------------
+
 
 @pytest.fixture
 def endex_emissions():

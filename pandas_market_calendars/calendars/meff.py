@@ -72,11 +72,13 @@ _ImmaculateConception = Holiday(
 
 # Pre-compute the additional Spanish holiday dates (2010–2035)
 _extra_spanish_holidays = (
-    AbstractHolidayCalendar(rules=[
-        _Epiphany,
-        _FiestaNacional,
-        _ImmaculateConception,
-    ])
+    AbstractHolidayCalendar(
+        rules=[
+            _Epiphany,
+            _FiestaNacional,
+            _ImmaculateConception,
+        ]
+    )
     .holidays("2010-01-01", "2035-12-31")
     .tolist()
 )
@@ -85,6 +87,7 @@ _extra_spanish_holidays = (
 # ---------------------------------------------------------------------------
 # MEFF IBEX 35 Futures Calendar
 # ---------------------------------------------------------------------------
+
 
 class MEFFIBEXFuturesCalendar(MarketCalendar):
     """
@@ -131,7 +134,7 @@ class MEFFIBEXFuturesCalendar(MarketCalendar):
     aliases = ["MEFF", "MEFF_IBEX"]
 
     regular_market_times = {
-        "market_open":  ((None, time(9, 0)),),
+        "market_open": ((None, time(9, 0)),),
         "market_close": ((None, time(17, 35)),),
     }
 
@@ -159,4 +162,3 @@ class MEFFIBEXFuturesCalendar(MarketCalendar):
     @property
     def special_closes_adhoc(self):
         return self._underlying.special_closes_adhoc
-

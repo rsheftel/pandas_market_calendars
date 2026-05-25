@@ -1,4 +1,3 @@
-
 """
 Nasdaq Stockholm (OMX) Derivatives Calendars
 ================================================================
@@ -40,6 +39,7 @@ from pandas_market_calendars.calendars.mirror import XSTOExchangeCalendar
 # Nasdaq Stockholm OMXS30 Futures Calendar
 # ---------------------------------------------------------------------------
 
+
 class NasdaqStockholmDerivsCalendar(MarketCalendar):
     """
     Nasdaq Stockholm — Equity Index Derivatives
@@ -75,7 +75,7 @@ class NasdaqStockholmDerivsCalendar(MarketCalendar):
     aliases = ["OMXS", "OMXS30"]
 
     regular_market_times = {
-        "market_open":  ((None, time(9, 0)),),
+        "market_open": ((None, time(9, 0)),),
         "market_close": ((None, time(17, 30)),),
     }
 

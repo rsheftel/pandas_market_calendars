@@ -1,19 +1,7 @@
-from pandas.tseries.holiday import (
-    DateOffset,
-    Holiday,
-    MO,
-    Easter,
-    weekend_to_monday,
-    previous_friday
-)
+from pandas.tseries.holiday import DateOffset, Holiday, MO, Easter, weekend_to_monday, previous_friday
 from pandas.tseries.offsets import BusinessDay, Day
 
-NewYears = Holiday(
-    "Day before Christmas",
-    month=1,
-    day=1,
-    observance=weekend_to_monday
-)
+NewYears = Holiday("Day before Christmas", month=1, day=1, observance=weekend_to_monday)
 
 
 # Ontario Family Day
@@ -104,58 +92,20 @@ DayBeforeThanksgiving = Holiday(
 )
 
 TruthAndReconiliationDay = Holiday(
-    "Canada Truth and Reconciliation Day",
-    month=9,
-    day=30,
-    observance=weekend_to_monday,
-    start_date="2021-01-01"
+    "Canada Truth and Reconciliation Day", month=9, day=30, observance=weekend_to_monday, start_date="2021-01-01"
 )
 DayBeforeTruthAndReconiliationDay = Holiday(
-    "Canada Truth and Reconciliation Day",
-    month=9,
-    day=29,
-    observance=previous_friday,
-    start_date="2021-01-01"
+    "Canada Truth and Reconciliation Day", month=9, day=29, observance=previous_friday, start_date="2021-01-01"
 )
 
-RemembranceDay = Holiday(
-    "Canada Remembrance Day",
-    month=11,
-    day=11,
-    observance=weekend_to_monday
-)
-DayBeforeRemembranceDay = Holiday(
-    "Day before Remembrance Day",
-    month=11,
-    day=10,
-    observance=previous_friday
-)
+RemembranceDay = Holiday("Canada Remembrance Day", month=11, day=11, observance=weekend_to_monday)
+DayBeforeRemembranceDay = Holiday("Day before Remembrance Day", month=11, day=10, observance=previous_friday)
 
-DayBeforeChristmas = Holiday(
-    "Day before Christmas",
-    month=12,
-    day=24,
-    observance=previous_friday
-)
-Christmas = Holiday(
-    "Christmas",
-    month=12,
-    day=25,
-    observance=weekend_to_monday
-)
+DayBeforeChristmas = Holiday("Day before Christmas", month=12, day=24, observance=previous_friday)
+Christmas = Holiday("Christmas", month=12, day=25, observance=weekend_to_monday)
 
 
-DayBeforeNewYears = Holiday(
-    "Day before Christmas",
-    month=12,
-    day=31,
-    observance=previous_friday
-)
+DayBeforeNewYears = Holiday("Day before Christmas", month=12, day=31, observance=previous_friday)
 
 
-DayBeforeGoodFriday = Holiday(
-    "Day before good friday",
-    month=1,
-    day=1,
-    offset=[Easter(), Day(-3)]
-)
+DayBeforeGoodFriday = Holiday("Day before good friday", month=1, day=1, offset=[Easter(), Day(-3)])

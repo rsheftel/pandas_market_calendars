@@ -19,7 +19,6 @@ def _is_trading(cal, date):
     return not cal.schedule(date, date).empty
 
 
-
 def test_time_zone():
     assert HKEXExchangeCalendar().tz == ZoneInfo("Asia/Shanghai")
     assert HKEXExchangeCalendar().name == "HKEX"
@@ -71,10 +70,10 @@ def test_hkex_closes_at_lunch():
     )
 
 
-
 # ---------------------------------------------------------------------------
 # HKFE Non-Holiday (HSI, MHI, HHI, MCH, HTI)
 # ---------------------------------------------------------------------------
+
 
 def test_hkfe_non_holiday_instantiates():
     assert HKFEDomesticExchangeCalendar() is not None
@@ -117,6 +116,7 @@ def test_hkfe_non_holiday_t1_session_modelled():
 # HKFE Holiday Trading (MTW, MCA, CUS)
 # ---------------------------------------------------------------------------
 
+
 def test_hkfe_holiday_trading_instantiates():
     assert HKFEForeignExchangeCalendar() is not None
 
@@ -137,4 +137,3 @@ def test_hkfe_holiday_trading_open_on_lunar_new_year():
     cal = HKFEForeignExchangeCalendar()
     # LNY Day 1 2026 — MSCI/FX contracts trade through HK public holidays
     assert _is_trading(cal, "2026-02-17")
-

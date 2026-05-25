@@ -27,16 +27,31 @@ from pandas_market_calendars.market_calendar import (
     MarketCalendar,
 )
 from pandas_market_calendars.holidays.ca import (
-    NewYears, FamilyDay, VictoriaDay, CanadaDay, CivicHoliday, LaborDay, Thanksgiving, Christmas,
-    TruthAndReconiliationDay, RemembranceDay, DayBeforeCanadaDay, DayBeforeFamilyDay, DayBeforeLaborDay, 
-    DayBeforeCivicHoliday, DayBeforeChristmas, DayBeforeNewYears,DayBeforeRemembranceDay, DayBeforeThanksgiving,
-    DayBeforeTruthAndReconiliationDay, DayBeforeVictoriaDay, DayBeforeGoodFriday
+    NewYears,
+    FamilyDay,
+    VictoriaDay,
+    CanadaDay,
+    CivicHoliday,
+    LaborDay,
+    Thanksgiving,
+    Christmas,
+    TruthAndReconiliationDay,
+    RemembranceDay,
+    DayBeforeCanadaDay,
+    DayBeforeFamilyDay,
+    DayBeforeLaborDay,
+    DayBeforeCivicHoliday,
+    DayBeforeChristmas,
+    DayBeforeNewYears,
+    DayBeforeRemembranceDay,
+    DayBeforeThanksgiving,
+    DayBeforeTruthAndReconiliationDay,
+    DayBeforeVictoriaDay,
+    DayBeforeGoodFriday,
 )
 
 
 from .tsx import ChristmasEveEarlyClose2010Onwards
-
-
 
 
 class MonExBaseExchangeCalendar(MarketCalendar):
@@ -64,6 +79,7 @@ class MonExBaseExchangeCalendar(MarketCalendar):
       closes at 1:00 pm that day. If it falls on a weekend, there is no
       early close.
     """
+
     @property
     def tz(self):
         return ZoneInfo("Canada/Eastern")
@@ -87,9 +103,7 @@ class MonExBaseExchangeCalendar(MarketCalendar):
 
     @property
     def regular_holidays(self):
-        return AbstractHolidayCalendar(
-            rules=self._regular_holidays
-        )
+        return AbstractHolidayCalendar(rules=self._regular_holidays)
 
     @property
     def special_closes(self):
@@ -103,9 +117,7 @@ class MonExBaseExchangeCalendar(MarketCalendar):
     regular_early_close = time(13, 0)
 
 
-
 class MonExRatesExchangeCalendar(MonExBaseExchangeCalendar):
-
     regular_early_close = time(13, 30)
 
     @property
@@ -116,21 +128,22 @@ class MonExRatesExchangeCalendar(MonExBaseExchangeCalendar):
     def special_closes(self):
         return [
             (
-                self.regular_early_close, 
-                AbstractHolidayCalendar(rules=[
-                    DayBeforeFamilyDay,
-                    DayBeforeGoodFriday,
-                    DayBeforeVictoriaDay,
-                    DayBeforeCanadaDay,
-                    DayBeforeCivicHoliday,
-                    DayBeforeLaborDay, 
-                    DayBeforeTruthAndReconiliationDay,
-                    DayBeforeThanksgiving,
-                    DayBeforeRemembranceDay,
-                    DayBeforeChristmas,
-                    DayBeforeNewYears,
-                    
-                ])
+                self.regular_early_close,
+                AbstractHolidayCalendar(
+                    rules=[
+                        DayBeforeFamilyDay,
+                        DayBeforeGoodFriday,
+                        DayBeforeVictoriaDay,
+                        DayBeforeCanadaDay,
+                        DayBeforeCivicHoliday,
+                        DayBeforeLaborDay,
+                        DayBeforeTruthAndReconiliationDay,
+                        DayBeforeThanksgiving,
+                        DayBeforeRemembranceDay,
+                        DayBeforeChristmas,
+                        DayBeforeNewYears,
+                    ]
+                ),
             )
         ]
 
@@ -169,7 +182,6 @@ class MonExStirExchangeCalendar(MonExRatesExchangeCalendar):
         return "Montreal Exchange STIR futures"
 
 
-
 class MonExIndexExchangeCalendar(MonExBaseExchangeCalendar):
     aliases = ["TMX_Index", "MonEx_Index", "CDE_Index"]
 
@@ -185,4 +197,3 @@ class MonExIndexExchangeCalendar(MonExBaseExchangeCalendar):
     @property
     def full_name(self):
         return "Montreal Exchange Index futures"
-

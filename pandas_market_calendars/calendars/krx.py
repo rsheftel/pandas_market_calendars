@@ -80,10 +80,10 @@ class KRXEquityIndexFuturesCalendar(_KRXBase):
     aliases = ["KRX_EQUITY", "KRX_KOSPI200"]
 
     regular_market_times = {
-        "market_open":  ((None, time(9, 0)),),
-        "market_close": ((None, time(5, 0), 1),),   # 05:00 KST next calendar day
-        "break_start":  ((None, time(15, 45)),),     # end of day session
-        "break_end":    ((None, time(18, 0)),),      # start of night session
+        "market_open": ((None, time(9, 0)),),
+        "market_close": ((None, time(5, 0), 1),),  # 05:00 KST next calendar day
+        "break_start": ((None, time(15, 45)),),  # end of day session
+        "break_end": ((None, time(18, 0)),),  # start of night session
     }
 
     @property
@@ -113,16 +113,15 @@ class KRXGovernmentBondFuturesCalendar(_KRXBase):
     aliases = ["KRX_BOND", "KRX_KTB"]
 
     regular_market_times = {
-        "market_open":  ((None, time(9, 0)),),
+        "market_open": ((None, time(9, 0)),),
         "market_close": ((None, time(5, 0), 1),),
-        "break_start":  ((None, time(15, 45)),),
-        "break_end":    ((None, time(18, 0)),),
+        "break_start": ((None, time(15, 45)),),
+        "break_end": ((None, time(18, 0)),),
     }
 
     @property
     def name(self):
         return "KRX_BOND"
-
 
 
 class KRXFXFuturesCalendar(_KRXBase):
@@ -143,7 +142,7 @@ class KRXFXFuturesCalendar(_KRXBase):
     aliases = ["KRX_FX", "KRX_USDKRW"]
 
     regular_market_times = {
-        "market_open":  ((None, time(9, 0)),),
+        "market_open": ((None, time(9, 0)),),
         "market_close": ((None, time(15, 30)),),
     }
 
