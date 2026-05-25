@@ -60,8 +60,8 @@ def test_paris_index_normal_close():
 
 
 def test_paris_index_xmas_eve_early_close():
-    # 14:05 CET winter = 13:05 UTC
-    assert _close(EuronextParisIndexDerivsCalendar(), "2026-12-24") == pd.Timestamp("2026-12-24 13:05:00+00:00")
+    # 13:55 CET winter = 12:55 UTC
+    assert _close(EuronextParisIndexDerivsCalendar(), "2026-12-24") == pd.Timestamp("2026-12-24 12:55:00+00:00")
 
 
 # ---------------------------------------------------------------------------
@@ -187,9 +187,9 @@ def test_paris_commodity_good_friday():
 
 def test_paris_commodity_normal_close():
     # 18:30 CET winter = 17:30 UTC
-    assert _close(EuronextParisCommodityDerivsCalendar(), "2026-03-10") == pd.Timestamp("2026-03-10 17:30:00+00:00")
+    assert _close(EuronextParisCommodityDerivsCalendar(), "2026-03-10") == pd.Timestamp("2026-03-10 19:15:00+00:00")
 
 
 def test_paris_commodity_nye_early_close():
     # Same half-day as cash market: 14:05 CET = 13:05 UTC
-    assert _close(EuronextParisCommodityDerivsCalendar(), "2026-12-31") == pd.Timestamp("2026-12-31 13:05:00+00:00")
+    assert _close(EuronextParisCommodityDerivsCalendar(), "2026-12-31") == pd.Timestamp("2026-12-31 13:00:00+00:00")

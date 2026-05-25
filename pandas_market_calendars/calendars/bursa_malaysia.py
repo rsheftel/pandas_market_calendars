@@ -132,7 +132,7 @@ class BursaMalaysiaFCPOExchangeCalendar(BursaMalaysiaBaseExchangeCalendar):
 
     @property
     def name(self):
-        return "BursaMYFCPO"
+        return "BURSAMY_FCPO"
 
     @property
     def full_name(self):
@@ -154,7 +154,7 @@ class BursaMalaysiaFKLIExchangeCalendar(BursaMalaysiaBaseExchangeCalendar):
 
     @property
     def name(self):
-        return "BursaMYFKLI"
+        return "BURSAMY_FKLI"
 
     @property
     def full_name(self):
