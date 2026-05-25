@@ -21,7 +21,8 @@ Exchange  SSE    SSEExchangeCalendar     Yes        keli
 Exchange  TASE   TASEExchangeCalendar               gabglus
 Exchange  HKEX   HKEXExchangeCalendar    Yes        1dot75cm
 Exchange  ASX    ASXExchangeCalendar                pulledlamb
-Exchange  BSE    BSEExchangeCalendar                rakesh1988
+Exchange  BSE    BSEExchangeCalendar     Yes        rakesh1988
+Exchange  NSE    NSEExchangeCalendar     Yes        rakesh1988
 Exchange  IEX    IEXExchangeCalendar     Yes        carterjfulcher
 ========= ====== ===================== ============ ==========
 
@@ -36,6 +37,7 @@ CME        CME_Agriculture    CMEAgriculturalExchangeCalendar     Yes         li
 CME        CME Globex Crypto  CMEGlobexCryptoExchangeCalendar     Yes         Coinbase Asset Management
 CME        CMEGlobex_Grains   CMEGlobexGrainsExchangeCalendar     Yes         rundef
 EUREX      EUREX_Bond         EUREXFixedIncomeCalendar            Yes         rundef
+EUREX      EUREX_PrePost      EUREXPrePostExchangeCalendar       Yes         rsheftel
 ========== ================= =================================== ============ ============
 
 Forex/OTC Market Calendars

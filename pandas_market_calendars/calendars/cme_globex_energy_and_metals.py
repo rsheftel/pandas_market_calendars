@@ -219,3 +219,12 @@ class CMEGlobexEnergyAndMetalsExchangeCalendar(CMEGlobexBaseExchangeCalendar):
                 ),
             ),
         ]
+
+    @property
+    def special_closes_adhoc(self):
+        return [
+            (
+                time(15, 15),
+                ["2010-12-31"],
+            )
+        ]

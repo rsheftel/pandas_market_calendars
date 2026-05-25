@@ -1,3 +1,5 @@
+from datetime import time
+
 import pandas as pd
 import pytest
 from pandas.tseries.offsets import Day, Hour, Minute
@@ -8,6 +10,13 @@ from pandas_market_calendars.calendars.cme_globex_fixed_income import (
 
 
 TZ = "America/Chicago"
+
+
+def test_regular_market_times():
+    under_test = CMEGlobexFixedIncomeCalendar()
+
+    assert under_test.regular_market_times["market_open"] == ((None, time(17), -1),)
+    assert under_test.regular_market_times["market_close"] == ((None, time(16)),)
 
 
 @pytest.mark.parametrize(
@@ -573,13 +582,13 @@ def test_2020_through_2022_and_prior_holidays(day_status):
 
     if expected_status == "open":
         s = schedule.loc[day_str]
-        assert s["market_open"] == day_ts + Day(-1) + Hour(18) + Minute(0)
-        assert s["market_close"] == day_ts + Day(0) + Hour(17) + Minute(0)
+        assert s["market_open"] == day_ts + Day(-1) + Hour(17) + Minute(0)
+        assert s["market_close"] == day_ts + Day(0) + Hour(16) + Minute(0)
     elif expected_status == "closed":
         assert day_ts.tz_localize(None) not in schedule.index
     else:
         s = schedule.loc[day_str]
         hour = int(expected_status[0:2])
         minute = int(expected_status[2:4])
-        assert s["market_open"] == day_ts + Day(-1) + Hour(18)
+        assert s["market_open"] == day_ts + Day(-1) + Hour(17)
         assert s["market_close"] == day_ts + Day(0) + Hour(hour) + Minute(minute)
