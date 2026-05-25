@@ -158,7 +158,7 @@ class MonExBondExchangeCalendar(MonExRatesExchangeCalendar):
 
     @property
     def name(self):
-        return "MonEx_Bonds"
+        return "MonEx_Bond"
 
     @property
     def full_name(self):
