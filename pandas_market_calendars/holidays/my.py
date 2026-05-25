@@ -55,9 +55,6 @@ ChristmasDay = Holiday(
 )
 
 # ---------------------------------------------------------------------------
-# NB: This was autogenned by claude, and I have not manually checked it. I will
-# look to correct and extend as and when any issues are detected. Please use
-# with caution!
 #
 # Lunar / Islamic holidays — dates shift each year and must be listed
 # explicitly as ad-hoc dates.  The list below covers 2020-2026 based on
@@ -135,7 +132,7 @@ HariRayaPuasa1 = AbstractHolidayCalendar(
         Holiday("Hari Raya Puasa Day 1", year=2023, month=4, day=22),
         Holiday("Hari Raya Puasa Day 1", year=2024, month=4, day=10),
         Holiday("Hari Raya Puasa Day 1", year=2025, month=3, day=31),
-        Holiday("Hari Raya Puasa Day 1", year=2026, month=3, day=23),  # 21 Sat → Mon 23
+        Holiday("Hari Raya Puasa Day 1", year=2026, month=3, day=21),  
     ]
 )
 
@@ -147,7 +144,7 @@ HariRayaPuasa2 = AbstractHolidayCalendar(
         Holiday("Hari Raya Puasa Day 2", year=2023, month=4, day=24),  # 23 Sun → Mon
         Holiday("Hari Raya Puasa Day 2", year=2024, month=4, day=11),
         Holiday("Hari Raya Puasa Day 2", year=2025, month=4, day=1),
-        Holiday("Hari Raya Puasa Day 2", year=2026, month=3, day=24),
+        Holiday("Hari Raya Puasa Day 2", year=2026, month=3, day=23), # 22 Sun -> Mon
     ]
 )
 
