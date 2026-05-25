@@ -64,9 +64,10 @@ def test_bursa_thaipusam(bursa):
 
 
 def test_bursa_hari_raya_puasa(bursa):
-    # 2026: 21 Mar (Sat) → Mon 23 Mar, Day 2 = 24 Mar
+    # 2026: 21 Mar (Sat) ignored, day 2 (22th) → Mon 23 Mar
+    assert_is_trading_day(bursa, "2026-03-20")
     assert_is_holiday(bursa, "2026-03-23")
-    assert_is_holiday(bursa, "2026-03-24")
+    assert_is_trading_day(bursa, "2026-03-24")
 
 
 def test_bursa_labour_day(bursa):
