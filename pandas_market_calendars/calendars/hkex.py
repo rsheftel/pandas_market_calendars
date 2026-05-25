@@ -479,8 +479,8 @@ class HKFEDomesticExchangeCalendar(MarketCalendar):
     Regular session (HKT = UTC+8):
         Morning   : 09:15 – 12:00
         Afternoon : 13:00 – 16:30
-        After-hours T+1 session (17:15 – 23:59) not modelled —
-        pandas_market_calendars supports one break only.
+        After-hours T+1 session (17:15 – 23:59) 
+    NB: We do not model the lunch break as the library doesn't support multiple breaks.
 
     Early closes (morning session only, close 12:00 HKT):
         - Lunar New Year Eve (day before LNY Day 1)
@@ -587,7 +587,9 @@ class HKFEForeignExchangeCalendar(MarketCalendar):
     Regular session (HKT = UTC+8):
         Morning   : 09:15 – 12:00
         Afternoon : 13:00 – 16:30
-        After-hours T+1 session (17:15 – 23:59) not modelled.
+        After-hours T+1 session (17:15 – 23:59) .
+    
+    NB: We do not model the lunch break!
 
     Early closes (morning session only, close 12:00 HKT):
         - Lunar New Year Eve (day before LNY Day 1)
@@ -596,8 +598,7 @@ class HKFEForeignExchangeCalendar(MarketCalendar):
 
     Note: The after-hours (T+1) session is additionally cancelled on days
     when BOTH UK and US markets are bank holidays (e.g. UK Spring Bank
-    Holiday / US Memorial Day; Christmas Day). This affects T+1 only and
-    is not modelled here as the library does not support multiple sessions.
+    Holiday / US Memorial Day; Christmas Day). We do not model that here.
 
     Source: HKFE Circulars MO/DT/085/22, EBF/FIC/003/24, MO/DT/120/25
     """
