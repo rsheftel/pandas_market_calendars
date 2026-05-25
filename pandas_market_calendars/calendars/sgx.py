@@ -313,7 +313,7 @@ class SGXRubberExchangeCalendar(_SGXBase):
 
     regular_market_times = {
         "market_open": ((None, time(7, 55)),),
-        "market_close": ((None, time(11, 0)),),
+        "market_close": ((None, time(23, 0)),),
         "break_start": ((None, time(18, 0)),),  # T session closes 6pm
         "break_end": ((None, time(18, 15)),),  # T+1 session opens 6:15pm
     }
