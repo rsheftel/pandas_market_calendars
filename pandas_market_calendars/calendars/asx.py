@@ -67,6 +67,10 @@ class ASXExchangeCalendar(MarketCalendar):
         )
 
     @property
+    def adhoc_holidays(self):
+        return UniqueCloses
+
+    @property
     def special_closes(self):
         return [
             (
@@ -114,6 +118,10 @@ class ASX24BaseCalendar(MarketCalendar):
             ]
         )
 
+    @property
+    def adhoc_holidays(self):
+        return UniqueCloses
+
     _early_close_time = None
 
     @property
@@ -135,7 +143,7 @@ class ASX24BaseCalendar(MarketCalendar):
         return []
 
 
-class ASX24IndexFuturesCalendar(MarketCalendar):
+class ASX24IndexFuturesCalendar(ASX24BaseCalendar):
     """
     ASX 24 Derivatives Market — Equity Index Futures
     (AP  — SPI 200™ Index Futures & Options)
@@ -158,7 +166,7 @@ class ASX24IndexFuturesCalendar(MarketCalendar):
         return "ASX24_Index"
 
 
-class ASX24IRFuturesCalendar(MarketCalendar):
+class ASX24IRFuturesCalendar(ASX24BaseCalendar):
     """
     ASX 24 Derivatives Market — Interest Rate Futures
     (XT  — 10 Year Treasury Bond Futures & Options,

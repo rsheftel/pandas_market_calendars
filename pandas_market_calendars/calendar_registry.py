@@ -3,7 +3,7 @@
 import datetime
 
 from .market_calendar import MarketCalendar
-from .calendars.asx import ASXExchangeCalendar, ASX24FuturesCalendar
+from .calendars.asx import ASXExchangeCalendar, ASX24IndexFuturesCalendar, ASX24IRFuturesCalendar
 from .calendars.bmf import BMFExchangeCalendar
 from .calendars.bse import BSEExchangeCalendar
 from .calendars.bursa_malaysia import BursaMalaysiaFCPOExchangeCalendar, BursaMalaysiaFKLIExchangeCalendar
