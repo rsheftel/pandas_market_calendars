@@ -56,8 +56,7 @@ class _EuronextDerivsMixin:
     """
 
     _cash_cal = None  # set in each subclass
-    _half_day_close_time = None # Ditto
-
+    _half_day_close_time = None  # Ditto
 
     @property
     def regular_holidays(self):
@@ -66,23 +65,15 @@ class _EuronextDerivsMixin:
     @property
     def adhoc_holidays(self):
         return self._cash_cal.adhoc_holidays
-   
 
     @property
     def special_closes(self):
-        return [
-            (self._half_day_close_time, hol_cal)
-            for _, hol_cal in self._cash_cal.special_closes
-        ]
-
+        return [(self._half_day_close_time, hol_cal) for _, hol_cal in self._cash_cal.special_closes]
 
     @property
     def special_closes_adhoc(self):
-        return [
-            (self._half_day_close_time, hol_cal)
-            for _, hol_cal in self._cash_cal.special_closes_adhoc
-        ]
-   
+        return [(self._half_day_close_time, hol_cal) for _, hol_cal in self._cash_cal.special_closes_adhoc]
+
 
 # ---------------------------------------------------------------------------
 # 1. Euronext Paris Derivatives
@@ -353,7 +344,7 @@ class EuronextOsloIndexDerivsCalendar(_EuronextDerivsMixin, MarketCalendar):
 
     aliases = ["ENX_OSL_INDEX", "ENX_OBF", "ENX_OBX"]
     _cash_cal = XOSLExchangeCalendar()
-    _half_day_close_time = time(13,0)
+    _half_day_close_time = time(13, 0)
 
     regular_market_times = {
         "market_open": ((None, time(9, 1)),),
@@ -404,7 +395,7 @@ class EuronextParisCommodityDerivsCalendar(_EuronextDerivsMixin, MarketCalendar)
 
     aliases = ["ENX_PAR_COMM", "ENX_WHEAT", "ENX_AGRI"]
     _cash_cal = XPARExchangeCalendar()
-    _half_day_close_time = time(14,0)
+    _half_day_close_time = time(14, 0)
 
     regular_market_times = {
         "market_open": ((None, time(10, 45)),),

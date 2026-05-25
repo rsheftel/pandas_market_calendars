@@ -479,7 +479,7 @@ class HKFEDomesticExchangeCalendar(MarketCalendar):
     Regular session (HKT = UTC+8):
         Morning   : 09:15 – 12:00
         Afternoon : 13:00 – 16:30
-        After-hours T+1 session (17:15 – 23:59) 
+        After-hours T+1 session (17:15 – 23:59)
     NB: We do not model the lunch break as the library doesn't support multiple breaks.
 
     Early closes (morning session only, close 12:00 HKT):
@@ -588,7 +588,7 @@ class HKFEForeignExchangeCalendar(MarketCalendar):
         Morning   : 09:15 – 12:00
         Afternoon : 13:00 – 16:30
         After-hours T+1 session (17:15 – 23:59) .
-    
+
     NB: We do not model the lunch break!
 
     Early closes (morning session only, close 12:00 HKT):

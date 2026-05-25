@@ -132,7 +132,7 @@ HariRayaPuasa1 = AbstractHolidayCalendar(
         Holiday("Hari Raya Puasa Day 1", year=2023, month=4, day=22),
         Holiday("Hari Raya Puasa Day 1", year=2024, month=4, day=10),
         Holiday("Hari Raya Puasa Day 1", year=2025, month=3, day=31),
-        Holiday("Hari Raya Puasa Day 1", year=2026, month=3, day=21),  
+        Holiday("Hari Raya Puasa Day 1", year=2026, month=3, day=21),
     ]
 )
 
@@ -144,7 +144,7 @@ HariRayaPuasa2 = AbstractHolidayCalendar(
         Holiday("Hari Raya Puasa Day 2", year=2023, month=4, day=24),  # 23 Sun → Mon
         Holiday("Hari Raya Puasa Day 2", year=2024, month=4, day=11),
         Holiday("Hari Raya Puasa Day 2", year=2025, month=4, day=1),
-        Holiday("Hari Raya Puasa Day 2", year=2026, month=3, day=23), # 22 Sun -> Mon
+        Holiday("Hari Raya Puasa Day 2", year=2026, month=3, day=23),  # 22 Sun -> Mon
     ]
 )
 
