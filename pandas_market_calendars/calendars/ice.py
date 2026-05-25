@@ -54,7 +54,7 @@ from pandas.tseries.holiday import (
 )
 
 from pandas_market_calendars.holidays.us import (
-    Christmas,
+    Christmas as USChristmas,
     USIndependenceDay,
     USJuneteenthAfter2022,
     USMartinLutherKingJrAfter1998,
@@ -151,7 +151,7 @@ class ICEUSSoftsCalendar(MarketCalendar):
                 USIndependenceDay,
                 USLaborDay,
                 USThanksgivingDay,
-                Christmas,
+                USChristmas,
             ]
         )
 
@@ -225,7 +225,7 @@ class ICEUSFinancialsCalendar(MarketCalendar):
         return AbstractHolidayCalendar(
             rules=[
                 USNewYearsDay,
-                Christmas,
+                USChristmas,
             ]
         )
 
@@ -388,7 +388,7 @@ class ICEExchangeCalendar(MarketCalendar):
     @property
     def regular_holidays(self):
         # https://www.theice.com/publicdocs/futures_us/exchange_notices/NewExNot2016Holidays.pdf
-        return AbstractHolidayCalendar(rules=[USNewYearsDay, GoodFriday, Christmas])
+        return AbstractHolidayCalendar(rules=[USNewYearsDay, GoodFriday, USChristmas])
 
 
 # ---------------------------------------------------------------------------
@@ -440,7 +440,7 @@ class ICEUSDailyGoldSilverCalendar(MarketCalendar):
                 USNewYearsDay,
                 GoodFriday,
                 USMemorialDay,
-                Christmas,
+                USChristmas,
                 # Boxing Day observed — Mon Dec 28 2026 (Dec 26 Sat -> Mon 28)
                 # Use next_monday_or_tuesday observance on Dec 26
                 Holiday("Boxing Day", month=12, day=26, observance=next_monday_or_tuesday),
