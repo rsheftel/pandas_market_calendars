@@ -41,17 +41,8 @@ Contracts covered and their holiday groups:
     UC    — SGX USD/CNH Futures
 
 
-Trading hours (SGT = Asia/Singapore = UTC+8, no DST):
-  T session  : 08:30 – 17:30  (break-free continuous)
-  T+1 session: 18:00 – 02:00  (next calendar day, SGT)
-  The T+1 session is not modelled — library limitation.
-  For FX contracts (UC): 07:00 – 18:00 (daytime only, different hours).
-  For commodities (FEF, TF): 09:00 – 18:30.
-
 Sources:
-  SGX DT Trading Calendar 2025 (api2.sgx.com)
-  SGX Rulebook Regulatory Notice 8.2.1
-  tipranks.com Singapore exchange holiday lists 2024-2026
+  https://www.sgx.com/derivatives
 """
 
 from datetime import time
@@ -155,19 +146,7 @@ _SGDeepavali = [
 # All SG ad-hoc holidays combined
 _SG_ADHOC = _SGChineseNewYear1 + _SGChineseNewYear2 + _SGHariRayaPuasa + _SGVesakDay + _SGHariRayaHaji + _SGDeepavali
 
-# SGX early-close days: CNY Eve, Christmas Eve, New Year's Eve
-# These are half-day sessions (close 12:30 SGT)
-_SGCNYEveEarlyClose = [
-    Timestamp("2020-01-24"),
-    Timestamp("2021-02-11"),
-    Timestamp("2022-01-31"),
-    # 2023: Jan 21 is Sat — no market
-    Timestamp("2024-02-08"),
-    Timestamp("2025-01-28"),
-    Timestamp("2026-02-16"),
-    Timestamp("2027-02-05"),
-]
-_SGChristmasEve = Holiday("Christmas Eve", month=12, day=24)
+
 _SGNewYearsEve = Holiday("New Year's Eve", month=12, day=31)
 
 
@@ -209,15 +188,6 @@ class SGXIndexCNExchangeCalendar(_SGXBase):
     A50 & H50 Futures
 
     Closed only on Singapore public holidays.
-
-    Regular session (SGT = UTC+8):
-        T session  : 08:30 – 17:30
-        T+1 session: 18:00 – 02:00 T+1
-
-    Early closes (12:30 SGT):
-        - CNY Eve (day before Chinese New Year Day 1)
-        - Christmas Eve (24 Dec)
-        - New Year's Eve (31 Dec)
 
     Source: SGX DT Trading Calendar 2025
     """
