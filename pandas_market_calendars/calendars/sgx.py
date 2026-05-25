@@ -379,7 +379,7 @@ class SGXTaiwanExchangeCalendar(_SGXBase):
         "market_open": ((None, time(8, 45)),),
         "market_close": ((None, time(5, 15), 1),),  # T+1 session closes 05:15 SGT next day
         "break_start": ((None, time(13, 45)),),
-        "break_end": ((None, time(13, 0)),),  # T+1 session opens 14:00
+        "break_end": ((None, time(14, 0)),),  # T+1 session opens 14:00
     }
 
     @property
