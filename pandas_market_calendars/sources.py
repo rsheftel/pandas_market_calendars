@@ -47,6 +47,64 @@ CALENDAR_SOURCES: dict[str, tuple[Source, ...]] = {
             covers="trading hours, holidays, early closes",
         ),
     ),
+    "ASX24_Index": (
+        Source(
+            name="Index Derivs trading calendar",
+            url="https://www.asx.com.au/markets/market-resources/trading-hours-calendar/index-derivatives",
+            last_verified="2026-05-25",
+            covers="trading hours",
+        ),
+        Source(
+            name="ASX24 Holiday calendar",
+            url="https://www.asx.com.au/markets/market-resources/asx-24-trading-calendar",
+            last_verified="2026-05-25",
+            covers="holidays, early closes",
+        )
+    ),
+    "ASX24_Rates": (
+        Source(
+            name="IR Derivs trading calendar",
+            url="https://www.asx.com.au/markets/market-resources/trading-hours-calendar/interest-rate-derivatives",
+            last_verified="2026-05-25",
+            covers="trading hours",
+        ),
+        Source(
+            name="ASX24 Holiday calendar",
+            url="https://www.asx.com.au/markets/market-resources/asx-24-trading-calendar",
+            last_verified="2026-05-25",
+            covers="holidays, early closes",
+        )
+    ),
+    # endregion
+    # region ---- Bursa Malaysia
+    "BURSAMY_FCPO": (
+        Source(
+            name="Bursa Malaysia holiday calendar",
+            url="https://www.bursamalaysia.com/about_bursa/about_us/calendar",
+            last_verified="2026-05-25",
+            covers="holidays",
+        ),
+        Source(
+            name="FCPO contract spec",
+            url="https://www.bursamalaysia.com/trade/our_products_services/derivatives/commodity_derivatives/crude_palm_oil_futures",
+            last_verified="2026-05-25",
+            covers="trading hours",
+        )
+    ),
+    "BURSAMY_FKLI": (
+        Source(
+            name="Bursa Malaysia holiday calendar",
+            url="https://www.bursamalaysia.com/about_bursa/about_us/calendar",
+            last_verified="2026-05-25",
+            covers="holidays",
+        ),
+        Source(
+            name="FKLI contract spec",
+            url="https://www.bursamalaysia.com/trade/our_products_services/derivatives/equity_derivatives/ftse_bursa_malaysia_klci_futures",
+            last_verified="2026-05-25",
+            covers="trading hours",
+        )
+    ),
     # endregion
     # region ---- B3 (Brasil Bolsa Balcao) / BMF ----
     "BMF": (

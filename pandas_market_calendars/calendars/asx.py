@@ -23,10 +23,9 @@ class ASXExchangeCalendar(MarketCalendar):
     - Good Friday (two days before Easter Sunday)
     - Easter Monday (the Monday after Easter Sunday)
     - ANZAC Day (April 25)
-    - Queen's Birthday (second Monday in June)
+    - Queen's Birthday (second Monday in June) (Now King)
     - Christmas Day (December 25, Saturday/Sunday to Monday)
     - Boxing Day (December 26, Saturday to Monday, Sunday to Tuesday)
-
 
     Regularly-Observed Early Closes:
     - Last Business Day before Christmas Day
@@ -68,10 +67,6 @@ class ASXExchangeCalendar(MarketCalendar):
         )
 
     @property
-    def adhoc_holidays(self):
-        return UniqueCloses
-
-    @property
     def special_closes(self):
         return [
             (
@@ -99,50 +94,7 @@ _ASX24ChristmasEve = Holiday("Christmas Eve", month=12, day=24)
 _ASX24NewYearsEve = Holiday("New Year's Eve", month=12, day=31)
 
 
-class ASX24FuturesCalendar(MarketCalendar):
-    """
-    ASX 24 Derivatives Market — Interest Rate & Equity Index Futures
-    (XT  — 10 Year Treasury Bond Futures & Options,
-     YT  — 3 Year Treasury Bond Futures & Options,
-     IR  — 90 Day Bank Bill Futures & Options,
-     AP  — SPI 200™ Index Futures & Options)
-
-    ASX 24 is the trading platform for Australian and New Zealand interest
-    rate, equity and commodity futures. It operates some of the world's
-    longest trading hours via a day + night session structure.
-
-    Sessions (AEST = UTC+10, AEDT = UTC+11 Oct–Apr):
-        Day session  : 08:30 – 16:30 AEST/AEDT
-        Night session: 17:10 – 08:00 AEST/AEDT (next calendar day)
-    Modelled as: open=08:30, break_start=16:30, break_end=17:10,
-                 close=08:00+1 (next day offset).
-
-    Early closes (day session only, close 12:00 AEST/AEDT; no night session):
-        - Christmas Eve (24 Dec)
-        - New Year's Eve (31 Dec)
-    Unlike the cash market, these apply to the actual calendar date
-    regardless of day of week.
-
-    Holidays: same Australian public holidays as the cash ASX market.
-    Night session is also cancelled when the following day is a public
-    holiday — this is not modelled (library limitation).
-
-    Source: https://www.asx.com.au/markets/trade-our-derivatives-market/futures-market
-    """
-
-    aliases = ["ASX24", "SFE"]
-
-    regular_market_times = {
-        "market_open": ((None, time(8, 30)),),
-        "market_close": ((None, time(8, 0), 1),),  # 08:00 AEST/AEDT next calendar day
-        "break_start": ((None, time(16, 30)),),  # end of day session
-        "break_end": ((None, time(17, 10)),),  # start of night session
-    }
-
-    @property
-    def name(self):
-        return "ASX24"
-
+class ASX24BaseCalendar(MarketCalendar):
     @property
     def tz(self):
         return ZoneInfo("Australia/Sydney")
@@ -162,15 +114,13 @@ class ASX24FuturesCalendar(MarketCalendar):
             ]
         )
 
-    @property
-    def adhoc_holidays(self):
-        return UniqueCloses
+    _early_close_time = None
 
     @property
     def special_closes(self):
         return [
             (
-                time(12, 0),
+                self._early_close_time,
                 AbstractHolidayCalendar(
                     rules=[
                         _ASX24ChristmasEve,
@@ -183,3 +133,54 @@ class ASX24FuturesCalendar(MarketCalendar):
     @property
     def special_closes_adhoc(self):
         return []
+
+
+class ASX24IndexFuturesCalendar(MarketCalendar):
+    """
+    ASX 24 Derivatives Market — Equity Index Futures
+    (AP  — SPI 200™ Index Futures & Options)
+
+    Source: https://www.asx.com.au/markets/market-resources/trading-hours-calendar/
+    """
+
+    aliases = ["ASX24_Index", "SFE_Index"]
+    _early_close_time = time(14,30)
+
+    regular_market_times = {
+        "market_open": ((None, time(9, 50)),),
+        "market_close": ((None, time(8, 0), 1),),  # 08:00 AEST/AEDT next calendar day
+        "break_start": ((None, time(16, 30)),),  # end of day session
+        "break_end": ((None, time(17, 10)),),  # start of night session
+    }
+
+    @property
+    def name(self):
+        return "ASX24_Index"
+
+
+
+class ASX24IRFuturesCalendar(MarketCalendar):
+    """
+    ASX 24 Derivatives Market — Interest Rate Futures
+    (XT  — 10 Year Treasury Bond Futures & Options,
+     YT  — 3 Year Treasury Bond Futures & Options,
+     IR  — 90 Day Bank Bill Futures & Options)
+
+     Markets open staggered between 08:28 and 08:34, we have picked the earliest here.
+     
+    Source: https://www.asx.com.au/markets/market-resources/trading-hours-calendar/
+    """
+
+    aliases = ["ASX24_Rates", "SFE_Rates"]
+    _early_close_time = time(12,30)
+
+    regular_market_times = {
+        "market_open": ((None, time(8, 28)),),
+        "market_close": ((None, time(7, 0), 1),),  # 08:00 AEST/AEDT next calendar day
+        "break_start": ((None, time(16, 30)),),  # end of day session
+        "break_end": ((None, time(17, 10)),),  # start of night session
+    }
+
+    @property
+    def name(self):
+        return "ASX24_Rates"
