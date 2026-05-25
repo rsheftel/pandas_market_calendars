@@ -174,42 +174,6 @@ _GIFTConnectHolidays = [
     Timestamp("2026-01-26"), Timestamp("2026-10-02"), 
 ]
 
-# ---------------------------------------------------------------------------
-# India RBI/bank holidays (for IU — Indian Rupee futures)
-# Smaller subset than NSE: Republic Day, Independence Day, Gandhi Jayanti,
-# plus major religious holidays. Ad-hoc.
-# ---------------------------------------------------------------------------
-
-_RBIHolidays = [
-    # Republic Day, Independence Day, Gandhi Jayanti (fixed, always observed)
-    Timestamp("2020-01-26"), Timestamp("2020-08-15"), Timestamp("2020-10-02"),
-    Timestamp("2021-01-26"), Timestamp("2021-08-15"), Timestamp("2021-10-02"),
-    Timestamp("2022-01-26"), Timestamp("2022-08-15"), Timestamp("2022-10-02"),
-    Timestamp("2023-01-26"), Timestamp("2023-08-15"), Timestamp("2023-10-02"),
-    Timestamp("2024-01-26"), Timestamp("2024-08-15"), Timestamp("2024-10-02"),
-    Timestamp("2025-01-26"), Timestamp("2025-08-15"), Timestamp("2025-10-02"),
-    Timestamp("2026-01-26"), Timestamp("2026-08-15"), Timestamp("2026-10-02"),
-    # Major religious/bank holidays (ad-hoc)
-    Timestamp("2020-04-02"), Timestamp("2020-04-06"), Timestamp("2020-04-10"),
-    Timestamp("2020-04-14"), Timestamp("2020-05-25"), Timestamp("2020-11-16"),
-    Timestamp("2021-04-02"), Timestamp("2021-04-14"), Timestamp("2021-05-13"),
-    Timestamp("2021-10-15"), Timestamp("2021-11-04"), Timestamp("2021-11-19"),
-    Timestamp("2022-04-14"), Timestamp("2022-04-15"), Timestamp("2022-08-09"),
-    Timestamp("2022-08-31"), Timestamp("2022-10-05"), Timestamp("2022-10-24"),
-    Timestamp("2022-11-08"),
-    Timestamp("2023-03-30"), Timestamp("2023-04-04"), Timestamp("2023-04-07"),
-    Timestamp("2023-04-14"), Timestamp("2023-06-28"), Timestamp("2023-09-19"),
-    Timestamp("2023-10-24"), Timestamp("2023-11-27"),
-    Timestamp("2024-03-25"), Timestamp("2024-03-29"), Timestamp("2024-04-11"),
-    Timestamp("2024-04-14"), Timestamp("2024-04-17"), Timestamp("2024-06-17"),
-    Timestamp("2024-11-01"), Timestamp("2024-12-25"),
-    Timestamp("2025-03-14"), Timestamp("2025-03-31"), Timestamp("2025-04-10"),
-    Timestamp("2025-04-14"), Timestamp("2025-04-18"), Timestamp("2025-06-06"),
-    Timestamp("2025-10-21"), Timestamp("2025-11-05"),
-    Timestamp("2026-03-20"), Timestamp("2026-04-02"), Timestamp("2026-04-03"),
-    Timestamp("2026-05-27"), Timestamp("2026-10-29"),
-]
-
 
 # ---------------------------------------------------------------------------
 # Base class
