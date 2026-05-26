@@ -30,6 +30,7 @@ Half-trading-day closes (inherited from cash calendars via special_closes):
 
 from datetime import time
 from zoneinfo import ZoneInfo
+from functools import cached_property
 
 from pandas_market_calendars.market_calendar import MarketCalendar
 from pandas_market_calendars.calendars.mirror import (
@@ -90,7 +91,11 @@ class EuronextParisIndexDerivsCalendar(_EuronextDerivsMixin, MarketCalendar):
     """
 
     aliases = ["ENX_PAR_INDEX", "ENX_FCE"]
-    _cash_cal = XPARExchangeCalendar()
+
+    @cached_property
+    def _cash_cal(self):
+        return XPARExchangeCalendar()
+
     _half_day_close_time = time(14, 0)
 
     regular_market_times = {
@@ -128,7 +133,11 @@ class EuronextAmsterdamIndexDerivsCalendar(_EuronextDerivsMixin, MarketCalendar)
     """
 
     aliases = ["ENX_AMS_INDEX", "ENX_FTI", "ENX_AEX"]
-    _cash_cal = XAMSExchangeCalendar()
+    
+    @cached_property
+    def _cash_cal(self):
+        return XAMSExchangeCalendar()
+
     _half_day_close_time = time(14, 0)
 
     regular_market_times = {
@@ -166,7 +175,11 @@ class EuronextBrusselsIndexDerivsCalendar(_EuronextDerivsMixin, MarketCalendar):
     """
 
     aliases = ["ENX_BRU_INDEX", "ENX_BXF", "ENX_BEL20"]
-    _cash_cal = XBRUExchangeCalendar()
+    
+    @cached_property
+    def _cash_cal(self):
+        return XBRUExchangeCalendar()
+
     _half_day_close_time = time(14, 0)
 
     regular_market_times = {
@@ -205,7 +218,11 @@ class EuronextLisbonIndexDerivsCalendar(_EuronextDerivsMixin, MarketCalendar):
     """
 
     aliases = ["ENX_LIS_INDEX", "ENX_PSI"]
-    _cash_cal = XLISExchangeCalendar()
+    
+    @cached_property
+    def _cash_cal(self):
+        return XLISExchangeCalendar()
+
     _half_day_close_time = time(13, 55)
 
     regular_market_times = {
@@ -244,7 +261,11 @@ class EuronextMilanIndexDerivsCalendar(_EuronextDerivsMixin, MarketCalendar):
     """
 
     aliases = ["ENX_MIL_INDEX", "ENX_FIB", "ENX_FTSEMIB"]
-    _cash_cal = XMILExchangeCalendar()
+
+    @cached_property
+    def _cash_cal(self):
+        return XMILExchangeCalendar()
+
     # No half days, so no half day close time set.
 
     regular_market_times = {
@@ -288,7 +309,11 @@ class EuronextOsloIndexDerivsCalendar(_EuronextDerivsMixin, MarketCalendar):
     """
 
     aliases = ["ENX_OSL_INDEX", "ENX_OBF", "ENX_OBX"]
-    _cash_cal = XOSLExchangeCalendar()
+    
+    @cached_property
+    def _cash_cal(self):
+        return XOSLExchangeCalendar()
+
     _half_day_close_time = time(13, 0)
 
     regular_market_times = {
@@ -332,7 +357,11 @@ class EuronextParisCommodityDerivsCalendar(_EuronextDerivsMixin, MarketCalendar)
     """
 
     aliases = ["ENX_PAR_COMM", "ENX_WHEAT", "ENX_AGRI"]
-    _cash_cal = XPARExchangeCalendar()
+    
+    @cached_property
+    def _cash_cal(self):
+        return XPARExchangeCalendar()
+
     _half_day_close_time = time(14, 0)
 
     regular_market_times = {
