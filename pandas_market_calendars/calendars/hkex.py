@@ -448,6 +448,7 @@ _LNYEveEarlyClose = [
 ]
 
 # Christmas Day and New Year's Eve: (for after hours cancellations)
+_HKChristmasEve = Holiday("Christmas Eve", month=12, day=24)
 _HKChristmasDay = Holiday("Christmas Day", month=12, day=25, observance=sunday_to_monday)
 _HKNewYearsEve = Holiday("New Year's Eve", month=12, day=31)
 
@@ -539,10 +540,10 @@ class HKFEDomesticExchangeCalendar(MarketCalendar):
     def special_closes(self):
         return [
             (
-                time(12, 0),
+                time(16, 30),
                 AbstractHolidayCalendar(
                     rules=[
-                        _HKChristmasDay,
+                        _HKChristmasEve,
                         _HKNewYearsEve,
                     ]
                 ),
@@ -567,6 +568,7 @@ class HKFEMSCIBase(MarketCalendar):
     - Christmas Day (25 Dec) or monday 26th.
     - New Year's Eve (31 Dec) # NB: Doesnt meet criteria above but appears to be true.
     """
+    _early_close = None
 
     @property
     def tz(self):
@@ -585,7 +587,7 @@ class HKFEMSCIBase(MarketCalendar):
     def special_closes(self):
         return [
             (
-                self.regular_market_times["break_start"],
+                self._early_close,
                 AbstractHolidayCalendar(
                     rules=[
                         _HKChristmasDay,
@@ -614,6 +616,7 @@ class HKFEA50ExchangeCalendar(HKFEMSCIBase):
 
     aliases = ["HKFE_A50"]
 
+    _early_close = time(16,30)
     regular_market_times = {
         "market_open": ((None, time(9, )),),
         "market_close": ((None, time(3, 0), 1),),
@@ -640,6 +643,7 @@ class HKFETaiwanExchangeCalendar(HKFEMSCIBase):
 
     aliases = ["HKFE_TW"]
 
+    _early_close = time(13,45)
     regular_market_times = {
         "market_open": ((None, time(8, 30)),),
         "market_close": ((None, time(3, 0), 1),),  
