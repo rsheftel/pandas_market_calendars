@@ -1,7 +1,7 @@
 from pandas.tseries.holiday import DateOffset, Holiday, MO, Easter, weekend_to_monday, previous_friday
 from pandas.tseries.offsets import BusinessDay, Day
 
-NewYears = Holiday("Day before Christmas", month=1, day=1, observance=weekend_to_monday)
+NewYears = Holiday("New Years Day", month=1, day=1, observance=weekend_to_monday)
 
 
 # Ontario Family Day
@@ -105,7 +105,7 @@ DayBeforeChristmas = Holiday("Day before Christmas", month=12, day=24, observanc
 Christmas = Holiday("Christmas", month=12, day=25, observance=weekend_to_monday)
 
 
-DayBeforeNewYears = Holiday("Day before Christmas", month=12, day=31, observance=previous_friday)
+DayBeforeNewYears = Holiday("Day before New years", month=12, day=31, observance=previous_friday)
 
 
 DayBeforeGoodFriday = Holiday("Day before good friday", month=1, day=1, offset=[Easter(), Day(-3)])
