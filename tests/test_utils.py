@@ -65,21 +65,11 @@ def test_merge_schedules():
     actual = mcal.merge_schedules([sch2, sch1], how="outer")
     assert_frame_equal(actual, expected)
 
-    # inner join will exclude July 4th because not open for both
-    expected = pd.DataFrame(
-        {
-            "market_open": [
-                pd.Timestamp(x, tz="UTC") for x in ["2016-07-01 13:30", "2016-07-05 13:30", "2016-07-06 13:30"]
-            ],
-            "market_close": [
-                pd.Timestamp(x, tz="UTC") for x in ["2016-07-01 02:49", "2016-07-05 02:49", "2016-07-06 02:49"]
-            ],
-        },
-        columns=["market_open", "market_close"],
-        index=pd.DatetimeIndex(["2016-07-01", "2016-07-05", "2016-07-06"]),
-    )
+    # inner join will exclude July 4th because cal2 is closed and exclude
+    # remaining days because the two schedules do not overlap intraday
     actual = mcal.merge_schedules([sch1, sch2], how="inner")
-    assert_frame_equal(actual, expected)
+    assert actual.empty
+    assert actual.columns.to_list() == ["market_open", "market_close"]
 
     # joining more than two calendars works correctly
     actual = mcal.merge_schedules([sch1, sch1, sch1], how="inner")
@@ -87,6 +77,21 @@ def test_merge_schedules():
 
     with pytest.raises(ValueError):
         mcal.merge_schedules([sch1, sch2], how="left")
+
+
+def test_merge_schedules_inner_excludes_reported_non_overlapping_session():
+    nyse = mcal.get_calendar("XNYS")
+    xetra = mcal.get_calendar("XETR")
+
+    nyse_schedule = nyse.schedule("2024-12-01", "2024-12-31")
+    xetra_schedule = xetra.schedule("2024-12-01", "2024-12-31")
+
+    actual = mcal.merge_schedules([nyse_schedule, xetra_schedule], how="inner")
+
+    assert not actual.empty
+    assert pd.Timestamp("2024-12-02") in actual.index
+    assert pd.Timestamp("2024-12-30") not in actual.index
+    assert (actual["market_open"] < actual["market_close"]).all()
 
 
 def test_merge_schedules_w_break():

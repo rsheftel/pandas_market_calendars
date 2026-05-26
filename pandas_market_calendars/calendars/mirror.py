@@ -8,10 +8,12 @@ import exchange_calendars
 import pandas as pd
 from pandas.tseries.offsets import CustomBusinessDay
 
-from pandas_market_calendars.market_calendar import MarketCalendar
+from pandas_market_calendars.market_calendar import HolidayCalendar, MarketCalendar
 
 
 DAYMASKS = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"]
+MIRROR_HOLIDAY_START_DATES = {"XNYS": "1885-01-01"}
+
 
 # XTAE (Tel Aviv Stock Exchange) changed from Sun-Thu to Mon-Fri on Jan 5, 2026
 XTAE_TRANSITION_DATE = pd.Timestamp("2026-01-05")
@@ -83,7 +85,11 @@ class TradingCalendar(MarketCalendar):
 
     @property
     def regular_holidays(self):
-        return self._ec.regular_holidays
+        regular_holidays = self._ec.regular_holidays
+        start_date = MIRROR_HOLIDAY_START_DATES.get(self.name)
+        if start_date is None or regular_holidays is None or not hasattr(regular_holidays, "rules"):
+            return regular_holidays
+        return HolidayCalendar(rules=regular_holidays.rules, start_date=start_date)
 
     @property
     def adhoc_holidays(self):
@@ -128,6 +134,8 @@ time_props = {
 
 for exchange in calendars:
     cal = calendars[exchange]
+    if exchange in MarketCalendar._regmeta_class_registry:
+        continue
 
     # this loop will set up the newly required regular_market_times dictionary
     regular_market_times = {}

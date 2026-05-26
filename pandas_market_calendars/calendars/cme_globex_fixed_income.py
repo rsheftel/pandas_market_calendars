@@ -43,8 +43,8 @@ class CMEGlobexFixedIncomeCalendar(CMEGlobexBaseExchangeCalendar):
     aliases = ["CME Globex Fixed Income", "CME Globex Interest Rate Products"]
 
     regular_market_times = {
-        "market_open": ((None, time(18), -1),),
-        "market_close": ((None, time(17)),),
+        "market_open": ((None, time(17), -1),),
+        "market_close": ((None, time(16)),),
     }
 
     """
@@ -52,7 +52,6 @@ class CMEGlobexFixedIncomeCalendar(CMEGlobexBaseExchangeCalendar):
         Christmas/New_Years
             5am special open for a couple years (see tests)
 
-        regular market_open/market_close changed from 17/16 to 18/17?
     """
 
     @property

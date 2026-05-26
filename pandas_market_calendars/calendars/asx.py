@@ -4,10 +4,7 @@ from pandas.tseries.holiday import AbstractHolidayCalendar, EasterMonday, GoodFr
 from zoneinfo import ZoneInfo
 
 from pandas_market_calendars.holidays.oz import *
-from pandas_market_calendars.market_calendar import MarketCalendar
-
-
-AbstractHolidayCalendar.start_date = "2011-01-01"
+from pandas_market_calendars.market_calendar import HolidayCalendar, MarketCalendar
 
 
 class ASXExchangeCalendar(MarketCalendar):
@@ -53,7 +50,8 @@ class ASXExchangeCalendar(MarketCalendar):
 
     @property
     def regular_holidays(self):
-        return AbstractHolidayCalendar(
+        return HolidayCalendar(
+            start_date="2011-01-01",
             rules=[
                 OZNewYearsDay,
                 AustraliaDay,
@@ -63,7 +61,7 @@ class ASXExchangeCalendar(MarketCalendar):
                 BoxingDay,
                 GoodFriday,
                 EasterMonday,
-            ]
+            ],
         )
 
     @property

@@ -303,15 +303,12 @@ from pandas_market_calendars.holidays.nyse import (
     # 1924
     WoodrowWilsonFuneral1230EarlyClose1924,
 )
-from pandas_market_calendars.market_calendar import MarketCalendar
+from pandas_market_calendars.market_calendar import HolidayCalendar, MarketCalendar
 
 
 # Useful resources for making changes to this file:
 # http://www.nyse.com/pdfs/closings.pdf
 # http://www.stevemorse.org/jcal/whendid.html
-
-# Overwrite the default holiday calendar start_date of 1/1/70
-AbstractHolidayCalendar.start_date = "1885-01-01"
 
 
 class NYSEExchangeCalendar(MarketCalendar):
@@ -863,7 +860,8 @@ class NYSEExchangeCalendar(MarketCalendar):
 
     @property
     def regular_holidays(self):
-        return AbstractHolidayCalendar(
+        return HolidayCalendar(
+            start_date="1885-01-01",
             rules=[
                 USNewYearsDayNYSEpost1952,
                 USNewYearsDayNYSEpre1952,
@@ -894,7 +892,7 @@ class NYSEExchangeCalendar(MarketCalendar):
                 Christmas54to98NYSE,
                 ChristmasBefore1954,
                 USJuneteenthAfter2022,
-            ]
+            ],
         )
 
     @property
@@ -997,6 +995,20 @@ class NYSEExchangeCalendar(MarketCalendar):
         )
 
     @property
+    def _regular_1pm_post_close_rules(self):
+        return [
+            FridayAfterIndependenceDayNYSEpre2013,
+            MonTuesThursBeforeIndependenceDay,
+            WednesdayBeforeIndependenceDayPost2013,
+            DayAfterThanksgiving1pmEarlyCloseInOrAfter1993,
+            ChristmasEvePost1999Early1pmClose,
+        ]
+
+    @property
+    def _adhoc_1pm_post_close_dates(self):
+        return ChristmasEve1pmEarlyCloseAdhoc + DayAfterChristmas1pmEarlyCloseAdhoc + BacklogRelief1pmEarlyClose1929
+
+    @property
     def special_closes(self):
         return [
             (
@@ -1033,12 +1045,8 @@ class NYSEExchangeCalendar(MarketCalendar):
             (
                 time(13, tzinfo=ZoneInfo("America/New_York")),
                 AbstractHolidayCalendar(
-                    rules=[
-                        FridayAfterIndependenceDayNYSEpre2013,
-                        MonTuesThursBeforeIndependenceDay,
-                        WednesdayBeforeIndependenceDayPost2013,
-                        DayAfterThanksgiving1pmEarlyCloseInOrAfter1993,
-                        ChristmasEvePost1999Early1pmClose,
+                    rules=self._regular_1pm_post_close_rules
+                    + [
                         GroverClevelandFuneral1pmClose1908,
                     ]
                 ),
@@ -1117,6 +1125,17 @@ class NYSEExchangeCalendar(MarketCalendar):
         ]
 
     @property
+    def special_post(self):
+        return [
+            (
+                time(17, tzinfo=ZoneInfo("America/New_York")),
+                AbstractHolidayCalendar(
+                    rules=self._regular_1pm_post_close_rules
+                ),
+            )
+        ]
+
+    @property
     def special_closes_adhoc(self):
         def _union_many(indexes):
             # Merges a list of pd.DatetimeIndex objects, returns merged DatetimeIndex
@@ -1128,8 +1147,7 @@ class NYSEExchangeCalendar(MarketCalendar):
         return [
             (
                 time(13, tzinfo=ZoneInfo("America/New_York")),
-                # DaysBeforeIndependenceDay1pmEarlyCloseAdhoc # list
-                ChristmasEve1pmEarlyCloseAdhoc + DayAfterChristmas1pmEarlyCloseAdhoc + BacklogRelief1pmEarlyClose1929,
+                self._adhoc_1pm_post_close_dates,
             ),
             (
                 time(14, tzinfo=ZoneInfo("America/New_York")),
@@ -1157,6 +1175,15 @@ class NYSEExchangeCalendar(MarketCalendar):
                 time(15, 30, tzinfo=ZoneInfo("America/New_York")),
                 Backlog330pmEarlyCloses1987,  # index
             ),
+        ]
+
+    @property
+    def special_post_adhoc(self):
+        return [
+            (
+                time(17, tzinfo=ZoneInfo("America/New_York")),
+                self._adhoc_1pm_post_close_dates,
+            )
         ]
 
     @property

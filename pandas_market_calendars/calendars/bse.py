@@ -382,6 +382,7 @@ BSEClosedDay = [
     Timestamp("2024-04-11", tz="UTC"),  # Thu, Id-Ul-Fitr (Ramadan Eid)
     Timestamp("2024-04-17", tz="UTC"),  # Wed, Shri Ram Navmi
     Timestamp("2024-05-01", tz="UTC"),  # Wed, Maharashtra Din
+    Timestamp("2024-05-20", tz="UTC"),  # Mon, General Parliamentary Elections
     Timestamp("2024-06-17", tz="UTC"),  # Mon, Bakri Id / Eid ul-Adha
     Timestamp("2024-07-17", tz="UTC"),  # Wed, Moharram
     Timestamp("2024-08-15", tz="UTC"),  # Thu, Independence Day
@@ -420,19 +421,23 @@ BSEClosedDay = [
     Timestamp("2026-12-25", tz="UTC"),  # Fri, Christmas
 ]
 
+# BSE and NSE currently share the same published closure set in this module.
+# Keep this as a shared object so future exchange-specific deltas are explicit.
+NSEClosedDay = BSEClosedDay
+
 
 class BSEExchangeCalendar(MarketCalendar):
     """
-    Exchange calendar for the Bombay Stock Exchange (BSE, XBOM).
+    Exchange calendar for the Bombay Stock Exchange (BSE).
     Open Time: 9:15 AM, Asia/Calcutta
     Close Time: 3:30 PM, Asia/Calcutta
 
     Due to the complexity around the BSE holidays, we are hardcoding a list
-    of holidays back to 1997, and forward through 2020.  There are no known
+    of holidays back to 1997, and forward through 2026.  There are no known
     early closes or late opens.
     """
 
-    aliases = ["BSE", "NSE", "XNSE"]
+    aliases = ["BSE", "XBOM"]
     regular_market_times = {
         "market_open": ((None, time(9, 15)),),
         "market_close": ((None, time(15, 30)),),
@@ -453,3 +458,23 @@ class BSEExchangeCalendar(MarketCalendar):
     @property
     def adhoc_holidays(self):
         return BSEClosedDay
+
+
+class NSEExchangeCalendar(BSEExchangeCalendar):
+    """
+    Exchange calendar for the National Stock Exchange of India (NSE, XNSE).
+    """
+
+    aliases = ["NSE", "XNSE"]
+
+    @property
+    def name(self):
+        return "NSE"
+
+    @property
+    def full_name(self):
+        return "National Stock Exchange of India"
+
+    @property
+    def adhoc_holidays(self):
+        return NSEClosedDay

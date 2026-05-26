@@ -30,6 +30,13 @@ have different market open, closes, breaks and holidays based on product type.
 
 This package provides access to over 50+ unique exchange calendars for global equity and futures markets.
 
+Calendar Data and Updates
+~~~~~~~~~~~~~~~~~~~~~~~~~
+Calendars and their rules are shipped as package code. pandas_market_calendars does not request market hours from a
+server at runtime. To receive corrected or updated market hours, install a newer package release or update the source
+code. Calendars mirrored from ``exchange_calendars`` likewise use the version installed in the local Python environment,
+not a live data feed.
+
 This package is a fork of the Zipline package from Quantopian and extracts just the relevant parts. All credit for
 their excellent work to Quantopian.
 

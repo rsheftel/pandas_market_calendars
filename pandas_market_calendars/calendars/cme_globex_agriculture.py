@@ -24,6 +24,7 @@ from pandas.tseries.holiday import (
     USThanksgivingDay,
 )
 
+from pandas_market_calendars.calendars.cme_market_times import GRAINS_AND_OILSEEDS_MARKET_TIMES
 from pandas_market_calendars.holidays.us import (
     Christmas,
     ChristmasEveBefore1993,
@@ -145,12 +146,7 @@ class CMEGlobexGrainsAndOilseedsExchangeCalendar(CMEGlobexAgricultureExchangeCal
         "CMEGlobex_Oilseeds",
     ]
 
-    regular_market_times = {
-        "market_open": ((None, time(19), -1),),  # offset by -1 day
-        "market_close": ((None, time(13, 20)),),
-        "break_start": ((None, time(7, 45)),),
-        "break_end": ((None, time(8, 30)),),
-    }
+    regular_market_times = GRAINS_AND_OILSEEDS_MARKET_TIMES
 
     @property
     def name(self):

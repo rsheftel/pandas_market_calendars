@@ -90,8 +90,8 @@ class EUREXExchangeCalendar(MarketCalendar):
 
     aliases = ["EUREX"]
     regular_market_times = {
-        "market_open": ((None, time(9)),),
-        "market_close": ((None, time(17, 30)),),
+        "market_open": ((None, time(8)),),
+        "market_close": ((None, time(22)),),
     }
 
     @property
@@ -127,6 +127,62 @@ class EUREXExchangeCalendar(MarketCalendar):
                         ChristmasEve,
                         EUREXNewYearsEve,
                     ]
+                ),
+            )
+        ]
+
+
+class EUREXPrePostExchangeCalendar(EUREXExchangeCalendar):
+    """
+    EUREX calendar variant with explicit pre and post sessions.
+
+    Issue #184 requested these session endpoints in UTC. This calendar keeps
+    those endpoints in UTC instead of interpreting them as Europe/Berlin wall
+    times, which would shift them across daylight-saving transitions.
+    """
+
+    aliases = ["EUREX_PrePost", "EUREX_Extended"]
+
+    regular_market_times = {
+        "pre": ((None, time(0, 15)),),
+        "market_open": ((None, time(8)),),
+        "market_close": ((None, time(16, 30)),),
+        "post": ((None, time(21)),),
+    }
+
+    @property
+    def name(self):
+        return "EUREX_PrePost"
+
+    @property
+    def tz(self):
+        return ZoneInfo("UTC")
+
+    @property
+    def _extended_early_close_rules(self):
+        return [
+            ChristmasEve,
+            EUREXNewYearsEve,
+        ]
+
+    @property
+    def special_closes(self):
+        return [
+            (
+                time(11, 30),
+                AbstractHolidayCalendar(
+                    rules=self._extended_early_close_rules
+                ),
+            )
+        ]
+
+    @property
+    def special_post(self):
+        return [
+            (
+                time(11, 30),
+                AbstractHolidayCalendar(
+                    rules=self._extended_early_close_rules
                 ),
             )
         ]
