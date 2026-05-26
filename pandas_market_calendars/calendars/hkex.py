@@ -585,7 +585,7 @@ class HKFEMSCIBase(MarketCalendar):
     def special_closes(self):
         return [
             (
-                time(12, 0),
+                self.regular_market_times["break_start"],
                 AbstractHolidayCalendar(
                     rules=[
                         _HKChristmasDay,
