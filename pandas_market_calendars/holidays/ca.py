@@ -51,7 +51,7 @@ DayBeforeCanadaDay = Holiday(
 
 # Civic Holiday
 CivicHoliday = Holiday(
-    "Civic Holiday",
+    "Civic Holiday", # AKA Terry Fox day
     month=8,
     day=1,
     offset=DateOffset(weekday=MO(1)),
@@ -91,10 +91,10 @@ DayBeforeThanksgiving = Holiday(
     offset=[DateOffset(weekday=MO(2)), BusinessDay(-1)],
 )
 
-TruthAndReconiliationDay = Holiday(
+TruthAndReconciliationDay = Holiday(
     "Canada Truth and Reconciliation Day", month=9, day=30, observance=weekend_to_monday, start_date="2021-01-01"
 )
-DayBeforeTruthAndReconiliationDay = Holiday(
+DayBeforeTruthAndReconciliationDay = Holiday(
     "Canada Truth and Reconciliation Day", month=9, day=29, observance=previous_friday, start_date="2021-01-01"
 )
 

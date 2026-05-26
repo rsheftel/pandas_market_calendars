@@ -6,7 +6,7 @@ from .market_calendar import MarketCalendar
 from .calendars.asx import ASXExchangeCalendar, ASX24IndexFuturesCalendar, ASX24IRFuturesCalendar
 from .calendars.bmf import BMFExchangeCalendar
 from .calendars.bse import BSEExchangeCalendar, NSEExchangeCalendar
-from .calendars.bursa_malaysia import BursaMalaysiaFCPOExchangeCalendar, BursaMalaysiaFKLIExchangeCalendar
+from .calendars.bursa_malaysia import BursaMalaysiaFCPOCalendar, BursaMalaysiaFKLICalendar
 from .calendars.cboe import CFEExchangeCalendar
 from .calendars.cme import CMEEquityExchangeCalendar, CMEBondExchangeCalendar, CMETradeDateCalendar
 from .calendars.cme_globex_base import CMEGlobexBaseExchangeCalendar
@@ -41,7 +41,19 @@ from .calendars.hkex import (
     HKFECNHExchangeCalendar,
     HKFETaiwanExchangeCalendar
 )
-from .calendars.ice import ICEExchangeCalendar
+from .calendars.ice import (
+    ICEExchangeCalendar,
+    ICEUSCocoaCalendar,
+    ICEUSCoffeeCalendar,
+    ICEUSCottonCalendar,
+    ICEUSSugar11Calendar,
+    ICEUSSugar16Calendar,
+    ICEUSCanolaCalendar,
+    ICEUSFinancialsCalendar,
+    ICEUSFxCalendar,
+    ICEUSEnergiesCalendar,
+    ICEUSDailyGoldSilverCalendar
+)
 from .calendars.iceeu import (
     ICEEndexEmissionsExchangeCalendar,
     ICEEndexGasPowerExchangeCalendar,

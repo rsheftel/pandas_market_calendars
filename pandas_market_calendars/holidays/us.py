@@ -44,6 +44,13 @@ USNewYearsDay = Holiday(
     # When Jan 1 is a Saturday (as in 2005 and 2011), no holiday is observed.
     observance=sunday_to_monday,
 )
+USNewYearsEve = Holiday(
+    "New Years Eeve",
+    month=12,
+    day=31,
+    # When New Years is a Saturday, the 31st is a full holiday.
+    days_of_week=(MONDAY, TUESDAY, WEDNESDAY, THURSDAY),
+)
 USMartinLutherKingJrAfter1998 = Holiday(
     "Dr. Martin Luther King Jr. Day",
     month=1,

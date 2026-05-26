@@ -5,7 +5,13 @@ from pandas_market_calendars.calendars.ice import (
     ICEUSCanolaCalendar,
     ICEUSDailyGoldSilverCalendar,
     ICEUSFinancialsCalendar,
-    ICEUSSoftsCalendar,
+    ICEUSCoffeeCalendar,
+    ICEUSCocoaCalendar,
+    ICEUSCottonCalendar,
+    ICEUSSugar11Calendar,
+    ICEUSSugar16Calendar,
+    ICEUSFxCalendar,
+    ICEUSEnergiesCalendar
 )
 
 
@@ -81,108 +87,122 @@ def _is_trading(cal, date):
 
 
 def test_softs_instantiates():
-    assert ICEUSSoftsCalendar() is not None
+    for cal in [
+        ICEUSCoffeeCalendar,
+        ICEUSCocoaCalendar,
+        ICEUSCottonCalendar,
+        ICEUSSugar11Calendar,
+        ICEUSSugar16Calendar
+    ]:
+        assert cal() is not None
 
 
 def test_softs_new_years_closed():
-    assert _is_holiday(ICEUSSoftsCalendar(), "2026-01-01")
+    assert _is_holiday(ICEUSCoffeeCalendar(), "2026-01-01")
 
 
 def test_softs_mlk_closed():
-    assert _is_holiday(ICEUSSoftsCalendar(), "2026-01-19")
+    for cal in [
+        ICEUSCoffeeCalendar,
+        ICEUSCocoaCalendar,
+        ICEUSCottonCalendar,
+        ICEUSSugar11Calendar,
+        ICEUSSugar16Calendar
+    ]:
+        assert _is_holiday(cal(), "2026-01-19")
 
 
 def test_softs_presidents_day_closed():
-    assert _is_holiday(ICEUSSoftsCalendar(), "2026-02-16")
+    assert _is_holiday(ICEUSCoffeeCalendar(), "2026-02-16")
 
 
 def test_softs_good_friday_closed():
-    assert _is_holiday(ICEUSSoftsCalendar(), "2026-04-03")
+    assert _is_holiday(ICEUSCoffeeCalendar(), "2026-04-03")
 
 
 def test_softs_memorial_day_closed():
-    assert _is_holiday(ICEUSSoftsCalendar(), "2026-05-25")
+    assert _is_holiday(ICEUSCocoaCalendar(), "2026-05-25")
 
 
 def test_softs_juneteenth_closed():
-    assert _is_holiday(ICEUSSoftsCalendar(), "2026-06-19")
+    assert _is_holiday(ICEUSCoffeeCalendar(), "2026-06-19")
 
 
 def test_softs_independence_day_closed():
-    assert _is_holiday(ICEUSSoftsCalendar(), "2026-07-03")
+    assert _is_holiday(ICEUSCoffeeCalendar(), "2026-07-03")
 
 
 def test_softs_labor_day_closed():
-    assert _is_holiday(ICEUSSoftsCalendar(), "2026-09-07")
+    assert _is_holiday(ICEUSCoffeeCalendar(), "2026-09-07")
 
 
 def test_softs_thanksgiving_closed():
-    assert _is_holiday(ICEUSSoftsCalendar(), "2026-11-26")
+    assert _is_holiday(ICEUSCoffeeCalendar(), "2026-11-26")
 
 
 def test_softs_christmas_closed():
-    assert _is_holiday(ICEUSSoftsCalendar(), "2026-12-25")
+    assert _is_holiday(ICEUSCoffeeCalendar(), "2026-12-25")
 
 
 def test_softs_columbus_day_open():
     # Columbus Day is NOT a softs closure
-    assert _is_trading(ICEUSSoftsCalendar(), "2026-10-12")
+    assert _is_trading(ICEUSCoffeeCalendar(), "2026-10-12")
 
 
 def test_softs_veterans_day_open():
-    assert _is_trading(ICEUSSoftsCalendar(), "2026-11-11")
+    assert _is_trading(ICEUSCoffeeCalendar(), "2026-11-11")
 
 
 def test_softs_normal_open():
-    sched = _sched(ICEUSSoftsCalendar(), "2026-03-10")
+    sched = _sched(ICEUSSugar11Calendar(), "2026-03-10")
     # Sugar 11 opens at 03:30 ET; EDT (UTC-4) in March -> 07:30 UTC
     assert sched["market_open"].iloc[0] == pd.Timestamp("2026-03-10 07:30:00+00:00")
 
 
 # ---------------------------------------------------------------------------
-# Financials (DX, Currency Pairs, Stock/Bond Index, SOFR, Mortgage)
+# FX (DX)
 # ---------------------------------------------------------------------------
 
 
 def test_dx_instantiates():
-    assert ICEUSFinancialsCalendar() is not None
+    assert ICEUSFxCalendar() is not None
 
 
 def test_dx_new_years_closed():
-    assert _is_holiday(ICEUSFinancialsCalendar(), "2026-01-01")
+    assert _is_holiday(ICEUSFxCalendar(), "2026-01-01")
 
 
 def test_dx_christmas_closed():
-    assert _is_holiday(ICEUSFinancialsCalendar(), "2026-12-25")
+    assert _is_holiday(ICEUSFxCalendar(), "2026-12-25")
 
 
 def test_dx_good_friday_open():
     # KEY difference from existing ICEExchangeCalendar — DX is open Good Friday
-    assert _is_trading(ICEUSFinancialsCalendar(), "2026-04-03")
+    assert _is_trading(ICEUSFxCalendar(), "2026-04-03")
 
 
 def test_dx_mlk_open():
-    assert _is_trading(ICEUSFinancialsCalendar(), "2026-01-19")
+    assert _is_trading(ICEUSFxCalendar(), "2026-01-19")
 
 
 def test_dx_presidents_day_open():
-    assert _is_trading(ICEUSFinancialsCalendar(), "2026-02-16")
+    assert _is_trading(ICEUSFxCalendar(), "2026-02-16")
 
 
 def test_dx_memorial_day_open():
-    assert _is_trading(ICEUSFinancialsCalendar(), "2026-05-25")
+    assert _is_trading(ICEUSFxCalendar(), "2026-05-25")
 
 
 def test_dx_labor_day_open():
-    assert _is_trading(ICEUSFinancialsCalendar(), "2026-09-07")
+    assert _is_trading(ICEUSFxCalendar(), "2026-09-07")
 
 
 def test_dx_thanksgiving_open():
-    assert _is_trading(ICEUSFinancialsCalendar(), "2026-11-26")
+    assert _is_trading(ICEUSFxCalendar(), "2026-11-26")
 
 
 def test_dx_normal_hours():
-    sched = _sched(ICEUSFinancialsCalendar(), "2026-03-10")
+    sched = _sched(ICEUSFxCalendar(), "2026-03-10")
     # 20:00 ET prev day (Mar 9 EDT = UTC-4) = 00:00 UTC Mar 10
     assert sched["market_open"].iloc[0] == pd.Timestamp("2026-03-10 00:00:00+00:00")
     # 17:00 ET (EDT = UTC-4) = 21:00 UTC
@@ -226,7 +246,7 @@ def test_canola_normal_hours():
     sched = _sched(ICEUSCanolaCalendar(), "2026-03-10")
     # 09:00 ET (EDT=UTC-4) = 13:00 UTC; 13:00 ET = 17:00 UTC
     assert sched["market_open"].iloc[0] == pd.Timestamp("2026-03-10 00:00:00+00:00")
-    assert sched["market_close"].iloc[0] == pd.Timestamp("2026-03-10 17:00:00+00:00")
+    assert sched["market_close"].iloc[0] == pd.Timestamp("2026-03-10 18:20:00+00:00")
 
 
 # ---------------------------------------------------------------------------
@@ -235,33 +255,33 @@ def test_canola_normal_hours():
 
 
 def test_energy_instantiates():
-    assert ICEExchangeCalendar() is not None
+    assert ICEUSEnergiesCalendar() is not None
 
 
 def test_energy_good_friday_closed():
-    assert _is_holiday(ICEExchangeCalendar(), "2026-04-03")
+    assert _is_holiday(ICEUSEnergiesCalendar(), "2026-04-03")
 
 
 def test_energy_new_years_closed():
-    assert _is_holiday(ICEExchangeCalendar(), "2026-01-01")
+    assert _is_holiday(ICEUSEnergiesCalendar(), "2026-01-01")
 
 
 def test_energy_christmas_closed():
-    assert _is_holiday(ICEExchangeCalendar(), "2026-12-25")
+    assert _is_holiday(ICEUSEnergiesCalendar(), "2026-12-25")
 
 
 def test_energy_memorial_day_open():
     # Key difference from softs — energy stays open
-    assert _is_trading(ICEExchangeCalendar(), "2026-05-25")
+    assert _is_trading(ICEUSEnergiesCalendar(), "2026-05-25")
 
 
 def test_energy_boxing_day_open():
-    assert _is_trading(ICEExchangeCalendar(), "2026-12-28")
+    assert _is_trading(ICEUSEnergiesCalendar(), "2026-12-28")
 
 
 def test_energy_normal_hours():
-    sched = _sched(ICEExchangeCalendar(), "2026-03-10")
-    assert sched["market_open"].iloc[0] == pd.Timestamp("2026-03-10 00:00:00+00:00")
+    sched = _sched(ICEUSEnergiesCalendar(), "2026-03-10")
+    assert sched["market_open"].iloc[0] == pd.Timestamp("2026-03-09 23:50:00+00:00")
     assert sched["market_close"].iloc[0] == pd.Timestamp("2026-03-10 22:00:00+00:00")
 
 

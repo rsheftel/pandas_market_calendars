@@ -430,6 +430,33 @@ CALENDAR_SOURCES: dict[str, tuple[Source, ...]] = {
             covers="trading hours",
         ),
     ),
+    **{
+        # ICEUS calendars
+        cal: (
+            Source(
+                name="IFUS trading hours",
+                url="https://www.ice.com/publicdocs/futures_us/ICE_Futures_US_Regular_Trading_Hours.pdf",
+                last_verified="2026-05-26",
+                covers="trading hours"
+            ),
+            Source(
+                name="IFUS holidays",
+                url="https://www.ice.com/publicdocs/futures/IFUS_Trading_Hours_Holiday_Calendar.pdf",
+                last_verified="2026-05-26",
+                covers="holidays",
+            ),
+            Source(
+                name="IFUS christmas holiday clarification",
+                url="https://www.ice.com/publicdocs/futures_us/exchange_notices/ICE_Futures_US_2021Christmas_Holiday_20211011.pdf",
+                last_verified="2026-05-26",
+                covers="holidays"
+            )
+        )
+        for cal in [
+            "ICEUS_COFFEE", "ICEUS_COTTON", "ICEUS_COCOA", "ICEUS_SUGAR11", "ICEUS_SUGAR16", "ICEUS_CANOLA",
+            "ICEUS_FX", "ICEUS_ENERGIES", "ICEUS_FINANCIALS", "ICEUS_DAILY_PR",
+        ]
+    },
     # endregion
     # region ---- IEX (Investors Exchange) ----
     "IEX": (

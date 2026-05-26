@@ -35,7 +35,7 @@ from pandas_market_calendars.holidays.ca import (
     LaborDay,
     Thanksgiving,
     Christmas,
-    TruthAndReconiliationDay,
+    TruthAndReconciliationDay,
     RemembranceDay,
     DayBeforeCanadaDay,
     DayBeforeFamilyDay,
@@ -45,7 +45,7 @@ from pandas_market_calendars.holidays.ca import (
     DayBeforeNewYears,
     DayBeforeRemembranceDay,
     DayBeforeThanksgiving,
-    DayBeforeTruthAndReconiliationDay,
+    DayBeforeTruthAndReconciliationDay,
     DayBeforeVictoriaDay,
     DayBeforeGoodFriday,
 )
@@ -122,7 +122,7 @@ class MonExRatesExchangeCalendar(MonExBaseExchangeCalendar):
 
     @property
     def _regular_holidays(self):
-        return super()._regular_holidays + [TruthAndReconiliationDay, RemembranceDay]
+        return super()._regular_holidays + [TruthAndReconciliationDay, RemembranceDay]
 
     @property
     def special_closes(self):
@@ -137,7 +137,7 @@ class MonExRatesExchangeCalendar(MonExBaseExchangeCalendar):
                         DayBeforeCanadaDay,
                         DayBeforeCivicHoliday,
                         DayBeforeLaborDay,
-                        DayBeforeTruthAndReconiliationDay,
+                        DayBeforeTruthAndReconciliationDay,
                         DayBeforeThanksgiving,
                         DayBeforeRemembranceDay,
                         DayBeforeChristmas,

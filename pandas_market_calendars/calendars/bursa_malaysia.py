@@ -41,7 +41,7 @@ from pandas_market_calendars.holidays.my import (
 )
 
 
-class BursaMalaysiaBaseExchangeCalendar(MarketCalendar):
+class BursaMalaysiaBaseCalendar(MarketCalendar):
     """
     Base Exchange calendar for Bursa Malaysia
 
@@ -123,7 +123,7 @@ class BursaMalaysiaBaseExchangeCalendar(MarketCalendar):
         )
 
 
-class BursaMalaysiaFCPOExchangeCalendar(BursaMalaysiaBaseExchangeCalendar):
+class BursaMalaysiaFCPOCalendar(BursaMalaysiaBaseCalendar):
     aliases = [
         "BURSAMY_FCPO",
     ]
@@ -145,7 +145,7 @@ class BursaMalaysiaFCPOExchangeCalendar(BursaMalaysiaBaseExchangeCalendar):
     }
 
 
-class BursaMalaysiaFKLIExchangeCalendar(BursaMalaysiaBaseExchangeCalendar):
+class BursaMalaysiaFKLICalendar(BursaMalaysiaBaseCalendar):
     aliases = [
         "BURSAMY_FKLI",
     ]

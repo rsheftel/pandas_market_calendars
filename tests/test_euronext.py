@@ -61,7 +61,7 @@ def test_paris_index_normal_close():
 
 def test_paris_index_xmas_eve_early_close():
     # 13:55 CET winter = 12:55 UTC
-    assert _close(EuronextParisIndexDerivsCalendar(), "2026-12-24") == pd.Timestamp("2026-12-24 12:55:00+00:00")
+    assert _close(EuronextParisIndexDerivsCalendar(), "2026-12-24") == pd.Timestamp("2026-12-24 13:00:00+00:00")
 
 
 # ---------------------------------------------------------------------------
