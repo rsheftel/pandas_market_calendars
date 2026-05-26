@@ -396,6 +396,22 @@ CALENDAR_SOURCES: dict[str, tuple[Source, ...]] = {
             covers="holidays",
         ),
     ),
+    **{cal: (
+        Source(
+            name="HKEX Derivs trading hours",
+            url="https://www.hkex.com.hk/Services/Trading-hours-and-Severe-Weather-Arrangements/Trading-Hours/Derivatives-Market?sc_lang=en",
+            last_verified="2026-05-26",
+            covers="trading hours"
+        ),
+        Source(
+            name="HKFE Trading calendar",
+            url="https://www.hkex.com.hk/Services/Trading/Derivatives/Overview/Trading-Calendar-and-Holiday-Schedule?sc_lang=en",
+            last_verified="2026-05-26",
+            covers="holidays, early closes"
+        )
+    )
+        for cal in ["HKFE", "HKFE_A50", "HKFE_TW", "HKFE_CNH"]
+    },
     # endregion
     # region ---- ICE Futures ----
     "ICE": (

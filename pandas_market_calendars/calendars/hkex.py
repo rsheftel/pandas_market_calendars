@@ -21,6 +21,11 @@ from pandas_market_calendars.holidays.cn import (
     tsd_mapping,
 )
 from pandas_market_calendars.holidays.us import USNewYearsDay
+from pandas_market_calendars.holidays.uk import (
+    Christmas, BoxingDay, WeekendChristmas, WeekendBoxingDay,
+    SpringBank_post_2002_pre_2012, SpringBank_post_2012_pre_2022, 
+    SpringBank_post_2022, SpringBank_pre_2002
+)
 from pandas_market_calendars.market_calendar import MarketCalendar
 
 
@@ -216,21 +221,7 @@ NationalDay = Holiday(
     start_date=Timestamp("1997-07-01"),
 )
 
-Christmas = Holiday(
-    name="Christmas",
-    month=12,
-    day=25,
-    observance=partial(process_date, offset=2),
-    start_date=Timestamp("1954-01-01"),
-)
 
-BoxingDay = Holiday(
-    name="Boxing day",  # 圣诞节后第一个平日
-    month=12,
-    day=26,
-    observance=sunday_to_monday,
-    start_date=Timestamp("1954-01-01"),
-)
 
 QueenBirthday = Holiday(
     name="Queen's Birthday",  # 英女王生日 6月
@@ -416,7 +407,9 @@ class HKEXExchangeCalendar(MarketCalendar):
                 NationalDay,
                 DoubleNinthFestivalDay,
                 Christmas,
+                WeekendChristmas,
                 BoxingDay,
+                WeekendBoxingDay,
                 CommemoratingAlliedVictory,
                 QueenBirthday,
                 QueenBirthday2,
@@ -454,15 +447,9 @@ _LNYEveEarlyClose = [
     Timestamp("2027-02-05"),
 ]
 
-# Christmas Eve and New Year's Eve: morning session only (close 12:00 HKT).
-_HKChristmasEve = Holiday("Christmas Eve", month=12, day=24)
+# Christmas Day and New Year's Eve: (for after hours cancellations)
+_HKChristmasDay = Holiday("Christmas Day", month=12, day=25, observance=sunday_to_monday)
 _HKNewYearsEve = Holiday("New Year's Eve", month=12, day=31)
-
-
-# ---------------------------------------------------------------------------
-# 1. HKFE Domestic Trading Calendar
-#    Contracts: HSI, MHI, HHI, MCH, HTI
-# ---------------------------------------------------------------------------
 
 
 class HKFEDomesticExchangeCalendar(MarketCalendar):
@@ -479,22 +466,22 @@ class HKFEDomesticExchangeCalendar(MarketCalendar):
     Regular session (HKT = UTC+8):
         Morning   : 09:15 – 12:00
         Afternoon : 13:00 – 16:30
-        After-hours T+1 session (17:15 – 23:59)
-    NB: We do not model the lunch break as the library doesn't support multiple breaks.
+        After-hours T+1 session (17:15 – 03:00 T+1)
+
+    WARNING! We do not model the lunch break as the library doesn't support multiple breaks.
 
     Early closes (morning session only, close 12:00 HKT):
         - Lunar New Year Eve (day before LNY Day 1)
         - Christmas Eve (24 Dec)
         - New Year's Eve (31 Dec)
 
-    Source: HKFE Circular MO/DT/120/25 (June 2025)
     """
 
     aliases = ["HKFE", "HKFE_INDEX"]
 
     regular_market_times = {
         "market_open": ((None, time(9, 15)),),
-        "market_close": ((None, time(23, 59)),),  # T+1 session closes 23:59 HKT same day
+        "market_close": ((None, time(3, 0), 1),),  # T+1 session closes 03:00 HKT T+1
         "break_start": ((None, time(16, 30)),),  # T session closes 16:30
         "break_end": ((None, time(17, 15)),),  # T+1 session opens 17:15
     }
@@ -555,7 +542,7 @@ class HKFEDomesticExchangeCalendar(MarketCalendar):
                 time(12, 0),
                 AbstractHolidayCalendar(
                     rules=[
-                        _HKChristmasEve,
+                        _HKChristmasDay,
                         _HKNewYearsEve,
                     ]
                 ),
@@ -567,54 +554,19 @@ class HKFEDomesticExchangeCalendar(MarketCalendar):
         return [(time(12, 0), _LNYEveEarlyClose)]
 
 
-# ---------------------------------------------------------------------------
-# 2. HKFE Foreign Trading Calendar
-#    Contracts: MTW, MCA, CUS
-# ---------------------------------------------------------------------------
 
-
-class HKFEForeignExchangeCalendar(MarketCalendar):
+class HKFEMSCIBase(MarketCalendar):
     """
-    HKFE — Holiday Trading contracts
-    (MTW — MSCI Taiwan (USD) Index Futures,
-     MCA — MSCI China A50 Connect (USD) Index Futures,
-     CUS — USD/CNH Futures)
+    These contracts trade THROUGH most Hong Kong public holidays.
+    The only full closure is New Year's Day (1 January).
 
-    Per HKFE Circulars MO/DT/085/22 and EBF/FIC/003/24, these contracts
-    trade THROUGH most Hong Kong public holidays. The only full closure
-    is New Year's Day (1 January).
-
-    Regular session (HKT = UTC+8):
-        Morning   : 09:15 – 12:00
-        Afternoon : 13:00 – 16:30
-        After-hours T+1 session (17:15 – 23:59) .
-
-    NB: We do not model the lunch break!
-
-    Early closes (morning session only, close 12:00 HKT):
-        - Lunar New Year Eve (day before LNY Day 1)
-        - Christmas Eve (24 Dec)
-        - New Year's Eve (31 Dec)
-
-    Note: The after-hours (T+1) session is additionally cancelled on days
-    when BOTH UK and US markets are bank holidays (e.g. UK Spring Bank
-    Holiday / US Memorial Day; Christmas Day). We do not model that here.
-
-    Source: HKFE Circulars MO/DT/085/22, EBF/FIC/003/24, MO/DT/120/25
+    After hours (T+1) session is additionally cancelled for the eve of lunar new year,
+    and on other days where it is both a UK and US holiday.
+    - Lunar New Year Eve (day before LNY Day 1)
+    - Last monday in may - US Memorial day & UK Late may bank holiday.
+    - Christmas Day (25 Dec) or monday 26th.
+    - New Year's Eve (31 Dec) # NB: Doesnt meet criteria above but appears to be true.
     """
-
-    aliases = ["HKFE_MSCI", "HKFE_FX"]
-
-    regular_market_times = {
-        "market_open": ((None, time(9, 15)),),
-        "market_close": ((None, time(23, 59)),),  # T+1 session closes 23:59 HKT same day
-        "break_start": ((None, time(16, 30)),),  # T session closes 16:30
-        "break_end": ((None, time(17, 15)),),  # T+1 session opens 17:15
-    }
-
-    @property
-    def name(self):
-        return "HKFE_MSCI"
 
     @property
     def tz(self):
@@ -636,13 +588,106 @@ class HKFEForeignExchangeCalendar(MarketCalendar):
                 time(12, 0),
                 AbstractHolidayCalendar(
                     rules=[
-                        _HKChristmasEve,
+                        _HKChristmasDay,
+                        SpringBank_post_2002_pre_2012, 
+                        SpringBank_post_2012_pre_2022, 
+                        SpringBank_post_2022, 
+                        SpringBank_pre_2002,
                         _HKNewYearsEve,
                     ]
                 ),
             ),
         ]
 
+
+
+class HKFEA50ExchangeCalendar(HKFEMSCIBase):
+    """
+    Regular session (HKT = UTC+8):
+        Morning   : 09:00 – 16:30
+        After-hours T+1 session (17:15 – 03:00 T+1) .
+
+    No lunch break in this market.
+
+    See HKFEMSCIBase for holiday rules
+    """
+
+    aliases = ["HKFE_A50"]
+
+    regular_market_times = {
+        "market_open": ((None, time(9, )),),
+        "market_close": ((None, time(3, 0), 1),),
+        "break_start": ((None, time(16, 30)),), 
+        "break_end": ((None, time(17, 15)),),  
+    }
+
     @property
-    def special_closes_adhoc(self):
-        return [(time(12, 0), _LNYEveEarlyClose)]
+    def name(self):
+        return "HKFE_A50"
+
+
+
+class HKFETaiwanExchangeCalendar(HKFEMSCIBase):
+    """
+    Regular session (HKT = UTC+8):
+        Morning   : 08:30 – 13:45
+        After-hours T+1 session (14:30 – 03:00 T+1) .
+
+    No lunch break in this market.
+
+    See HKFEMSCIBase for holiday rules
+    """
+
+    aliases = ["HKFE_TW"]
+
+    regular_market_times = {
+        "market_open": ((None, time(8, 30)),),
+        "market_close": ((None, time(3, 0), 1),),  
+        "break_start": ((None, time(13, 45)),), 
+        "break_end": ((None, time(14, 30)),), 
+    }
+
+    @property
+    def name(self):
+        return "HKFE_TW"
+
+
+
+class HKFECNHExchangeCalendar(HKFEMSCIBase):
+    """
+    Regular session (HKT = UTC+8):
+        Morning   : 08:30 – 18:00
+        After-hours T+1 session (19:00 – 03:00 T+1) .
+
+    No lunch break in this market.
+
+    Holidays are just New years, while New years eve has the T+1 session
+    cancelled.
+    """
+
+    aliases = ["HKFE_CNH"]
+
+    regular_market_times = {
+        "market_open": ((None, time(8, 30)),),
+        "market_close": ((None, time(3, 0), 1),),  
+        "break_start": ((None, time(18, 0)),), 
+        "break_end": ((None, time(19, 0)),), 
+    }
+
+    @property
+    def name(self):
+        return "HKFE_CNH"
+
+    @property
+    def special_closes(self):
+        return [
+            # No T+1 session on NYE
+            (
+                time(18, 0),
+                AbstractHolidayCalendar(
+                    rules=[
+                        _HKNewYearsEve,
+                    ]
+                ),
+            ),
+        ]

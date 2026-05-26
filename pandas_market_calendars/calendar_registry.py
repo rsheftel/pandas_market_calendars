@@ -34,7 +34,13 @@ from .calendars.euronext import (
     EuronextParisIndexDerivsCalendar,
 )
 from .calendars.forex import ForexExchangeCalendar
-from .calendars.hkex import HKEXExchangeCalendar, HKFEDomesticExchangeCalendar, HKFEForeignExchangeCalendar
+from .calendars.hkex import (
+    HKEXExchangeCalendar, 
+    HKFEDomesticExchangeCalendar, 
+    HKFEA50ExchangeCalendar,
+    HKFECNHExchangeCalendar,
+    HKFETaiwanExchangeCalendar
+)
 from .calendars.ice import ICEExchangeCalendar
 from .calendars.iceeu import (
     ICEEndexEmissionsExchangeCalendar,

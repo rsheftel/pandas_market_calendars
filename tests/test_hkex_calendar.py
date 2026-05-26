@@ -7,7 +7,9 @@ from zoneinfo import ZoneInfo
 from pandas_market_calendars.calendars.hkex import (
     HKEXExchangeCalendar,
     HKFEDomesticExchangeCalendar,
-    HKFEForeignExchangeCalendar,
+    HKFEA50ExchangeCalendar,
+    HKFECNHExchangeCalendar,
+    HKFETaiwanExchangeCalendar
 )
 
 
@@ -118,22 +120,28 @@ def test_hkfe_non_holiday_t1_session_modelled():
 
 
 def test_hkfe_holiday_trading_instantiates():
-    assert HKFEForeignExchangeCalendar() is not None
+    assert HKFEA50ExchangeCalendar() is not None
+    assert HKFECNHExchangeCalendar() is not None
+    assert HKFETaiwanExchangeCalendar() is not None
 
 
 def test_hkfe_holiday_trading_open_on_hk_holiday():
-    cal = HKFEForeignExchangeCalendar()
+    cal = HKFEA50ExchangeCalendar()
     # Labour Day 2026 — HK holiday but MSCI/FX contracts trade
     assert _is_trading(cal, "2026-05-01")
 
 
 def test_hkfe_holiday_trading_closed_new_years_day():
-    cal = HKFEForeignExchangeCalendar()
-    # New Year's Day is the one exception — all contracts closed
-    assert _is_holiday(cal, "2026-01-01")
+    for cal in [
+        HKFEA50ExchangeCalendar(),
+        HKFECNHExchangeCalendar(),
+        HKFETaiwanExchangeCalendar()
+    ]:
+        # New Year's Day is the one exception — all contracts closed
+        assert _is_holiday(cal, "2026-01-01")
 
 
 def test_hkfe_holiday_trading_open_on_lunar_new_year():
-    cal = HKFEForeignExchangeCalendar()
+    cal = HKFEA50ExchangeCalendar()
     # LNY Day 1 2026 — MSCI/FX contracts trade through HK public holidays
     assert _is_trading(cal, "2026-02-17")
