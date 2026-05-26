@@ -146,6 +146,8 @@ class ASX24IndexFuturesCalendar(ASX24BaseCalendar):
     ASX 24 Derivatives Market — Equity Index Futures
     (AP  — SPI 200™ Index Futures & Options)
 
+    Valid as-of 2026-05-26, no historic timings covered yet.
+
     Source: https://www.asx.com.au/markets/market-resources/trading-hours-calendar/
     """
 
@@ -171,7 +173,9 @@ class ASX24IRFuturesCalendar(ASX24BaseCalendar):
      YT  — 3 Year Treasury Bond Futures & Options,
      IR  — 90 Day Bank Bill Futures & Options)
 
-     Markets open staggered between 08:28 and 08:34, we have picked the earliest here.
+    Markets open staggered between 08:28 and 08:34, we have picked the earliest here.
+
+    Valid as-of 2026-05-26, no historic timings covered yet.
 
     Source: https://www.asx.com.au/markets/market-resources/trading-hours-calendar/
     """

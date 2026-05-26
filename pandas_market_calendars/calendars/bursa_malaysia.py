@@ -84,8 +84,6 @@ class BursaMalaysiaBaseExchangeCalendar(MarketCalendar):
           before use.
         - Federal Territory Day (1 Feb) applies to Labuan/KL offices but
           Bursa Malaysia does NOT close the exchange for it.
-        - Since 2024 Bursa no longer runs half-day sessions on the eve of
-          CNY or Hari Raya Aidilfitri; full-day normal hours apply.
         - Source: https://www.bursamalaysia.com/about_bursa/about_us/calendar
     """
 

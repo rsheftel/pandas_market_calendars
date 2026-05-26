@@ -42,11 +42,6 @@ from pandas_market_calendars.calendars.mirror import (
 )
 
 
-# ---------------------------------------------------------------------------
-# Helper mixin — delegates all holiday properties to a cash calendar instance
-# ---------------------------------------------------------------------------
-
-
 class _EuronextDerivsMixin:
     """
     Mixin that delegates regular_holidays, adhoc_holidays, special_closes,
@@ -75,32 +70,20 @@ class _EuronextDerivsMixin:
         return [(self._half_day_close_time, hol_cal) for _, hol_cal in self._cash_cal.special_closes_adhoc]
 
 
-# ---------------------------------------------------------------------------
-# 1. Euronext Paris Derivatives
-#    CAC 40® Index Futures (FCE), CAC 40® Mini (MFC), CAC 40® Weeklies (_FC)
-#    FTSE MIB Total Return (FIT), CAC 40 Total Return (FCT)
-#    FTSEurofirst 80/100 (FEF/FEO), EPRA/NAREIT (EPR/EPE)
-#    Euronext Eurozone Banks Index (EBF), ESG Large 80 (ESG)
-#    ISEQ 20® (ISE), Paris Single Stock Futures (PF.)
-#
-#    COB: 08:00–22:00  (call phase 07:30–08:00)
-#    Modelled open: 07:30 (call phase start)
-# ---------------------------------------------------------------------------
-
 
 class EuronextParisIndexDerivsCalendar(_EuronextDerivsMixin, MarketCalendar):
     """
     Euronext Paris — Index & Equity Derivatives
-    (CAC 40 Futures/Mini/Weekly FCE/MFC/_FC, Total Return FCT/FIT,
-     FTSEurofirst FEF/FEO, EPRA EPR/EPE, Banks EBF/EBD, ESG, ISEQ ISE,
-     Paris Single Stock Futures PF.)
+    (CAC 40 Futures/Mini/Weekly)
+
+    Other futures have reduced hours vs this.
 
     Normal session (CET/CEST):
         Call phase : 07:30 – 08:00
         COB        : 08:00 – 22:00
-    Modelled as 07:30 – 22:00.
+    Modelled as 08:30 – 22:00.
 
-    Half-trading-day close: 13:55 CET (dates inherited from XPAR).
+    Half-trading-day close: 14:00 CET (dates inherited from XPAR).
     Holidays: inherited from XPAR.
 
     Source: https://live.euronext.com/en/media/295/download
@@ -108,10 +91,10 @@ class EuronextParisIndexDerivsCalendar(_EuronextDerivsMixin, MarketCalendar):
 
     aliases = ["ENX_PAR_INDEX", "ENX_FCE"]
     _cash_cal = XPARExchangeCalendar()
-    _half_day_close_time = time(13, 55)
+    _half_day_close_time = time(14, 0)
 
     regular_market_times = {
-        "market_open": ((None, time(7, 30)),),
+        "market_open": ((None, time(8, 0)),),
         "market_close": ((None, time(22, 0)),),
     }
 
@@ -124,27 +107,21 @@ class EuronextParisIndexDerivsCalendar(_EuronextDerivsMixin, MarketCalendar):
         return ZoneInfo("Europe/Paris")
 
 
-# ---------------------------------------------------------------------------
-# 2. Euronext Amsterdam Derivatives
-#    AEX-Index® Futures (FTI), AEX Mini (MFA), AEX Weeklies (_FT)
-#    AEX Dividend Index (AXF), AMX-Index® (FMX)
-#    Amsterdam Single Stock Futures (AF.), Amsterdam Power Futures (RF.)
-# ---------------------------------------------------------------------------
-
 
 class EuronextAmsterdamIndexDerivsCalendar(_EuronextDerivsMixin, MarketCalendar):
     """
     Euronext Amsterdam — Index & Equity Derivatives
     (AEX Futures FTI, AEX Mini MFA, AEX Weeklies _FT,
-     AEX Dividend AXF, AMX FMX, Single Stock Futures AF.,
-     Power Futures RF.)
+     AEX Dividend AXF)
+
+    Note this does not cover AMX index, single stock & power futures, 
+    or any options, which are all open less.
 
     Normal session (CET/CEST):
         AEX index futures COB: 08:00 – 22:00  (call 07:30–08:00)
-        AEX options / SSF    : 09:01 – 17:30/17:40
     Modelled as 07:30 – 22:00 (widest window — AEX futures).
 
-    Half-trading-day close: 13:55 CET (inherited from XAMS).
+    Half-trading-day close: 14:00 CET.
     Holidays: inherited from XAMS (identical to XPAR).
 
     Source: https://live.euronext.com/en/media/295/download
@@ -152,7 +129,7 @@ class EuronextAmsterdamIndexDerivsCalendar(_EuronextDerivsMixin, MarketCalendar)
 
     aliases = ["ENX_AMS_INDEX", "ENX_FTI", "ENX_AEX"]
     _cash_cal = XAMSExchangeCalendar()
-    _half_day_close_time = time(13, 55)
+    _half_day_close_time = time(14, 0)
 
     regular_market_times = {
         "market_open": ((None, time(8, 0)),),
@@ -168,26 +145,21 @@ class EuronextAmsterdamIndexDerivsCalendar(_EuronextDerivsMixin, MarketCalendar)
         return ZoneInfo("Europe/Amsterdam")
 
 
-# ---------------------------------------------------------------------------
-# 3. Euronext Brussels Derivatives
-#    BEL 20® Futures (BXF), Brussels Single Stock Futures (BF.)
-#
-#    COB: 09:01–17:40  (call phase 07:30–09:01)
-#    Modelled as 07:30 – 17:40
-# ---------------------------------------------------------------------------
-
 
 class EuronextBrusselsIndexDerivsCalendar(_EuronextDerivsMixin, MarketCalendar):
     """
     Euronext Brussels — Index & Equity Derivatives
-    (BEL 20 Futures BXF, Single Stock Futures BF.)
+    (BEL 20 Futures BXF)
+
+    Single stock futures are mostly the same except for slightly different closing times
+    on half days.
 
     Normal session (CET/CEST):
         Call phase : 07:30 – 09:01
         COB        : 09:01 – 17:40
     Modelled as 09:01 – 17:40.
 
-    Half-trading-day close: 13:55 CET (inherited from XBRU).
+    Half-trading-day close: 14:00 CET.
     Holidays: inherited from XBRU (identical to XPAR).
 
     Source: https://live.euronext.com/en/media/295/download
@@ -195,7 +167,7 @@ class EuronextBrusselsIndexDerivsCalendar(_EuronextDerivsMixin, MarketCalendar):
 
     aliases = ["ENX_BRU_INDEX", "ENX_BXF", "ENX_BEL20"]
     _cash_cal = XBRUExchangeCalendar()
-    _half_day_close_time = time(13, 55)
+    _half_day_close_time = time(14, 0)
 
     regular_market_times = {
         "market_open": ((None, time(9, 1)),),
@@ -211,18 +183,14 @@ class EuronextBrusselsIndexDerivsCalendar(_EuronextDerivsMixin, MarketCalendar):
         return ZoneInfo("Europe/Brussels")
 
 
-# ---------------------------------------------------------------------------
-# 4. Euronext Lisbon Derivatives
-#    PSI Futures (PSI), Lisbon Single Stock Futures (SF.)
-#
-#    COB: 09:01–17:40  (call phase 07:30–09:01)
-# ---------------------------------------------------------------------------
-
 
 class EuronextLisbonIndexDerivsCalendar(_EuronextDerivsMixin, MarketCalendar):
     """
     Euronext Lisbon — Index & Equity Derivatives
-    (PSI Futures PSI, Single Stock Futures SF.)
+    (PSI Futures PSI)
+
+    Single stocks futures are mostly the same hours and holidays, just slightly
+    different half day closing times.
 
     Normal session (WET/WEST = UTC+0/+1):
         Call phase : 07:30 – 09:01 CET  (06:30–08:01 local)
@@ -241,8 +209,8 @@ class EuronextLisbonIndexDerivsCalendar(_EuronextDerivsMixin, MarketCalendar):
     _half_day_close_time = time(13, 55)
 
     regular_market_times = {
-        # Times published as CET; Lisbon is UTC+0/+1, so 1h behind CET in winter.
-        # Storing as local Lisbon time: 06:30 – 16:40
+        # Times published as CET; Lisbon is UTC+0/+1, so 1h behind CET 
+        # Storing as local Lisbon time: 08:01 – 16:40
         "market_open": ((None, time(8, 1)),),
         "market_close": ((None, time(16, 40)),),
     }
@@ -255,29 +223,16 @@ class EuronextLisbonIndexDerivsCalendar(_EuronextDerivsMixin, MarketCalendar):
     def tz(self):
         return ZoneInfo("Europe/Lisbon")
 
-
-# ---------------------------------------------------------------------------
-# 5. Euronext Milan Derivatives
-#    FTSE MIB Index Futures (FIB), Mini (MIN), Micro (MICR)
-#    FTSE MIB Dividend (FDIV), PIR PMI TR (MCAP)
-#    Bond Mini-futures (TF.M), Milan Single Stock Futures (EF.)
-#
-#    COB: 08:00–22:00  (call phase 07:30–08:00)
-#    Milan is fully closed on Xmas Eve and NYE (not a half day).
-# ---------------------------------------------------------------------------
-
-
 class EuronextMilanIndexDerivsCalendar(_EuronextDerivsMixin, MarketCalendar):
     """
     Euronext Milan — Index & Equity Derivatives
-    (FTSE MIB Futures FIB, Mini MIN, Micro MICR,
-     Dividend FDIV, PIR MCAP, Bond Mini-futures TF.M,
-     Single Stock Futures EF.)
+    (FTSE MIB Futures FIB, Mini MIN, Micro MICR)
+
+    Hours for other futures are less than here.
 
     Normal session (CET/CEST):
         FTSE MIB index futures COB: 08:00 – 22:00  (call 07:30–08:00)
-        SSF / dividend futures    : 09:01 – 17:30
-    Modelled as 08:00 – 22:00 (Widest actual trading).
+    Modelled as 08:00 – 22:00.
 
     Milan is FULLY CLOSED on Christmas Eve (24 Dec) and New Year's Eve
     (31 Dec) — not a half day, unlike other Euronext markets.
@@ -306,16 +261,6 @@ class EuronextMilanIndexDerivsCalendar(_EuronextDerivsMixin, MarketCalendar):
         return ZoneInfo("Europe/Rome")
 
 
-# ---------------------------------------------------------------------------
-# 6. Euronext Oslo Derivatives
-#    OBX Total Return Index Futures (OBF), Oslo Single Stock Futures (OF.)
-#    OBX Index Options (OBX), Oslo Individual Equity Options (OO.)
-#
-#    COB: 09:01–16:20  (call phase 07:30–09:01)
-#    Oslo is fully closed on Xmas Eve and NYE, and has a half-day
-#    session on the Wednesday before Easter.
-# ---------------------------------------------------------------------------
-
 
 class EuronextOsloIndexDerivsCalendar(_EuronextDerivsMixin, MarketCalendar):
     """
@@ -332,11 +277,11 @@ class EuronextOsloIndexDerivsCalendar(_EuronextDerivsMixin, MarketCalendar):
         - Maundy Thursday (Thu before Easter)
         - Ascension Day (39 days after Easter, always Thursday)
         - Whit Monday (49 days after Easter + 1)
-        - Constitution Day (17 May)
+        - Constitution Day (17 May) (Ascencion day?)
         - Christmas Eve (24 Dec) — fully closed, not half day
         - New Year's Eve (31 Dec) — fully closed, not half day
     Half-trading-day:
-        - Wednesday before Easter (Oslo Børs only)
+        - Wednesday before Easter - close at 1pm.
     All inherited from XOSL.
 
     Source: https://live.euronext.com/en/media/295/download
@@ -360,31 +305,24 @@ class EuronextOsloIndexDerivsCalendar(_EuronextDerivsMixin, MarketCalendar):
         return ZoneInfo("Europe/Oslo")
 
 
-# ---------------------------------------------------------------------------
-# 7. Euronext Paris Commodity Derivatives
-#    Milling Wheat (YF.EBM/YO.OBM), Rapeseed (YF.ECO/YO.OCO),
-#    Corn (YF.EMA/YO.OMA), European Durum Wheat (YF.EDW),
-#
-#    COB: 10:45–18:30  (call phase 07:30–10:45)
-#    Modelled as 10:45–18:30 .
-#    Same holiday set as XPAR.
-# ---------------------------------------------------------------------------
 
 
 class EuronextParisCommodityDerivsCalendar(_EuronextDerivsMixin, MarketCalendar):
     """
     Euronext Paris — Commodity Derivatives
     (Milling Wheat YF.EBM/YO.OBM, Rapeseed YF.ECO/YO.OCO,
-     Corn YF.EMA/YO.OMA, Durum Wheat YF.EDW,
-     Spread Futures YF.BCS/BKS/BMS)
+     Corn YF.EMA/YO.OMA)
+
+    Durum, Salmon, Spreads, TAS & Freight all have different hours.
 
     Normal session (CET/CEST):
         Wheat/Rape/Corn call phase : 07:30 – 10:45
         Wheat/Rape/Corn COB        : 10:45 – 20:15
-        Durum and spread futures close at 18:30, as do Wheat/Rape/Corn on the last 3
-        days before expiry. We do not model that here.
+    
+    Hours on 3 days leading into expiry are reduced, but this library
+    doesn't have a language to support that.
 
-    Modelled as 10:45 – 20:15 (grains/oilseeds widest window).
+    Modelled as 10:45 – 20:15 
 
     Half-trading-day close: 14:00 CET (inherited from XPAR).
     Note: no expiries on half-trading days per Euronext rules.
