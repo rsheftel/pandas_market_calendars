@@ -1,6 +1,32 @@
 Change Log
 ==========
 
+5.4.0 (05/25/2026)
+~~~~~~~~~~~~~~~~~~
+- PR #462 to fix numerous issues
+  - remove global pandas holiday-calendar start-date mutations while preserving local historical holiday bounds
+  - fix schedule merges that create non-overlapping inner intervals
+  - fix CME calendar regressions for Globex holidays, fixed-income hours, agriculture hours, and historical equity hours
+  - add explicit CME_TradeDate support for CME settlement/trade-date users while keeping CME_Equity schedule-day semantics intact
+  - fix NYSE early-close post-market handling, BSE/NSE aliases and 2024 election holiday, NYSE rollback behavior, and EUREX regular open/close hours
+  - add EUREX_PrePost / EUREX_Extended for the EUREX pre/post UTC session endpoints requested in Pre and Post schedule for EUREX #184 while keeping generic EUREX regular-hours-only
+  - document that calendars are package-shipped code, not live server-provided data
+  - harden date-specific market-time helpers so they use the same cutover/offset resolver as generated schedules
+  Fixes #207
+  Fixes #242
+  Fixes #244
+  Fixes #301
+  Fixes #340
+  Fixes #344
+  Fixes #355
+  Fixes #356
+  Fixes #382
+  Fixes #387
+  Fixes #441
+
+  Related #184
+  Related #343
+
 5.3.2 (04/04/2026)
 ~~~~~~~~~~~~~~~~~~
 - PR #456 to fix issue on CME calendars
@@ -167,7 +193,7 @@ date_range(): Helpers > date_range - (These were actually updates in PR #358)
 
 4.1.4 (02/04/2023)
 ~~~~~~~~~~~~~~~~~~
-- Updated TASE Holidays 2022-2025 
+- Updated TASE Holidays 2022-2025
 
 4.1.3 (12/26/2022)
 ~~~~~~~~~~~~~~~~~~
@@ -191,7 +217,7 @@ date_range(): Helpers > date_range - (These were actually updates in PR #358)
 
 4.0.2 (10/08/2022)
 ~~~~~~~~~~~~~~~~~~
-- Implemented new release management  
+- Implemented new release management
 
 4.0.1 (09/03/22)
 ~~~~~~~~~~~~~~~~~~
