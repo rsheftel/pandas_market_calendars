@@ -2,6 +2,7 @@ import pandas as pd
 from zoneinfo import ZoneInfo
 
 from pandas_market_calendars.calendars.cme import CMEAgricultureExchangeCalendar
+from pandas_market_calendars.calendars.cme_globex_agriculture import CMEGlobexLivestockExchangeCalendar
 
 
 def test_time_zone():
@@ -56,3 +57,31 @@ def test_dec_jan():
 
     assert schedule["market_open"].iloc[0] == pd.Timestamp("2020-12-30 01:00:00", tz="UTC")
     assert schedule["market_close"].iloc[6] == pd.Timestamp("2021-01-08 19:20:00", tz="UTC")
+
+
+def test_livestock_2014_to_2016_hours():
+    cme = CMEGlobexLivestockExchangeCalendar()
+    # Monday
+    schedule = cme.schedule("2014-09-29", "2014-10-03")
+    assert schedule["market_open"].iloc[0] == pd.Timestamp("2014-09-29 14:05:00", tz="UTC")
+    assert schedule["market_close"].iloc[0] == pd.Timestamp("2014-09-29 21:00:00", tz="UTC")
+    # Tuesday
+    assert schedule["market_open"].iloc[1] == pd.Timestamp("2014-09-29 22:00:00", tz="UTC")
+    assert schedule["market_close"].iloc[1] == pd.Timestamp("2014-09-30 21:00:00", tz="UTC")
+    # Friday
+    assert schedule["market_open"].iloc[4] == pd.Timestamp("2014-10-02 22:00:00", tz="UTC")
+    assert schedule["market_close"].iloc[4] == pd.Timestamp("2014-10-03 18:55:00", tz="UTC")
+
+
+def test_livestock_pre_2014_hours():
+    cme = CMEGlobexLivestockExchangeCalendar()
+    # Monday
+    schedule = cme.schedule("2015-09-28", "2015-10-02")
+    assert schedule["market_open"].iloc[0] == pd.Timestamp("2015-09-28 14:05:00", tz="UTC")
+    assert schedule["market_close"].iloc[0] == pd.Timestamp("2015-09-28 21:00:00", tz="UTC")
+    # Tuesday
+    assert schedule["market_open"].iloc[1] == pd.Timestamp("2015-09-29 13:00:00", tz="UTC")
+    assert schedule["market_close"].iloc[1] == pd.Timestamp("2015-09-29 21:00:00", tz="UTC")
+    # Friday
+    assert schedule["market_open"].iloc[4] == pd.Timestamp("2015-10-02 13:00:00", tz="UTC")
+    assert schedule["market_close"].iloc[4] == pd.Timestamp("2015-10-02 18:55:00", tz="UTC")
