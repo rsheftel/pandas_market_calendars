@@ -12,9 +12,9 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-
 from datetime import time
 from itertools import chain
+from typing import Any, List
 
 from pandas import Timestamp
 from pandas.tseries.holiday import (
@@ -26,6 +26,7 @@ from pandas.tseries.holiday import (
 )
 from zoneinfo import ZoneInfo
 
+from pandas_market_calendars.calendars.cme_market_times import GRAINS_AND_OILSEEDS_MARKET_TIMES
 from pandas_market_calendars.holidays.cme import (
     GoodFriday2010,
     GoodFriday2012,
@@ -57,6 +58,9 @@ from pandas_market_calendars.market_calendar import MarketCalendar
 # shows that Equity, Interest Rate, FX, Energy, Metals & DME Products close at 1200 CT on July 4, 2016, while Grain,
 # Oilseed & MGEX Products and Livestock, Dairy & Lumber products are completely closed.
 
+CME_EQUITY_LEGACY_HOURS_START = "2005-09-12"
+CME_EQUITY_MODERN_HOURS_START = "2012-11-19"
+
 
 class CMETradeDateCalendar(MarketCalendar):
     """
@@ -65,21 +69,23 @@ class CMETradeDateCalendar(MarketCalendar):
     that the markets are open on other days, so the opening hours for this are not
     meaningful (and hence are fixed to 5pm Central T-1 -> 4pm Central T)
     """
+
     aliases = ["CME_TradeDate"]
     regular_market_times = {
         "market_open": ((None, time(17), -1),),  # offset by -1 day
         "market_close": ((None, time(16)),),
     }
+
     @property
-    def name(self):
+    def name(self) -> str:
         return "CME_TradeDate"
 
     @property
-    def tz(self):
+    def tz(self) -> Any:
         return ZoneInfo("America/Chicago")
 
     @property
-    def regular_holidays(self):
+    def regular_holidays(self) -> Any:
         return AbstractHolidayCalendar(
             rules=[
                 USNewYearsDay,
@@ -95,43 +101,59 @@ class CMETradeDateCalendar(MarketCalendar):
             ]
         )
 
-    
     @property
-    def adhoc_holidays(self):
+    def adhoc_holidays(self) -> List[Any]:
         # FIXME: This is unverified currently.
         return USNationalDaysofMourning
 
     @property
-    def special_closes(self):
+    def special_closes(self) -> List[Any]:
         return []
+
 
 class CMEEquityExchangeCalendar(MarketCalendar):
     """
     Exchange calendar for CME for Equity products
 
-    Open Time: 6:00 PM, America/New_York / 5:00 PM Chicago
-    Close Time: 5:00 PM, America/New_York / 4:00 PM Chicago
-    Break: 4:15 - 4:30pm America/New_York / 3:15 - 3:30 PM Chicago
+    Open Time: 5:00 PM, America/Chicago
+    Close Time: 4:00 PM, America/Chicago
+    Break: 3:15 - 3:30pm America/Chicago
     """
 
     aliases = ["CME_Equity", "CBOT_Equity"]
+    # CME shortened its equity trading session between the 2005 Globex
+    # migration and the 2012 hours change.  The base calendar cannot model a
+    # temporary absence of a break, so that era is represented as a zero-length
+    # 15:15 break that coincides with the close.
     regular_market_times = {
-        "market_open": ((None, time(17), -1),),  # offset by -1 day
-        "market_close": ((None, time(16)),),
+        "market_open": (
+            (None, time(17), -1),
+            (CME_EQUITY_LEGACY_HOURS_START, time(15, 30), -1),
+            (CME_EQUITY_MODERN_HOURS_START, time(17), -1),
+        ),
+        "market_close": (
+            (None, time(16)),
+            (CME_EQUITY_LEGACY_HOURS_START, time(15, 15)),
+            (CME_EQUITY_MODERN_HOURS_START, time(16)),
+        ),
         "break_start": ((None, time(15, 15)),),
-        "break_end": ((None, time(15, 30)),),
+        "break_end": (
+            (None, time(15, 30)),
+            (CME_EQUITY_LEGACY_HOURS_START, time(15, 15)),
+            (CME_EQUITY_MODERN_HOURS_START, time(15, 30)),
+        ),
     }
 
     @property
-    def name(self):
+    def name(self) -> str:
         return "CME_Equity"
 
     @property
-    def tz(self):
+    def tz(self) -> Any:
         return ZoneInfo("America/Chicago")
 
     @property
-    def regular_holidays(self):
+    def regular_holidays(self) -> Any:
         # Many days that are holidays for the NYSE are an early close day for CME
         return AbstractHolidayCalendar(
             rules=[
@@ -143,11 +165,11 @@ class CMEEquityExchangeCalendar(MarketCalendar):
         )
 
     @property
-    def adhoc_holidays(self):
+    def adhoc_holidays(self) -> List[Any]:
         return USNationalDaysofMourning
 
     @property
-    def special_closes(self):
+    def special_closes(self) -> List[Any]:
         return [
             (
                 time(8, 15),
@@ -178,7 +200,7 @@ class CMEEquityExchangeCalendar(MarketCalendar):
                         ChristmasEveInOrAfter1993,
                     ]
                 ),
-            )
+            ),
         ]
 
 
@@ -186,8 +208,8 @@ class CMEAgricultureExchangeCalendar(MarketCalendar):
     """
     Exchange calendar for CME for Agriculture products
 
-    Open Time: 5:00 PM, America/Chicago
-    Close Time: 5:00 PM, America/Chicago
+    Open Time: 7:00 PM, America/Chicago
+    Close Time: 1:20 PM, America/Chicago
 
     Regularly-Observed Holidays:
     - New Years Day
@@ -201,21 +223,18 @@ class CMEAgricultureExchangeCalendar(MarketCalendar):
         "COMEX_Agriculture",
         "NYMEX_Agriculture",
     ]
-    regular_market_times = {
-        "market_open": ((None, time(17, 1), -1),),  # offset by -1 day
-        "market_close": ((None, time(17)),),
-    }
+    regular_market_times = GRAINS_AND_OILSEEDS_MARKET_TIMES
 
     @property
-    def name(self):
+    def name(self) -> str:
         return "CME_Agriculture"
 
     @property
-    def tz(self):
+    def tz(self) -> Any:
         return ZoneInfo("America/Chicago")
 
     @property
-    def regular_holidays(self):
+    def regular_holidays(self) -> Any:
         # Ignore gap between 13:20 CST and 14:30 CST for regular trading hours
         #
         # The CME has different holiday rules depending on the type of
@@ -240,11 +259,11 @@ class CMEAgricultureExchangeCalendar(MarketCalendar):
         )
 
     @property
-    def adhoc_holidays(self):
+    def adhoc_holidays(self) -> List[Any]:
         return USNationalDaysofMourning
 
     @property
-    def special_closes(self):
+    def special_closes(self) -> List[Any]:
         return [
             (
                 time(12),
@@ -423,15 +442,15 @@ class CMEBondExchangeCalendar(MarketCalendar):
     }
 
     @property
-    def name(self):
+    def name(self) -> str:
         return "CME_Bond"
 
     @property
-    def tz(self):
+    def tz(self) -> Any:
         return ZoneInfo("America/Chicago")
 
     @property
-    def regular_holidays(self):
+    def regular_holidays(self) -> Any:
         return AbstractHolidayCalendar(
             rules=[
                 USNewYearsDay,
@@ -440,11 +459,11 @@ class CMEBondExchangeCalendar(MarketCalendar):
         )
 
     @property
-    def adhoc_holidays(self):
+    def adhoc_holidays(self) -> List[Any]:
         return list(chain(USNationalDaysofMourning, BondsGoodFridayClosed))
 
     @property
-    def special_closes(self):
+    def special_closes(self) -> List[Any]:
         return [
             (
                 time(12),
@@ -472,5 +491,5 @@ class CMEBondExchangeCalendar(MarketCalendar):
         ]
 
     @property
-    def special_closes_adhoc(self):
+    def special_closes_adhoc(self) -> List[Any]:
         return [(time(10, tzinfo=self.tz), BondsGoodFridayOpen)]

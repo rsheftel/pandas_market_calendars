@@ -9,6 +9,16 @@ def test_time_zone():
     assert CMEAgricultureExchangeCalendar().name == "CME_Agriculture"
 
 
+def test_regular_market_times_match_grains_public_hours():
+    cme = CMEAgricultureExchangeCalendar()
+    schedule = cme.schedule("2024-11-25", "2024-11-25", tz="America/Chicago")
+    session = schedule.loc["2024-11-25"]
+    assert session.market_open == pd.Timestamp("2024-11-24 19:00:00", tz=cme.tz)
+    assert session.break_start == pd.Timestamp("2024-11-25 07:45:00", tz=cme.tz)
+    assert session.break_end == pd.Timestamp("2024-11-25 08:30:00", tz=cme.tz)
+    assert session.market_close == pd.Timestamp("2024-11-25 13:20:00", tz=cme.tz)
+
+
 def test_2020_holidays():
     # martin luthur king: 2020-01-20
     # president's day: 2020-02-17
@@ -44,5 +54,5 @@ def test_dec_jan():
     cme = CMEAgricultureExchangeCalendar()
     schedule = cme.schedule("2020-12-30", "2021-01-10")
 
-    assert schedule["market_open"].iloc[0] == pd.Timestamp("2020-12-29 23:01:00", tz="UTC")
-    assert schedule["market_close"].iloc[6] == pd.Timestamp("2021-01-08 23:00:00", tz="UTC")
+    assert schedule["market_open"].iloc[0] == pd.Timestamp("2020-12-30 01:00:00", tz="UTC")
+    assert schedule["market_close"].iloc[6] == pd.Timestamp("2021-01-08 19:20:00", tz="UTC")

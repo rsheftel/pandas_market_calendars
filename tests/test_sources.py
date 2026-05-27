@@ -129,7 +129,7 @@ def test_sources_covers_field_populated():
 def test_source_notes_optional():
     # Notes field is optional - some sources may not have notes
     # Just verify it doesn't break anything
-    for cal_name, sources in CALENDAR_SOURCES.items():
+    for _cal_name, sources in CALENDAR_SOURCES.items():
         for source in sources:
             # Should be able to access notes without error
             _ = source.notes

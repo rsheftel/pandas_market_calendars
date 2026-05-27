@@ -26,6 +26,9 @@ DEFAULT_LABEL_MAP = {
     "closed": "closed",
 }
 
+DateRangeInput = Union[str, pd.Timestamp, int, float]
+SessionPair = Tuple[str, str]
+
 
 def mark_session(
     schedule: pd.DataFrame,
@@ -75,7 +78,7 @@ def mark_session(
     columns = set(schedule.columns)
     needed_cols = set()
 
-    def _extend_statement(session: str, parts: set):
+    def _extend_statement(session: str, parts: set[str]) -> None:
         if parts.issubset(columns):
             needed_cols.update(parts)
             session_labels.append(session)
@@ -170,6 +173,7 @@ def merge_schedules(schedules: List[pd.DataFrame], how: Literal["outer", "inner"
         elif how == "inner":
             result["market_open"] = result[["market_open_x", "market_open_y"]].max(axis=1)
             result["market_close"] = result[["market_close_x", "market_close_y"]].min(axis=1)
+            result = result[result["market_open"] < result["market_close"]]
         else:
             raise ValueError('how argument must be "inner" or "outer"')
         result = result[["market_open", "market_close"]]
@@ -189,7 +193,7 @@ def all_single_observance_rules(calendar: "AbstractHolidayCalendar") -> Optional
     return None
 
 
-def convert_freq(index: pd.DatetimeIndex, frequency: str) -> pd.DatetimeIndex:
+def convert_freq(index: pd.DatetimeIndex, frequency: str) -> "pd.Index[Any]":
     """
     Converts a DateTimeIndex to a new lower frequency
 
@@ -278,7 +282,7 @@ class InsufficientScheduleWarning(DateRangeWarning):
 def filter_date_range_warnings(
     action: Literal["error", "ignore", "always", "default", "once"],
     source: Union[Iterable[Type[DateRangeWarning]], Type[DateRangeWarning]] = DateRangeWarning,
-):
+) -> None:
     """
     Adjust the behavior of the date_range() warnings to the desired action.
 
@@ -304,7 +308,7 @@ def filter_date_range_warnings(
 
 def parse_missing_session_warning(
     err: MissingSessionWarning,
-) -> Tuple[Set[SESSIONS], Set[MKT_TIMES]]:
+) -> Tuple[Set[str], Set[str]]:
     """
     Parses a Missing Session Warning's Error Message.
     :returns Tuple[set[str], set[str]]:
@@ -494,7 +498,9 @@ def date_range(
 # region ------------------ Date Range LTF Subroutines ------------------
 
 
-def _make_session_list(columns: set, sessions: Union[str, Iterable], merge_adjacent: bool) -> Tuple[List[Any], bool]:
+def _make_session_list(
+    columns: set[str], sessions: Union[str, Iterable[str]], merge_adjacent: bool
+) -> Tuple[List[SessionPair], bool]:
     "Create a list of (Session Start, Session End) Tuples"
     session_times = []
     missing_cols = set()
@@ -513,7 +519,7 @@ def _make_session_list(columns: set, sessions: Union[str, Iterable], merge_adjac
     if "market_open" in columns:
         columns |= {"market_open_wrap"}
 
-    def _extend_statement(session, parts):
+    def _extend_statement(session: str, parts: SessionPair) -> None:
         if session not in sessions:
             return
         if columns.issuperset(parts):
@@ -612,7 +618,7 @@ def _standardize_times(
     return start, end, periods
 
 
-def _reconfigure_schedule(schedule, session_list, mask_close) -> pd.DataFrame:
+def _reconfigure_schedule(schedule: pd.DataFrame, session_list: List[SessionPair], mask_close: bool) -> pd.DataFrame:
     "Reconfigure a schedule into a sorted dataframe of [start, end] times for each session"
 
     sessions = []
@@ -671,8 +677,11 @@ def _reconfigure_schedule(schedule, session_list, mask_close) -> pd.DataFrame:
 
 
 def _error_check_sessions(
-    session_times: pd.DataFrame, timestep: pd.Timedelta, closed: Optional[str], force_close: Optional[bool]
-):
+    session_times: pd.DataFrame,
+    timestep: pd.Timedelta,
+    closed: Literal["left", "right", "both"] | None,
+    force_close: bool | None,
+) -> None:
     if session_times.start.gt(session_times.end).any():
         raise ValueError(
             "Desired Sessions from the Schedule contain rows where session start < session end, "
@@ -706,7 +715,9 @@ def _error_check_sessions(
             )
 
 
-def _num_bars_ltf(session_times, timestep, closed) -> pd.Series:
+def _num_bars_ltf(
+    session_times: pd.DataFrame, timestep: pd.Timedelta, closed: Literal["left", "right", "both"] | None
+) -> pd.Series:
     "Calculate the number of timestamps needed for each trading session."
     if closed in ("both", None):
         return np.ceil((session_times.end - session_times.start) / timestep) + 1
@@ -767,7 +778,15 @@ def _course_trim_to_period_count(num_bars: pd.Series, periods: int, reverse: boo
     return sessions_to_keep
 
 
-def _calc_time_series(session_times, timestep, closed, force_close, start, end, periods) -> pd.Series:
+def _calc_time_series(
+    session_times: pd.DataFrame,
+    timestep: pd.Timedelta,
+    closed: Literal["left", "right", "both"] | None,
+    force_close: bool | None,
+    start: pd.Timestamp | None,
+    end: pd.Timestamp | None,
+    periods: int | None,
+) -> pd.Series:
     "Interpolate each session into a datetime series at the desired frequency."
     # region ---- ---- ---- Trim the Sessions ---- ---- ----
     # Compare 'start' to the session end times so that if 'start' is in the middle of a session
@@ -878,13 +897,13 @@ def date_range_htf(
 
     PARAMETERS:
 
-    :param cal: CustomBuisnessDay Calendar associated with a MarketCalendar. This can be retieved by
+    :param cal: CustomBusinessDay Calendar associated with a MarketCalendar. This can be retrieved by
         calling the holidays() method of a MarketCalendar.
 
     :param frequency: String, Int/float (POSIX seconds) or pd.Timedelta of the desired frequency.
         :Must be Greater than '1D' and an integer multiple of the base frequency (D, W, M, Q, or Y)
         :Important Note: Ints/Floats & Timedeltas are always considered as 'Open Business Days',
-            '2D' == Every Other Buisness Day, '3D' == Every 3rd B.Day, '7D' == Every 7th B.Day
+            '2D' == Every Other business Day, '3D' == Every 3rd B.Day, '7D' == Every 7th B.Day
         :Higher periods (passed as strings) align to the beginning or end of the relevant period
         :i.e. '1W' == First/[Last] Trading Day of each Week, '1Q' == First/[Last] Day of every Quarter
 
@@ -954,7 +973,7 @@ def date_range_htf(
 
 
 def _error_check_htf_range(
-    start, end, periods: Union[int, None]
+    start: DateRangeInput | None, end: DateRangeInput | None, periods: int | None
 ) -> Tuple[Union[pd.Timestamp, None], Union[pd.Timestamp, None], Union[int, None]]:
     "Standardize and Error Check Start, End, and period params"
     if periods is not None:
@@ -1032,9 +1051,9 @@ def _days_per_week(weekmask: Union[Iterable, str]) -> int:
     return len([day for day in weekmask if bool(day)])
 
 
-def _cal_day_range(cb_day: "CustomBusinessDay", start, end, periods, mult) -> pd.DatetimeIndex:
+def _cal_day_range(cb_day: "CustomBusinessDay", start: Any, end: Any, periods: Any, mult: Any) -> pd.DatetimeIndex:
     """
-    Returns a Normalized DateTimeIndex of Open Buisness Days.
+    Returns a Normalized DateTimeIndex of Open Business Days.
     Exactly two of the (start, end, periods) arguments must be given.
 
     ** Arguments should be Type/Error Checked before calling this function **
@@ -1043,7 +1062,7 @@ def _cal_day_range(cb_day: "CustomBusinessDay", start, end, periods, mult) -> pd
     :param start: Optional Start-Date. Must be a Normalized, TZ-Naive pd.Timestamp
     :param end: Optional End-Date. Must be a Normalized, TZ-Naive pd.Timestamp
     :param periods: Optional Number of periods to return
-    :param mult: Integer Multiple of buisness days between data-points.
+    :param mult: Integer Multiple of business days between data-points.
         e.g: 1 == Every Business Day, 2 == Every Other B.Day, 3 == Every Third B.Day, etc.
     :returns: DateRangeIndex[datetime64[ns]]
     """
@@ -1089,10 +1108,10 @@ def _cal_WMQY_range(
     freq: str,
     grouping_period: str,
     closed: Union[Literal["left", "right"], None] = "right",
-):
+) -> pd.DatetimeIndex:
     """
     Return A DateRangeIndex of the Weekdays that mark either the start or end of each
-    buisness week based on the 'closed' parameter.
+    business week based on the 'closed' parameter.
 
     ** Arguments should be Type/Error Checked before calling this function **
 

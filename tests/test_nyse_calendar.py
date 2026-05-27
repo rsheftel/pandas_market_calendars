@@ -141,6 +141,14 @@ def test_valid_days_tz_aware():
     assert_index_equal(actual, expected)
 
 
+def test_holidays_rollback_uses_modern_weekmask():
+    nyse = NYSEExchangeCalendar()
+
+    assert nyse.holidays().rollback("2022-06-26") == pd.Timestamp("2022-06-24")
+    assert nyse.holidays().weekmask == "Mon Tue Wed Thu Fri"
+    assert nyse.holidays_pre_1952().weekmask == "Mon Tue Wed Thu Fri Sat"
+
+
 def test_time_zone():
     assert NYSEExchangeCalendar().tz == ZoneInfo("America/New_York")
     assert NYSEExchangeCalendar().name == "NYSE"
@@ -185,6 +193,22 @@ def test_2012():
     assert len(expected) == 3
     for early_close_session_label in early_closes_2012:
         assert early_close_session_label in expected.index
+
+
+def test_post_market_close_on_modern_early_close_days():
+    nyse = NYSEExchangeCalendar()
+    schedule = nyse.schedule(
+        "2019-12-24",
+        "2019-12-24",
+        market_times=["pre", "market_open", "market_close", "post"],
+        tz="America/New_York",
+    )
+
+    session = schedule.loc["2019-12-24"]
+    assert session.market_close == pd.Timestamp("2019-12-24 13:00", tz=nyse.tz)
+    assert session.post == pd.Timestamp("2019-12-24 17:00", tz=nyse.tz)
+    post_only = nyse.schedule("2019-12-24", "2019-12-24", market_times=["post"], tz="America/New_York")
+    assert post_only.loc["2019-12-24"].post == session.post
 
 
 def test_special_holidays():

@@ -1,4 +1,5 @@
 from datetime import time
+from typing import Any
 
 from pandas.tseries.holiday import (
     AbstractHolidayCalendar,
@@ -76,15 +77,15 @@ class EUREXFixedIncomeCalendar(MarketCalendar):
     }
 
     @property
-    def name(self):
+    def name(self) -> str:
         return "EUREX_Bond"
 
     @property
-    def tz(self):
+    def tz(self) -> Any:
         return ZoneInfo("Europe/Berlin")
 
     @property
-    def regular_holidays(self):
+    def regular_holidays(self) -> Any:
         return AbstractHolidayCalendar(
             rules=[
                 EUREXNewYearsDay,

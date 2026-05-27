@@ -12,9 +12,9 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-
 from abc import abstractmethod
 from datetime import time
+from typing import Any, List
 
 from pandas.tseries.holiday import (
     AbstractHolidayCalendar,
@@ -24,6 +24,7 @@ from pandas.tseries.holiday import (
     USThanksgivingDay,
 )
 
+from pandas_market_calendars.calendars.cme_market_times import GRAINS_AND_OILSEEDS_MARKET_TIMES
 from pandas_market_calendars.holidays.us import (
     Christmas,
     ChristmasEveBefore1993,
@@ -54,7 +55,7 @@ class CMEGlobexAgricultureExchangeCalendar(CMEGlobexBaseExchangeCalendar):
 
     @property
     @abstractmethod
-    def name(self):
+    def name(self) -> str:
         """
         Name of the market
 
@@ -88,11 +89,11 @@ class CMEGlobexLivestockExchangeCalendar(CMEGlobexAgricultureExchangeCalendar):
     }
 
     @property
-    def name(self):
+    def name(self) -> str:
         return "CMEGlobex_Livestock"
 
     @property
-    def regular_holidays(self):
+    def regular_holidays(self) -> Any:
         return AbstractHolidayCalendar(
             rules=[
                 USNewYearsDay,
@@ -108,11 +109,11 @@ class CMEGlobexLivestockExchangeCalendar(CMEGlobexAgricultureExchangeCalendar):
         )
 
     # @property
-    # def adhoc_holidays(self):
+    # def adhoc_holidays(self) -> List[Any]:
     #     return USNationalDaysofMourning
 
     @property
-    def special_closes(self):
+    def special_closes(self) -> List[Any]:
         return [
             (
                 time(12, 5),
@@ -145,19 +146,14 @@ class CMEGlobexGrainsAndOilseedsExchangeCalendar(CMEGlobexAgricultureExchangeCal
         "CMEGlobex_Oilseeds",
     ]
 
-    regular_market_times = {
-        "market_open": ((None, time(19), -1),),  # offset by -1 day
-        "market_close": ((None, time(13, 20)),),
-        "break_start": ((None, time(7, 45)),),
-        "break_end": ((None, time(8, 30)),),
-    }
+    regular_market_times = GRAINS_AND_OILSEEDS_MARKET_TIMES
 
     @property
-    def name(self):
+    def name(self) -> str:
         return "CMEGlobex_GrainsAndOilseeds"
 
     @property
-    def regular_holidays(self):
+    def regular_holidays(self) -> Any:
         return AbstractHolidayCalendar(
             rules=[
                 USNewYearsDay,

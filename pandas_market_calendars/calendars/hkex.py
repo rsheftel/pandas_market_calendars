@@ -1,5 +1,6 @@
 from datetime import time, timedelta
 from functools import partial
+from typing import Any, List
 
 from pandas import DateOffset, Timestamp
 from pandas.tseries.holiday import (
@@ -24,7 +25,7 @@ from pandas_market_calendars.holidays.us import USNewYearsDay
 from pandas_market_calendars.market_calendar import MarketCalendar
 
 
-def process_date(dt, mapping=None, func=None, delta=None, offset=None):
+def process_date(dt: Any, mapping: Any = None, func: Any = None, delta: Any = None, offset: Any = None) -> Any:
     if mapping and (dt.year in mapping):
         new_dt = mapping[dt.year]
     else:
@@ -39,7 +40,7 @@ def process_date(dt, mapping=None, func=None, delta=None, offset=None):
     return new_dt
 
 
-def process_queen_birthday(dt):
+def process_queen_birthday(dt: Any) -> Any:
     # before 1983
     if dt.year in [1974, 1981]:
         return dt + DateOffset(weekday=6)
@@ -374,19 +375,19 @@ class HKEXExchangeCalendar(MarketCalendar):
     }
 
     @property
-    def name(self):
+    def name(self) -> str:
         return "HKEX"
 
     @property
-    def full_name(self):
+    def full_name(self) -> str:
         return "Hong Kong Stock Exchange"
 
     @property
-    def tz(self):
+    def tz(self) -> Any:
         return ZoneInfo("Asia/Shanghai")
 
     @property
-    def regular_holidays(self):
+    def regular_holidays(self) -> Any:
         """
         Rules are guesses based on observations of recent year.
         Rectify accordingly once the next year's holidays arrangement is published by the government.
@@ -425,5 +426,5 @@ class HKEXExchangeCalendar(MarketCalendar):
         )
 
     @property
-    def adhoc_holidays(self):
+    def adhoc_holidays(self) -> List[Any]:
         return HKClosedDay

@@ -12,8 +12,8 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-
 from datetime import time
+from typing import Any, List
 
 from pandas.tseries.holiday import (
     AbstractHolidayCalendar,
@@ -155,7 +155,7 @@ class CMEGlobexEnergyAndMetalsExchangeCalendar(CMEGlobexBaseExchangeCalendar):
     ]
 
     @property
-    def tz(self):
+    def tz(self) -> Any:
         return ZoneInfo("America/Chicago")
 
     regular_market_times = {
@@ -164,11 +164,11 @@ class CMEGlobexEnergyAndMetalsExchangeCalendar(CMEGlobexBaseExchangeCalendar):
     }
 
     @property
-    def name(self):
+    def name(self) -> str:
         return "CMEGlobex_EnergyAndMetals"
 
     @property
-    def regular_holidays(self):
+    def regular_holidays(self) -> Any:
         return AbstractHolidayCalendar(
             rules=[
                 USNewYearsDay,
@@ -178,11 +178,11 @@ class CMEGlobexEnergyAndMetalsExchangeCalendar(CMEGlobexBaseExchangeCalendar):
         )
 
     # @property
-    # def adhoc_holidays(self):
+    # def adhoc_holidays(self) -> List[Any]:
     #     return USNationalDaysofMourning
 
     @property
-    def special_closes(self):
+    def special_closes(self) -> List[Any]:
         return [
             (
                 time(12),
@@ -218,4 +218,13 @@ class CMEGlobexEnergyAndMetalsExchangeCalendar(CMEGlobexBaseExchangeCalendar):
                     ]
                 ),
             ),
+        ]
+
+    @property
+    def special_closes_adhoc(self) -> List[Any]:
+        return [
+            (
+                time(15, 15),
+                ["2010-12-31"],
+            )
         ]

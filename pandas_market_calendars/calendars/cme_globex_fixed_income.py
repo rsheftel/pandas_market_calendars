@@ -1,4 +1,5 @@
 from datetime import time
+from typing import Any, List
 
 from pandas.tseries.holiday import AbstractHolidayCalendar
 
@@ -43,8 +44,8 @@ class CMEGlobexFixedIncomeCalendar(CMEGlobexBaseExchangeCalendar):
     aliases = ["CME Globex Fixed Income", "CME Globex Interest Rate Products"]
 
     regular_market_times = {
-        "market_open": ((None, time(18), -1),),
-        "market_close": ((None, time(17)),),
+        "market_open": ((None, time(17), -1),),
+        "market_close": ((None, time(16)),),
     }
 
     """
@@ -52,15 +53,14 @@ class CMEGlobexFixedIncomeCalendar(CMEGlobexBaseExchangeCalendar):
         Christmas/New_Years
             5am special open for a couple years (see tests)
 
-        regular market_open/market_close changed from 17/16 to 18/17?
     """
 
     @property
-    def name(self):
+    def name(self) -> str:
         return "CME Globex Fixed Income"
 
     @property
-    def regular_holidays(self):
+    def regular_holidays(self) -> Any:
         return AbstractHolidayCalendar(
             rules=[
                 USNewYearsDay,
@@ -71,14 +71,14 @@ class CMEGlobexFixedIncomeCalendar(CMEGlobexBaseExchangeCalendar):
         )
 
     @property
-    def special_closes_adhoc(self):
+    def special_closes_adhoc(self) -> List[Any]:
         return [
             (time(15, 15), ["2010-07-02", "2011-07-01"]),
             (time(12, 15), ["2010-12-31"]),
         ]
 
     @property
-    def special_closes(self):
+    def special_closes(self) -> List[Any]:
         # Source https://www.cmegroup.com/tools-information/holiday-calendar.html
         return [
             (

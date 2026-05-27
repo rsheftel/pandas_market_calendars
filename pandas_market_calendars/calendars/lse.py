@@ -12,8 +12,8 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-
 from datetime import time
+from typing import Any, List
 
 from pandas.tseries.holiday import AbstractHolidayCalendar, EasterMonday, GoodFriday
 from zoneinfo import ZoneInfo
@@ -66,19 +66,19 @@ class LSEExchangeCalendar(MarketCalendar):
     }
 
     @property
-    def name(self):
+    def name(self) -> str:
         return "LSE"
 
     @property
-    def full_name(self):
+    def full_name(self) -> str:
         return "London Stock Exchange"
 
     @property
-    def tz(self):
+    def tz(self) -> Any:
         return ZoneInfo("Europe/London")
 
     @property
-    def regular_holidays(self):
+    def regular_holidays(self) -> Any:
         return AbstractHolidayCalendar(
             rules=[
                 LSENewYearsDay,
@@ -100,11 +100,11 @@ class LSEExchangeCalendar(MarketCalendar):
         )
 
     @property
-    def adhoc_holidays(self):
+    def adhoc_holidays(self) -> List[Any]:
         return UniqueCloses
 
     @property
-    def special_closes(self):
+    def special_closes(self) -> List[Any]:
         return [
             (
                 time(12, 30),

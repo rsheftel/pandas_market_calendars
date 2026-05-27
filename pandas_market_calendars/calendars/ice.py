@@ -1,5 +1,6 @@
 from datetime import time
 from itertools import chain
+from typing import Any, List
 
 from pandas import Timestamp
 from pandas.tseries.holiday import (
@@ -39,15 +40,15 @@ class ICEExchangeCalendar(MarketCalendar):
     }
 
     @property
-    def name(self):
+    def name(self) -> str:
         return "ICE"
 
     @property
-    def tz(self):
+    def tz(self) -> Any:
         return ZoneInfo("US/Eastern")
 
     @property
-    def special_closes(self):
+    def special_closes(self) -> List[Any]:
         return [
             (
                 time(13),
@@ -65,7 +66,7 @@ class ICEExchangeCalendar(MarketCalendar):
         ]
 
     @property
-    def adhoc_holidays(self):
+    def adhoc_holidays(self) -> List[Any]:
         return list(
             chain(
                 USNationalDaysofMourning,
@@ -76,6 +77,6 @@ class ICEExchangeCalendar(MarketCalendar):
         )
 
     @property
-    def regular_holidays(self):
+    def regular_holidays(self) -> Any:
         # https://www.theice.com/publicdocs/futures_us/exchange_notices/NewExNot2016Holidays.pdf
         return AbstractHolidayCalendar(rules=[USNewYearsDay, GoodFriday, Christmas])

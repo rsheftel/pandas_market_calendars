@@ -1,4 +1,5 @@
 from datetime import time
+from typing import Any, List
 
 from pandas.tseries.holiday import AbstractHolidayCalendar
 
@@ -48,11 +49,11 @@ class CMEGlobexFXExchangeCalendar(CMEGlobexBaseExchangeCalendar):
     aliases = ["CMEGlobex_FX", "CME_FX", "CME_Currency"]
 
     @property
-    def name(self):
+    def name(self) -> str:
         return "CMEGlobex_FX"
 
     @property
-    def regular_holidays(self):
+    def regular_holidays(self) -> Any:
         return AbstractHolidayCalendar(
             rules=[
                 USNewYearsDay,
@@ -63,7 +64,7 @@ class CMEGlobexFXExchangeCalendar(CMEGlobexBaseExchangeCalendar):
         )
 
     @property
-    def special_closes(self):
+    def special_closes(self) -> List[Any]:
         """
         Accurate 2020-2022 inclusive
         TODO - enhance/verify prior to 2020

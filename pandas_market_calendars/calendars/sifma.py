@@ -1,6 +1,7 @@
 import functools
 from datetime import time
 from itertools import chain
+from typing import Any, List
 
 import pandas as pd
 from pandas.tseries.holiday import AbstractHolidayCalendar
@@ -30,6 +31,7 @@ from pandas_market_calendars.holidays.sifma import (
     DayBeforeUSIndependenceDay2pmEarlyClose,
     # --- End Good Friday Rules --- #
     DayBeforeUSMemorialDay2pmEarlyClose,
+    FridayChristmasEve,
     GoodFridayPotentialPost2020,  # Potential dates, filtered later
     GoodFridayThru2020,
     MartinLutherKingJr,
@@ -46,7 +48,6 @@ from pandas_market_calendars.holidays.sifma import (
     UKSummerBank,
     UKWeekendBoxingDay,
     UKWeekendChristmas,  # Observed Tuesday when Boxing Day is on Monday
-    FridayChristmasEve,
     USColumbusDay,
     USIndependenceDay,
     USJuneteenthAfter2022,
@@ -108,20 +109,20 @@ class SIFMAUSExchangeCalendar(MarketCalendar):
     }
 
     @property
-    def name(self):
+    def name(self) -> str:
         return "SIFMA_US"
 
     @property
-    def full_name(self):
+    def full_name(self) -> str:
         return "Securities Industry and Financial Markets Association"
 
     @property
-    def tz(self):
+    def tz(self) -> Any:
         return ZoneInfo("America/New_York")
 
     # Helper method to calculate and cache dynamic dates
     @functools.lru_cache
-    def _get_dynamic_gf_rules(self):
+    def _get_dynamic_gf_rules(self) -> Any:
         # Calculate rules for a wide fixed range to avoid arbitrary cutoffs
         # while preventing infinite generation. 1970-2100 is a reasonable range.
         calc_start = pd.Timestamp("1970-01-01")
@@ -146,7 +147,7 @@ class SIFMAUSExchangeCalendar(MarketCalendar):
         return gf_full_holidays, gf_12pm_early_closes, thurs_before_gf_2pm_early_closes
 
     @property
-    def regular_holidays(self):
+    def regular_holidays(self) -> Any:
         return AbstractHolidayCalendar(
             rules=[
                 USNewYearsDay,
@@ -165,12 +166,12 @@ class SIFMAUSExchangeCalendar(MarketCalendar):
         )
 
     @property
-    def adhoc_holidays(self):
+    def adhoc_holidays(self) -> List[Any]:
         gf_full_holidays, _, _ = self._get_dynamic_gf_rules()
         return gf_full_holidays
 
     @property
-    def special_closes(self):
+    def special_closes(self) -> List[Any]:
         return [
             (
                 time(14),
@@ -190,7 +191,7 @@ class SIFMAUSExchangeCalendar(MarketCalendar):
         ]
 
     @property
-    def special_closes_adhoc(self):
+    def special_closes_adhoc(self) -> List[Any]:
         _, gf_12pm_early_closes, thurs_before_gf_2pm_early_closes = self._get_dynamic_gf_rules()
         return [
             (
@@ -231,15 +232,15 @@ class SIFMAUKExchangeCalendar(MarketCalendar):
     }
 
     @property
-    def name(self):
+    def name(self) -> str:
         return "SIFMA_UK"
 
     @property
-    def tz(self):
+    def tz(self) -> Any:
         return ZoneInfo("Europe/London")
 
     @property
-    def regular_holidays(self):
+    def regular_holidays(self) -> Any:
         return AbstractHolidayCalendar(
             rules=[
                 UKNewYearsDay,
@@ -265,7 +266,7 @@ class SIFMAUKExchangeCalendar(MarketCalendar):
         )
 
     @property
-    def adhoc_holidays(self):
+    def adhoc_holidays(self) -> List[Any]:
         return list(
             chain(
                 UKSpringBankAdHoc,
@@ -320,15 +321,15 @@ class SIFMAJPExchangeCalendar(MarketCalendar):
     }
 
     @property
-    def name(self):
+    def name(self) -> str:
         return "SIFMA_JP"
 
     @property
-    def tz(self):
+    def tz(self) -> Any:
         return ZoneInfo("Asia/Tokyo")
 
     @property
-    def regular_holidays(self):
+    def regular_holidays(self) -> Any:
         return AbstractHolidayCalendar(
             rules=[
                 UKNewYearsDay,
@@ -368,7 +369,7 @@ class SIFMAJPExchangeCalendar(MarketCalendar):
         )
 
     @property
-    def adhoc_holidays(self):
+    def adhoc_holidays(self) -> List[Any]:
         return list(
             chain(
                 UKSpringBankAdHoc,
@@ -377,5 +378,5 @@ class SIFMAJPExchangeCalendar(MarketCalendar):
         )
 
     @property
-    def special_closes(self):
+    def special_closes(self) -> List[Any]:
         return [(time(15), AbstractHolidayCalendar(rules=[UKMayDay, UKWeekendChristmas]))]

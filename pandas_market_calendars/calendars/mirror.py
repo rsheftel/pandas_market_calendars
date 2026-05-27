@@ -4,14 +4,18 @@ Imported calendars from the exchange_calendars project
 GitHub: https://github.com/gerrymanoim/exchange_calendars
 """
 
+from typing import Any, List, Optional
+
 import exchange_calendars
 import pandas as pd
 from pandas.tseries.offsets import CustomBusinessDay
 
-from pandas_market_calendars.market_calendar import MarketCalendar
+from pandas_market_calendars.market_calendar import HolidayCalendar, MarketCalendar
 
 
 DAYMASKS = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"]
+MIRROR_HOLIDAY_START_DATES = {"XNYS": "1885-01-01"}
+
 
 # XTAE (Tel Aviv Stock Exchange) changed from Sun-Thu to Mon-Fri on Jan 5, 2026
 XTAE_TRANSITION_DATE = pd.Timestamp("2026-01-05")
@@ -33,7 +37,7 @@ class TradingCalendar(MarketCalendar):
     # A class attribute so we only do this once per class and not per instance
     _FINALIZE_TRADING_CALENDAR = True
 
-    def __new__(cls, *args, **kwargs):
+    def __new__(cls, *args: Any, **kwargs: Any) -> Any:
         self = super().__new__(cls)
         self._ec = super().__new__(cls._ec_class)
         # flag indicating that mirrored class is not initialized yet, which we only want to do
@@ -58,11 +62,11 @@ class TradingCalendar(MarketCalendar):
         self.__init__(*args, **kwargs)
         return self
 
-    def __init__(self, open_time=None, close_time=None):
+    def __init__(self, open_time: Optional[Any] = None, close_time: Optional[Any] = None) -> None:
         super().__init__(open_time, close_time)
 
     @property
-    def ec(self):
+    def ec(self) -> Any:
         if self._EC_NOT_INITIALIZED:
             self._ec.__init__()
             self._EC_NOT_INITIALIZED = False
@@ -70,43 +74,47 @@ class TradingCalendar(MarketCalendar):
         return self._ec
 
     @property
-    def name(self):
+    def name(self) -> str:
         return self._ec.name
 
     @property
-    def full_name(self):
+    def full_name(self) -> str:
         return self._ec.name
 
     @property
-    def tz(self):
+    def tz(self) -> Any:
         return self._ec.tz
 
     @property
-    def regular_holidays(self):
-        return self._ec.regular_holidays
+    def regular_holidays(self) -> Any:
+        regular_holidays = self._ec.regular_holidays
+        start_date = MIRROR_HOLIDAY_START_DATES.get(self.name)
+        if start_date is None or regular_holidays is None or not hasattr(regular_holidays, "rules"):
+            return regular_holidays
+        return HolidayCalendar(rules=regular_holidays.rules, start_date=start_date)
 
     @property
-    def adhoc_holidays(self):
+    def adhoc_holidays(self) -> List[Any]:
         return self._ec.adhoc_holidays
 
     @property
-    def special_opens(self):
+    def special_opens(self) -> List[Any]:
         return self._ec.special_opens
 
     @property
-    def special_opens_adhoc(self):
+    def special_opens_adhoc(self) -> List[Any]:
         return self._ec.special_opens_adhoc
 
     @property
-    def special_closes(self):
+    def special_closes(self) -> List[Any]:
         return self._ec.special_closes
 
     @property
-    def special_closes_adhoc(self):
+    def special_closes_adhoc(self) -> List[Any]:
         return self._ec.special_closes_adhoc
 
     @property
-    def weekmask(self):
+    def weekmask(self) -> str:
         if hasattr(self._ec, "weekmask"):
             if "1" in self._ec.weekmask or "0" in self._ec.weekmask:
                 # Convert 1s & 0s to Day Abbreviations
@@ -128,6 +136,8 @@ time_props = {
 
 for exchange in calendars:
     cal = calendars[exchange]
+    if exchange in MarketCalendar._regmeta_class_registry:
+        continue
 
     # this loop will set up the newly required regular_market_times dictionary
     regular_market_times = {}
@@ -171,7 +181,7 @@ class XTAEExchangeCalendar(TradingCalendar):
             regular_market_times[new] = times
 
     @property
-    def weekmask(self):
+    def weekmask(self) -> str:
         # Default to the new weekmask (Mon-Fri) for the base property
         # The actual date-dependent logic is in valid_days
         return XTAE_WEEKMASK_NEW
@@ -184,7 +194,7 @@ class XTAEExchangeCalendar(TradingCalendar):
             weekmask=weekmask,
         )
 
-    def valid_days(self, start_date, end_date, tz="UTC") -> pd.DatetimeIndex:
+    def valid_days(self, start_date: Any, end_date: Any, tz: Any = "UTC") -> pd.DatetimeIndex:
         """
         Get a DatetimeIndex of valid open business days, handling the XTAE weekmask transition.
 

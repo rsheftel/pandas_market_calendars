@@ -15,7 +15,7 @@
 
 from datetime import time
 from itertools import chain
-from typing import Literal, Union
+from typing import Any, List, Literal, Union
 
 import pandas as pd
 from pandas.tseries.holiday import AbstractHolidayCalendar
@@ -303,15 +303,12 @@ from pandas_market_calendars.holidays.nyse import (
     # 1924
     WoodrowWilsonFuneral1230EarlyClose1924,
 )
-from pandas_market_calendars.market_calendar import MarketCalendar
+from pandas_market_calendars.market_calendar import HolidayCalendar, MarketCalendar
 
 
 # Useful resources for making changes to this file:
 # http://www.nyse.com/pdfs/closings.pdf
 # http://www.stevemorse.org/jcal/whendid.html
-
-# Overwrite the default holiday calendar start_date of 1/1/70
-AbstractHolidayCalendar.start_date = "1885-01-01"
 
 
 class NYSEExchangeCalendar(MarketCalendar):
@@ -825,26 +822,26 @@ class NYSEExchangeCalendar(MarketCalendar):
     _saturday_end = pd.Timestamp("1952-09-29", tz="UTC")
 
     @property
-    def name(self):
+    def name(self) -> str:
         return "NYSE"
 
     @property
-    def full_name(self):
+    def full_name(self) -> str:
         return "New York Stock Exchange"
 
     @property
-    def tz(self):
+    def tz(self) -> Any:
         return ZoneInfo("America/New_York")
 
     @property
-    def weekmask(self):
+    def weekmask(self) -> str:
         return "Mon Tue Wed Thu Fri"
 
     @property
-    def weekmask_pre_1952(self):
+    def weekmask_pre_1952(self) -> str:
         return "Mon Tue Wed Thu Fri Sat"
 
-    def holidays_pre_1952(self):
+    def holidays_pre_1952(self) -> CustomBusinessDay:
         """
         NYSE Market open on Saturdays pre 5/24/1952.
         CustomBusinessDay object that can be used inplace of holidays() for dates prior to crossover
@@ -862,8 +859,9 @@ class NYSEExchangeCalendar(MarketCalendar):
         return self._holidays_hist
 
     @property
-    def regular_holidays(self):
-        return AbstractHolidayCalendar(
+    def regular_holidays(self) -> Any:
+        return HolidayCalendar(
+            start_date="1885-01-01",
             rules=[
                 USNewYearsDayNYSEpost1952,
                 USNewYearsDayNYSEpre1952,
@@ -894,11 +892,11 @@ class NYSEExchangeCalendar(MarketCalendar):
                 Christmas54to98NYSE,
                 ChristmasBefore1954,
                 USJuneteenthAfter2022,
-            ]
+            ],
         )
 
     @property
-    def adhoc_holidays(self):
+    def adhoc_holidays(self) -> List[Any]:
         return list(
             chain(
                 # Recurring Holidays
@@ -997,7 +995,21 @@ class NYSEExchangeCalendar(MarketCalendar):
         )
 
     @property
-    def special_closes(self):
+    def _regular_1pm_post_close_rules(self) -> List[Any]:
+        return [
+            FridayAfterIndependenceDayNYSEpre2013,
+            MonTuesThursBeforeIndependenceDay,
+            WednesdayBeforeIndependenceDayPost2013,
+            DayAfterThanksgiving1pmEarlyCloseInOrAfter1993,
+            ChristmasEvePost1999Early1pmClose,
+        ]
+
+    @property
+    def _adhoc_1pm_post_close_dates(self) -> List[Any]:
+        return ChristmasEve1pmEarlyCloseAdhoc + DayAfterChristmas1pmEarlyCloseAdhoc + BacklogRelief1pmEarlyClose1929
+
+    @property
+    def special_closes(self) -> List[Any]:
         return [
             (
                 time(11, tzinfo=ZoneInfo("America/New_York")),
@@ -1033,12 +1045,8 @@ class NYSEExchangeCalendar(MarketCalendar):
             (
                 time(13, tzinfo=ZoneInfo("America/New_York")),
                 AbstractHolidayCalendar(
-                    rules=[
-                        FridayAfterIndependenceDayNYSEpre2013,
-                        MonTuesThursBeforeIndependenceDay,
-                        WednesdayBeforeIndependenceDayPost2013,
-                        DayAfterThanksgiving1pmEarlyCloseInOrAfter1993,
-                        ChristmasEvePost1999Early1pmClose,
+                    rules=self._regular_1pm_post_close_rules
+                    + [
                         GroverClevelandFuneral1pmClose1908,
                     ]
                 ),
@@ -1117,8 +1125,17 @@ class NYSEExchangeCalendar(MarketCalendar):
         ]
 
     @property
-    def special_closes_adhoc(self):
-        def _union_many(indexes):
+    def special_post(self) -> List[Any]:
+        return [
+            (
+                time(17, tzinfo=ZoneInfo("America/New_York")),
+                AbstractHolidayCalendar(rules=self._regular_1pm_post_close_rules),
+            )
+        ]
+
+    @property
+    def special_closes_adhoc(self) -> List[Any]:
+        def _union_many(indexes: List[Any]) -> pd.DatetimeIndex:
             # Merges a list of pd.DatetimeIndex objects, returns merged DatetimeIndex
             union_index = pd.DatetimeIndex([], tz="UTC")
             for index in indexes:
@@ -1128,8 +1145,7 @@ class NYSEExchangeCalendar(MarketCalendar):
         return [
             (
                 time(13, tzinfo=ZoneInfo("America/New_York")),
-                # DaysBeforeIndependenceDay1pmEarlyCloseAdhoc # list
-                ChristmasEve1pmEarlyCloseAdhoc + DayAfterChristmas1pmEarlyCloseAdhoc + BacklogRelief1pmEarlyClose1929,
+                self._adhoc_1pm_post_close_dates,
             ),
             (
                 time(14, tzinfo=ZoneInfo("America/New_York")),
@@ -1160,7 +1176,16 @@ class NYSEExchangeCalendar(MarketCalendar):
         ]
 
     @property
-    def special_opens(self):
+    def special_post_adhoc(self) -> List[Any]:
+        return [
+            (
+                time(17, tzinfo=ZoneInfo("America/New_York")),
+                self._adhoc_1pm_post_close_dates,
+            )
+        ]
+
+    @property
+    def special_opens(self) -> List[Any]:
         return [
             (
                 time(hour=9, minute=31, tzinfo=ZoneInfo("America/New_York")),
@@ -1273,7 +1298,7 @@ class NYSEExchangeCalendar(MarketCalendar):
         ]
 
     @property
-    def special_opens_adhoc(self):
+    def special_opens_adhoc(self) -> List[Any]:
         return [
             (
                 time(9, 31, tzinfo=ZoneInfo("America/New_York")),
@@ -1290,7 +1315,7 @@ class NYSEExchangeCalendar(MarketCalendar):
         ]
 
     # Override market_calendar.py to split calc between pre & post 1952 Saturday Close
-    def valid_days(self, start_date, end_date, tz="UTC"):
+    def valid_days(self, start_date: Any, end_date: Any, tz: Any = "UTC") -> pd.DatetimeIndex:
         """
         Get a DatetimeIndex of valid open business days.
 
@@ -1335,7 +1360,7 @@ class NYSEExchangeCalendar(MarketCalendar):
         days_post = pd.date_range(saturday_end, end_date, freq=self.holidays(), normalize=True, tz=tz)
         return days_pre.union(days_post)
 
-    def days_at_time(self, days, market_time, day_offset=0):
+    def days_at_time(self, days: Any, market_time: Any, day_offset: int = 0) -> pd.Series:
         days = super().days_at_time(days, market_time, day_offset=day_offset)
 
         if market_time == "market_close" and not self.is_custom(market_time):
@@ -1440,7 +1465,7 @@ class NYSEExchangeCalendar(MarketCalendar):
             _, _ = u._standardize_htf_freq(frequency)
             raise ValueError("This should never be raised, the above call should error first")
 
-    def early_closes(self, schedule):
+    def early_closes(self, schedule: pd.DataFrame) -> pd.DataFrame:
         """
         Get a DataFrame of the dates that are an early close.
 
