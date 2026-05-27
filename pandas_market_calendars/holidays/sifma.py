@@ -1,3 +1,5 @@
+from typing import Any
+
 from dateutil.relativedelta import MO, TH
 from pandas import DateOffset, Timestamp
 from pandas.tseries.holiday import (
@@ -92,7 +94,7 @@ USPresidentsDay = Holiday(
 ############################################################
 
 
-def is_first_friday(dt):
+def is_first_friday(dt: Any) -> bool:
     """Check if date is the first Friday of the month"""
     # The first Friday of any month must occur on or before the 7th.
     # This check is sufficient regardless of whether Good Friday is in March or April.

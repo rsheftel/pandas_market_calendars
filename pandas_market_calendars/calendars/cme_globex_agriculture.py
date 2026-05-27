@@ -12,9 +12,9 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-
 from abc import abstractmethod
 from datetime import time
+from typing import Any, List
 
 from pandas.tseries.holiday import (
     AbstractHolidayCalendar,
@@ -55,7 +55,7 @@ class CMEGlobexAgricultureExchangeCalendar(CMEGlobexBaseExchangeCalendar):
 
     @property
     @abstractmethod
-    def name(self):
+    def name(self) -> str:
         """
         Name of the market
 
@@ -89,11 +89,11 @@ class CMEGlobexLivestockExchangeCalendar(CMEGlobexAgricultureExchangeCalendar):
     }
 
     @property
-    def name(self):
+    def name(self) -> str:
         return "CMEGlobex_Livestock"
 
     @property
-    def regular_holidays(self):
+    def regular_holidays(self) -> Any:
         return AbstractHolidayCalendar(
             rules=[
                 USNewYearsDay,
@@ -109,11 +109,11 @@ class CMEGlobexLivestockExchangeCalendar(CMEGlobexAgricultureExchangeCalendar):
         )
 
     # @property
-    # def adhoc_holidays(self):
+    # def adhoc_holidays(self) -> List[Any]:
     #     return USNationalDaysofMourning
 
     @property
-    def special_closes(self):
+    def special_closes(self) -> List[Any]:
         return [
             (
                 time(12, 5),
@@ -149,11 +149,11 @@ class CMEGlobexGrainsAndOilseedsExchangeCalendar(CMEGlobexAgricultureExchangeCal
     regular_market_times = GRAINS_AND_OILSEEDS_MARKET_TIMES
 
     @property
-    def name(self):
+    def name(self) -> str:
         return "CMEGlobex_GrainsAndOilseeds"
 
     @property
-    def regular_holidays(self):
+    def regular_holidays(self) -> Any:
         return AbstractHolidayCalendar(
             rules=[
                 USNewYearsDay,

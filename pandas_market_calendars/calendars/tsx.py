@@ -1,5 +1,6 @@
 from datetime import time
 from itertools import chain
+from typing import Any, List
 
 import pandas as pd
 from pandas.tseries.holiday import (
@@ -136,21 +137,21 @@ class TSXExchangeCalendar(MarketCalendar):
     }
 
     @property
-    def name(self):
+    def name(self) -> str:
         return "TSX"
 
     @property
-    def full_name(self):
+    def full_name(self) -> str:
         return "Toronto Stock Exchange"
 
     @property
-    def tz(self):
+    def tz(self) -> Any:
         return ZoneInfo("Canada/Eastern")
 
     regular_early_close = time(13)
 
     @property
-    def regular_holidays(self):
+    def regular_holidays(self) -> Any:
         return AbstractHolidayCalendar(
             rules=[
                 TSXNewYearsDay,
@@ -169,7 +170,7 @@ class TSXExchangeCalendar(MarketCalendar):
         )
 
     @property
-    def adhoc_holidays(self):
+    def adhoc_holidays(self) -> List[Any]:
         return list(
             chain(
                 September11Closings2001,
@@ -177,7 +178,7 @@ class TSXExchangeCalendar(MarketCalendar):
         )
 
     @property
-    def special_closes(self):
+    def special_closes(self) -> List[Any]:
         return [
             (
                 self.regular_early_close,

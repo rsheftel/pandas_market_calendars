@@ -1,3 +1,5 @@
+from typing import Any
+
 from dateutil.relativedelta import MO, TH, TU
 from pandas import DateOffset, Timestamp, date_range
 from pandas.tseries.holiday import Holiday, nearest_workday, sunday_to_monday
@@ -16,7 +18,7 @@ from pandas_market_calendars.market_calendar import (
 # NYSE closed at 2:00 PM on Christmas Eve until 1993.
 
 
-def following_tuesday_every_four_years_observance(dt):
+def following_tuesday_every_four_years_observance(dt: Any) -> Any:
     return dt + DateOffset(years=(4 - (dt.year % 4)) % 4, weekday=TU(1))
 
 

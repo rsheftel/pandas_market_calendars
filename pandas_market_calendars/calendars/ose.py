@@ -1,4 +1,5 @@
 from datetime import time
+from typing import Any, List
 
 from pandas.tseries.holiday import (
     AbstractHolidayCalendar,
@@ -77,19 +78,19 @@ class OSEExchangeCalendar(MarketCalendar):
     }
 
     @property
-    def name(self):
+    def name(self) -> str:
         return "OSE"
 
     @property
-    def full_name(self):
+    def full_name(self) -> str:
         return "Oslo Stock Exchange"
 
     @property
-    def tz(self):
+    def tz(self) -> Any:
         return ZoneInfo("Europe/Oslo")
 
     @property
-    def regular_holidays(self):
+    def regular_holidays(self) -> Any:
         return AbstractHolidayCalendar(
             rules=[
                 OSENewYearsDay,
@@ -108,7 +109,7 @@ class OSEExchangeCalendar(MarketCalendar):
         )
 
     @property
-    def special_closes(self):
+    def special_closes(self) -> List[Any]:
         return [
             (
                 time(13, 0, tzinfo=self.tz),

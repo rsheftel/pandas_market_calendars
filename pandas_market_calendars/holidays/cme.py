@@ -1,4 +1,5 @@
 import datetime
+from typing import Any
 
 from dateutil.relativedelta import FR, MO, TH
 from pandas import DateOffset, Timestamp
@@ -103,7 +104,7 @@ easter = Easter()
 daymin2 = Day(-2)
 
 
-def not_0815_close(dt):
+def not_0815_close(dt: Any) -> Any:
     if dt.year in (2010, 2012, 2015):
         return None
     else:
@@ -251,7 +252,7 @@ USIndependenceDayAfter2014 = Holiday(
 
 
 # Necessary for equities and crypto
-def previous_workday_if_july_4th_is_tue_to_fri(dt):
+def previous_workday_if_july_4th_is_tue_to_fri(dt: Any) -> datetime.datetime | None:
     july4th = datetime.datetime(dt.year, 7, 4)
     if july4th.weekday() in (1, 2, 3, 4):
         return july4th - datetime.timedelta(days=1)
@@ -356,7 +357,7 @@ USThanksgivingAfter2014 = Holiday(
 # )
 
 
-def fri_after_4th_thu(dt):
+def fri_after_4th_thu(dt: Any) -> Any:
     # dt will just be Nov 1st
     diff_to_thu = 3 - dt.weekday()
     if diff_to_thu < 0:

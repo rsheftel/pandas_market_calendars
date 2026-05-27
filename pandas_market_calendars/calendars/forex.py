@@ -1,5 +1,7 @@
 import sys
 from datetime import time
+from typing import Any
+
 
 if sys.version_info >= (3, 9):
     from zoneinfo import ZoneInfo
@@ -25,13 +27,13 @@ class ForexExchangeCalendar(MarketCalendar):
     }
 
     @property
-    def name(self):
+    def name(self) -> str:
         return "FOREX"
 
     @property
-    def tz(self):
+    def tz(self) -> Any:
         return ZoneInfo("America/New_York")
 
     @property
-    def weekmask(self):
+    def weekmask(self) -> str:
         return "Sun Mon Tue Wed Thu Fri"

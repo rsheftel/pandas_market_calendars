@@ -12,9 +12,9 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-
 from datetime import time
 from itertools import chain
+from typing import Any, List
 
 from pandas import Timestamp
 from pandas.tseries.holiday import (
@@ -77,15 +77,15 @@ class CMETradeDateCalendar(MarketCalendar):
     }
 
     @property
-    def name(self):
+    def name(self) -> str:
         return "CME_TradeDate"
 
     @property
-    def tz(self):
+    def tz(self) -> Any:
         return ZoneInfo("America/Chicago")
 
     @property
-    def regular_holidays(self):
+    def regular_holidays(self) -> Any:
         return AbstractHolidayCalendar(
             rules=[
                 USNewYearsDay,
@@ -102,12 +102,12 @@ class CMETradeDateCalendar(MarketCalendar):
         )
 
     @property
-    def adhoc_holidays(self):
+    def adhoc_holidays(self) -> List[Any]:
         # FIXME: This is unverified currently.
         return USNationalDaysofMourning
 
     @property
-    def special_closes(self):
+    def special_closes(self) -> List[Any]:
         return []
 
 
@@ -145,15 +145,15 @@ class CMEEquityExchangeCalendar(MarketCalendar):
     }
 
     @property
-    def name(self):
+    def name(self) -> str:
         return "CME_Equity"
 
     @property
-    def tz(self):
+    def tz(self) -> Any:
         return ZoneInfo("America/Chicago")
 
     @property
-    def regular_holidays(self):
+    def regular_holidays(self) -> Any:
         # Many days that are holidays for the NYSE are an early close day for CME
         return AbstractHolidayCalendar(
             rules=[
@@ -165,11 +165,11 @@ class CMEEquityExchangeCalendar(MarketCalendar):
         )
 
     @property
-    def adhoc_holidays(self):
+    def adhoc_holidays(self) -> List[Any]:
         return USNationalDaysofMourning
 
     @property
-    def special_closes(self):
+    def special_closes(self) -> List[Any]:
         return [
             (
                 time(8, 15),
@@ -226,15 +226,15 @@ class CMEAgricultureExchangeCalendar(MarketCalendar):
     regular_market_times = GRAINS_AND_OILSEEDS_MARKET_TIMES
 
     @property
-    def name(self):
+    def name(self) -> str:
         return "CME_Agriculture"
 
     @property
-    def tz(self):
+    def tz(self) -> Any:
         return ZoneInfo("America/Chicago")
 
     @property
-    def regular_holidays(self):
+    def regular_holidays(self) -> Any:
         # Ignore gap between 13:20 CST and 14:30 CST for regular trading hours
         #
         # The CME has different holiday rules depending on the type of
@@ -259,11 +259,11 @@ class CMEAgricultureExchangeCalendar(MarketCalendar):
         )
 
     @property
-    def adhoc_holidays(self):
+    def adhoc_holidays(self) -> List[Any]:
         return USNationalDaysofMourning
 
     @property
-    def special_closes(self):
+    def special_closes(self) -> List[Any]:
         return [
             (
                 time(12),
@@ -442,15 +442,15 @@ class CMEBondExchangeCalendar(MarketCalendar):
     }
 
     @property
-    def name(self):
+    def name(self) -> str:
         return "CME_Bond"
 
     @property
-    def tz(self):
+    def tz(self) -> Any:
         return ZoneInfo("America/Chicago")
 
     @property
-    def regular_holidays(self):
+    def regular_holidays(self) -> Any:
         return AbstractHolidayCalendar(
             rules=[
                 USNewYearsDay,
@@ -459,11 +459,11 @@ class CMEBondExchangeCalendar(MarketCalendar):
         )
 
     @property
-    def adhoc_holidays(self):
+    def adhoc_holidays(self) -> List[Any]:
         return list(chain(USNationalDaysofMourning, BondsGoodFridayClosed))
 
     @property
-    def special_closes(self):
+    def special_closes(self) -> List[Any]:
         return [
             (
                 time(12),
@@ -491,5 +491,5 @@ class CMEBondExchangeCalendar(MarketCalendar):
         ]
 
     @property
-    def special_closes_adhoc(self):
+    def special_closes_adhoc(self) -> List[Any]:
         return [(time(10, tzinfo=self.tz), BondsGoodFridayOpen)]

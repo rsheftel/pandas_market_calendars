@@ -1,3 +1,6 @@
+from typing import Any, List
+
+
 """
 Bombay Stock Exchnage
 """
@@ -444,19 +447,19 @@ class BSEExchangeCalendar(MarketCalendar):
     }
 
     @property
-    def name(self):
+    def name(self) -> str:
         return "BSE"
 
     @property
-    def full_name(self):
+    def full_name(self) -> str:
         return "Bombay Stock Exchange"
 
     @property
-    def tz(self):
+    def tz(self) -> Any:
         return ZoneInfo("Asia/Calcutta")
 
     @property
-    def adhoc_holidays(self):
+    def adhoc_holidays(self) -> List[Any]:
         return BSEClosedDay
 
 
@@ -468,13 +471,13 @@ class NSEExchangeCalendar(BSEExchangeCalendar):
     aliases = ["NSE", "XNSE"]
 
     @property
-    def name(self):
+    def name(self) -> str:
         return "NSE"
 
     @property
-    def full_name(self):
+    def full_name(self) -> str:
         return "National Stock Exchange of India"
 
     @property
-    def adhoc_holidays(self):
+    def adhoc_holidays(self) -> List[Any]:
         return NSEClosedDay

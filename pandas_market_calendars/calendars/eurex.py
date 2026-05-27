@@ -1,8 +1,8 @@
 #
 # kewlfft
 #
-
 from datetime import time
+from typing import Any, List
 
 from pandas.tseries.holiday import (
     AbstractHolidayCalendar,
@@ -95,15 +95,15 @@ class EUREXExchangeCalendar(MarketCalendar):
     }
 
     @property
-    def name(self):
+    def name(self) -> str:
         return "EUREX"
 
     @property
-    def tz(self):
+    def tz(self) -> Any:
         return ZoneInfo("Europe/Berlin")
 
     @property
-    def regular_holidays(self):
+    def regular_holidays(self) -> Any:
         return AbstractHolidayCalendar(
             rules=[
                 EUREXNewYearsDay,
@@ -118,7 +118,7 @@ class EUREXExchangeCalendar(MarketCalendar):
         )
 
     @property
-    def special_closes(self):
+    def special_closes(self) -> List[Any]:
         return [
             (
                 time(12, 30),
@@ -151,22 +151,22 @@ class EUREXPrePostExchangeCalendar(EUREXExchangeCalendar):
     }
 
     @property
-    def name(self):
+    def name(self) -> str:
         return "EUREX_PrePost"
 
     @property
-    def tz(self):
+    def tz(self) -> Any:
         return ZoneInfo("UTC")
 
     @property
-    def _extended_early_close_rules(self):
+    def _extended_early_close_rules(self) -> List[Any]:
         return [
             ChristmasEve,
             EUREXNewYearsEve,
         ]
 
     @property
-    def special_closes(self):
+    def special_closes(self) -> List[Any]:
         return [
             (
                 time(11, 30),
@@ -177,7 +177,7 @@ class EUREXPrePostExchangeCalendar(EUREXExchangeCalendar):
         ]
 
     @property
-    def special_post(self):
+    def special_post(self) -> List[Any]:
         return [
             (
                 time(11, 30),

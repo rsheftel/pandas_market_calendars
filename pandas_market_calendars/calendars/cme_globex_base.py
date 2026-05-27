@@ -12,8 +12,8 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-
 from abc import ABC, abstractmethod
+from typing import Any, List
 
 from pandas.tseries.holiday import (
     AbstractHolidayCalendar,
@@ -69,7 +69,7 @@ class CMEGlobexBaseExchangeCalendar(MarketCalendar, ABC):
 
     @property
     @abstractmethod
-    def name(self):
+    def name(self) -> str:
         """
         Name of the market
 
@@ -78,11 +78,11 @@ class CMEGlobexBaseExchangeCalendar(MarketCalendar, ABC):
         raise NotImplementedError()
 
     @property
-    def tz(self):
+    def tz(self) -> Any:
         return ZoneInfo("America/Chicago")
 
     @property
-    def regular_holidays(self):
+    def regular_holidays(self) -> Any:
         return AbstractHolidayCalendar(
             rules=[
                 USNewYearsDay,
@@ -93,11 +93,11 @@ class CMEGlobexBaseExchangeCalendar(MarketCalendar, ABC):
 
     # I can't find any reference to these special closings onther than NYSE
     # @property
-    # def adhoc_holidays(self):
+    # def adhoc_holidays(self) -> List[Any]:
     #     return USNationalDaysofMourning
 
     @property
-    def special_closes(self):
+    def special_closes(self) -> List[Any]:
         return [
             (
                 self.special_close_time,
