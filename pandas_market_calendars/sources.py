@@ -240,6 +240,20 @@ CALENDAR_SOURCES: dict[str, tuple[Source, ...]] = {
             covers="trading hours, product specs",
         ),
     ),
+    "CBOT_Bond": (
+        Source(
+            name="CME Group Interest Rate Products",
+            url="https://www.cmegroup.com/markets/interest-rates.html",
+            last_verified="2025-01-24",
+            covers="trading hours, product specs",
+        ),
+        Source(
+            name="2011-10-02 trading hours change",
+            url="https://www.cmegroup.com/tools-information/lookups/advisories/electronic-trading/20110926.html",
+            last_verified="2026-05-28",
+            covers="trading hours"
+        ),
+    ),
     # endregion
     # region ---- CME Globex ----
     "CME Globex Equity": (

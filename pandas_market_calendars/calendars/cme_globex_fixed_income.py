@@ -43,7 +43,7 @@ class CMEGlobexFixedIncomeCalendar(CMEGlobexBaseExchangeCalendar):
     aliases = ["CME Globex Fixed Income", "CME Globex Interest Rate Products"]
 
     regular_market_times = {
-        "market_open": ((None, time(17,30), -1),("2011-10-02", time(17), -1),),
+        "market_open": ((None, time(17), -1),),
         "market_close": ((None, time(16)),),
     }
 
