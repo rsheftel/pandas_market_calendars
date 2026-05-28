@@ -489,8 +489,9 @@ class CMEBondExchangeCalendar(MarketCalendar):
 
     @property
     def special_closes_adhoc(self):
-        gfs_1015 = [d for d in BondsGoodFridayOpen if d < "2020-01-01"]
-        gfs_10 = [d for d in BondsGoodFridayOpen if d > "2020-01-01"]
+        split = Timestamp("2020-01-01", tz="UTC")
+        gfs_1015 = [d for d in BondsGoodFridayOpen if d < split]
+        gfs_10 = [d for d in BondsGoodFridayOpen if d > split]
         return [
             (time(10, tzinfo=self.tz), gfs_10),
             (time(10, 15, tzinfo=self.tz), gfs_1015)
