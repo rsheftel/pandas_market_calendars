@@ -2,6 +2,7 @@ import pandas as pd
 from pandas.testing import assert_index_equal
 from zoneinfo import ZoneInfo
 
+import pandas_market_calendars as mcal
 from pandas_market_calendars.calendars.cme_globex_energy_and_metals import (
     CMEGlobexEnergyAndMetalsExchangeCalendar,
 )
@@ -83,6 +84,44 @@ def _test_has_early_closes(early_closes, start, end):
     assert len(expected) == len(early_closes)
     for ts in early_closes:
         assert _test_verify_early_close_time(schedule, ts) is True
+
+
+# Reported against CME's published 2026 Energy and Metals schedule:
+# https://github.com/rsheftel/pandas_market_calendars/issues/464
+def test_2026_energy_and_metals_early_closes():
+    expected_closes = {
+        "2026-06-19": pd.Timestamp("2026-06-19 13:00", tz="America/New_York"),
+        "2026-07-03": pd.Timestamp("2026-07-03 13:00", tz="America/New_York"),
+        "2026-09-07": pd.Timestamp("2026-09-07 14:30", tz="America/New_York"),
+        "2026-11-27": pd.Timestamp("2026-11-27 14:45", tz="America/New_York"),
+        "2026-12-24": pd.Timestamp("2026-12-24 13:45", tz="America/New_York"),
+    }
+
+    for alias in ("CMEGlobex_GC", "CMEGlobex_MCL"):
+        calendar = mcal.get_calendar(alias)
+        schedule = calendar.schedule("2026-06-19", "2026-12-24", tz="America/New_York")
+
+        for session, expected_close in expected_closes.items():
+            actual_close = schedule.at[pd.Timestamp(session), "market_close"]
+            assert actual_close == expected_close, f"{alias} {session}"
+
+
+def test_2026_overrides_preserve_neighboring_year_rules():
+    expected_closes = {
+        "2025-06-19": pd.Timestamp("2025-06-19 14:30", tz="America/New_York"),
+        "2027-06-18": pd.Timestamp("2027-06-18 14:30", tz="America/New_York"),
+        "2025-07-04": pd.Timestamp("2025-07-04 14:30", tz="America/New_York"),
+        "2027-07-05": pd.Timestamp("2027-07-05 14:30", tz="America/New_York"),
+        "2025-09-01": pd.Timestamp("2025-09-01 13:00", tz="America/New_York"),
+        "2027-09-06": pd.Timestamp("2027-09-06 13:00", tz="America/New_York"),
+        "2025-11-28": pd.Timestamp("2025-11-28 13:45", tz="America/New_York"),
+        "2027-11-26": pd.Timestamp("2027-11-26 13:45", tz="America/New_York"),
+    }
+    schedule = cal.schedule("2025-06-19", "2027-11-26", tz="America/New_York")
+
+    for session, expected_close in expected_closes.items():
+        actual_close = schedule.at[pd.Timestamp(session), "market_close"]
+        assert actual_close == expected_close, session
 
 
 #########################################################################
