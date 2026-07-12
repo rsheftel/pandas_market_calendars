@@ -22,12 +22,16 @@ from zoneinfo import ZoneInfo
 
 from pandas_market_calendars.holidays.cme_globex import (
     ChristmasCME,
-    FridayAfterThanksgiving,
+    FridayAfterThanksgivingFrom2027,
+    FridayAfterThanksgivingThrough2025,
     GoodFriday,
-    USIndependenceDayFrom2022,
+    USIndependenceDayFrom2022Through2025,
+    USIndependenceDayFrom2027,
     USIndependenceDayPre2022,
-    USJuneteenthFrom2022,
-    USLaborDay,
+    USJuneteenthFrom2022Through2025,
+    USJuneteenthFrom2027,
+    USLaborDayFrom2027,
+    USLaborDayThrough2025,
     USMartinLutherKingJrFrom2022,
     USMartinLutherKingJrPre2022,
     USMemorialDayFrom2022,
@@ -192,7 +196,8 @@ class CMEGlobexEnergyAndMetalsExchangeCalendar(CMEGlobexBaseExchangeCalendar):
                         USPresidentsDayPre2022,
                         USMemorialDayPre2022,
                         USIndependenceDayPre2022,
-                        USLaborDay,
+                        USLaborDayThrough2025,
+                        USLaborDayFrom2027,
                         USThanksgivingDayPre2022,
                     ]
                 ),
@@ -201,7 +206,8 @@ class CMEGlobexEnergyAndMetalsExchangeCalendar(CMEGlobexBaseExchangeCalendar):
                 time(12, 45),
                 AbstractHolidayCalendar(
                     rules=[
-                        FridayAfterThanksgiving,
+                        FridayAfterThanksgivingThrough2025,
+                        FridayAfterThanksgivingFrom2027,
                     ]
                 ),
             ),
@@ -212,8 +218,10 @@ class CMEGlobexEnergyAndMetalsExchangeCalendar(CMEGlobexBaseExchangeCalendar):
                         USMartinLutherKingJrFrom2022,
                         USPresidentsDayFrom2022,
                         USMemorialDayFrom2022,
-                        USJuneteenthFrom2022,
-                        USIndependenceDayFrom2022,
+                        USJuneteenthFrom2022Through2025,
+                        USJuneteenthFrom2027,
+                        USIndependenceDayFrom2022Through2025,
+                        USIndependenceDayFrom2027,
                         USThanksgivingDayFrom2022,
                     ]
                 ),
@@ -224,7 +232,23 @@ class CMEGlobexEnergyAndMetalsExchangeCalendar(CMEGlobexBaseExchangeCalendar):
     def special_closes_adhoc(self) -> List[Any]:
         return [
             (
+                time(12),
+                ["2026-06-19", "2026-07-03"],
+            ),
+            (
+                time(12, 45),
+                ["2026-12-24"],
+            ),
+            (
+                time(13, 30),
+                ["2026-09-07"],
+            ),
+            (
+                time(13, 45),
+                ["2026-11-27"],
+            ),
+            (
                 time(15, 15),
                 ["2010-12-31"],
-            )
+            ),
         ]
