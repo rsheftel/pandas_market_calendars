@@ -39,6 +39,15 @@ def test_2018_holidays():
         assert pd.Timestamp(date, tz="UTC") in trading_days
 
 
+def test_2026_day_following_easter_monday():
+    # In 2026 the day following the Ching Ming Festival substitute falls on
+    # Easter Monday, so 2026-04-07 (Tue) is an additional general holiday and
+    # the exchange is closed. See issue #467.
+    hkex = HKEXExchangeCalendar()
+    trading_days = hkex.valid_days("2026-04-01", "2026-04-30")
+    assert pd.Timestamp("2026-04-07", tz="UTC") not in trading_days
+
+
 def test_hkex_closes_at_lunch():
     hkex = HKEXExchangeCalendar()
     schedule = hkex.schedule(

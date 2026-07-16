@@ -1,6 +1,12 @@
 Change Log
 ==========
 
+Unreleased
+~~~~~~~~~~
+- Fix HKEX incorrectly treating 2026-04-07 as a trading day; it is a Hong Kong general holiday ("the day following Easter Monday", observed because the Ching Ming Festival substitute fell on Easter Monday)
+
+  Fixes #467
+
 5.4.0 (05/25/2026)
 ~~~~~~~~~~~~~~~~~~
 - PR #462 to fix numerous issues
