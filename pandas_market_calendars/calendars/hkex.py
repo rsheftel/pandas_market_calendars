@@ -354,6 +354,7 @@ HKClosedDay = [
     Timestamp("2023-07-17", tz="UTC"),  # Typhoon closure
     Timestamp("2023-09-01", tz="UTC"),  # Typhoon closure
     Timestamp("2023-09-08", tz="UTC"),  # Typhoon closure
+    Timestamp("2026-04-07", tz="UTC"),  # 复活节+清明节补假 (day following Easter Monday)
 ]
 
 
