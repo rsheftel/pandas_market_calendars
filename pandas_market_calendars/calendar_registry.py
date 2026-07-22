@@ -3,12 +3,14 @@
 import datetime
 
 from .market_calendar import MarketCalendar
-from .calendars.asx import ASXExchangeCalendar
+from .calendars.asx import ASXExchangeCalendar, ASX24IndexFuturesCalendar, ASX24IRFuturesCalendar
 from .calendars.bmf import BMFExchangeCalendar
 from .calendars.bse import BSEExchangeCalendar, NSEExchangeCalendar
+from .calendars.bursa_malaysia import BursaMalaysiaFCPOCalendar, BursaMalaysiaFKLICalendar
 from .calendars.cboe import CFEExchangeCalendar
 from .calendars.cme import (
-    CMEEquityExchangeCalendar, CMEBondExchangeCalendar, CMETradeDateCalendar
+    CMEEquityExchangeCalendar, CMEBondExchangeCalendar, CMETradeDateCalendar,
+    CBOTBondExchangeCalendar
 )
 from .calendars.cme_globex_base import CMEGlobexBaseExchangeCalendar
 from .calendars.cme_globex_agriculture import (
@@ -25,14 +27,71 @@ from .calendars.cme_globex_fx import CMEGlobexFXExchangeCalendar
 from .calendars.cme_globex_fixed_income import CMEGlobexFixedIncomeCalendar
 from .calendars.eurex import EUREXExchangeCalendar
 from .calendars.eurex_fixed_income import EUREXFixedIncomeCalendar
+from .calendars.euronext import (
+    EuronextAmsterdamIndexDerivsCalendar,
+    EuronextBrusselsIndexDerivsCalendar,
+    EuronextLisbonIndexDerivsCalendar,
+    EuronextMilanIndexDerivsCalendar,
+    EuronextOsloIndexDerivsCalendar,
+    EuronextParisCommodityDerivsCalendar,
+    EuronextParisIndexDerivsCalendar,
+)
 from .calendars.forex import ForexExchangeCalendar
-from .calendars.hkex import HKEXExchangeCalendar
-from .calendars.ice import ICEExchangeCalendar
+from .calendars.hkex import (
+    HKEXExchangeCalendar, 
+    HKFEDomesticExchangeCalendar, 
+    HKFEA50ExchangeCalendar,
+    HKFECNHExchangeCalendar,
+    HKFETaiwanExchangeCalendar
+)
+from .calendars.ice import (
+    ICEExchangeCalendar,
+    ICEUSCocoaCalendar,
+    ICEUSCoffeeCalendar,
+    ICEUSCottonCalendar,
+    ICEUSSugar11Calendar,
+    ICEUSSugar16Calendar,
+    ICEUSCanolaCalendar,
+    ICEUSFinancialsCalendar,
+    ICEUSFxCalendar,
+    ICEUSEnergiesCalendar,
+    ICEUSDailyGoldSilverCalendar
+)
+from .calendars.iceeu import (
+    ICEEndexEmissionsExchangeCalendar,
+    ICEEndexGasPowerExchangeCalendar,
+    IFEUEnergyExchangeCalendar,
+    IFEUEquityExchangeCalendar,
+    IFEUEuropeanFixedIncomeExchangeCalendar,
+    IFEUNaturalGasAndEmissionsExchangeCalendar,
+    IFEUSoftCommoditiesExchangeCalendar,
+    IFEUUKFixedIncomeExchangeCalendar,
+)
 from .calendars.iex import IEXExchangeCalendar
-from .calendars.jpx import JPXExchangeCalendar
+from .calendars.jpx import (
+    JPXExchangeCalendar,
+    OSEIndexFuturesCalendar,
+    OSEJGBFuturesCalendar,
+    OSEPreciousMetalsFuturesCalendar,
+)
+from .calendars.krx import KRXEquityIndexFuturesCalendar, KRXFXFuturesCalendar, KRXGovernmentBondFuturesCalendar
 from .calendars.lse import LSEExchangeCalendar
+from .calendars.meff import MEFFIBEXFuturesCalendar
 from .calendars.nyse import NYSEExchangeCalendar
+from .calendars.omx import NasdaqStockholmDerivsCalendar
 from .calendars.ose import OSEExchangeCalendar
+from .calendars.sgx import (
+    SGXIndianRupeeExchangeCalendar,
+    SGXKoreanWonExchangeCalendar,
+    SGXNiftyExchangeCalendar,
+    SGXNikkeiExchangeCalendar,
+    SGXTaiwanExchangeCalendar,
+    SGXIndexCNExchangeCalendar,
+    SGXMSCISingaporeExchangeCalendar,
+    SGXCNHExchangeCalendar,
+    SGXIronOreExchangeCalendar,
+    SGXRubberExchangeCalendar,
+)
 from .calendars.sifma import (
     SIFMAUSExchangeCalendar,
     SIFMAUKExchangeCalendar,
@@ -41,6 +100,7 @@ from .calendars.sifma import (
 from .calendars.six import SIXExchangeCalendar
 from .calendars.sse import SSEExchangeCalendar
 from .calendars.tase import TASEExchangeCalendar
+from .calendars.tmx import MonExBondExchangeCalendar, MonExStirExchangeCalendar, MonExIndexExchangeCalendar
 from .calendars.tsx import TSXExchangeCalendar
 from .calendars.mirror import *
 

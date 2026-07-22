@@ -16,14 +16,17 @@ from abc import abstractmethod
 from datetime import time
 from typing import Any, List
 
+from pandas import date_range
 from pandas.tseries.holiday import (
     AbstractHolidayCalendar,
     GoodFriday,
     USLaborDay,
     USPresidentsDay,
     USThanksgivingDay,
+    Holiday
 )
 
+from pandas_market_calendars.market_calendar import MONDAY, FRIDAY
 from pandas_market_calendars.calendars.cme_market_times import GRAINS_AND_OILSEEDS_MARKET_TIMES
 from pandas_market_calendars.holidays.us import (
     Christmas,
@@ -37,6 +40,7 @@ from pandas_market_calendars.holidays.us import (
 )
 
 from .cme_globex_base import CMEGlobexBaseExchangeCalendar
+
 
 
 class CMEGlobexAgricultureExchangeCalendar(CMEGlobexBaseExchangeCalendar):
@@ -73,6 +77,21 @@ class CMEGlobexLivestockExchangeCalendar(CMEGlobexAgricultureExchangeCalendar):
     GLOBEX Trading Times
     https://www.cmegroup.com/markets/agriculture/livestock/live-cattle.contractSpecs.html
     Monday - Friday: 8:30 a.m. - 1:05 p.m. CT
+
+    Pre 2016-02-29, hours were:
+    - Monday      : 09:05     - 16:00 CT
+    - Tues-Thurs  : 08:00     - 16:00 CT
+    - Fri         : 08:00     - 13:55 CT
+    https://www.cmegroup.com/globex/files/livestock_hours_change_customer_notice.pdf
+    
+
+    Pre 2014-10-27, hours were:
+    - Monday      : 09:05     - 16:00 CT
+    - Tues-Thurs  : 17:00 T-1 - 16:00 CT
+    - Fri         : 17:00 T-1 - 13:55 CT
+    https://www.cmegroup.com/globex/files/livestock_hours_change_customer_notice.pdf
+
+    I have arbitrarily begun the early closes and late opens at 2010-01-01. 
     """
 
     aliases = [
@@ -84,9 +103,16 @@ class CMEGlobexLivestockExchangeCalendar(CMEGlobexAgricultureExchangeCalendar):
     ]
 
     regular_market_times = {
-        "market_open": ((None, time(8, 30)),),
-        "market_close": ((None, time(13, 5)),),
+        "market_open": ((None, time(17, 0), -1), ("2014-10-27", time(8, 0)), ("2016-02-29", time(8, 30)),),
+        "market_close": ((None, time(16,0)),  ("2016-02-29", time(13, 5)),),
     }
+
+    @property
+    def special_opens_adhoc(self):
+        return [(
+            time(9,5),
+            date_range(start='2010-01-01', end='2016-02-29', freq='W-MON')
+        )]
 
     @property
     def name(self) -> str:
@@ -124,8 +150,15 @@ class CMEGlobexLivestockExchangeCalendar(CMEGlobexAgricultureExchangeCalendar):
                         ChristmasEveInOrAfter1993,
                     ]
                 ),
-            )
+            ),
         ]
+    
+    @property
+    def special_closes_adhoc(self):
+        return [(
+            time(13,55),
+            date_range(start='2010-01-01', end='2016-02-29', freq='W-FRI')
+        )]
 
 
 class CMEGlobexGrainsAndOilseedsExchangeCalendar(CMEGlobexAgricultureExchangeCalendar):

@@ -22,6 +22,11 @@ from pandas_market_calendars.holidays.cn import (
     tsd_mapping,
 )
 from pandas_market_calendars.holidays.us import USNewYearsDay
+from pandas_market_calendars.holidays.uk import (
+    Christmas, BoxingDay, WeekendChristmas, WeekendBoxingDay,
+    SpringBank_post_2002_pre_2012, SpringBank_post_2012_pre_2022, 
+    SpringBank_post_2022, SpringBank_pre_2002
+)
 from pandas_market_calendars.market_calendar import MarketCalendar
 
 
@@ -217,21 +222,7 @@ NationalDay = Holiday(
     start_date=Timestamp("1997-07-01"),
 )
 
-Christmas = Holiday(
-    name="Christmas",
-    month=12,
-    day=25,
-    observance=partial(process_date, offset=2),
-    start_date=Timestamp("1954-01-01"),
-)
 
-BoxingDay = Holiday(
-    name="Boxing day",  # 圣诞节后第一个平日
-    month=12,
-    day=26,
-    observance=sunday_to_monday,
-    start_date=Timestamp("1954-01-01"),
-)
 
 QueenBirthday = Holiday(
     name="Queen's Birthday",  # 英女王生日 6月
@@ -359,7 +350,7 @@ HKClosedDay = [
 
 class HKEXExchangeCalendar(MarketCalendar):
     """
-    Exchange calendar for Hong Kong Stock Exchange
+    Exchange calendar for Hong Kong Stock Exchange (Stock market)
 
     Open Time: 9:30 AM, Asia/Shanghai
     LUNCH BREAK :facepalm: : 12:00 AM - 1:00 PM Asia/Shanghai
@@ -417,7 +408,9 @@ class HKEXExchangeCalendar(MarketCalendar):
                 NationalDay,
                 DoubleNinthFestivalDay,
                 Christmas,
+                WeekendChristmas,
                 BoxingDay,
+                WeekendBoxingDay,
                 CommemoratingAlliedVictory,
                 QueenBirthday,
                 QueenBirthday2,
@@ -428,3 +421,278 @@ class HKEXExchangeCalendar(MarketCalendar):
     @property
     def adhoc_holidays(self) -> List[Any]:
         return HKClosedDay
+
+
+# ---------------------------------------------------------------------------
+# Shared building blocks
+# ---------------------------------------------------------------------------
+
+# When Ching Ming Festival and Easter Monday coincide, HK observes an extra
+# holiday on the following Tuesday. This is ad-hoc — add each occurrence.
+HKFEExtraHolidays = [
+    Timestamp("2015-04-07", tz="UTC"),  # Ching Ming + Easter Monday coincidence
+    Timestamp("2026-04-07", tz="UTC"),  # Ching Ming + Easter Monday coincidence
+]
+
+# Lunar New Year Eve: non-holiday contracts have morning session only.
+# Ad-hoc because the date moves with the lunar calendar each year.
+# Weekend LNY Eves are omitted (no trading day to affect).
+_LNYEveEarlyClose = [
+    Timestamp("2020-01-24"),
+    Timestamp("2021-02-11"),
+    Timestamp("2022-01-31"),
+    # 2023 LNY Eve = Sat 21 Jan — no trading day
+    Timestamp("2024-02-08"),
+    Timestamp("2025-01-28"),
+    Timestamp("2026-02-16"),
+    Timestamp("2027-02-05"),
+]
+
+# Christmas Day and New Year's Eve: (for after hours cancellations)
+_HKChristmasEve = Holiday("Christmas Eve", month=12, day=24)
+_HKChristmasDay = Holiday("Christmas Day", month=12, day=25, observance=sunday_to_monday)
+_HKNewYearsEve = Holiday("New Year's Eve", month=12, day=31)
+
+
+class HKFEDomesticExchangeCalendar(MarketCalendar):
+    """
+    HKFE — Non-Holiday Trading contracts
+    (HSI  — Hang Seng Index Futures,
+     MHI  — Mini Hang Seng Index Futures,
+     HHI  — Hang Seng China Enterprises Index (HSCEI) Futures,
+     MCH  — Mini-HSCEI Futures,
+     HTI  — Hang Seng Tech Index Futures)
+
+    Closed on ALL Hong Kong public holidays.
+
+    Regular session (HKT = UTC+8):
+        Morning   : 09:15 – 12:00
+        Afternoon : 13:00 – 16:30
+        After-hours T+1 session (17:15 – 03:00 T+1)
+
+    WARNING! We do not model the lunch break as the library doesn't support multiple breaks.
+
+    Early closes (morning session only, close 12:00 HKT):
+        - Lunar New Year Eve (day before LNY Day 1)
+        - Christmas Eve (24 Dec)
+        - New Year's Eve (31 Dec)
+
+    """
+
+    aliases = ["HKFE", "HKFE_INDEX"]
+
+    regular_market_times = {
+        "market_open": ((None, time(9, 15)),),
+        "market_close": ((None, time(3, 0), 1),),  # T+1 session closes 03:00 HKT T+1
+        "break_start": ((None, time(16, 30)),),  # T session closes 16:30
+        "break_end": ((None, time(17, 15)),),  # T+1 session opens 17:15
+    }
+
+    @property
+    def name(self):
+        return "HKFE"
+
+    @property
+    def tz(self):
+        return ZoneInfo("Asia/Hong_Kong")
+
+    @property
+    def regular_holidays(self):
+        return AbstractHolidayCalendar(
+            rules=[
+                HKNewYearsDay,
+                # Lunar New Year (3 days) — current and historical rules
+                SpringFestivalDay,
+                SpringFestivalDay2,
+                SpringFestivalDay3,
+                SpringFestivalDayBefore1983,
+                SpringFestivalDay2Before1983,
+                SpringFestivalDay3Before1983,
+                SpringFestivalDayBefore2010,
+                SpringFestivalDay2Before2010,
+                SpringFestivalDay3Before2010,
+                GoodFriday,
+                EasterMonday,
+                TombSweepingDay,  # Ching Ming (day after)
+                LabourDay,
+                BuddhaShakyamuniDay,  # Day following Buddha's Birthday
+                DragonBoatFestivalDay,  # Tuen Ng Festival
+                HKRegionEstablishmentDay,
+                MidAutumnFestivalDay,
+                MidAutumnFestivalDayBefore1983,
+                MidAutumnFestivalDayBefore2010,
+                NationalDay,
+                DoubleNinthFestivalDay,  # Chung Yeung (day after)
+                Christmas,
+                BoxingDay,
+                # Historical-only rules
+                CommemoratingAlliedVictory,
+                QueenBirthday,
+                QueenBirthday2,
+                IDontKnow,
+            ]
+        )
+
+    @property
+    def adhoc_holidays(self):
+        return HKClosedDay + HKFEExtraHolidays
+
+    @property
+    def special_closes(self):
+        return [
+            (
+                time(16, 30),
+                AbstractHolidayCalendar(
+                    rules=[
+                        _HKChristmasEve,
+                        _HKNewYearsEve,
+                    ]
+                ),
+            ),
+        ]
+
+    @property
+    def special_closes_adhoc(self):
+        return [(time(12, 0), _LNYEveEarlyClose)]
+
+
+
+class HKFEMSCIBase(MarketCalendar):
+    """
+    These contracts trade THROUGH most Hong Kong public holidays.
+    The only full closure is New Year's Day (1 January).
+
+    After hours (T+1) session is additionally cancelled for the eve of lunar new year,
+    and on other days where it is both a UK and US holiday.
+    - Lunar New Year Eve (day before LNY Day 1)
+    - Last monday in may - US Memorial day & UK Late may bank holiday.
+    - Christmas Day (25 Dec) or monday 26th.
+    - New Year's Eve (31 Dec) # NB: Doesnt meet criteria above but appears to be true.
+    """
+    _early_close = None
+
+    @property
+    def tz(self):
+        return ZoneInfo("Asia/Hong_Kong")
+
+    @property
+    def regular_holidays(self):
+        # Only New Year's Day — all other HK public holidays are trading days
+        return AbstractHolidayCalendar(rules=[HKNewYearsDay])
+
+    @property
+    def adhoc_holidays(self):
+        return []
+
+    @property
+    def special_closes(self):
+        return [
+            (
+                self._early_close,
+                AbstractHolidayCalendar(
+                    rules=[
+                        _HKChristmasDay,
+                        SpringBank_post_2002_pre_2012, 
+                        SpringBank_post_2012_pre_2022, 
+                        SpringBank_post_2022, 
+                        SpringBank_pre_2002,
+                        _HKNewYearsEve,
+                    ]
+                ),
+            ),
+        ]
+
+
+
+class HKFEA50ExchangeCalendar(HKFEMSCIBase):
+    """
+    Regular session (HKT = UTC+8):
+        Morning   : 09:00 – 16:30
+        After-hours T+1 session (17:15 – 03:00 T+1) .
+
+    No lunch break in this market.
+
+    See HKFEMSCIBase for holiday rules
+    """
+
+    aliases = ["HKFE_A50"]
+
+    _early_close = time(16,30)
+    regular_market_times = {
+        "market_open": ((None, time(9, )),),
+        "market_close": ((None, time(3, 0), 1),),
+        "break_start": ((None, time(16, 30)),), 
+        "break_end": ((None, time(17, 15)),),  
+    }
+
+    @property
+    def name(self):
+        return "HKFE_A50"
+
+
+
+class HKFETaiwanExchangeCalendar(HKFEMSCIBase):
+    """
+    Regular session (HKT = UTC+8):
+        Morning   : 08:30 – 13:45
+        After-hours T+1 session (14:30 – 03:00 T+1) .
+
+    No lunch break in this market.
+
+    See HKFEMSCIBase for holiday rules
+    """
+
+    aliases = ["HKFE_TW"]
+
+    _early_close = time(13,45)
+    regular_market_times = {
+        "market_open": ((None, time(8, 30)),),
+        "market_close": ((None, time(3, 0), 1),),  
+        "break_start": ((None, time(13, 45)),), 
+        "break_end": ((None, time(14, 30)),), 
+    }
+
+    @property
+    def name(self):
+        return "HKFE_TW"
+
+
+
+class HKFECNHExchangeCalendar(HKFEMSCIBase):
+    """
+    Regular session (HKT = UTC+8):
+        Morning   : 08:30 – 18:00
+        After-hours T+1 session (19:00 – 03:00 T+1) .
+
+    No lunch break in this market.
+
+    Holidays are just New years, while New years eve has the T+1 session
+    cancelled.
+    """
+
+    aliases = ["HKFE_CNH"]
+
+    regular_market_times = {
+        "market_open": ((None, time(8, 30)),),
+        "market_close": ((None, time(3, 0), 1),),  
+        "break_start": ((None, time(18, 0)),), 
+        "break_end": ((None, time(19, 0)),), 
+    }
+
+    @property
+    def name(self):
+        return "HKFE_CNH"
+
+    @property
+    def special_closes(self):
+        return [
+            # No T+1 session on NYE
+            (
+                time(18, 0),
+                AbstractHolidayCalendar(
+                    rules=[
+                        _HKNewYearsEve,
+                    ]
+                ),
+            ),
+        ]

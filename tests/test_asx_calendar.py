@@ -3,7 +3,7 @@ from itertools import chain
 import pandas as pd
 from zoneinfo import ZoneInfo
 
-from pandas_market_calendars.calendars.asx import ASXExchangeCalendar
+from pandas_market_calendars.calendars.asx import ASXExchangeCalendar, ASX24IndexFuturesCalendar, ASX24IRFuturesCalendar
 
 
 def test_time_zone():
@@ -61,3 +61,54 @@ def test_unique_holidays():
     good_dates = asx.valid_days("1990-01-01", "2022-12-31")
     for date in chain.from_iterable(open_days):
         assert pd.Timestamp(date, tz="UTC") in good_dates
+
+
+def _sched(date):
+    return ASX24IndexFuturesCalendar().schedule(date, date)
+
+
+def test_asx24_instantiates():
+    assert ASX24IndexFuturesCalendar() is not None
+
+
+def test_asx24_good_friday_closed():
+    assert _sched("2026-04-03").empty
+
+
+def test_asx24_easter_monday_closed():
+    assert _sched("2026-04-06").empty
+
+
+def test_asx24_anzac_day_closed():
+    assert _sched("2026-04-25").empty
+
+
+def test_asx24_christmas_closed():
+    assert _sched("2026-12-25").empty
+
+
+def test_asx24_boxing_day_observed_closed():
+    # Dec 26 2026 is Saturday -> observed Monday Dec 28
+    assert _sched("2026-12-28").empty
+
+
+def test_asx24_normal_day_hours():
+    # June = AEST (UTC+10, no DST)
+    sched = _sched("2026-06-10")
+    assert sched["market_open"].iloc[0] == pd.Timestamp("2026-06-09 23:50:00+00:00")
+    assert sched["break_start"].iloc[0] == pd.Timestamp("2026-06-10 06:30:00+00:00")
+    assert sched["break_end"].iloc[0] == pd.Timestamp("2026-06-10 07:10:00+00:00")
+    assert sched["market_close"].iloc[0] == pd.Timestamp("2026-06-10 22:00:00+00:00")
+
+
+def test_asx24_christmas_eve_early_close():
+    # Dec 24 2026 = AEDT (UTC+11); 12:00 AEDT = 01:00 UTC
+    sched = _sched("2026-12-24")
+    assert not sched.empty
+    assert sched["market_close"].iloc[0] == pd.Timestamp("2026-12-24 03:30:00+00:00")
+
+
+def test_asx24_new_years_eve_early_close():
+    sched = _sched("2026-12-31")
+    assert not sched.empty
+    assert sched["market_close"].iloc[0] == pd.Timestamp("2026-12-31 03:30:00+00:00")

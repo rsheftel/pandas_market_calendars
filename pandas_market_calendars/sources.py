@@ -47,6 +47,64 @@ CALENDAR_SOURCES: dict[str, tuple[Source, ...]] = {
             covers="trading hours, holidays, early closes",
         ),
     ),
+    "ASX24_Index": (
+        Source(
+            name="Index Derivs trading calendar",
+            url="https://www.asx.com.au/markets/market-resources/trading-hours-calendar/index-derivatives",
+            last_verified="2026-05-25",
+            covers="trading hours",
+        ),
+        Source(
+            name="ASX24 Holiday calendar",
+            url="https://www.asx.com.au/markets/market-resources/asx-24-trading-calendar",
+            last_verified="2026-05-25",
+            covers="holidays, early closes",
+        ),
+    ),
+    "ASX24_Rates": (
+        Source(
+            name="IR Derivs trading calendar",
+            url="https://www.asx.com.au/markets/market-resources/trading-hours-calendar/interest-rate-derivatives",
+            last_verified="2026-05-25",
+            covers="trading hours",
+        ),
+        Source(
+            name="ASX24 Holiday calendar",
+            url="https://www.asx.com.au/markets/market-resources/asx-24-trading-calendar",
+            last_verified="2026-05-25",
+            covers="holidays, early closes",
+        ),
+    ),
+    # endregion
+    # region ---- Bursa Malaysia
+    "BURSAMY_FCPO": (
+        Source(
+            name="Bursa Malaysia holiday calendar",
+            url="https://www.bursamalaysia.com/about_bursa/about_us/calendar",
+            last_verified="2026-05-25",
+            covers="holidays",
+        ),
+        Source(
+            name="FCPO contract spec",
+            url="https://www.bursamalaysia.com/trade/our_products_services/derivatives/commodity_derivatives/crude_palm_oil_futures",
+            last_verified="2026-05-25",
+            covers="trading hours",
+        ),
+    ),
+    "BURSAMY_FKLI": (
+        Source(
+            name="Bursa Malaysia holiday calendar",
+            url="https://www.bursamalaysia.com/about_bursa/about_us/calendar",
+            last_verified="2026-05-25",
+            covers="holidays",
+        ),
+        Source(
+            name="FKLI contract spec",
+            url="https://www.bursamalaysia.com/trade/our_products_services/derivatives/equity_derivatives/ftse_bursa_malaysia_klci_futures",
+            last_verified="2026-05-25",
+            covers="trading hours",
+        ),
+    ),
     # endregion
     # region ---- B3 (Brasil Bolsa Balcao) / BMF ----
     "BMF": (
@@ -182,6 +240,20 @@ CALENDAR_SOURCES: dict[str, tuple[Source, ...]] = {
             covers="trading hours, product specs",
         ),
     ),
+    "CBOT_Bond": (
+        Source(
+            name="CME Group Interest Rate Products",
+            url="https://www.cmegroup.com/markets/interest-rates.html",
+            last_verified="2025-01-24",
+            covers="trading hours, product specs",
+        ),
+        Source(
+            name="2011-10-02 trading hours change",
+            url="https://www.cmegroup.com/tools-information/lookups/advisories/electronic-trading/20110926.html",
+            last_verified="2026-05-28",
+            covers="trading hours"
+        ),
+    ),
     # endregion
     # region ---- CME Globex ----
     "CME Globex Equity": (
@@ -296,6 +368,33 @@ CALENDAR_SOURCES: dict[str, tuple[Source, ...]] = {
         ),
     ),
     # endregion
+    # region -- Euronext
+    **{
+        cal: (
+            Source(
+                name="Euronext trading hours",
+                url="https://live.euronext.com/en/media/295/download",
+                last_verified="2026-05-25",
+                covers="trading hours, early closes",
+            ),
+            Source(
+                name="Euronext holiday calendar",
+                url="https://www.euronext.com/en/trading/trading-hours-holidays",
+                last_verified="2026-05-25",
+                covers="holidays, early closes",
+            ),
+        )
+        for cal in [
+            "ENX_PAR_INDEX",
+            "ENX_AMS_INDEX",
+            "ENX_BRU_INDEX",
+            "ENX_LIS_INDEX",
+            "ENX_MIL_INDEX",
+            "ENX_OSL_INDEX",
+            "ENX_PAR_COMM",
+        ]
+    },
+    # endregion
     # region ---- Hong Kong Stock Exchange ----
     "HKEX": (
         Source(
@@ -311,6 +410,22 @@ CALENDAR_SOURCES: dict[str, tuple[Source, ...]] = {
             covers="holidays",
         ),
     ),
+    **{cal: (
+        Source(
+            name="HKEX Derivs trading hours",
+            url="https://www.hkex.com.hk/Services/Trading-hours-and-Severe-Weather-Arrangements/Trading-Hours/Derivatives-Market?sc_lang=en",
+            last_verified="2026-05-26",
+            covers="trading hours"
+        ),
+        Source(
+            name="HKFE Trading calendar",
+            url="https://www.hkex.com.hk/Services/Trading/Derivatives/Overview/Trading-Calendar-and-Holiday-Schedule?sc_lang=en",
+            last_verified="2026-05-26",
+            covers="holidays, early closes"
+        )
+    )
+        for cal in ["HKFE", "HKFE_A50", "HKFE_TW", "HKFE_CNH"]
+    },
     # endregion
     # region ---- ICE Futures ----
     "ICE": (
@@ -329,6 +444,33 @@ CALENDAR_SOURCES: dict[str, tuple[Source, ...]] = {
             covers="trading hours",
         ),
     ),
+    **{
+        # ICEUS calendars
+        cal: (
+            Source(
+                name="IFUS trading hours",
+                url="https://www.ice.com/publicdocs/futures_us/ICE_Futures_US_Regular_Trading_Hours.pdf",
+                last_verified="2026-05-26",
+                covers="trading hours"
+            ),
+            Source(
+                name="IFUS holidays",
+                url="https://www.ice.com/publicdocs/futures/IFUS_Trading_Hours_Holiday_Calendar.pdf",
+                last_verified="2026-05-26",
+                covers="holidays",
+            ),
+            Source(
+                name="IFUS christmas holiday clarification",
+                url="https://www.ice.com/publicdocs/futures_us/exchange_notices/ICE_Futures_US_2021Christmas_Holiday_20211011.pdf",
+                last_verified="2026-05-26",
+                covers="holidays"
+            )
+        )
+        for cal in [
+            "ICEUS_COFFEE", "ICEUS_COTTON", "ICEUS_COCOA", "ICEUS_SUGAR11", "ICEUS_SUGAR16", "ICEUS_CANOLA",
+            "ICEUS_FX", "ICEUS_ENERGIES", "ICEUS_FINANCIALS", "ICEUS_DAILY_PR",
+        ]
+    },
     # endregion
     # region ---- IEX (Investors Exchange) ----
     "IEX": (

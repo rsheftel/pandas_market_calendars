@@ -5,7 +5,32 @@ import pandas as pd
 from pandas.testing import assert_index_equal
 from zoneinfo import ZoneInfo
 
-from pandas_market_calendars.calendars.jpx import JPXExchangeCalendar
+from pandas_market_calendars.calendars.jpx import (
+    JPXExchangeCalendar,
+    OSEIndexFuturesCalendar,
+    OSEJGBFuturesCalendar,
+    OSEPreciousMetalsFuturesCalendar,
+)
+
+
+def _sched(cal, date):
+    return cal.schedule(date, date)
+
+
+def _is_holiday(cal, date):
+    return _sched(cal, date).empty
+
+
+def _is_trading(cal, date):
+    return not _sched(cal, date).empty
+
+
+def _close(cal, date):
+    return _sched(cal, date)["market_close"].iloc[0]
+
+
+def _open(cal, date):
+    return _sched(cal, date)["market_open"].iloc[0]
 
 
 def test_time_zone():
@@ -281,3 +306,76 @@ def test_jpx_change_in_market_close():
 
     for date in business_dates_after_change:
         assert jpx_schedule.loc[date, "market_close"] == pd.Timestamp(f"{date} 15:30", tz="Asia/Tokyo")
+
+
+# ---------------------------------------------------------------------------
+# OSE Index Futures
+# ---------------------------------------------------------------------------
+
+
+def test_ose_index_instantiates():
+    assert OSEIndexFuturesCalendar() is not None
+
+
+def test_ose_index_showa_day():
+    assert _is_holiday(OSEIndexFuturesCalendar(), "2026-04-29")
+
+
+def test_ose_index_golden_week():
+    cal = OSEIndexFuturesCalendar()
+    assert _is_holiday(cal, "2026-05-03")  # Constitution Day
+    assert _is_holiday(cal, "2026-05-04")  # Greenery Day
+    assert _is_holiday(cal, "2026-05-05")  # Children's Day
+
+
+def test_ose_index_new_year():
+    cal = OSEIndexFuturesCalendar()
+    assert _is_holiday(cal, "2026-01-01")
+    assert _is_holiday(cal, "2026-01-02")  # Jan 2-3 closed by convention
+    assert _is_holiday(cal, "2026-01-03")
+
+
+def test_ose_index_normal_hours():
+    sched = _sched(OSEIndexFuturesCalendar(), "2026-03-10")
+    # open: 08:45 JST = 23:45 UTC prev day
+    assert _open(OSEIndexFuturesCalendar(), "2026-03-10") == pd.Timestamp("2026-03-09 23:45:00+00:00")
+    # close: 06:00 JST next day = 21:00 UTC same row
+    assert _close(OSEIndexFuturesCalendar(), "2026-03-10") == pd.Timestamp("2026-03-10 21:00:00+00:00")
+    # break: 15:45-17:00 JST = 06:45-08:00 UTC
+    assert sched["break_start"].iloc[0] == pd.Timestamp("2026-03-10 06:45:00+00:00")
+    assert sched["break_end"].iloc[0] == pd.Timestamp("2026-03-10 08:00:00+00:00")
+
+
+# ---------------------------------------------------------------------------
+# OSE JGB Futures
+# ---------------------------------------------------------------------------
+
+
+def test_ose_jgb_instantiates():
+    assert OSEJGBFuturesCalendar() is not None
+
+
+def test_ose_jgb_holiday():
+    assert _is_holiday(OSEJGBFuturesCalendar(), "2026-01-01")
+
+
+def test_ose_jgb_normal_hours():
+    sched = _sched(OSEJGBFuturesCalendar(), "2026-03-10")
+    # Night session break: 15:02-15:30 JST = 06:02-06:30 UTC
+    assert sched["break_start"].iloc[0] == pd.Timestamp("2026-03-10 06:02:00+00:00")
+    assert sched["break_end"].iloc[0] == pd.Timestamp("2026-03-10 06:30:00+00:00")
+    assert _close(OSEJGBFuturesCalendar(), "2026-03-10") == pd.Timestamp("2026-03-10 21:00:00+00:00")
+
+
+def test_ose_precious_instantiates():
+    assert OSEPreciousMetalsFuturesCalendar() is not None
+
+
+def test_ose_precious_showa_day_closed():
+    assert OSEPreciousMetalsFuturesCalendar().schedule("2026-04-29", "2026-04-29").empty
+
+
+def test_ose_precious_normal_hours():
+    sched = OSEPreciousMetalsFuturesCalendar().schedule("2026-03-10", "2026-03-10")
+    assert sched["market_open"].iloc[0] == pd.Timestamp("2026-03-09 23:45:00+00:00")
+    assert sched["market_close"].iloc[0] == pd.Timestamp("2026-03-10 21:00:00+00:00")

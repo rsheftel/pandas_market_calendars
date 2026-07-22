@@ -430,11 +430,8 @@ class CMEBondExchangeCalendar(MarketCalendar):
 
     aliases = [
         "CME_Rate",
-        "CBOT_Rate",
         "CME_InterestRate",
-        "CBOT_InterestRate",
         "CME_Bond",
-        "CBOT_Bond",
     ]
     regular_market_times = {
         "market_open": ((None, time(17), -1),),  # offset by -1 day
@@ -492,4 +489,33 @@ class CMEBondExchangeCalendar(MarketCalendar):
 
     @property
     def special_closes_adhoc(self) -> List[Any]:
-        return [(time(10, tzinfo=self.tz), BondsGoodFridayOpen)]
+        split = Timestamp("2020-01-01", tz="UTC")
+        gfs_1015 = [d for d in BondsGoodFridayOpen if d < split]
+        gfs_10 = [d for d in BondsGoodFridayOpen if d > split]
+        return [
+            (time(10, tzinfo=self.tz), gfs_10),
+            (time(10, 15, tzinfo=self.tz), gfs_1015)
+        ]
+
+class CBOTBondExchangeCalendar(CMEBondExchangeCalendar):
+    """
+    Same as the CME calendar, but splits on opening hours in 2011 when the CBOT rates
+    produces moved onto Globex hours.
+    """
+    aliases = [
+        "CBOT_Rate",
+        "CBOT_InterestRate",
+        "CBOT_Bond",
+    ]
+
+    @property
+    def name(self):
+        return "CBOT_Bond"
+
+    regular_market_times = {
+        "market_open": (
+            (None, time(17,30), -1), 
+            ("2011-10-02", time(17), -1), 
+        ),
+        "market_close": ((None, time(16)),),
+    }
