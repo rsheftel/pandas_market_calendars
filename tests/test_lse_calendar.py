@@ -67,6 +67,7 @@ def test_unique_holidays():
         "QEII_Jubilee_25",
         "QEII_Jubilee_50",
         "QEII_Jubilee_60",
+        "QEII_Jubilee_70",
         "QEII_StateFuneral",
         "Royal_Wedding_Anne_1973",
         "Royal_Wedding_Charles_1981",
@@ -101,12 +102,14 @@ def test_unique_holidays():
         pd.Timestamp("2012-06-05"),
     ]
     england_unique_hols["QEII_Jubilee_60"]["open"] = [pd.Timestamp("2012-05-28")]  # Spring bank holiday removed
-    # Platinum Jubilee
-    england_unique_hols["QEII_Jubilee_60"]["closed"] = [
+    # Platinum Jubilee (NOTE: previously reused the QEII_Jubilee_60 key,
+    # overwriting the Diamond Jubilee entries above, and checked Tue
+    # 2022-05-31 instead of the moved spring bank holiday Mon 2022-05-30)
+    england_unique_hols["QEII_Jubilee_70"]["closed"] = [
         pd.Timestamp("2022-06-02"),
         pd.Timestamp("2022-06-03"),
     ]
-    england_unique_hols["QEII_Jubilee_60"]["open"] = [pd.Timestamp("2022-05-31")]  # Spring bank holiday removed
+    england_unique_hols["QEII_Jubilee_70"]["open"] = [pd.Timestamp("2022-05-30")]  # Spring bank holiday removed
 
     # State Funeral of Queen Elizabeth II
     england_unique_hols["QEII_StateFuneral"]["closed"] = [pd.Timestamp("2022-09-19")]

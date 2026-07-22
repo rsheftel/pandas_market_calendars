@@ -58,7 +58,7 @@ MayBank_post_2020 = Holiday(
 # Spring bank holiday has two exceptions based on the Golden & Diamond Jubilee
 # 2002-05-27 Spring bank holiday removed for Golden Jubilee
 # 2012-05-28 Spring bank holiday removed for Diamond Jubilee
-# 2022-05-31 Spring bank holiday removed for Platinum Jubilee
+# 2022-05-30 Spring bank holiday removed for Platinum Jubilee (moved to 2022-06-02)
 
 # Spring bank holiday
 SpringBank_pre_2002 = Holiday(
@@ -92,7 +92,9 @@ SpringBank_post_2022 = Holiday(
     month=5,
     day=31,
     offset=DateOffset(weekday=MO(-1)),
-    start_date=Timestamp("2022-01-01"),
+    # 2022's holiday was moved to Jun 2 for the Platinum Jubilee (see the
+    # UniqueCloses entries), so this rule skips 2022 like 2002/2012 above
+    start_date=Timestamp("2023-01-01"),
 )
 
 # Summer bank holiday
