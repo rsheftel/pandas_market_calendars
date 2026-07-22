@@ -17,7 +17,7 @@ import contextlib
 import warnings
 from abc import ABCMeta, abstractmethod
 from datetime import time
-from typing import List, Literal, Union
+from typing import Any, List, Literal, Optional, Tuple, Union
 
 import pandas as pd
 from pandas.tseries.holiday import AbstractHolidayCalendar
@@ -50,12 +50,12 @@ class HolidayCalendar(AbstractHolidayCalendar):
     choose wider or narrower defaults without mutating pandas global state.
     """
 
-    def __init__(self, *args, start_date=None, end_date=None, **kwargs) -> None:
+    def __init__(self, *args: Any, start_date: Any = None, end_date: Any = None, **kwargs: Any) -> None:
         super().__init__(*args, **kwargs)
         self.start_date = pd.Timestamp(start_date) if start_date is not None else AbstractHolidayCalendar.start_date
         self.end_date = pd.Timestamp(end_date) if end_date is not None else AbstractHolidayCalendar.end_date
 
-    def holidays(self, start=None, end=None, return_name: bool = False) -> pd.DatetimeIndex | pd.Series:
+    def holidays(self, start: Any = None, end: Any = None, return_name: bool = False) -> Any:
         if start is None:
             start = self.start_date
         if end is None:
@@ -78,12 +78,12 @@ class MarketCalendar(metaclass=MarketCalendarMeta):
     """
 
     # Type annotations - these dict literals get converted to ProtectedDict by metaclass
-    regular_market_times: ProtectedDict = {  # type: ignore[assignment]
+    regular_market_times: Any = {
         "market_open": ((None, time(0)),),
         "market_close": ((None, time(23)),),
     }
 
-    open_close_map: ProtectedDict = {  # type: ignore[assignment]
+    open_close_map: Any = {
         "market_open": True,
         "market_close": False,
         "break_start": False,
@@ -103,7 +103,7 @@ class MarketCalendar(metaclass=MarketCalendarMeta):
         return pd.Timedelta(days=day_offset, hours=t_time.hour, minutes=t_time.minute, seconds=t_time.second)
 
     @staticmethod
-    def _off(tple) -> int:
+    def _off(tple: Any) -> int:
         try:
             return tple[2]
         except IndexError:
@@ -117,7 +117,7 @@ class MarketCalendar(metaclass=MarketCalendarMeta):
         return [cal for cal in cls._regmeta_class_registry if cal not in ["MarketCalendar", "TradingCalendar"]]
 
     @classmethod
-    def factory(cls, name, *args, **kwargs):  # Will be set by Meta, keeping it there for tests
+    def factory(cls, name: str, *args: Any, **kwargs: Any) -> Any:  # Will be set by Meta, keeping it there for tests
         """
         :param name: The name of the MarketCalendar to be retrieved.
         :param *args/**kwargs: passed to requested MarketCalendar.__init__
@@ -125,7 +125,7 @@ class MarketCalendar(metaclass=MarketCalendarMeta):
         """
         return
 
-    def __init__(self, open_time=None, close_time=None):
+    def __init__(self, open_time: Optional[time] = None, close_time: Optional[time] = None) -> None:
         """
         :param open_time: Market open time override as datetime.time object. If None then default is used.
         :param close_time: Market close time override as datetime.time object. If None then default is used.
@@ -146,7 +146,7 @@ class MarketCalendar(metaclass=MarketCalendarMeta):
 
     @property
     @abstractmethod
-    def name(self):
+    def name(self) -> str:
         """
         Name of the market
 
@@ -155,7 +155,7 @@ class MarketCalendar(metaclass=MarketCalendarMeta):
         raise NotImplementedError()
 
     @property
-    def full_name(self):
+    def full_name(self) -> str:
         """
         Full name of the market
 
@@ -177,7 +177,7 @@ class MarketCalendar(metaclass=MarketCalendarMeta):
 
     @property
     @abstractmethod
-    def tz(self):
+    def tz(self) -> Any:
         """
         Time zone for the market.
 
@@ -186,10 +186,10 @@ class MarketCalendar(metaclass=MarketCalendarMeta):
         raise NotImplementedError()
 
     @property
-    def market_times(self):
+    def market_times(self) -> List[str]:
         return self._market_times
 
-    def _prepare_regular_market_times(self):
+    def _prepare_regular_market_times(self) -> None:
         oc_map = self.open_close_map
         assert all(isinstance(x, bool) for x in oc_map.values()), "Values in open_close_map need to be True or False"
 
@@ -229,7 +229,7 @@ class MarketCalendar(metaclass=MarketCalendarMeta):
         self._market_times = sorted(regular.keys(), key=lambda x: regular_tds[x][-1][1])
         self._oc_market_times = list(filter(oc_map.__contains__, self._market_times))
 
-    def _set_time(self, market_time, times, opens):
+    def _set_time(self, market_time: str, times: Any, opens: Any) -> None:
         if isinstance(times, (tuple, list)):  # passed a tuple
             if not isinstance(times[0], (tuple, list)):  # doesn't have a tuple inside
                 if times[0] is None:  # seems to be a tuple indicating starting time
@@ -270,7 +270,7 @@ class MarketCalendar(metaclass=MarketCalendarMeta):
 
         self._prepare_regular_market_times()
 
-    def change_time(self, market_time, times, opens=DEFAULT):
+    def change_time(self, market_time: str, times: Any, opens: Any = DEFAULT) -> None:
         """
         Changes the specified market time in regular_market_times and makes the necessary adjustments.
 
@@ -290,7 +290,7 @@ class MarketCalendar(metaclass=MarketCalendarMeta):
         )
         return self._set_time(market_time, times, opens)
 
-    def add_time(self, market_time, times, opens=DEFAULT):
+    def add_time(self, market_time: str, times: Any, opens: Any = DEFAULT) -> None:
         """
         Adds the specified market time to regular_market_times and makes the necessary adjustments.
 
@@ -305,7 +305,7 @@ class MarketCalendar(metaclass=MarketCalendarMeta):
 
         return self._set_time(market_time, times, opens)
 
-    def remove_time(self, market_time):
+    def remove_time(self, market_time: str) -> None:
         """
         Removes the specified market time from regular_market_times and makes the necessary adjustments.
 
@@ -321,21 +321,21 @@ class MarketCalendar(metaclass=MarketCalendarMeta):
         if self.is_custom(market_time):
             self._customized_market_times.remove(market_time)
 
-    def is_custom(self, market_time):
+    def is_custom(self, market_time: str) -> bool:
         return market_time in self._customized_market_times
 
     @property
-    def has_custom(self):
+    def has_custom(self) -> bool:
         return len(self._customized_market_times) > 0
 
-    def is_discontinued(self, market_time):
+    def is_discontinued(self, market_time: str) -> bool:
         return market_time in self.discontinued_market_times
 
     @property
-    def has_discontinued(self):
+    def has_discontinued(self) -> bool:
         return len(self.discontinued_market_times) > 0
 
-    def get_time(self, market_time, all_times=False):
+    def get_time(self, market_time: str, all_times: bool = False) -> Any:
         try:
             times = self.regular_market_times[market_time]
         except KeyError as e:
@@ -350,7 +350,7 @@ class MarketCalendar(metaclass=MarketCalendarMeta):
             return times
         return times[-1][1].replace(tzinfo=self.tz)
 
-    def get_time_on(self, market_time, date):
+    def get_time_on(self, market_time: str, date: Any) -> Optional[time]:
         times = self.get_time(market_time, all_times=True)
         if times is None:
             return None
@@ -364,20 +364,20 @@ class MarketCalendar(metaclass=MarketCalendarMeta):
         regular_time = self.days_at_time(pd.DatetimeIndex([date]), market_time).iloc[0]
         return regular_time.tz_convert(self.tz).time().replace(tzinfo=self.tz)
 
-    def open_time_on(self, date):
+    def open_time_on(self, date: Any) -> Optional[time]:
         return self.get_time_on("market_open", date)
 
-    def close_time_on(self, date):
+    def close_time_on(self, date: Any) -> Optional[time]:
         return self.get_time_on("market_close", date)
 
-    def break_start_on(self, date):
+    def break_start_on(self, date: Any) -> Optional[time]:
         return self.get_time_on("break_start", date)
 
-    def break_end_on(self, date):
+    def break_end_on(self, date: Any) -> Optional[time]:
         return self.get_time_on("break_end", date)
 
     @property
-    def open_time(self):
+    def open_time(self) -> time:
         """
         Default open time for the market
 
@@ -386,7 +386,7 @@ class MarketCalendar(metaclass=MarketCalendarMeta):
         return self.get_time("market_open")
 
     @property
-    def close_time(self):
+    def close_time(self) -> time:
         """
         Default close time for the market
 
@@ -395,7 +395,7 @@ class MarketCalendar(metaclass=MarketCalendarMeta):
         return self.get_time("market_close")
 
     @property
-    def break_start(self):
+    def break_start(self) -> Optional[time]:
         """
         Break time start. If None then there is no break
 
@@ -404,7 +404,7 @@ class MarketCalendar(metaclass=MarketCalendarMeta):
         return self.get_time("break_start")
 
     @property
-    def break_end(self):
+    def break_end(self) -> Optional[time]:
         """
         Break time end. If None then there is no break
 
@@ -413,7 +413,7 @@ class MarketCalendar(metaclass=MarketCalendarMeta):
         return self.get_time("break_end")
 
     @property
-    def regular_holidays(self):
+    def regular_holidays(self) -> Optional[AbstractHolidayCalendar]:
         """
 
         :return: pd.AbstractHolidayCalendar: a calendar containing the regular holidays for this calendar
@@ -421,7 +421,7 @@ class MarketCalendar(metaclass=MarketCalendarMeta):
         return None
 
     @property
-    def adhoc_holidays(self):
+    def adhoc_holidays(self) -> List[Any]:
         """
 
         :return: list of ad-hoc holidays
@@ -429,11 +429,11 @@ class MarketCalendar(metaclass=MarketCalendarMeta):
         return []
 
     @property
-    def weekmask(self):
+    def weekmask(self) -> str:
         return "Mon Tue Wed Thu Fri"
 
     @property
-    def special_opens(self):
+    def special_opens(self) -> List[Any]:
         """
         A list of special open times and corresponding AbstractHolidayCalendar.
 
@@ -442,7 +442,7 @@ class MarketCalendar(metaclass=MarketCalendarMeta):
         return []
 
     @property
-    def special_opens_adhoc(self):
+    def special_opens_adhoc(self) -> List[Any]:
         """
 
         :return: List of (time, DatetimeIndex) tuples that represent special opens that cannot be codified into rules.
@@ -450,7 +450,7 @@ class MarketCalendar(metaclass=MarketCalendarMeta):
         return []
 
     @property
-    def special_closes(self):
+    def special_closes(self) -> List[Any]:
         """
         A list of special close times and corresponding HolidayCalendars.
 
@@ -459,38 +459,38 @@ class MarketCalendar(metaclass=MarketCalendarMeta):
         return []
 
     @property
-    def special_closes_adhoc(self):
+    def special_closes_adhoc(self) -> List[Any]:
         """
 
         :return: List of (time, DatetimeIndex) tuples that represent special closes that cannot be codified into rules.
         """
         return []
 
-    def get_special_times(self, market_time):
+    def get_special_times(self, market_time: str) -> List[Any]:
         return getattr(self, "special_" + market_time, [])
 
-    def get_special_times_adhoc(self, market_time):
+    def get_special_times_adhoc(self, market_time: str) -> List[Any]:
         return getattr(self, "special_" + market_time + "_adhoc", [])
 
-    def get_offset(self, market_time):
+    def get_offset(self, market_time: str) -> int:
         return self._off(self.get_time(market_time, all_times=True)[-1])
 
     @property
-    def open_offset(self):
+    def open_offset(self) -> int:
         """
         :return: open offset
         """
         return self.get_offset("market_open")
 
     @property
-    def close_offset(self):
+    def close_offset(self) -> int:
         """
         :return: close offset
         """
         return self.get_offset("market_close")
 
     @property
-    def interruptions(self):
+    def interruptions(self) -> List[Any]:
         """
         This needs to be a list with a tuple for each date that had an interruption.
         The tuple should have this layout:
@@ -513,7 +513,7 @@ class MarketCalendar(metaclass=MarketCalendarMeta):
         """
         return []
 
-    def _convert(self, col: pd.Series):
+    def _convert(self, col: pd.Series) -> pd.Series:
         """
         col is a series indexed by dates at which interruptions occurred. The values are either the start or end times
         of an interruption, represented by either a timedelta or a tuple with a timedelta and day offset of the form
@@ -538,7 +538,7 @@ class MarketCalendar(metaclass=MarketCalendarMeta):
             return pd.Series([], dtype="datetime64[ns, UTC]")
 
         # Optimized: Use direct timedelta computation instead of string parsing
-        def time_to_timedelta(t):
+        def time_to_timedelta(t: Any) -> Any:
             if t is None:
                 return pd.NaT
             if isinstance(t, tuple):
@@ -553,11 +553,11 @@ class MarketCalendar(metaclass=MarketCalendarMeta):
         return result.dt.tz_localize(self.tz).dt.tz_convert("UTC")
 
     @staticmethod
-    def _col_name(n: int):
+    def _col_name(n: int) -> str:
         return f"interruption_start_{n // 2 + 1}" if n % 2 == 1 else f"interruption_end_{n // 2}"
 
     @property
-    def interruptions_df(self):
+    def interruptions_df(self) -> pd.DataFrame:
         """
         Will return a pd.DataFrame only containing interruptions.
         """
@@ -588,7 +588,7 @@ class MarketCalendar(metaclass=MarketCalendarMeta):
             )
         return self._holidays
 
-    def valid_days(self, start_date, end_date, tz="UTC") -> pd.DatetimeIndex:
+    def valid_days(self, start_date: Any, end_date: Any, tz: Any = "UTC") -> pd.DatetimeIndex:
         """
         Get a DatetimeIndex of valid open business days.
 
@@ -599,11 +599,11 @@ class MarketCalendar(metaclass=MarketCalendarMeta):
         """
         return pd.date_range(start_date, end_date, freq=self.holidays(), normalize=True, tz=tz)
 
-    def _get_market_times(self, start, end):
+    def _get_market_times(self, start: str, end: str) -> List[str]:
         mts = self._market_times
         return mts[mts.index(start) : mts.index(end) + 1]
 
-    def days_at_time(self, days, market_time, day_offset=0):
+    def days_at_time(self, days: Any, market_time: Union[str, time], day_offset: int = 0) -> pd.Series:
         """
         Create an index of days at time ``t``, interpreted in timezone ``tz``. The returned index is localized to UTC.
 
@@ -640,7 +640,7 @@ class MarketCalendar(metaclass=MarketCalendarMeta):
 
         return datetimes.dt.tz_localize(self.tz).dt.tz_convert("UTC")
 
-    def _tryholidays(self, cal, s, e):
+    def _tryholidays(self, cal: AbstractHolidayCalendar, s: Any, e: Any) -> pd.DatetimeIndex:
         try:
             # If the Calendar is all single Observance Holidays then it is far
             # more efficient to extract and return those dates
@@ -655,7 +655,7 @@ class MarketCalendar(metaclass=MarketCalendarMeta):
         except ValueError:
             return pd.DatetimeIndex([])
 
-    def _special_dates(self, calendars, ad_hoc_dates, start, end):
+    def _special_dates(self, calendars: Any, ad_hoc_dates: Any, start: Any, end: Any) -> pd.Series:
         """
         Union an iterable of pairs of the forms (time, calendar),
         (time, [dates]), and (time, int). If the second item in the pair
@@ -680,7 +680,9 @@ class MarketCalendar(metaclass=MarketCalendarMeta):
 
         return pd.Series([], dtype="datetime64[ns, UTC]", index=pd.DatetimeIndex([]))
 
-    def special_dates(self, market_time, start_date, end_date, filter_holidays=True):
+    def special_dates(
+        self, market_time: str, start_date: Any, end_date: Any, filter_holidays: bool = True
+    ) -> pd.Series:
         """
         Calculate a datetimeindex that only contains the specail times of the requested market time.
 
@@ -714,14 +716,14 @@ class MarketCalendar(metaclass=MarketCalendarMeta):
 
     def schedule(
         self,
-        start_date,
-        end_date,
-        tz="UTC",
-        start="market_open",
-        end="market_close",
-        force_special_times=True,
-        market_times=None,
-        interruptions=False,
+        start_date: Any,
+        end_date: Any,
+        tz: Any = "UTC",
+        start: Any = "market_open",
+        end: Any = "market_close",
+        force_special_times: Any = True,
+        market_times: Any = None,
+        interruptions: Any = False,
     ) -> pd.DataFrame:
         """
         Generates the schedule DataFrame. The resulting DataFrame will have all the valid business days as the index
@@ -767,7 +769,9 @@ class MarketCalendar(metaclass=MarketCalendarMeta):
 
         return self.schedule_from_days(_all_days, tz, start, end, force_special_times, market_times, interruptions)
 
-    def _apply_special_times(self, schedule, special_dates, open_adj, close_adj, force_special_times):
+    def _apply_special_times(
+        self, schedule: pd.DataFrame, special_dates: Any, open_adj: Any, close_adj: Any, force_special_times: Any
+    ) -> pd.DataFrame:
         """
         Apply special times to a schedule.
 
@@ -793,7 +797,7 @@ class MarketCalendar(metaclass=MarketCalendarMeta):
             mkt_open_ind = cols.get_loc("market_open")
 
             # Can't use Lambdas here since numpy array assignment doesn't return the array.
-            def adjust_opens(x):  # x is an np.Array.
+            def adjust_opens(x: Any) -> Any:  # x is an np.Array.
                 x[x <= x[mkt_open_ind]] = x[mkt_open_ind]
                 return x
 
@@ -803,7 +807,7 @@ class MarketCalendar(metaclass=MarketCalendarMeta):
         if force_special_times is True and len(close_adj) > 0:
             mkt_close_ind = cols.get_loc("market_close")
 
-            def adjust_closes(x):
+            def adjust_closes(x: Any) -> Any:
                 x[x >= x[mkt_close_ind]] = x[mkt_close_ind]
                 return x
 
@@ -819,12 +823,12 @@ class MarketCalendar(metaclass=MarketCalendarMeta):
     def schedule_from_days(
         self,
         days: pd.DatetimeIndex,
-        tz="UTC",
-        start="market_open",
-        end="market_close",
-        force_special_times=True,
-        market_times=None,
-        interruptions=False,
+        tz: str = "UTC",
+        start: str = "market_open",
+        end: str = "market_close",
+        force_special_times: Any = True,
+        market_times: Any = None,
+        interruptions: bool = False,
     ) -> pd.DataFrame:
         """
         Generates a schedule DataFrame for the days provided. The days are assumed to be valid trading days.
@@ -965,7 +969,7 @@ class MarketCalendar(metaclass=MarketCalendarMeta):
             month_anchor=month_anchor,
         )
 
-    def open_at_time(self, schedule, timestamp, include_close=False, only_rth=False):
+    def open_at_time(self, schedule: Any, timestamp: Any, include_close: bool = False, only_rth: bool = False) -> bool:
         """
         Determine if a given timestamp is during an open time for the market. If the timestamp is
         before the first open time or after the last close time of `schedule`, a ValueError will be raised.
@@ -1029,10 +1033,10 @@ class MarketCalendar(metaclass=MarketCalendarMeta):
 
     # need this to make is_open_now testable
     @staticmethod
-    def _get_current_time():
+    def _get_current_time() -> pd.Timestamp:
         return pd.Timestamp.now(tz="UTC")
 
-    def is_open_now(self, schedule, include_close=False, only_rth=False):
+    def is_open_now(self, schedule: pd.DataFrame, include_close: bool = False, only_rth: bool = False) -> bool:
         """
         To determine if the current local system time (converted to UTC) is an open time for the market
 
@@ -1048,7 +1052,7 @@ class MarketCalendar(metaclass=MarketCalendarMeta):
         current_time = MarketCalendar._get_current_time()
         return self.open_at_time(schedule, current_time, include_close=include_close, only_rth=only_rth)
 
-    def clean_dates(self, start_date, end_date):
+    def clean_dates(self, start_date: Any, end_date: Any) -> Tuple[pd.Timestamp, pd.Timestamp]:
         """
         Strips the inputs of time and time zone information
 
@@ -1060,13 +1064,13 @@ class MarketCalendar(metaclass=MarketCalendarMeta):
         end_date = pd.Timestamp(end_date).tz_localize(None).normalize()
         return start_date, end_date
 
-    def is_different(self, col, diff=None):
+    def is_different(self, col: pd.Series, diff: Any = None) -> pd.Series:
         if diff is None:
             diff = pd.Series.ne
         normal = self.days_at_time(col.index, col.name)
         return diff(col.dt.tz_convert("UTC"), normal)
 
-    def early_closes(self, schedule):
+    def early_closes(self, schedule: pd.DataFrame) -> pd.DataFrame:
         """
         Get a DataFrame of the dates that are an early close.
 
@@ -1075,7 +1079,7 @@ class MarketCalendar(metaclass=MarketCalendarMeta):
         """
         return schedule[self.is_different(schedule["market_close"], pd.Series.lt)]
 
-    def late_opens(self, schedule):
+    def late_opens(self, schedule: pd.DataFrame) -> pd.DataFrame:
         """
         Get a DataFrame of the dates that are an late opens.
 
@@ -1084,7 +1088,7 @@ class MarketCalendar(metaclass=MarketCalendarMeta):
         """
         return schedule[self.is_different(schedule["market_open"], pd.Series.gt)]
 
-    def __getitem__(self, item):
+    def __getitem__(self, item: Any) -> Any:
         if isinstance(item, (tuple, list)):
             if item[1] == "all":
                 return self.get_time(item[0], all_times=True)
@@ -1093,8 +1097,8 @@ class MarketCalendar(metaclass=MarketCalendarMeta):
         else:
             return self.get_time(item)
 
-    def __setitem__(self, key, value):
+    def __setitem__(self, key: str, value: Any) -> None:
         return self.add_time(key, value)
 
-    def __delitem__(self, key):
+    def __delitem__(self, key: str) -> None:
         return self.remove_time(key)

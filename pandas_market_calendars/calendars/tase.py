@@ -1,5 +1,5 @@
 from datetime import time
-from typing import Literal, Union
+from typing import Any, List, Literal, Union
 
 from pandas import DatetimeIndex, Timedelta, Timestamp
 from zoneinfo import ZoneInfo
@@ -184,23 +184,23 @@ class TASEExchangeCalendar(MarketCalendar):
     }
 
     @property
-    def name(self):
+    def name(self) -> str:
         return "TASE"
 
     @property
-    def full_name(self):
+    def full_name(self) -> str:
         return "Tel Aviv Stock Exchange"
 
     @property
-    def tz(self):
+    def tz(self) -> Any:
         return ZoneInfo("Asia/Jerusalem")
 
     @property
-    def adhoc_holidays(self):
+    def adhoc_holidays(self) -> List[Any]:
         return TASEClosedDay
 
     @property
-    def weekmask(self):
+    def weekmask(self) -> str:
         return "Sun Mon Tue Wed Thu"
 
     def date_range_htf(

@@ -12,6 +12,8 @@ using pyephem (http://rhodesmill.org/pyephem/quick.html#equinoxes-solstices).
 For a double check, see:  https://aa.usno.navy.mil/data/docs/EarthSeasons.php
 """
 
+from typing import Any
+
 import pandas as pd
 from pandas.tseries.holiday import sunday_to_monday
 
@@ -473,29 +475,29 @@ autumnal_year_to_september_mapping = {
 }
 
 
-def vernal_equinox_for_year(year):
+def vernal_equinox_for_year(year: int) -> pd.Timestamp:
     day = vernal_year_to_march_mapping.get(year, 20)
     return pd.Timestamp(year, 3, day)
 
 
-def vernal_equinox(dt):
+def vernal_equinox(dt: Any) -> Any:
     year = dt.year
     equinox = vernal_equinox_for_year(year)
     return sunday_to_monday(equinox) if year >= 1973 else equinox
 
 
-def autumnal_equinox_for_year(year):
+def autumnal_equinox_for_year(year: int) -> pd.Timestamp:
     day = autumnal_year_to_september_mapping.get(year, 23)
     return pd.Timestamp(year, 9, day)
 
 
-def autumnal_equinox(dt):
+def autumnal_equinox(dt: Any) -> Any:
     year = dt.year
     equinox = autumnal_equinox_for_year(year)
     return sunday_to_monday(equinox) if year >= 1973 else equinox
 
 
-def autumnal_citizen_dates(start=2003, end=2099):
+def autumnal_citizen_dates(start: int = 2003, end: int = 2099) -> list[pd.Timestamp]:
     dates = []
     for year in range(start, end):
         respect_for_aged = pd.Timestamp(year, 9, 1) + pd.offsets.WeekOfMonth(week=2, weekday=0)

@@ -1,4 +1,5 @@
 import datetime as dt
+from typing import Any, List
 
 from pandas.tseries.holiday import AbstractHolidayCalendar
 from zoneinfo import ZoneInfo
@@ -68,12 +69,12 @@ class CMEGlobexCryptoExchangeCalendar(CMEGlobexBaseExchangeCalendar):
     }
 
     @property
-    def tz(self):
+    def tz(self) -> Any:
         # Central Time
         return ZoneInfo("America/Chicago")
 
     @property
-    def name(self):
+    def name(self) -> str:
         return "CME Globex Crypto"
 
     # Check the .zip files at the bottom of this page
@@ -82,7 +83,7 @@ class CMEGlobexCryptoExchangeCalendar(CMEGlobexBaseExchangeCalendar):
     #   and hence have a start_date starting before crypto is actually available
 
     @property
-    def regular_holidays(self):
+    def regular_holidays(self) -> Any:
         # Days where the market is fully closed
         return AbstractHolidayCalendar(
             rules=[
@@ -94,7 +95,7 @@ class CMEGlobexCryptoExchangeCalendar(CMEGlobexBaseExchangeCalendar):
         )
 
     @property
-    def special_closes(self):
+    def special_closes(self) -> List[Any]:
         # Days where the market closes early
         # list[Tuple[time, AbstractHolidayCalendar]]
         return [

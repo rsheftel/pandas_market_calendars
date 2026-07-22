@@ -1,4 +1,5 @@
 from datetime import timedelta
+from typing import Any
 
 from dateutil.relativedelta import MO, TH, TU
 from pandas import DateOffset, Timestamp, date_range
@@ -24,7 +25,7 @@ from pandas_market_calendars.market_calendar import (
 #################################################################################################
 
 
-def previous_saturday(dt):
+def previous_saturday(dt: Any) -> Any:
     """
     If holiday falls on Sunday, Monday or Tuesday, Saturday there is no trading
     """
@@ -37,7 +38,7 @@ def previous_saturday(dt):
     return dt
 
 
-def next_saturday(dt):
+def next_saturday(dt: Any) -> Any:
     """
     If holiday falls on Thursday or Friday, the next Saturday there is no trading
     """

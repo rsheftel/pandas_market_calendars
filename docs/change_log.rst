@@ -27,6 +27,8 @@ Change Log
   Related #184
   Related #343
 
+- Add type hints to all public methods and functions, and to internal methods where it improves readability
+
 5.3.2 (04/04/2026)
 ~~~~~~~~~~~~~~~~~~
 - PR #456 to fix issue on CME calendars

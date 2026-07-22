@@ -1,8 +1,8 @@
 import pandas as pd
+from zoneinfo import ZoneInfo
 
 import pandas_market_calendars as mcal
 from pandas_market_calendars.calendars.forex import ForexExchangeCalendar
-from zoneinfo import ZoneInfo
 
 
 def test_name():

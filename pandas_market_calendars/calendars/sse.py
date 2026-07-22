@@ -1,5 +1,6 @@
 from datetime import time, timedelta
 from functools import partial
+from typing import Any, List
 
 from pandas.tseries.holiday import AbstractHolidayCalendar, Holiday, next_monday
 from zoneinfo import ZoneInfo
@@ -26,19 +27,19 @@ class SSEExchangeCalendar(MarketCalendar):
     }
 
     @property
-    def name(self):
+    def name(self) -> str:
         return "SSE"
 
     @property
-    def full_name(self):
+    def full_name(self) -> str:
         return "Shanghai Stock Exchange"
 
     @property
-    def tz(self):
+    def tz(self) -> Any:
         return ZoneInfo("Asia/Shanghai")
 
     @property
-    def regular_holidays(self):
+    def regular_holidays(self) -> Any:
         """
         Rules are guesses based on observations of recent year.
         Rectify accordingly once the next year's holidays arrangement is published by the government.
@@ -250,11 +251,11 @@ class SSEExchangeCalendar(MarketCalendar):
         )
 
     @property
-    def adhoc_holidays(self):
+    def adhoc_holidays(self) -> List[Any]:
         return all_holidays
 
 
-def second_day_in_lieu(dt):
+def second_day_in_lieu(dt: Any) -> Any:
     dow = dt.weekday()
     if dow == 0:  # Holiday is Sunday, use Saturday
         return dt - timedelta(2)
@@ -266,7 +267,7 @@ def second_day_in_lieu(dt):
     return dt
 
 
-def third_day_in_lieu(dt):
+def third_day_in_lieu(dt: Any) -> Any:
     dow = dt.weekday()
     if dow == 0:  # Holiday is Saturday, use Sunday
         return dt - timedelta(1)
@@ -280,7 +281,7 @@ def third_day_in_lieu(dt):
     return dt
 
 
-def lunisolar(dt, mapping, func=None, delta=None):
+def lunisolar(dt: Any, mapping: Any, func: Any = None, delta: Any = None) -> Any:
     if mapping and (dt.year in mapping):
         new_dt = mapping[dt.year]
     else:

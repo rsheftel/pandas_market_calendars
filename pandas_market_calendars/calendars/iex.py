@@ -1,6 +1,6 @@
 from datetime import time
 from itertools import chain
-from typing import Literal, Union
+from typing import Any, List, Literal, Union
 
 from pandas import DatetimeIndex, Timedelta, Timestamp
 from pandas.tseries.holiday import AbstractHolidayCalendar
@@ -51,19 +51,19 @@ class IEXExchangeCalendar(NYSEExchangeCalendar):
     aliases = ["IEX", "Investors_Exchange"]
 
     @property
-    def name(self):
+    def name(self) -> str:
         return "IEX"
 
     @property
-    def full_name(self):
+    def full_name(self) -> str:
         return "Investor's Exchange"
 
     @property
-    def weekmask(self):
+    def weekmask(self) -> str:
         return "Mon Tue Wed Thu Fri"
 
     @property
-    def regular_holidays(self):
+    def regular_holidays(self) -> Any:
         return AbstractHolidayCalendar(
             rules=[
                 USPresidentsDay,
@@ -78,7 +78,7 @@ class IEXExchangeCalendar(NYSEExchangeCalendar):
         )
 
     @property
-    def adhoc_holidays(self):
+    def adhoc_holidays(self) -> List[Any]:
         return list(
             chain(
                 ChristmasEvesAdhoc,
@@ -86,7 +86,7 @@ class IEXExchangeCalendar(NYSEExchangeCalendar):
         )
 
     @property
-    def special_closes(self):
+    def special_closes(self) -> List[Any]:
         return [
             (
                 time(hour=13, tzinfo=ZoneInfo("America/New_York")),
@@ -101,7 +101,7 @@ class IEXExchangeCalendar(NYSEExchangeCalendar):
     """Override NYSE calendar special cases"""
 
     @property
-    def special_closes_adhoc(self):
+    def special_closes_adhoc(self) -> List[Any]:
         return [
             (
                 time(13, tzinfo=ZoneInfo("America/New_York")),
@@ -110,10 +110,10 @@ class IEXExchangeCalendar(NYSEExchangeCalendar):
         ]
 
     @property
-    def special_opens(self):
+    def special_opens(self) -> List[Any]:
         return []
 
-    def valid_days(self, start_date, end_date, tz="UTC"):
+    def valid_days(self, start_date: Any, end_date: Any, tz: Any = "UTC") -> DatetimeIndex:
         start_date = Timestamp(start_date)
         if start_date.tz is not None:
             # Ensure valid Comparison to "2013-08-25" is possible

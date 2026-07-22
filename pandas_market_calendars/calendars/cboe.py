@@ -1,7 +1,7 @@
 from datetime import time
 from itertools import chain
+from typing import Any, List
 
-import pandas as pd
 from pandas.tseries.holiday import (
     AbstractHolidayCalendar,
     GoodFriday,
@@ -47,19 +47,19 @@ class CFEExchangeCalendar(MarketCalendar):
     }
 
     @property
-    def name(self):
+    def name(self) -> str:
         return "CFE"
 
     @property
-    def full_name(self):
+    def full_name(self) -> str:
         return "CBOE Futures Exchange"
 
     @property
-    def tz(self):
+    def tz(self) -> Any:
         return ZoneInfo("America/Chicago")
 
     @property
-    def regular_holidays(self):
+    def regular_holidays(self) -> Any:
         return AbstractHolidayCalendar(
             rules=[
                 USNewYearsDay,
@@ -76,7 +76,7 @@ class CFEExchangeCalendar(MarketCalendar):
         )
 
     @property
-    def special_closes(self):
+    def special_closes(self) -> List[Any]:
         return [
             (
                 time(12, 15),
@@ -92,7 +92,7 @@ class CFEExchangeCalendar(MarketCalendar):
         ]
 
     @property
-    def adhoc_holidays(self):
+    def adhoc_holidays(self) -> List[Any]:
         return list(
             chain(
                 HurricaneSandyClosings,
@@ -110,7 +110,7 @@ class CBOEEquityOptionsExchangeCalendar(CFEExchangeCalendar):
     }
 
     @property
-    def special_closes(self):
+    def special_closes(self) -> List[Any]:
         return [
             (
                 time(12),

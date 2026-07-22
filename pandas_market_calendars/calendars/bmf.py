@@ -12,8 +12,8 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-
 from datetime import time
+from typing import Any, List
 
 from pandas import Timestamp
 from pandas.tseries.holiday import (
@@ -175,15 +175,15 @@ class BMFExchangeCalendar(MarketCalendar):
     }
 
     @property
-    def name(self):
+    def name(self) -> str:
         return "BMF"
 
     @property
-    def tz(self):
+    def tz(self) -> Any:
         return ZoneInfo("America/Sao_Paulo")
 
     @property
-    def regular_holidays(self):
+    def regular_holidays(self) -> Any:
         return AbstractHolidayCalendar(
             rules=[
                 ConfUniversal,
@@ -210,9 +210,9 @@ class BMFExchangeCalendar(MarketCalendar):
         )
 
     @property
-    def adhoc_holidays(self):
+    def adhoc_holidays(self) -> List[Any]:
         return [Constitucionalista2021, ConscienciaNegra2021]
 
     @property
-    def special_opens(self):
+    def special_opens(self) -> List[Any]:
         return [(time(13, 1), AbstractHolidayCalendar(rules=[QuartaCinzas]))]

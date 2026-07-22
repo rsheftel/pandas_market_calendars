@@ -1,4 +1,5 @@
 from datetime import time
+from typing import Any, List
 
 from pandas.tseries.holiday import AbstractHolidayCalendar, EasterMonday, GoodFriday
 from zoneinfo import ZoneInfo
@@ -20,9 +21,10 @@ class ASXExchangeCalendar(MarketCalendar):
     - Good Friday (two days before Easter Sunday)
     - Easter Monday (the Monday after Easter Sunday)
     - ANZAC Day (April 25)
-    - Queen's Birthday (second Monday in June) (Now King)
+    - Queen's Birthday (second Monday in June)
     - Christmas Day (December 25, Saturday/Sunday to Monday)
     - Boxing Day (December 26, Saturday to Monday, Sunday to Tuesday)
+
 
     Regularly-Observed Early Closes:
     - Last Business Day before Christmas Day
@@ -37,19 +39,19 @@ class ASXExchangeCalendar(MarketCalendar):
     }
 
     @property
-    def name(self):
+    def name(self) -> str:
         return "ASX"
 
     @property
-    def full_name(self):
+    def full_name(self) -> str:
         return "Australian Securities Exchange"
 
     @property
-    def tz(self):
+    def tz(self) -> Any:
         return ZoneInfo("Australia/Sydney")
 
     @property
-    def regular_holidays(self):
+    def regular_holidays(self) -> Any:
         return HolidayCalendar(
             start_date="2011-01-01",
             rules=[
@@ -65,11 +67,11 @@ class ASXExchangeCalendar(MarketCalendar):
         )
 
     @property
-    def adhoc_holidays(self):
+    def adhoc_holidays(self) -> List[Any]:
         return UniqueCloses
 
     @property
-    def special_closes(self):
+    def special_closes(self) -> List[Any]:
         return [
             (
                 time(hour=14, minute=10, tzinfo=self.tz),
@@ -88,6 +90,7 @@ class ASXExchangeCalendar(MarketCalendar):
                 ),
             ),
         ]
+
 
 
 # ASX 24 early-close dates: actual Dec 24 and Dec 31 regardless of weekday,

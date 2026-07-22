@@ -1,8 +1,9 @@
 import inspect
 from pprint import pformat
+from typing import Any, cast
 
 
-def _regmeta_instance_factory(cls, name: str, *args, **kwargs):
+def _regmeta_instance_factory(cls: Any, name: str, *args: Any, **kwargs: Any) -> Any:
     """
     :param cls(RegisteryMeta): registration meta class
     :param name(str): name of class that needs to be instantiated
@@ -17,7 +18,7 @@ def _regmeta_instance_factory(cls, name: str, *args, **kwargs):
     return class_(*args, **kwargs)
 
 
-def _regmeta_register_class(cls, regcls, name: str):
+def _regmeta_register_class(cls: Any, regcls: Any, name: str) -> None:
     """
     :param cls(RegisteryMeta): registration base class
     :param regcls(class): class to be registered
@@ -38,16 +39,17 @@ class RegisteryMeta(type):
     Metaclass used to register all classes inheriting from RegisteryMeta
     """
 
-    def __new__(mcs, name, bases, attr):
+    def __new__(mcs: Any, name: str, bases: Any, attr: Any) -> Any:
         cls = super().__new__(mcs, name, bases, attr)
         if not hasattr(cls, "_regmeta_class_registry"):
             # Metaclass dynamically adds class registry and factory method
-            cls._regmeta_class_registry = {}  # type: ignore[assignment]
-            cls.factory = classmethod(_regmeta_instance_factory)  # type: ignore[assignment]
+            cls_any = cast(Any, cls)
+            cls_any._regmeta_class_registry = {}
+            cls_any.factory = classmethod(_regmeta_instance_factory)
 
         return cls
 
-    def __init__(cls, name, bases, attr):
+    def __init__(cls, name: str, bases: Any, attr: Any) -> None:
         if not inspect.isabstract(cls):
             _regmeta_register_class(cls, cls, name)
             for b in bases:
@@ -67,19 +69,19 @@ class RegisteryMeta(type):
 
 
 class ProtectedDict(dict):
-    def __init__(self, *args, **kwargs):
+    def __init__(self, *args: Any, **kwargs: Any) -> None:
         super().__init__(*args, **kwargs)
         # __init__ is bypassed when unpickling, which causes __setitem__ to fail
         # without the _INIT_RAN_NORMALLY flag
         self._INIT_RAN_NORMALLY = True
 
-    def _set(self, key: str, value) -> None:
+    def _set(self, key: str, value: Any) -> None:
         return super().__setitem__(key, value)
 
     def _del(self, key: str) -> None:
         return super().__delitem__(key)
 
-    def __setitem__(self, key, value):
+    def __setitem__(self, key: Any, value: Any) -> None:
         if not hasattr(self, "_INIT_RAN_NORMALLY"):
             return self._set(key, value)
 
@@ -88,7 +90,7 @@ class ProtectedDict(dict):
             "using .change_time, .add_time or .remove_time."
         )
 
-    def __delitem__(self, key):
+    def __delitem__(self, key: Any) -> None:
         if not hasattr(self, "_INIT_RAN_NORMALLY"):
             return self._del(key)
 
@@ -97,10 +99,10 @@ class ProtectedDict(dict):
             "using .change_time, .add_time or .remove_time"
         )
 
-    def __repr__(self):
+    def __repr__(self) -> str:
         return self.__class__.__name__ + "(" + super().__repr__() + ")"
 
-    def __str__(self):
+    def __str__(self) -> str:
         try:
             formatted = pformat(dict(self), sort_dicts=False)  # sort_dicts apparently not available < python3.8
         except TypeError:
@@ -108,5 +110,5 @@ class ProtectedDict(dict):
 
         return self.__class__.__name__ + "(\n" + formatted + "\n)"
 
-    def copy(self):
+    def copy(self) -> "ProtectedDict":
         return self.__class__(super().copy())
