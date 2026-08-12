@@ -1,6 +1,9 @@
+from datetime import time
+
 import pandas as pd
 from zoneinfo import ZoneInfo
 
+import pandas_market_calendars as mcal
 from pandas_market_calendars.calendars.cme import CMEEquityExchangeCalendar, CMETradeDateCalendar
 
 
@@ -90,6 +93,34 @@ def test_historical_trade_date_time_helpers_match_schedule_cutovers():
     assert cme.close_time_on("2012-11-19").hour == 16
     assert cme.break_end_on("2012-11-19").hour == 15
     assert cme.break_end_on("2012-11-19").minute == 30
+
+
+def test_equity_market_pause_eliminated_on_june_28_2021():
+    cme = CMEEquityExchangeCalendar()
+    schedule = cme.schedule("2021-06-25", "2021-06-28", tz=cme.tz)
+
+    before_cutover = schedule.loc["2021-06-25"]
+    after_cutover = schedule.loc["2021-06-28"]
+
+    assert before_cutover.break_start == pd.Timestamp("2021-06-25 15:15:00", tz=cme.tz)
+    assert before_cutover.break_end == pd.Timestamp("2021-06-25 15:30:00", tz=cme.tz)
+    assert after_cutover.break_start == after_cutover.break_end
+    assert after_cutover.break_end == pd.Timestamp("2021-06-28 15:15:00", tz=cme.tz)
+    assert cme.break_end_on("2021-06-25") == time(15, 30)
+    assert cme.break_end_on("2021-06-28") == time(15, 15)
+
+    assert cme.open_at_time(schedule, "2021-06-25 15:20:00-05:00") is False
+    assert cme.open_at_time(schedule, "2021-06-28 15:20:00-05:00") is True
+
+
+def test_equity_market_pause_cutover_preserves_intraday_bars():
+    cme = CMEEquityExchangeCalendar()
+    schedule = cme.schedule("2021-06-25", "2021-06-28", tz=cme.tz)
+    bars = mcal.date_range(schedule, "5min")
+
+    for minute in (20, 25, 30):
+        assert pd.Timestamp(f"2021-06-25 15:{minute}:00", tz=cme.tz) not in bars
+        assert pd.Timestamp(f"2021-06-28 15:{minute}:00", tz=cme.tz) in bars
 
 
 def test_2023_good_friday_has_early_close_session():

@@ -151,6 +151,12 @@ CALENDAR_SOURCES: dict[str, tuple[Source, ...]] = {
             last_verified="2025-01-24",
             covers="trading hours",
         ),
+        Source(
+            name="CME Globex Equity Market Pause Elimination Notice",
+            url="https://www.cmegroup.com/notices/electronic-trading/2021/06/20210621.html",
+            last_verified="2026-08-12",
+            covers="historical trading hours",
+        ),
     ),
     "CME_Agriculture": (
         Source(
