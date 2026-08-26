@@ -92,8 +92,20 @@ CALENDAR_SOURCES: dict[str, tuple[Source, ...]] = {
         Source(
             name="NSE India Holiday Calendar",
             url="https://www.nseindia.com/resources/exchange-communication-holidays",
-            last_verified="2025-01-24",
+            last_verified="2026-08-26",
             covers="holidays",
+        ),
+        Source(
+            name="NSE India Press Releases and Circulars",
+            url="https://www.nseindia.com/resources/exchange-communication-press-releases",
+            last_verified="2026-08-26",
+            covers="trading hours, Muhurat session timings",
+            notes=(
+                "Historical hour changes and Muhurat timings are taken from NSE "
+                "press releases/circulars and contemporaneous press coverage of "
+                "the exchange announcements, verified against observed market "
+                "activity 1996-2026"
+            ),
         ),
     ),
     # endregion

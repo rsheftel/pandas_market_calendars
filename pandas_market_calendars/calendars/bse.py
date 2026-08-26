@@ -424,10 +424,6 @@ BSEClosedDay = [
     Timestamp("2026-12-25", tz="UTC"),  # Fri, Christmas
 ]
 
-# BSE and NSE currently share the same published closure set in this module.
-# Keep this as a shared object so future exchange-specific deltas are explicit.
-NSEClosedDay = BSEClosedDay
-
 
 class BSEExchangeCalendar(MarketCalendar):
     """
@@ -463,21 +459,6 @@ class BSEExchangeCalendar(MarketCalendar):
         return BSEClosedDay
 
 
-class NSEExchangeCalendar(BSEExchangeCalendar):
-    """
-    Exchange calendar for the National Stock Exchange of India (NSE, XNSE).
-    """
-
-    aliases = ["NSE", "XNSE"]
-
-    @property
-    def name(self) -> str:
-        return "NSE"
-
-    @property
-    def full_name(self) -> str:
-        return "National Stock Exchange of India"
-
-    @property
-    def adhoc_holidays(self) -> List[Any]:
-        return NSEClosedDay
+# Re-exported for backward compatibility; NSE lives in calendars/nse.py.
+from pandas_market_calendars.calendars.nse import NSEExchangeCalendar  # noqa: E402, F401
+from pandas_market_calendars.holidays.nse import NSEClosedDay  # noqa: E402, F401

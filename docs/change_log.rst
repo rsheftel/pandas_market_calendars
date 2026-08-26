@@ -1,6 +1,20 @@
 Change Log
 ==========
 
+Unreleased
+~~~~~~~~~~
+- Overhaul the NSE (India) calendar and give it its own holiday list and modules
+  (``calendars/nse.py``, ``holidays/nse.py``; ``calendars/bse.py`` keeps
+  backward-compatible re-exports) (#479)
+
+  - NSE-specific holiday list covering 1996-2026, verified against NSE circulars
+    and observed market activity
+  - era-dependent regular hours (9:55 AM open until 2010, 9:00 AM during the 2010
+    pre-open pilot, 9:15 AM since 2010-10-18, plus the documented 1997-1999 changes)
+  - weekday Muhurat trading sessions modeled as special opens/closes with the
+    announced timings per year instead of holidays
+  - the 2021-02-24 trading halt modeled as a special close plus an interruption
+
 5.4.0 (05/25/2026)
 ~~~~~~~~~~~~~~~~~~
 - PR #462 to fix numerous issues
