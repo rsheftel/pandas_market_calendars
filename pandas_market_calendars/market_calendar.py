@@ -429,6 +429,19 @@ class MarketCalendar(metaclass=MarketCalendarMeta):
         return []
 
     @property
+    def adhoc_sessions(self) -> List[Any]:
+        """
+        Dates that are trading sessions despite falling outside the weekmask,
+        such as weekend special sessions (e.g. NSE Muhurat trading on a
+        Sunday). The inverse of adhoc_holidays. These dates receive the
+        regular market times unless a special open/close is defined for them.
+        Included by valid_days() and schedule() but not date_range_htf().
+
+        :return: list of ad-hoc session dates
+        """
+        return []
+
+    @property
     def weekmask(self) -> str:
         return "Mon Tue Wed Thu Fri"
 
@@ -597,7 +610,24 @@ class MarketCalendar(metaclass=MarketCalendarMeta):
         :param tz: time zone in either string or pytz.timezone
         :return: DatetimeIndex of valid business days
         """
-        return pd.date_range(start_date, end_date, freq=self.holidays(), normalize=True, tz=tz)
+        days = pd.date_range(start_date, end_date, freq=self.holidays(), normalize=True, tz=tz)
+        sessions = self.adhoc_sessions
+        if not sessions:
+            return days
+
+        extras = pd.DatetimeIndex(sessions).normalize()
+        if extras.tz is not None:
+            extras = extras.tz_localize(None)
+        start = pd.Timestamp(start_date)
+        end = pd.Timestamp(end_date)
+        if start.tz is not None:
+            start = start.tz_localize(None)
+        if end.tz is not None:
+            end = end.tz_localize(None)
+        extras = extras[(extras >= start.normalize()) & (extras <= end.normalize())]
+        if tz is not None:
+            extras = extras.tz_localize(tz)
+        return days.union(extras)
 
     def _get_market_times(self, start: str, end: str) -> List[str]:
         mts = self._market_times

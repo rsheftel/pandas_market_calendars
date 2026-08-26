@@ -1058,6 +1058,56 @@ def test_adhoc_holidays():
     assert pd.Timestamp("2012-10-31") in days
 
 
+class FakeAdhocSessionCalendar(FakeCalendar):
+    @property
+    def adhoc_sessions(self):
+        return [
+            pd.Timestamp("2012-10-20"),  # Saturday
+            pd.Timestamp("2012-10-28"),  # Sunday, with special open/close
+            pd.Timestamp("2012-10-22"),  # Monday, already a business day
+        ]
+
+    @property
+    def special_opens_adhoc(self):
+        return [(time(11, 20), ["2012-10-28"])]
+
+    @property
+    def special_closes_adhoc(self):
+        return [(time(11, 40), ["2012-10-28"])]
+
+
+def test_adhoc_sessions():
+    cal = FakeAdhocSessionCalendar()
+
+    # weekend adhoc sessions appear in valid_days; ordinary weekends do not
+    days = cal.valid_days("2012-10-15", "2012-11-15")
+    assert pd.Timestamp("2012-10-20", tz="UTC") in days
+    assert pd.Timestamp("2012-10-28", tz="UTC") in days
+    assert pd.Timestamp("2012-10-21", tz="UTC") not in days
+    assert days.is_monotonic_increasing
+    assert not days.duplicated().any()
+
+    # adhoc sessions outside the requested range are excluded; tz=None works
+    days = cal.valid_days("2012-10-21", "2012-10-27", tz=None)
+    assert pd.Timestamp("2012-10-20") not in days
+    assert pd.Timestamp("2012-10-22") in days
+
+    # an adhoc session without special times gets the regular market times
+    schedule = cal.schedule("2012-10-20", "2012-10-20")
+    assert schedule.loc["2012-10-20", "market_open"] == pd.Timestamp("2012-10-20 11:13", tz="Asia/Ulaanbaatar")
+    assert schedule.loc["2012-10-20", "market_close"] == pd.Timestamp("2012-10-20 11:49", tz="Asia/Ulaanbaatar")
+
+    # an adhoc session with special open/close gets those times
+    schedule = cal.schedule("2012-10-28", "2012-10-28")
+    assert schedule.loc["2012-10-28", "market_open"] == pd.Timestamp("2012-10-28 11:20", tz="Asia/Ulaanbaatar")
+    assert schedule.loc["2012-10-28", "market_close"] == pd.Timestamp("2012-10-28 11:40", tz="Asia/Ulaanbaatar")
+
+    # calendars without adhoc sessions are unchanged
+    assert FakeCalendar().adhoc_sessions == []
+    days = FakeCalendar().valid_days("2012-10-15", "2012-11-15")
+    assert pd.Timestamp("2012-10-20", tz="UTC") not in days
+
+
 def test_special_opens():
     cal = FakeCalendar()
     results = cal.schedule("2012-07-01", "2012-07-06")

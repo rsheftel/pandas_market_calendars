@@ -61,7 +61,10 @@ def test_regular_hours_2010_transitions():
         "2010-10-18 03:45", tz="UTC"
     )
 
-    for market_close in schedule["market_close"]:
+    # All regular closes are 3:30 PM IST (10:00 UTC); 2010-02-06 is a
+    # special Saturday session with its own close.
+    regular = schedule.drop(pd.Timestamp("2010-02-06"))
+    for market_close in regular["market_close"]:
         assert market_close.time() == pd.Timestamp("10:00").time()
 
 
@@ -178,22 +181,120 @@ def test_special_session_dates_consistent():
         date for _, dates in nse_calendar.special_closes_adhoc for date in dates
     }
 
-    # Close-only dates keep the regular open: the 2021-02-24 outage day and
-    # the 1996-1999 observed extended/early closes.
+    # Close-only dates open at the regular era time: the 2021-02-24 outage
+    # day, three weekend sessions, and the 1996-1999 observed extended/early
+    # closes.
     close_only = close_dates - open_dates
-    assert "2021-02-24" in close_only
+    assert {"1997-04-12", "1999-02-27", "1999-04-17", "2021-02-24"} <= close_only
     assert all(date < "1999-07" for date in close_only - {"2021-02-24"})
     assert open_dates < close_dates
 
     holiday_dates = {holiday.strftime("%Y-%m-%d") for holiday in NSEClosedDay}
     assert not close_dates & holiday_dates
 
+    # Weekend special dates must be listed as adhoc sessions.
+    nse_sessions = {
+        session.strftime("%Y-%m-%d") for session in nse_calendar.adhoc_sessions
+    }
+    weekend_specials = {
+        date for date in close_dates if pd.Timestamp(date).dayofweek >= 5
+    }
+    assert weekend_specials <= nse_sessions
+    assert all(pd.Timestamp(date).dayofweek >= 5 for date in nse_sessions)
 
-def test_muhurat_weekend_sessions_are_not_supported():
-    # Weekend Muhurat sessions (e.g. Sunday 2023-11-12) are a known limitation.
+
+def test_muhurat_weekend_sessions():
+    _assert_ist_windows(
+        {
+            "1996-11-10": ("18:04", "19:58"),
+            "1999-11-07": ("19:02", "20:27"),
+            "2003-10-25": ("18:10", "19:25"),
+            "2006-10-21": ("18:15", "19:30"),
+            "2009-10-17": ("18:15", "19:15"),
+            "2013-11-03": ("18:15", "19:30"),
+            "2016-10-30": ("18:30", "19:30"),
+            "2019-10-27": ("18:15", "19:15"),
+            "2020-11-14": ("18:15", "19:15"),
+            "2023-11-12": ("18:15", "19:15"),
+        }
+    )
+
+
+def test_weekend_sessions_1996_2004():
+    _assert_ist_windows(
+        {
+            "1997-03-01": ("10:00", "15:30"),
+            "1997-04-12": ("10:00", "14:00"),
+            "1998-10-31": ("11:37", "13:32"),
+            "1998-11-21": ("10:35", "12:38"),
+            "1998-11-28": ("09:55", "15:45"),
+            "1999-02-27": ("09:55", "16:16"),
+            "1999-04-17": ("09:55", "15:46"),
+            "2003-02-01": ("11:01", "11:54"),
+            "2003-03-22": ("11:00", "13:00"),
+            "2003-11-15": ("11:00", "13:00"),
+        }
+    )
+
+
+def test_weekend_sessions_2005_2014():
+    _assert_ist_windows(
+        {
+            "2005-06-04": ("10:30", "13:30"),
+            "2005-11-26": ("10:30", "13:30"),
+            "2006-04-29": ("10:30", "13:30"),
+            "2006-06-25": ("10:30", "11:30"),
+            "2010-02-06": ("11:00", "12:30"),
+            "2012-01-07": ("11:15", "12:45"),
+            "2012-03-03": ("11:15", "12:45"),
+            "2012-04-28": ("11:15", "12:45"),
+            "2012-09-08": ("11:15", "12:45"),
+            "2013-05-11": ("11:15", "12:45"),
+        }
+    )
+
+
+def test_weekend_sessions_2014_2026():
+    _assert_ist_windows(
+        {
+            "2014-03-22": ("11:15", "12:45"),
+            "2015-02-28": ("09:15", "15:30"),
+            "2020-02-01": ("09:15", "15:30"),
+            "2024-01-20": ("09:15", "15:30"),
+            "2025-02-01": ("09:15", "15:30"),
+            "2026-02-01": ("09:15", "15:30"),
+        }
+    )
+
+
+def test_ordinary_weekends_remain_closed():
     nse_calendar = NSEExchangeCalendar()
 
-    assert nse_calendar.schedule("2023-11-11", "2023-11-12").empty
+    days = nse_calendar.valid_days("2023-11-01", "2023-11-30")
+    assert pd.Timestamp("2023-11-12", tz="UTC") in days  # Sunday Muhurat
+    assert pd.Timestamp("2023-11-04", tz="UTC") not in days
+    assert pd.Timestamp("2023-11-05", tz="UTC") not in days
+    assert pd.Timestamp("2023-11-11", tz="UTC") not in days
+
+
+def test_2004_split_saturday_interruptions():
+    nse_calendar = NSEExchangeCalendar()
+
+    schedule = nse_calendar.schedule("2004-04-17", "2004-04-17", interruptions=True)
+    assert schedule.loc["2004-04-17", "interruption_start_1"] == pd.Timestamp(
+        "2004-04-17 12:04", tz="Asia/Calcutta"
+    )
+    assert schedule.loc["2004-04-17", "interruption_end_1"] == pd.Timestamp(
+        "2004-04-17 12:34", tz="Asia/Calcutta"
+    )
+
+    schedule = nse_calendar.schedule("2004-10-09", "2004-10-09", interruptions=True)
+    assert schedule.loc["2004-10-09", "interruption_start_1"] == pd.Timestamp(
+        "2004-10-09 11:25", tz="Asia/Calcutta"
+    )
+    assert schedule.loc["2004-10-09", "interruption_end_1"] == pd.Timestamp(
+        "2004-10-09 12:05", tz="Asia/Calcutta"
+    )
 
 
 def test_2021_outage_interruption():

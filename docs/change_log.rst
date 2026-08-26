@@ -3,6 +3,17 @@ Change Log
 
 Unreleased
 ~~~~~~~~~~
+- Add ``MarketCalendar.adhoc_sessions``: dates that are trading sessions despite
+  falling outside the weekmask (the inverse of ``adhoc_holidays``). ``valid_days()``
+  unions these dates into the session index; they receive regular market times
+  unless a special open/close is defined for them. Default is empty, so existing
+  calendars are unchanged. (#480 #481)
+
+  - the NSE calendar uses this for its weekend sessions: Muhurat sessions falling
+    on Saturday/Sunday, union-budget weekend sessions at regular hours, and
+    announced special weekend live sessions, with the two split-window 2004
+    Saturday sessions modeled with interruptions
+
 - Overhaul the NSE (India) calendar and give it its own holiday list and modules
   (``calendars/nse.py``, ``holidays/nse.py``; ``calendars/bse.py`` keeps
   backward-compatible re-exports) (#479)
