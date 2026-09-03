@@ -1,11 +1,12 @@
 from datetime import time
 from typing import Any, List, Literal, Union
 
-from pandas import DatetimeIndex, Timedelta, Timestamp
+from pandas import DatetimeIndex, Timedelta, Timestamp, date_range
+from pandas.tseries.offsets import CustomBusinessDay
 from zoneinfo import ZoneInfo
 
 from pandas_market_calendars.calendar_utils import Day_Anchor, Month_Anchor
-from pandas_market_calendars.market_calendar import MarketCalendar
+from pandas_market_calendars.market_calendar import FRIDAY, MarketCalendar
 
 
 TASEClosedDay = [
@@ -137,6 +138,38 @@ TASEClosedDay = [
     Timestamp("2025-10-07", tz="Asia/Jerusalem"),
     Timestamp("2025-10-13", tz="Asia/Jerusalem"),
     Timestamp("2025-10-14", tz="Asia/Jerusalem"),
+    # 2026 (Monday-Friday trading week from 2026-01-05)
+    Timestamp("2026-03-03", tz="Asia/Jerusalem"),
+    Timestamp("2026-04-01", tz="Asia/Jerusalem"),
+    Timestamp("2026-04-02", tz="Asia/Jerusalem"),
+    Timestamp("2026-04-07", tz="Asia/Jerusalem"),
+    Timestamp("2026-04-08", tz="Asia/Jerusalem"),
+    Timestamp("2026-04-21", tz="Asia/Jerusalem"),
+    Timestamp("2026-04-22", tz="Asia/Jerusalem"),
+    Timestamp("2026-05-21", tz="Asia/Jerusalem"),
+    Timestamp("2026-05-22", tz="Asia/Jerusalem"),
+    Timestamp("2026-07-23", tz="Asia/Jerusalem"),
+    Timestamp("2026-09-11", tz="Asia/Jerusalem"),
+    Timestamp("2026-09-18", tz="Asia/Jerusalem"),
+    Timestamp("2026-09-21", tz="Asia/Jerusalem"),
+    Timestamp("2026-09-25", tz="Asia/Jerusalem"),
+    Timestamp("2026-10-02", tz="Asia/Jerusalem"),
+    # 2027
+    Timestamp("2027-03-23", tz="Asia/Jerusalem"),
+    Timestamp("2027-04-21", tz="Asia/Jerusalem"),
+    Timestamp("2027-04-22", tz="Asia/Jerusalem"),
+    Timestamp("2027-04-27", tz="Asia/Jerusalem"),
+    Timestamp("2027-04-28", tz="Asia/Jerusalem"),
+    Timestamp("2027-05-11", tz="Asia/Jerusalem"),
+    Timestamp("2027-05-12", tz="Asia/Jerusalem"),
+    Timestamp("2027-06-10", tz="Asia/Jerusalem"),
+    Timestamp("2027-06-11", tz="Asia/Jerusalem"),
+    Timestamp("2027-08-12", tz="Asia/Jerusalem"),
+    Timestamp("2027-10-01", tz="Asia/Jerusalem"),
+    Timestamp("2027-10-08", tz="Asia/Jerusalem"),
+    Timestamp("2027-10-11", tz="Asia/Jerusalem"),
+    Timestamp("2027-10-15", tz="Asia/Jerusalem"),
+    Timestamp("2027-10-22", tz="Asia/Jerusalem"),
 ]
 
 
@@ -144,7 +177,12 @@ class TASEExchangeCalendar(MarketCalendar):
     """
     Exchange calendar for TASE Stock Exchange
 
-    Note these dates are only checked against 2020 and 2021
+    TASE moved from a Sunday-Thursday to a Monday-Friday trading week effective
+    2026-01-05; the last Sunday session was 2026-01-04. Friday sessions close
+    early, ahead of Shabbat.
+    https://www.tase.co.il/en/content/knowledge_center/trading_vacation_schedule/
+
+    Note the dates before 2026 are only checked against 2020 and 2021
     https://info.tase.co.il/Eng/about_tase/corporate/Pages/vacation_schedule.aspx
 
     Opening times for the regular trading of equities (not including closing auction call)
@@ -183,6 +221,10 @@ class TASEExchangeCalendar(MarketCalendar):
         "market_close": ((None, time(15, 59)),),
     }
 
+    # Last session of the Sunday-Thursday trading week; Monday-Friday trading
+    # started 2026-01-05
+    _sunday_end = Timestamp("2026-01-04", tz="UTC")
+
     @property
     def name(self) -> str:
         return "TASE"
@@ -201,7 +243,81 @@ class TASEExchangeCalendar(MarketCalendar):
 
     @property
     def weekmask(self) -> str:
+        return "Mon Tue Wed Thu Fri"
+
+    @property
+    def weekmask_pre_2026(self) -> str:
         return "Sun Mon Tue Wed Thu"
+
+    def holidays_pre_2026(self) -> CustomBusinessDay:
+        """
+        TASE traded Sunday-Thursday before the move to a Monday-Friday trading
+        week effective 2026-01-05 (the last Sunday session was 2026-01-04).
+        CustomBusinessDay object that can be used in place of holidays() for
+        dates prior to the crossover.
+
+        :return: CustomBusinessDay object of holidays
+        """
+        if hasattr(self, "_holidays_pre_2026"):
+            return self._holidays_pre_2026
+
+        self._holidays_pre_2026 = CustomBusinessDay(
+            holidays=self.adhoc_holidays,
+            weekmask=self.weekmask_pre_2026,
+        )
+        return self._holidays_pre_2026
+
+    @property
+    def special_closes(self) -> List[Any]:
+        # Friday sessions (from 2026-01-05) end at 13:34, before Shabbat
+        return [(time(13, 34), FRIDAY)]
+
+    def valid_days(self, start_date: Any, end_date: Any, tz: Any = "UTC") -> DatetimeIndex:
+        """
+        Get a DatetimeIndex of valid open business days.
+
+        Handles the trading week change from Sunday-Thursday to Monday-Friday
+        effective 2026-01-05.
+
+        :param start_date: start date
+        :param end_date: end date
+        :param tz: time zone in either string or pytz.timezone
+        :return: DatetimeIndex of valid business days
+        """
+        start_date = Timestamp(start_date)
+        end_date = Timestamp(end_date)
+        start_date = start_date.tz_convert(tz) if start_date.tz else start_date.tz_localize(tz)
+        end_date = end_date.tz_convert(tz) if end_date.tz else end_date.tz_localize(tz)
+
+        if tz is None:
+            sunday_end = self._sunday_end.tz_localize(None)
+        else:
+            sunday_end = self._sunday_end
+
+        # Entirely within the Monday-Friday trading week. Call super.
+        if start_date > sunday_end:
+            return super().valid_days(start_date, end_date, tz=tz)
+
+        # Entirely within the Sunday-Thursday trading week. Augment the super call.
+        if end_date <= sunday_end:
+            return date_range(
+                start_date,
+                end_date,
+                freq=self.holidays_pre_2026(),
+                normalize=True,
+                tz=tz,
+            )
+
+        # Range is split across the crossover. Concatenate two date_range calls.
+        days_pre = date_range(
+            start_date,
+            sunday_end,
+            freq=self.holidays_pre_2026(),
+            normalize=True,
+            tz=tz,
+        )
+        days_post = date_range(sunday_end, end_date, freq=self.holidays(), normalize=True, tz=tz)
+        return days_pre.union(days_post)
 
     def date_range_htf(
         self,
