@@ -135,7 +135,13 @@ def test_valid_days():
 
 def test_valid_days_tz_aware():
     calendar = NYSEExchangeCalendar()
-    data_date = dt.datetime.strptime("20250121", "%Y%m%d").astimezone(ZoneInfo("UTC"))
+    # .astimezone(UTC) on a naive datetime treats it as system-local time and
+    # converts *from* that - on any machine not already in UTC (e.g. IST,
+    # UTC+5:30) this silently shifts data_date by the local offset, which
+    # then shifts the end of the 7-day window enough to drop the last
+    # business day. .replace(tzinfo=...) is what actually means "this date,
+    # interpreted as UTC" regardless of the machine running the test.
+    data_date = dt.datetime.strptime("20250121", "%Y%m%d").replace(tzinfo=ZoneInfo("UTC"))
     actual = calendar.valid_days(data_date, data_date + dt.timedelta(days=7), tz="UTC")
     expected = pd.bdate_range("2025-01-21", periods=6, tz="UTC")
     assert_index_equal(actual, expected)
