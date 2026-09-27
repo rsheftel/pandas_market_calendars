@@ -77,3 +77,16 @@ def test_boxing_day_weekend():
         assert pd.Timestamp(date, tz="Europe/Berlin") in good_dates
     for date in ["2020-12-24", "2020-12-25", "2020-12-26", "2020-12-27"]:
         assert pd.Timestamp(date, tz="Europe/Zurich") not in good_dates
+
+
+def test_new_years_eve_weekend():
+    # new year's eve on a weekend is not rolled back to the Friday before
+    # https://www.six-group.com/exchanges/download/participants/regulation/trading_guides/trading_calendar_2022.pdf
+    six = SIXExchangeCalendar()
+    good_dates = six.valid_days("2016-12-01", "2024-12-31", tz="Europe/Zurich")
+
+    for date in ["2016-12-30", "2017-12-29", "2022-12-30", "2023-12-29"]:
+        assert pd.Timestamp(date, tz="Europe/Zurich") in good_dates
+    # new year's eve on a weekday is still a holiday
+    for date in ["2018-12-31", "2019-12-31", "2020-12-31", "2021-12-31", "2024-12-31"]:
+        assert pd.Timestamp(date, tz="Europe/Zurich") not in good_dates
