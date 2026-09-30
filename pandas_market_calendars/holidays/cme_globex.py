@@ -118,6 +118,23 @@ USJuneteenthFrom2022 = Holiday(
     observance=nearest_workday,
 )
 
+USJuneteenthFrom2022Through2025 = Holiday(
+    "Juneteenth Starting at 2022",
+    start_date=Timestamp("2022-06-19"),
+    end_date=Timestamp("2025-12-31"),
+    month=6,
+    day=19,
+    observance=nearest_workday,
+)
+
+USJuneteenthFrom2027 = Holiday(
+    "Juneteenth Starting at 2027",
+    start_date=Timestamp("2027-01-01"),
+    month=6,
+    day=19,
+    observance=nearest_workday,
+)
+
 #######################################
 # US Independence Day July 4
 #######################################
@@ -126,6 +143,21 @@ USIndependenceDayFrom2022 = Holiday(
     month=7,
     day=4,
     start_date=Timestamp("2022-01-01"),
+    observance=nearest_workday,
+)
+USIndependenceDayFrom2022Through2025 = Holiday(
+    "July 4th",
+    month=7,
+    day=4,
+    start_date=Timestamp("2022-01-01"),
+    end_date=Timestamp("2025-12-31"),
+    observance=nearest_workday,
+)
+USIndependenceDayFrom2027 = Holiday(
+    "July 4th",
+    month=7,
+    day=4,
+    start_date=Timestamp("2027-01-01"),
     observance=nearest_workday,
 )
 USIndependenceDayPre2022 = Holiday(
@@ -160,6 +192,21 @@ USLaborDay = Holiday(
     start_date=Timestamp("1887-01-01"),
     offset=DateOffset(weekday=MO(1)),
 )
+USLaborDayThrough2025 = Holiday(
+    "Labor Day",
+    month=9,
+    day=1,
+    start_date=Timestamp("1887-01-01"),
+    end_date=Timestamp("2025-12-31"),
+    offset=DateOffset(weekday=MO(1)),
+)
+USLaborDayFrom2027 = Holiday(
+    "Labor Day",
+    month=9,
+    day=1,
+    start_date=Timestamp("2027-01-01"),
+    offset=DateOffset(weekday=MO(1)),
+)
 
 ################################################
 # US Thanksgiving Nov 30
@@ -184,6 +231,22 @@ FridayAfterThanksgiving = Holiday(
     "Friday after Thanksgiving",
     month=11,
     day=1,
+    offset=[DateOffset(weekday=TH(4)), Day(1)],
+)
+
+FridayAfterThanksgivingThrough2025 = Holiday(
+    "Friday after Thanksgiving",
+    month=11,
+    day=1,
+    end_date=Timestamp("2025-12-31"),
+    offset=[DateOffset(weekday=TH(4)), Day(1)],
+)
+
+FridayAfterThanksgivingFrom2027 = Holiday(
+    "Friday after Thanksgiving",
+    month=11,
+    day=1,
+    start_date=Timestamp("2027-01-01"),
     offset=[DateOffset(weekday=TH(4)), Day(1)],
 )
 
