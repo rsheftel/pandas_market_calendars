@@ -1,6 +1,10 @@
 Change Log
 ==========
 
+5.5.0 (10/04/2026)
+~~~~~~~~~~~~~~~~~~
+- Added 2026-04-07 as an HKEX compensatory holiday for the Easter Monday / Ching Ming overlap (PR #472)
+
 5.4.0 (05/25/2026)
 ~~~~~~~~~~~~~~~~~~
 - PR #462 to fix numerous issues
