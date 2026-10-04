@@ -4,6 +4,7 @@ Change Log
 5.5.0 (10/04/2026)
 ~~~~~~~~~~~~~~~~~~
 - Added 2026-04-07 as an HKEX compensatory holiday for the Easter Monday / Ching Ming overlap (PR #472)
+- Fixed the 2022 LSE spring bank holiday, keeping May 30 open after the holiday was moved for the Platinum Jubilee; corrected Jubilee holiday assertions (PR #473)
 
 5.4.0 (05/25/2026)
 ~~~~~~~~~~~~~~~~~~
