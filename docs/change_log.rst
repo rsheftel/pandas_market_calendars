@@ -7,6 +7,7 @@ Change Log
 - Fixed the 2022 LSE spring bank holiday, keeping May 30 open after the holiday was moved for the Platinum Jubilee; corrected Jubilee holiday assertions (PR #473)
 - Added missing 2024 and 2026 special trading holidays to the BSE/NSE calendars (PR #474)
 - Fixed cloudpickle serialization of mirrored calendar classes to preserve the calendar registry (PR #476)
+- Fixed CME equity schedules to remove the obsolete 15:15–15:30 CT pause from trade date 2021-06-28 while preserving historical breaks (PR #478)
 - Fixed SIX New Year's Eve weekend handling so it does not close the preceding Friday (PR #482)
 - Updated the TASE calendar for its Monday-Friday trading week from 2026-01-05, including the transition, 2026-2027 holidays, and Friday early close (PR #485)
 
