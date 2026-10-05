@@ -30,6 +30,12 @@ def test_holidays():
     assert pd.Timestamp("2024-05-20", tz="UTC") not in bse_calendar.valid_days("2024-05-17", "2024-05-21")
     assert pd.Timestamp("2024-05-20", tz="UTC") not in nse_calendar.valid_days("2024-05-17", "2024-05-21")
 
+    # Special (non-scheduled) trading holidays
+    assert pd.Timestamp("2024-01-22", tz="UTC") not in bse_calendar.valid_days("2024-01-19", "2024-01-23")
+    assert pd.Timestamp("2024-11-20", tz="UTC") not in bse_calendar.valid_days("2024-11-18", "2024-11-21")
+    assert pd.Timestamp("2026-01-15", tz="UTC") not in bse_calendar.valid_days("2026-01-13", "2026-01-16")
+    assert pd.Timestamp("2026-01-15", tz="UTC") not in nse_calendar.valid_days("2026-01-13", "2026-01-16")
+
 
 def test_bse_and_nse_aliases_are_separate_calendars():
     assert get_calendar("BSE").name == "BSE"

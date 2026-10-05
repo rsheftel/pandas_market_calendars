@@ -60,6 +60,7 @@ from pandas_market_calendars.market_calendar import MarketCalendar
 
 CME_EQUITY_LEGACY_HOURS_START = "2005-09-12"
 CME_EQUITY_MODERN_HOURS_START = "2012-11-19"
+CME_EQUITY_MARKET_PAUSE_END = "2021-06-28"
 
 
 class CMETradeDateCalendar(MarketCalendar):
@@ -117,7 +118,8 @@ class CMEEquityExchangeCalendar(MarketCalendar):
 
     Open Time: 5:00 PM, America/Chicago
     Close Time: 4:00 PM, America/Chicago
-    Break: 3:15 - 3:30pm America/Chicago
+    Market pause through June 25, 2021: 3:15 - 3:30pm America/Chicago
+    No intraday pause from trade date June 28, 2021
     """
 
     aliases = ["CME_Equity", "CBOT_Equity"]
@@ -141,6 +143,8 @@ class CMEEquityExchangeCalendar(MarketCalendar):
             (None, time(15, 30)),
             (CME_EQUITY_LEGACY_HOURS_START, time(15, 15)),
             (CME_EQUITY_MODERN_HOURS_START, time(15, 30)),
+            # Preserve the schedule columns while representing continuous trading.
+            (CME_EQUITY_MARKET_PAUSE_END, time(15, 15)),
         ),
     }
 

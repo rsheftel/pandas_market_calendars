@@ -354,6 +354,9 @@ HKClosedDay = [
     Timestamp("2023-07-17", tz="UTC"),  # Typhoon closure
     Timestamp("2023-09-01", tz="UTC"),  # Typhoon closure
     Timestamp("2023-09-08", tz="UTC"),  # Typhoon closure
+    # 2026: Ching Ming substitute (Apr 6) coincides with Easter Monday,
+    # so Apr 7 is an additional general holiday (same pattern as 2015-04-07)
+    Timestamp("2026-04-07", tz="UTC"),
 ]
 
 

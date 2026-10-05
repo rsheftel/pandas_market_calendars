@@ -5,7 +5,8 @@ import datetime
 from .market_calendar import MarketCalendar
 from .calendars.asx import ASXExchangeCalendar
 from .calendars.bmf import BMFExchangeCalendar
-from .calendars.bse import BSEExchangeCalendar, NSEExchangeCalendar
+from .calendars.bse import BSEExchangeCalendar
+from .calendars.nse import NSEExchangeCalendar
 from .calendars.cboe import CFEExchangeCalendar
 from .calendars.cme import (
     CMEEquityExchangeCalendar, CMEBondExchangeCalendar, CMETradeDateCalendar

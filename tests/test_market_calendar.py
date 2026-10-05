@@ -1462,11 +1462,27 @@ test_cal = TstExchangeCalendar()
 
 
 def test_mirror():
-    assert not hasattr(mcal_iepa, "aliases")
+    assert mcal_iepa.aliases == ["IEPA"]
 
     assert not isinstance(ecal_iepa, mcal_iepa.__class__)
 
     assert isinstance(ecal_iepa, mcal_iepa._ec.__class__)
+
+
+def test_mirror_cloudpickle_round_trip_preserves_registry():
+    cloudpickle = pytest.importorskip("cloudpickle")
+    registry = MarketCalendar._regmeta_class_registry
+    original_calendar_class = registry["XLON"]
+
+    try:
+        calendar = get_calendar("XLON")
+        restored = cloudpickle.loads(cloudpickle.dumps(calendar))
+
+        assert restored.name == calendar.name == "XLON"
+        assert type(restored) is type(calendar)
+        assert type(get_calendar("XLON")) is type(calendar)
+    finally:
+        registry["XLON"] = original_calendar_class
 
 
 def test_basic_information():
