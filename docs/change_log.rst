@@ -1,19 +1,16 @@
 Change Log
 ==========
 
-Unreleased
-~~~~~~~~~~
-- Overhaul the NSE (India) calendar and give it its own holiday list and modules
-  (``calendars/nse.py``, ``holidays/nse.py``; ``calendars/bse.py`` keeps
-  backward-compatible re-exports) (#479)
-
-  - NSE-specific holiday list covering 1996-2026, verified against NSE circulars
-    and observed market activity
-  - era-dependent regular hours (9:55 AM open until 2010, 9:00 AM during the 2010
-    pre-open pilot, 9:15 AM since 2010-10-18, plus the documented 1997-1999 changes)
-  - weekday Muhurat trading sessions modeled as special opens/closes with the
-    announced timings per year instead of holidays
-  - the 2021-02-24 trading halt modeled as a special close plus an interruption
+5.5.0 (10/04/2026)
+~~~~~~~~~~~~~~~~~~
+- Added 2026-04-07 as an HKEX compensatory holiday for the Easter Monday / Ching Ming overlap (PR #472)
+- Fixed the 2022 LSE spring bank holiday, keeping May 30 open after the holiday was moved for the Platinum Jubilee; corrected Jubilee holiday assertions (PR #473)
+- Added missing 2024 and 2026 special trading holidays to the BSE/NSE calendars (PR #474)
+- Fixed cloudpickle serialization of mirrored calendar classes to preserve the calendar registry (PR #476)
+- Fixed CME equity schedules to remove the obsolete 15:15–15:30 CT pause from trade date 2021-06-28 while preserving historical breaks (PR #478)
+- Overhauled the NSE calendar with curated holidays, era-dependent trading hours, weekday Muhurat sessions, and the 2021 outage interruption; retained backward-compatible imports (PR #479)
+- Fixed SIX New Year's Eve weekend handling so it does not close the preceding Friday (PR #482)
+- Updated the TASE calendar for its Monday-Friday trading week from 2026-01-05, including the transition, 2026-2027 holidays, and Friday early close (PR #485)
 
 5.4.0 (05/25/2026)
 ~~~~~~~~~~~~~~~~~~
