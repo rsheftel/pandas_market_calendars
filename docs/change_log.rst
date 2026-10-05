@@ -1,6 +1,14 @@
 Change Log
 ==========
 
+Unreleased
+~~~~~~~~~~
+- Update TASE calendar for the Monday-Friday trading week effective 2026-01-05
+  - change the weekmask from Sun-Thu to Mon-Fri with the crossover handled in ``valid_days`` (last Sunday session 2026-01-04), following the NYSE pre/post-1952 pattern
+  - add the 2026 and 2027 holiday closures (the previous list ended in 2025, so all 2026 holidays were treated as trading days)
+  - add the Friday early close at 13:34 Asia/Jerusalem
+  - add native TASE calendar tests (``tests/test_tase_calendar.py``)
+
 5.4.0 (05/25/2026)
 ~~~~~~~~~~~~~~~~~~
 - PR #462 to fix numerous issues
