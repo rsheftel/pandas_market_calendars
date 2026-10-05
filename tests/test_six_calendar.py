@@ -77,3 +77,24 @@ def test_boxing_day_weekend():
         assert pd.Timestamp(date, tz="Europe/Berlin") in good_dates
     for date in ["2020-12-24", "2020-12-25", "2020-12-26", "2020-12-27"]:
         assert pd.Timestamp(date, tz="Europe/Zurich") not in good_dates
+
+
+def test_new_years_eve_weekend():
+    # new year's eve (observed): on a weekend, not rolled back to the Friday
+    six = SIXExchangeCalendar()
+
+    # 2022-12-31 is a Saturday, so 2022-12-30 is an ordinary trading day
+    good_dates = six.valid_days("2022-12-01", "2022-12-31", tz="Europe/Zurich")
+    for date in ["2022-12-29", "2022-12-30"]:
+        assert pd.Timestamp(date, tz="Europe/Zurich") in good_dates
+    for date in ["2022-12-24", "2022-12-25", "2022-12-26"]:
+        assert pd.Timestamp(date, tz="Europe/Zurich") not in good_dates
+
+    # 2023-12-31 is a Sunday, so 2023-12-29 is an ordinary trading day
+    good_dates = six.valid_days("2023-12-01", "2023-12-31", tz="Europe/Zurich")
+    for date in ["2023-12-28", "2023-12-29"]:
+        assert pd.Timestamp(date, tz="Europe/Zurich") in good_dates
+
+    # 2018-12-31 is a Monday, so New Year's Eve is observed as usual
+    good_dates = six.valid_days("2018-12-01", "2018-12-31", tz="Europe/Zurich")
+    assert pd.Timestamp("2018-12-31", tz="Europe/Zurich") not in good_dates

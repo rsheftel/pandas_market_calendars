@@ -8,7 +8,6 @@ from pandas.tseries.holiday import (
     EasterMonday,
     GoodFriday,
     Holiday,
-    previous_friday,
 )
 from zoneinfo import ZoneInfo
 
@@ -27,7 +26,7 @@ NewYearsEve = Holiday(
     "New Year's Eve",
     month=12,
     day=31,
-    observance=previous_friday,
+    days_of_week=(MONDAY, TUESDAY, WEDNESDAY, THURSDAY, FRIDAY),
 )
 # New Year's Day
 NewYearsDay = Holiday(
