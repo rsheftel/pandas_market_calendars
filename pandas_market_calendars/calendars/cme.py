@@ -264,7 +264,7 @@ class CMEAgricultureExchangeCalendar(MarketCalendar):
 
     @property
     def adhoc_holidays(self) -> List[Any]:
-        return USNationalDaysofMourning
+        return [d for d in USNationalDaysofMourning if d != Timestamp("2025-01-09", tz="UTC")]
 
     @property
     def special_closes(self) -> List[Any]:
@@ -278,6 +278,15 @@ class CMEAgricultureExchangeCalendar(MarketCalendar):
                         ChristmasEveInOrAfter1993,
                     ]
                 ),
+            )
+        ]
+
+    @property
+    def special_closes_adhoc(self) -> List[Any]:
+        return [
+            (
+                time(12, 15),
+                ["2025-01-09"],
             )
         ]
 
