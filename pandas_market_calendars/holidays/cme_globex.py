@@ -145,12 +145,12 @@ USIndependenceDayFrom2022 = Holiday(
     start_date=Timestamp("2022-01-01"),
     observance=nearest_workday,
 )
-USIndependenceDayFrom2022Through2025 = Holiday(
+USIndependenceDayFrom2022Through2024 = Holiday(
     "July 4th",
     month=7,
     day=4,
     start_date=Timestamp("2022-01-01"),
-    end_date=Timestamp("2025-12-31"),
+    end_date=Timestamp("2024-12-31"),
     observance=nearest_workday,
 )
 USIndependenceDayFrom2027 = Holiday(
@@ -192,21 +192,6 @@ USLaborDay = Holiday(
     start_date=Timestamp("1887-01-01"),
     offset=DateOffset(weekday=MO(1)),
 )
-USLaborDayThrough2025 = Holiday(
-    "Labor Day",
-    month=9,
-    day=1,
-    start_date=Timestamp("1887-01-01"),
-    end_date=Timestamp("2025-12-31"),
-    offset=DateOffset(weekday=MO(1)),
-)
-USLaborDayFrom2027 = Holiday(
-    "Labor Day",
-    month=9,
-    day=1,
-    start_date=Timestamp("2027-01-01"),
-    offset=DateOffset(weekday=MO(1)),
-)
 
 ################################################
 # US Thanksgiving Nov 30
@@ -234,28 +219,30 @@ FridayAfterThanksgiving = Holiday(
     offset=[DateOffset(weekday=TH(4)), Day(1)],
 )
 
-FridayAfterThanksgivingThrough2025 = Holiday(
+# CME Globex Energy, Metals, FX and Crypto moved their close on this day to 13:45 CT in 2024.
+FridayAfterThanksgivingThrough2023 = Holiday(
     "Friday after Thanksgiving",
     month=11,
     day=1,
-    end_date=Timestamp("2025-12-31"),
+    end_date=Timestamp("2023-12-31"),
     offset=[DateOffset(weekday=TH(4)), Day(1)],
 )
 
-FridayAfterThanksgivingFrom2027 = Holiday(
+FridayAfterThanksgivingFrom2024 = Holiday(
     "Friday after Thanksgiving",
     month=11,
     day=1,
-    start_date=Timestamp("2027-01-01"),
+    start_date=Timestamp("2024-01-01"),
     offset=[DateOffset(weekday=TH(4)), Day(1)],
 )
 
-USThanksgivingFridayFrom2021 = Holiday(
+USThanksgivingFriday2021Through2023 = Holiday(
     "Thanksgiving Friday",
     month=11,
     day=1,
     offset=[DateOffset(weekday=TH(4)), Day(1)],
     start_date=Timestamp("2021-01-01"),
+    end_date=Timestamp("2023-12-31"),
 )
 
 USThanksgivingFridayPre2021 = Holiday(
@@ -275,4 +262,45 @@ ChristmasCME = Holiday(
     day=25,
     start_date=Timestamp("1999-01-01"),
     observance=nearest_workday,
+)
+
+
+################################
+# Christmas Eve Dec 24
+################################
+# CME Globex FX and Crypto moved their close on this day from 12:15 to 12:45 CT in 2024. When Christmas is a
+# Saturday, the 24th is a full holiday (ChristmasCME), hence Monday to Thursday only.
+ChristmasEveThrough2023 = Holiday(
+    "Christmas Eve",
+    month=12,
+    day=24,
+    start_date=Timestamp("1993-01-01"),
+    end_date=Timestamp("2023-12-31"),
+    days_of_week=(MONDAY, TUESDAY, WEDNESDAY, THURSDAY),
+)
+
+ChristmasEveFrom2024 = Holiday(
+    "Christmas Eve",
+    month=12,
+    day=24,
+    start_date=Timestamp("2024-01-01"),
+    days_of_week=(MONDAY, TUESDAY, WEDNESDAY, THURSDAY),
+)
+
+# CME Globex Grains and Oilseeds close at 12:05 CT on these days from 2015, when the regular close moved from
+# 13:15 to 13:20.
+FridayAfterThanksgivingFrom2015 = Holiday(
+    "Friday after Thanksgiving",
+    month=11,
+    day=1,
+    start_date=Timestamp("2015-01-01"),
+    offset=[DateOffset(weekday=TH(4)), Day(1)],
+)
+
+ChristmasEveFrom2015 = Holiday(
+    "Christmas Eve",
+    month=12,
+    day=24,
+    start_date=Timestamp("2015-01-01"),
+    days_of_week=(MONDAY, TUESDAY, WEDNESDAY, THURSDAY),
 )
