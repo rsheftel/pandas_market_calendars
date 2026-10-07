@@ -165,3 +165,33 @@ def test_2020_through_2022_and_prior_holidays(day_status):
         minute = int(expected_status[2:4])
         assert s["market_open"] == day_ts + Day(-1) + Hour(17)
         assert s["market_close"] == day_ts + Day(0) + Hour(hour) + Minute(minute)
+
+
+# Good Friday trades only when the US jobs report falls on it, the first Friday of April, as
+# CMEBondExchangeCalendar's lists already record. The other closes are the end of the last one-minute
+# TRADES bar of 6E, 6J, 6B and 6C: NinjaTrader history to 2024 and Interactive Brokers history for 2025-2026.
+def test_good_friday_trades_only_on_a_jobs_report_day():
+    cme = CMEGlobexFXExchangeCalendar()
+    schedule = cme.schedule("2023-01-01", "2027-12-31", tz=TZ)
+
+    assert schedule.at[pd.Timestamp("2023-04-07"), "market_close"] == pd.Timestamp("2023-04-07 10:15", tz=TZ)
+    assert schedule.at[pd.Timestamp("2026-04-03"), "market_close"] == pd.Timestamp("2026-04-03 10:15", tz=TZ)
+    for closed in ("2024-03-29", "2025-04-18", "2027-03-26"):
+        assert pd.Timestamp(closed) not in schedule.index, closed
+
+
+def test_early_closes_change_in_2024():
+    cme = CMEGlobexFXExchangeCalendar()
+    expected_closes = {
+        "2022-11-25": pd.Timestamp("2022-11-25 12:15", tz=TZ),
+        "2025-11-28": pd.Timestamp("2025-11-28 13:45", tz=TZ),
+        "2020-12-24": pd.Timestamp("2020-12-24 12:15", tz=TZ),
+        "2025-12-24": pd.Timestamp("2025-12-24 12:45", tz=TZ),
+        "2022-07-04": pd.Timestamp("2022-07-04 16:00", tz=TZ),
+        "2025-07-04": pd.Timestamp("2025-07-04 12:00", tz=TZ),
+        "2026-07-03": pd.Timestamp("2026-07-03 12:00", tz=TZ),
+    }
+    schedule = cme.schedule("2020-12-01", "2026-07-31", tz=TZ)
+
+    for session, expected_close in expected_closes.items():
+        assert schedule.at[pd.Timestamp(session), "market_close"] == expected_close, session

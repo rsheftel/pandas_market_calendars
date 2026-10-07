@@ -10,7 +10,8 @@ from pandas_market_calendars.holidays.cme import (
     GoodFriday2015,
     GoodFriday2021,
     GoodFriday2022,
-    GoodFridayAfter2022,
+    GoodFridayAfter2022JobsReport,
+    GoodFridayAfter2022NoJobsReport,
     GoodFridayBefore2021NotEarlyClose,
     USIndependenceDayAfter2014,
     USIndependenceDayBefore2014,
@@ -65,6 +66,7 @@ class CMEGlobexEquitiesExchangeCalendar(CMEGlobexBaseExchangeCalendar):
                 USNewYearsDay,
                 GoodFridayBefore2021NotEarlyClose,
                 GoodFriday2022,
+                GoodFridayAfter2022NoJobsReport,
                 Christmas,
             ]
         )
@@ -118,7 +120,7 @@ class CMEGlobexEquitiesExchangeCalendar(CMEGlobexBaseExchangeCalendar):
                         GoodFriday2012,
                         GoodFriday2015,
                         GoodFriday2021,
-                        GoodFridayAfter2022,
+                        GoodFridayAfter2022JobsReport,
                     ]
                 ),
             ),

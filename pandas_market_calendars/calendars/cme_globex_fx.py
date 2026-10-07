@@ -9,7 +9,8 @@ from pandas_market_calendars.calendars.cme_globex_base import (
 from pandas_market_calendars.holidays.cme import (
     GoodFriday2021,
     GoodFriday2022,
-    GoodFridayAfter2022,
+    GoodFridayAfter2022JobsReport,
+    GoodFridayAfter2022NoJobsReport,
     GoodFridayBefore2021,
     USIndependenceDayBefore2022,
     USLaborDayStarting1887Before2022,
@@ -17,11 +18,15 @@ from pandas_market_calendars.holidays.cme import (
     USMemorialDay2021AndPrior,
     USPresidentsDayBefore2022,
     USThanksgivingBefore2022,
-    USThanksgivingFriday,
+)
+from pandas_market_calendars.holidays.cme_globex import (
+    ChristmasEveFrom2024,
+    ChristmasEveThrough2023,
+    FridayAfterThanksgivingFrom2024,
+    FridayAfterThanksgivingThrough2023,
 )
 from pandas_market_calendars.holidays.us import (
     Christmas,
-    ChristmasEveInOrAfter1993,
     USNewYearsDay,
 )
 
@@ -29,6 +34,8 @@ from pandas_market_calendars.holidays.us import (
 _1015 = time(10, 15)
 _1200 = time(12, 0)
 _1215 = time(12, 15)
+_1245 = time(12, 45)
+_1345 = time(13, 45)
 
 
 class CMEGlobexFXExchangeCalendar(CMEGlobexBaseExchangeCalendar):
@@ -59,6 +66,7 @@ class CMEGlobexFXExchangeCalendar(CMEGlobexBaseExchangeCalendar):
                 USNewYearsDay,
                 GoodFridayBefore2021,
                 GoodFriday2022,
+                GoodFridayAfter2022NoJobsReport,
                 Christmas,
             ]
         )
@@ -77,7 +85,7 @@ class CMEGlobexFXExchangeCalendar(CMEGlobexBaseExchangeCalendar):
                 AbstractHolidayCalendar(
                     rules=[
                         GoodFriday2021,
-                        GoodFridayAfter2022,
+                        GoodFridayAfter2022JobsReport,
                     ]
                 ),
             ),
@@ -96,6 +104,19 @@ class CMEGlobexFXExchangeCalendar(CMEGlobexBaseExchangeCalendar):
             ),
             (
                 _1215,
-                AbstractHolidayCalendar(rules=[USThanksgivingFriday, ChristmasEveInOrAfter1993]),
+                AbstractHolidayCalendar(rules=[FridayAfterThanksgivingThrough2023, ChristmasEveThrough2023]),
+            ),
+            (
+                _1245,
+                AbstractHolidayCalendar(rules=[ChristmasEveFrom2024]),
+            ),
+            (
+                _1345,
+                AbstractHolidayCalendar(rules=[FridayAfterThanksgivingFrom2024]),
             ),
         ]
+
+    @property
+    def special_closes_adhoc(self) -> List[Any]:
+        # July 4th on a Friday, or observed on one
+        return [(_1200, ["2025-07-04", "2026-07-03"])]

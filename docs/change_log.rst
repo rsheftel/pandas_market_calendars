@@ -1,6 +1,16 @@
 Change Log
 ==========
 
+Unreleased
+~~~~~~~~~~
+- Corrected CME Globex holiday sessions against one-minute traded bars (NinjaTrader history 2013-2024, Interactive Brokers history 2024-2026)
+  - Good Friday from 2023 trades a short session only when the US jobs report falls on it (the first Friday of April), as CME_Bond already records; 2024, 2025 and 2027 are holidays for CME Globex Equity, Fixed Income, FX, Crypto and CME_Equity
+  - Energy and Metals: Christmas Eve closes at 12:45 CT; the Friday after Thanksgiving closes at 13:45 CT from 2024; Labor Day halts at 13:30 CT from 2022; July 4 2025 closed at 12:00 CT. The 2026 ad hoc closes these replace are now rules, and 2027 follows the 2024-2026 pattern
+  - FX and Crypto: the Friday after Thanksgiving closes at 13:45 CT and Christmas Eve at 12:45 CT from 2024; July 4 2025 closed at 12:00 CT, and for FX July 3 2026 (seen in 6L only)
+  - Crypto: the day before July 4th has been a full session since 2022
+  - Grains and Oilseeds: the Friday after Thanksgiving and Christmas Eve close at 12:05 CT from 2015
+  - Breaking for code importing these holiday rules: removed GoodFridayAfter2022 (use GoodFridayAfter2022JobsReport and GoodFridayAfter2022NoJobsReport), FridayAfterThanksgivingThrough2025 and FridayAfterThanksgivingFrom2027 (use FridayAfterThanksgivingThrough2023 and FridayAfterThanksgivingFrom2024), USLaborDayThrough2025 and USLaborDayFrom2027 (use USLaborDayPre2022 and USLaborDayFrom2022), USIndependenceDayFrom2022Through2025 (now USIndependenceDayFrom2022Through2024) and USThanksgivingFridayFrom2021 (now USThanksgivingFriday2021Through2023)
+
 5.5.0 (10/04/2026)
 ~~~~~~~~~~~~~~~~~~
 - Added 2026-04-07 as an HKEX compensatory holiday for the Easter Monday / Ching Ming overlap (PR #472)

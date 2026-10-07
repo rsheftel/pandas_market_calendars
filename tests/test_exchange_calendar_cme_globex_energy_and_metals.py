@@ -110,18 +110,68 @@ def test_2026_overrides_preserve_neighboring_year_rules():
     expected_closes = {
         "2025-06-19": pd.Timestamp("2025-06-19 14:30", tz="America/New_York"),
         "2027-06-18": pd.Timestamp("2027-06-18 14:30", tz="America/New_York"),
-        "2025-07-04": pd.Timestamp("2025-07-04 14:30", tz="America/New_York"),
         "2027-07-05": pd.Timestamp("2027-07-05 14:30", tz="America/New_York"),
-        "2025-09-01": pd.Timestamp("2025-09-01 13:00", tz="America/New_York"),
-        "2027-09-06": pd.Timestamp("2027-09-06 13:00", tz="America/New_York"),
-        "2025-11-28": pd.Timestamp("2025-11-28 13:45", tz="America/New_York"),
-        "2027-11-26": pd.Timestamp("2027-11-26 13:45", tz="America/New_York"),
     }
     schedule = cal.schedule("2025-06-19", "2027-11-26", tz="America/New_York")
 
     for session, expected_close in expected_closes.items():
         actual_close = schedule.at[pd.Timestamp(session), "market_close"]
         assert actual_close == expected_close, session
+
+
+def _assert_closes_for_crude_and_gold(expected_closes, start, end):
+    for alias in ("CMEGlobex_CL", "CMEGlobex_GC"):
+        schedule = mcal.get_calendar(alias).schedule(start, end, tz="America/Chicago")
+
+        for session, expected_close in expected_closes.items():
+            actual_close = schedule.at[pd.Timestamp(session), "market_close"]
+            assert actual_close == expected_close, f"{alias} {session}"
+
+
+# The closes below are the end of the last one-minute TRADES bar of CL, GC, HG and NG on each day:
+# NinjaTrader history for 2013-2024 and Interactive Brokers history for 2024-2026.
+def test_christmas_eve_closes_at_1245():
+    expected_closes = {
+        "2013-12-24": pd.Timestamp("2013-12-24 12:45", tz="America/Chicago"),
+        "2018-12-24": pd.Timestamp("2018-12-24 12:45", tz="America/Chicago"),
+        "2019-12-24": pd.Timestamp("2019-12-24 12:45", tz="America/Chicago"),
+        "2020-12-24": pd.Timestamp("2020-12-24 12:45", tz="America/Chicago"),
+        "2024-12-24": pd.Timestamp("2024-12-24 12:45", tz="America/Chicago"),
+        "2025-12-24": pd.Timestamp("2025-12-24 12:45", tz="America/Chicago"),
+        "2026-12-24": pd.Timestamp("2026-12-24 12:45", tz="America/Chicago"),
+    }
+
+    _assert_closes_for_crude_and_gold(expected_closes, "2013-12-01", "2026-12-31")
+
+
+def test_friday_after_thanksgiving_closes_at_1345_from_2024():
+    expected_closes = {
+        "2019-11-29": pd.Timestamp("2019-11-29 12:45", tz="America/Chicago"),
+        "2022-11-25": pd.Timestamp("2022-11-25 12:45", tz="America/Chicago"),
+        "2023-11-24": pd.Timestamp("2023-11-24 12:45", tz="America/Chicago"),
+        "2024-11-29": pd.Timestamp("2024-11-29 13:45", tz="America/Chicago"),
+        "2025-11-28": pd.Timestamp("2025-11-28 13:45", tz="America/Chicago"),
+        "2026-11-27": pd.Timestamp("2026-11-27 13:45", tz="America/Chicago"),
+        "2027-11-26": pd.Timestamp("2027-11-26 13:45", tz="America/Chicago"),
+    }
+
+    _assert_closes_for_crude_and_gold(expected_closes, "2019-11-01", "2027-11-30")
+
+
+def test_labor_day_halts_at_1330_from_2022_and_july_4_2025_closes_at_1200():
+    expected_closes = {
+        "2021-09-06": pd.Timestamp("2021-09-06 12:00", tz="America/Chicago"),
+        "2022-09-05": pd.Timestamp("2022-09-05 13:30", tz="America/Chicago"),
+        "2023-09-04": pd.Timestamp("2023-09-04 13:30", tz="America/Chicago"),
+        "2025-09-01": pd.Timestamp("2025-09-01 13:30", tz="America/Chicago"),
+        "2026-09-07": pd.Timestamp("2026-09-07 13:30", tz="America/Chicago"),
+        "2027-09-06": pd.Timestamp("2027-09-06 13:30", tz="America/Chicago"),
+        # July 4 2025 fell on a Friday: trading stopped at 12:00 and no evening session followed.
+        "2023-07-04": pd.Timestamp("2023-07-04 13:30", tz="America/Chicago"),
+        "2025-07-04": pd.Timestamp("2025-07-04 12:00", tz="America/Chicago"),
+    }
+
+    _assert_closes_for_crude_and_gold(expected_closes, "2021-09-01", "2027-09-30")
 
 
 #########################################################################
@@ -169,7 +219,7 @@ def test_2022():
         pd.Timestamp("2022-05-30  1:30PM", tz="America/Chicago"),  # Memorial Day
         pd.Timestamp("2022-06-20  1:30PM", tz="America/Chicago"),  # Juneteenth
         pd.Timestamp("2022-07-04  1:30PM", tz="America/Chicago"),  # Independence Day
-        pd.Timestamp("2022-09-05 12:00PM", tz="America/Chicago"),  # Labor Day
+        pd.Timestamp("2022-09-05  1:30PM", tz="America/Chicago"),  # Labor Day
         pd.Timestamp("2022-11-24  1:30PM", tz="America/Chicago"),  # US Thanksgiving
         pd.Timestamp("2022-11-25 12:45PM", tz="America/Chicago"),  # Friday after US Thanksgiving
     ]
@@ -218,5 +268,6 @@ def test_2020():
         pd.Timestamp("2020-09-07 12:00PM", tz="America/Chicago"),  # Labor Day
         pd.Timestamp("2020-11-26 12:00PM", tz="America/Chicago"),  # US Thanksgiving
         pd.Timestamp("2020-11-27 12:45PM", tz="America/Chicago"),  # Friday after US Thanksgiving
+        pd.Timestamp("2020-12-24 12:45PM", tz="America/Chicago"),  # Christmas Eve
     ]
     _test_has_early_closes(early_closes, start, end)
