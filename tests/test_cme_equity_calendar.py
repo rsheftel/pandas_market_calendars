@@ -178,3 +178,10 @@ def test_good_friday_2026_has_early_close_session():
     session = schedule.loc["2026-04-03"]
     assert session.market_open == pd.Timestamp("2026-04-02 18:00:00", tz="America/New_York")
     assert session.market_close == pd.Timestamp("2026-04-03 09:15:00", tz="America/New_York")
+
+
+def test_good_friday_2024_and_2025_are_closed():
+    schedule = CMEEquityExchangeCalendar().schedule("2024-03-01", "2025-04-30", tz="America/Chicago")
+
+    assert pd.Timestamp("2024-03-29") not in schedule.index
+    assert pd.Timestamp("2025-04-18") not in schedule.index

@@ -152,11 +152,54 @@ GoodFriday2022 = Holiday(
     start_date=Timestamp("2022-01-01"),
     end_date=Timestamp("2022-12-31"),
 )
-GoodFridayAfter2022 = Holiday(
+
+
+def is_jobs_report_good_friday(good_friday: Timestamp) -> bool:
+    """
+    Whether the US jobs report is released on this Good Friday, the only Good Fridays CME Globex trades a
+    short session on. The report comes out on the first Friday of the month. CMEBondExchangeCalendar's
+    goodFridayOpen and goodFridayClosed lists follow the same rule.
+
+    :param good_friday: The Good Friday to test.
+    :return: True when Good Friday is one of the first seven days of April.
+    """
+    return good_friday.month == 4 and good_friday.day <= 7
+
+
+def good_friday_if_jobs_report(jan_1st: Timestamp) -> Timestamp | None:
+    """
+    Observance for a Holiday anchored on January 1st: that year's Good Friday, if it has a jobs report.
+
+    :param jan_1st: January 1st of the year.
+    :return: Good Friday, or None when no jobs report falls on it.
+    """
+    good_friday = jan_1st + easter + daymin2
+    return good_friday if is_jobs_report_good_friday(good_friday) else None
+
+
+def good_friday_unless_jobs_report(jan_1st: Timestamp) -> Timestamp | None:
+    """
+    Observance for a Holiday anchored on January 1st: that year's Good Friday, unless it has a jobs report.
+
+    :param jan_1st: January 1st of the year.
+    :return: Good Friday, or None when a jobs report falls on it.
+    """
+    good_friday = jan_1st + easter + daymin2
+    return None if is_jobs_report_good_friday(good_friday) else good_friday
+
+
+GoodFridayAfter2022JobsReport = Holiday(
     "Good Friday",
     month=1,
     day=1,
-    offset=[Easter(), Day(-2)],
+    observance=good_friday_if_jobs_report,
+    start_date=Timestamp("2023-01-01"),
+)
+GoodFridayAfter2022NoJobsReport = Holiday(
+    "Good Friday",
+    month=1,
+    day=1,
+    observance=good_friday_unless_jobs_report,
     start_date=Timestamp("2023-01-01"),
 )
 # Dates when equities closed at 08:15
@@ -259,11 +302,23 @@ def previous_workday_if_july_4th_is_tue_to_fri(dt: Any) -> datetime.datetime | N
     # else None
 
 
+# Despite its name this rule has no end date: CME equity and interest rate products still close early on the
+# day before July 4th.
 USIndependenceDayBefore2022PreviousDay = Holiday(
     "July 4th",
     month=7,
     day=4,
     start_date=Timestamp("1954-01-01"),
+    observance=previous_workday_if_july_4th_is_tue_to_fri,
+)
+
+# CME Globex Crypto has traded a full session on the day before July 4th since 2022.
+USIndependenceDayPreviousDayThrough2021 = Holiday(
+    "July 4th",
+    month=7,
+    day=4,
+    start_date=Timestamp("1954-01-01"),
+    end_date=Timestamp("2021-12-31"),
     observance=previous_workday_if_july_4th_is_tue_to_fri,
 )
 

@@ -22,16 +22,16 @@ from zoneinfo import ZoneInfo
 
 from pandas_market_calendars.holidays.cme_globex import (
     ChristmasCME,
-    FridayAfterThanksgivingFrom2027,
-    FridayAfterThanksgivingThrough2025,
+    FridayAfterThanksgivingFrom2024,
+    FridayAfterThanksgivingThrough2023,
     GoodFriday,
-    USIndependenceDayFrom2022Through2025,
+    USIndependenceDayFrom2022Through2024,
     USIndependenceDayFrom2027,
     USIndependenceDayPre2022,
     USJuneteenthFrom2022Through2025,
     USJuneteenthFrom2027,
-    USLaborDayFrom2027,
-    USLaborDayThrough2025,
+    USLaborDayFrom2022,
+    USLaborDayPre2022,
     USMartinLutherKingJrFrom2022,
     USMartinLutherKingJrPre2022,
     USMemorialDayFrom2022,
@@ -42,6 +42,7 @@ from pandas_market_calendars.holidays.cme_globex import (
     USThanksgivingDayFrom2022,
     USThanksgivingDayPre2022,
 )
+from pandas_market_calendars.holidays.us import ChristmasEveInOrAfter1993
 
 from .cme_globex_base import CMEGlobexBaseExchangeCalendar
 
@@ -187,6 +188,9 @@ class CMEGlobexEnergyAndMetalsExchangeCalendar(CMEGlobexBaseExchangeCalendar):
 
     @property
     def special_closes(self) -> List[Any]:
+        # From 2022 a holiday Monday to Thursday halts at 13:30 and reopens at 17:00 for the next trade date. The
+        # holidays that fell on a Friday in 2025 and 2026 closed at 12:00 with no evening session
+        # (special_closes_adhoc).
         return [
             (
                 time(12),
@@ -196,8 +200,7 @@ class CMEGlobexEnergyAndMetalsExchangeCalendar(CMEGlobexBaseExchangeCalendar):
                         USPresidentsDayPre2022,
                         USMemorialDayPre2022,
                         USIndependenceDayPre2022,
-                        USLaborDayThrough2025,
-                        USLaborDayFrom2027,
+                        USLaborDayPre2022,
                         USThanksgivingDayPre2022,
                     ]
                 ),
@@ -206,8 +209,8 @@ class CMEGlobexEnergyAndMetalsExchangeCalendar(CMEGlobexBaseExchangeCalendar):
                 time(12, 45),
                 AbstractHolidayCalendar(
                     rules=[
-                        FridayAfterThanksgivingThrough2025,
-                        FridayAfterThanksgivingFrom2027,
+                        FridayAfterThanksgivingThrough2023,
+                        ChristmasEveInOrAfter1993,
                     ]
                 ),
             ),
@@ -220,11 +223,16 @@ class CMEGlobexEnergyAndMetalsExchangeCalendar(CMEGlobexBaseExchangeCalendar):
                         USMemorialDayFrom2022,
                         USJuneteenthFrom2022Through2025,
                         USJuneteenthFrom2027,
-                        USIndependenceDayFrom2022Through2025,
+                        USIndependenceDayFrom2022Through2024,
                         USIndependenceDayFrom2027,
+                        USLaborDayFrom2022,
                         USThanksgivingDayFrom2022,
                     ]
                 ),
+            ),
+            (
+                time(13, 45),
+                AbstractHolidayCalendar(rules=[FridayAfterThanksgivingFrom2024]),
             ),
         ]
 
@@ -233,19 +241,7 @@ class CMEGlobexEnergyAndMetalsExchangeCalendar(CMEGlobexBaseExchangeCalendar):
         return [
             (
                 time(12),
-                ["2026-06-19", "2026-07-03"],
-            ),
-            (
-                time(12, 45),
-                ["2026-12-24"],
-            ),
-            (
-                time(13, 30),
-                ["2026-09-07"],
-            ),
-            (
-                time(13, 45),
-                ["2026-11-27"],
+                ["2025-07-04", "2026-06-19", "2026-07-03"],
             ),
             (
                 time(15, 15),

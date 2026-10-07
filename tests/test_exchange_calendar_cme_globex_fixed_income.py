@@ -592,3 +592,16 @@ def test_2020_through_2022_and_prior_holidays(day_status):
         minute = int(expected_status[2:4])
         assert s["market_open"] == day_ts + Day(-1) + Hour(17)
         assert s["market_close"] == day_ts + Day(0) + Hour(hour) + Minute(minute)
+
+
+# Good Friday trades only when the US jobs report falls on it, the first Friday of April, as
+# CMEBondExchangeCalendar's lists already record. NinjaTrader's one-minute bars show no trading at all
+# from Thursday's close to Sunday's open over Good Friday 2024.
+def test_good_friday_trades_only_on_a_jobs_report_day():
+    schedule = CMEGlobexFixedIncomeCalendar().schedule("2023-01-01", "2027-12-31", tz="America/Chicago")
+
+    for session in ("2023-04-07", "2026-04-03"):
+        expected_close = pd.Timestamp(f"{session} 10:15", tz="America/Chicago")
+        assert schedule.at[pd.Timestamp(session), "market_close"] == expected_close, session
+    for closed in ("2024-03-29", "2025-04-18", "2027-03-26"):
+        assert pd.Timestamp(closed) not in schedule.index, closed
