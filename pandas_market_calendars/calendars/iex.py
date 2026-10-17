@@ -1,26 +1,9 @@
 from datetime import time
-from itertools import chain
 from typing import Any, List, Literal, Union
 
 from pandas import DatetimeIndex, Timedelta, Timestamp
-from pandas.tseries.holiday import AbstractHolidayCalendar
-from zoneinfo import ZoneInfo
 
 from pandas_market_calendars import calendar_utils as u
-from pandas_market_calendars.holidays.nyse import (
-    ChristmasEvesAdhoc,
-    ChristmasNYSE,
-    # Ad-Hoc
-    DayAfterThanksgiving1pmEarlyCloseInOrAfter1993,
-    DaysBeforeIndependenceDay1pmEarlyCloseAdhoc,
-    GoodFriday,
-    USIndependenceDay,
-    USJuneteenthAfter2022,
-    USMartinLutherKingJrAfter1998,
-    USMemorialDay,
-    USPresidentsDay,
-    USThanksgivingDay,
-)
 
 from .nyse import NYSEExchangeCalendar
 
@@ -61,53 +44,6 @@ class IEXExchangeCalendar(NYSEExchangeCalendar):
     @property
     def weekmask(self) -> str:
         return "Mon Tue Wed Thu Fri"
-
-    @property
-    def regular_holidays(self) -> Any:
-        return AbstractHolidayCalendar(
-            rules=[
-                USPresidentsDay,
-                GoodFriday,
-                USMemorialDay,
-                USJuneteenthAfter2022,
-                USIndependenceDay,
-                USThanksgivingDay,
-                ChristmasNYSE,
-                USMartinLutherKingJrAfter1998,
-            ]
-        )
-
-    @property
-    def adhoc_holidays(self) -> List[Any]:
-        return list(
-            chain(
-                ChristmasEvesAdhoc,
-            )
-        )
-
-    @property
-    def special_closes(self) -> List[Any]:
-        return [
-            (
-                time(hour=13, tzinfo=ZoneInfo("America/New_York")),
-                AbstractHolidayCalendar(
-                    rules=[
-                        DayAfterThanksgiving1pmEarlyCloseInOrAfter1993,
-                    ]
-                ),
-            )
-        ]
-
-    """Override NYSE calendar special cases"""
-
-    @property
-    def special_closes_adhoc(self) -> List[Any]:
-        return [
-            (
-                time(13, tzinfo=ZoneInfo("America/New_York")),
-                DaysBeforeIndependenceDay1pmEarlyCloseAdhoc,
-            )
-        ]
 
     @property
     def special_opens(self) -> List[Any]:
