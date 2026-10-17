@@ -51,12 +51,13 @@ class IEXExchangeCalendar(NYSEExchangeCalendar):
 
     def valid_days(self, start_date: Any, end_date: Any, tz: Any = "UTC") -> DatetimeIndex:
         start_date = Timestamp(start_date)
+        iex_open = Timestamp("2013-08-25")
         if start_date.tz is not None:
             # Ensure valid Comparison to "2013-08-25" is possible
-            start_date.tz_convert(self.tz).tz_localize(None)
+            iex_open = iex_open.tz_localize(self.tz)
 
         # Limit Start_date to the Exchange's Open
-        start_date = max(start_date, Timestamp("2013-08-25"))
+        start_date = max(start_date, iex_open)
         return super().valid_days(start_date, end_date, tz=tz)
 
     def date_range_htf(
