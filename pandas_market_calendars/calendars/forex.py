@@ -36,4 +36,7 @@ class ForexExchangeCalendar(MarketCalendar):
 
     @property
     def weekmask(self) -> str:
-        return "Sun Mon Tue Wed Thu Fri"
+        # Monday's session already opens Sunday 17:00 through the -1 open offset.
+        # A Sunday session date would open Saturday 17:00, during the weekend
+        # close that runs from Friday 17:00 until Sunday 17:00.
+        return "Mon Tue Wed Thu Fri"
