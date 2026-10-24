@@ -527,7 +527,6 @@ def test_jp_2022():
         pd.Timestamp("2022-02-23", tz="UTC"),  # Japan Emporer's Birthday
         pd.Timestamp("2022-03-21", tz="UTC"),  # Japan Vernal Equinox
         pd.Timestamp("2022-04-15", tz="UTC"),  # UK Good Friday
-        pd.Timestamp("2022-04-18", tz="UTC"),  # UK Easter Monday
         pd.Timestamp("2022-04-29", tz="UTC"),  # Japan Showa Day
         pd.Timestamp("2022-05-03", tz="UTC"),  # Japan Constitution Day
         pd.Timestamp("2022-05-04", tz="UTC"),  # Japan Greenery Day
@@ -548,16 +547,36 @@ def test_jp_2022():
         pd.Timestamp("2022-11-11", tz="UTC"),  # US Vetrans Day
         pd.Timestamp("2022-11-23", tz="UTC"),  # Japan Labour Thanksgiving Day
         pd.Timestamp("2022-11-24", tz="UTC"),  # US Thanksgiving
-        pd.Timestamp("2022-12-26", tz="UTC"),  # Boxing Day
+        pd.Timestamp("2022-12-26", tz="UTC"),  # US Christmas (observed)
     ]
     _test_holidays(sifma_jp, holidays, start, end)
     _test_no_special_opens(sifma_jp, start, end)
 
     early_closes = [
+        pd.Timestamp("2022-04-18 3:00PM", tz="Asia/Tokyo"),  # UK Easter Monday
         pd.Timestamp("2022-05-02 3:00PM", tz="Asia/Tokyo"),  # UK May Day
         pd.Timestamp("2022-12-27 3:00PM", tz="Asia/Tokyo"),  # UK Christmas Day
     ]
     _test_has_early_closes(sifma_jp, early_closes, start, end)
+
+
+def test_jp_uk_holiday_early_closes():
+    # Easter Monday is an early close in Japan, not a full close
+    schedule = sifma_jp.schedule("2023-01-01", "2026-12-31", tz="Asia/Tokyo")
+    for date in ["2023-04-10", "2024-04-01", "2025-04-21", "2026-04-06"]:
+        assert schedule.loc[date, "market_close"] == pd.Timestamp(f"{date} 15:00", tz="Asia/Tokyo")
+
+    # Boxing Day and its substitute day are early closes in Japan, Christmas Day is a full close
+    for date in ["2023-12-26", "2024-12-26", "2025-12-26", "2026-12-28"]:
+        assert schedule.loc[date, "market_close"] == pd.Timestamp(f"{date} 15:00", tz="Asia/Tokyo")
+    for date in ["2023-12-25", "2024-12-25", "2025-12-25", "2026-12-25"]:
+        assert pd.Timestamp(date) not in schedule.index
+
+    # Christmas on a Saturday: US holiday on Friday the 24th, UK substitute days on the 27th and 28th
+    schedule = sifma_jp.schedule("2021-12-20", "2021-12-31", tz="Asia/Tokyo")
+    assert pd.Timestamp("2021-12-24") not in schedule.index
+    for date in ["2021-12-27", "2021-12-28"]:
+        assert schedule.loc[date, "market_close"] == pd.Timestamp(f"{date} 15:00", tz="Asia/Tokyo")
 
 
 if __name__ == "__main__":
