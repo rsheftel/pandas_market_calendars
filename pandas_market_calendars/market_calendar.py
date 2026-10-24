@@ -861,8 +861,7 @@ class MarketCalendar(metaclass=MarketCalendarMeta):
         :return: schedule DataFrame
         """
 
-        if days.dtype != "datetime64[ns]":
-            days = pd.DatetimeIndex(days).normalize().tz_localize(None)
+        days = pd.DatetimeIndex(days).normalize().tz_localize(None)
 
         # Setup all valid trading days and the requested market_times
         if market_times is None:
