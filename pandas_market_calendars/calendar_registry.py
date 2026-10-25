@@ -12,6 +12,23 @@ from .calendars.cme import (
     CMEEquityExchangeCalendar, CMEBondExchangeCalendar, CMETradeDateCalendar
 )
 from .calendars.cme_globex_base import CMEGlobexBaseExchangeCalendar
+from .calendars.china_futures import (
+    CFFEXBondExchangeCalendar,
+    CFFEXExchangeCalendar,
+    CZCEExchangeCalendar,
+    CZCENightCalendar,
+    DCEExchangeCalendar,
+    DCENightCalendar,
+    GFEXExchangeCalendar,
+    INECopperCalendar,
+    INECrudeCalendar,
+    INEExchangeCalendar,
+    INEIndustrialsCalendar,
+    SHFEBaseMetalsCalendar,
+    SHFEExchangeCalendar,
+    SHFEIndustrialsCalendar,
+    SHFEPreciousMetalsCalendar,
+)
 from .calendars.cme_globex_agriculture import (
     CMEGlobexAgricultureExchangeCalendar,
     CMEGlobexLivestockExchangeCalendar,
