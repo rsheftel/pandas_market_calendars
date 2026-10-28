@@ -23,7 +23,7 @@ from pandas_market_calendars.holidays.cn import (
 )
 from pandas_market_calendars.holidays.us import USNewYearsDay
 from pandas_market_calendars.holidays.uk import (
-    Christmas, BoxingDay, WeekendChristmas, WeekendBoxingDay,
+    WeekendChristmas, WeekendBoxingDay,
     SpringBank_post_2002_pre_2012, SpringBank_post_2012_pre_2022, 
     SpringBank_post_2022, SpringBank_pre_2002
 )
@@ -222,6 +222,21 @@ NationalDay = Holiday(
     start_date=Timestamp("1997-07-01"),
 )
 
+Christmas = Holiday(
+    name="Christmas",
+    month=12,
+    day=25,
+    observance=partial(process_date, offset=2),
+    start_date=Timestamp("1954-01-01"),
+)
+
+BoxingDay = Holiday(
+    name="Boxing day",  # 圣诞节后第一个平日
+    month=12,
+    day=26,
+    observance=sunday_to_monday,
+    start_date=Timestamp("1954-01-01"),
+)
 
 
 QueenBirthday = Holiday(
@@ -345,12 +360,15 @@ HKClosedDay = [
     Timestamp("2023-07-17", tz="UTC"),  # Typhoon closure
     Timestamp("2023-09-01", tz="UTC"),  # Typhoon closure
     Timestamp("2023-09-08", tz="UTC"),  # Typhoon closure
+    # 2026: Ching Ming substitute (Apr 6) coincides with Easter Monday,
+    # so Apr 7 is an additional general holiday (same pattern as 2015-04-07)
+    Timestamp("2026-04-07", tz="UTC"),
 ]
 
 
 class HKEXExchangeCalendar(MarketCalendar):
     """
-    Exchange calendar for Hong Kong Stock Exchange (Stock market)
+    Exchange calendar for Hong Kong Stock Exchange
 
     Open Time: 9:30 AM, Asia/Shanghai
     LUNCH BREAK :facepalm: : 12:00 AM - 1:00 PM Asia/Shanghai
@@ -422,6 +440,7 @@ class HKEXExchangeCalendar(MarketCalendar):
     def adhoc_holidays(self) -> List[Any]:
         return HKClosedDay
 
+ 
 
 # ---------------------------------------------------------------------------
 # Shared building blocks
@@ -495,6 +514,7 @@ class HKFEDomesticExchangeCalendar(MarketCalendar):
     @property
     def tz(self):
         return ZoneInfo("Asia/Hong_Kong")
+
 
     @property
     def regular_holidays(self):
@@ -616,7 +636,6 @@ class HKFEA50ExchangeCalendar(HKFEMSCIBase):
     """
 
     aliases = ["HKFE_A50"]
-
     _early_close = time(16,30)
     regular_market_times = {
         "market_open": ((None, time(9, )),),
@@ -669,7 +688,6 @@ class HKFECNHExchangeCalendar(HKFEMSCIBase):
     Holidays are just New years, while New years eve has the T+1 session
     cancelled.
     """
-
     aliases = ["HKFE_CNH"]
 
     regular_market_times = {

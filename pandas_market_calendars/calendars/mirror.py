@@ -148,15 +148,16 @@ for exchange in calendars:
         regular_market_times[new] = times
 
     cal = type(
-        exchange,
+        f"{exchange}ExchangeCalendar",
         (TradingCalendar,),
         {
+            "__module__": __name__,
             "_ec_class": calendars[exchange],
-            "alias": [exchange],
+            "aliases": [exchange],
             "regular_market_times": regular_market_times,
         },
     )
-    locals()[f"{exchange}ExchangeCalendar"] = cal
+    locals()[cal.__name__] = cal
 
 
 class XTAEExchangeCalendar(TradingCalendar):
