@@ -16,6 +16,28 @@ from pandas_market_calendars.market_calendar import HolidayCalendar, MarketCalen
 DAYMASKS = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"]
 MIRROR_HOLIDAY_START_DATES = {"XNYS": "1885-01-01"}
 
+# exchange_calendars starts XTKS in 1997, so its equinox lists and special days start there too. These weekday
+# national holidays before 1997 come from the Cabinet Office list:
+# https://www8.cao.go.jp/chosei/shukujitsu/syukujitsu.csv
+MIRROR_ADHOC_HOLIDAYS = {
+    "XTKS": [
+        pd.Timestamp("1990-03-21"),  # Vernal Equinox Day
+        pd.Timestamp("1990-09-24"),  # substitute holiday, Autumnal Equinox Day fell on a Sunday
+        pd.Timestamp("1990-11-12"),  # Enthronement ceremony of Emperor Akihito
+        pd.Timestamp("1991-03-21"),  # Vernal Equinox Day
+        pd.Timestamp("1991-09-23"),  # Autumnal Equinox Day
+        pd.Timestamp("1992-03-20"),  # Vernal Equinox Day
+        pd.Timestamp("1992-09-23"),  # Autumnal Equinox Day
+        pd.Timestamp("1993-06-09"),  # Wedding of Crown Prince Naruhito
+        pd.Timestamp("1993-09-23"),  # Autumnal Equinox Day
+        pd.Timestamp("1994-03-21"),  # Vernal Equinox Day
+        pd.Timestamp("1994-09-23"),  # Autumnal Equinox Day
+        pd.Timestamp("1995-03-21"),  # Vernal Equinox Day
+        pd.Timestamp("1996-03-20"),  # Vernal Equinox Day
+        pd.Timestamp("1996-09-23"),  # Autumnal Equinox Day
+    ],
+}
+
 
 # XTAE (Tel Aviv Stock Exchange) changed from Sun-Thu to Mon-Fri on Jan 5, 2026
 XTAE_TRANSITION_DATE = pd.Timestamp("2026-01-05")
@@ -95,7 +117,11 @@ class TradingCalendar(MarketCalendar):
 
     @property
     def adhoc_holidays(self) -> List[Any]:
-        return self._ec.adhoc_holidays
+        adhoc_holidays = self._ec.adhoc_holidays
+        extra = MIRROR_ADHOC_HOLIDAYS.get(self.name)
+        if extra is None:
+            return adhoc_holidays
+        return list(adhoc_holidays) + extra
 
     @property
     def special_opens(self) -> List[Any]:
