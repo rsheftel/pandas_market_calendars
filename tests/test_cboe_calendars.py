@@ -143,6 +143,33 @@ def test_independence_day_early_closes():
                 )
 
 
+def test_christmas_eve_early_closes():
+    # Christmas Eve on Mon-Thu is an early close (2015 Thu, 2025 Wed, 2026 Thu)
+    # https://ir.cboe.com/news/news-details/2015/CBOE-C2-and-CFE-Trading-Schedule-for-the-Christmas-and-New-Years-Holidays-12-17-2015/default.aspx
+    # https://www.cboe.com/notices/content/?id=57451
+    # https://www.cboe.com/about/hours/us-options
+    # https://www.cboe.com/about/hours/us-futures
+    expected_closes = {
+        CFEExchangeCalendar: "12:15",
+        CBOEEquityOptionsExchangeCalendar: "12:00",
+        CBOEIndexOptionsExchangeCalendar: "12:15",
+    }
+    for calendar, close in expected_closes.items():
+        cal = calendar()
+        for day in ["2015-12-24", "2025-12-24", "2026-12-24"]:
+            schedule = cal.schedule(day, day)
+            assert pd.Timestamp(day) in cal.early_closes(schedule).index, (
+                f"{day} should be an early close for {cal.name}"
+            )
+            market_close = schedule.loc[day, "market_close"].tz_convert(cal.tz)
+            assert market_close.strftime("%H:%M") == close
+
+    # Christmas Eve on a Friday is the observed Christmas holiday (2021)
+    for calendar in calendars:
+        cal = calendar()
+        assert pd.Timestamp("2021-12-24", tz="UTC") not in cal.valid_days("2021-12-20", "2021-12-31")
+
+
 if __name__ == "__main__":
     for ref, obj in locals().copy().items():
         if ref.startswith("test_"):
