@@ -86,6 +86,8 @@ def _patched_assert_series_equal(left, right, check_dtype=True, check_index_type
         check_dtype = False
         check_index_type = False
 
+    # Frequency metadata is independent of index type in pandas 3.1+.
+    kwargs.setdefault("check_freq", False)
     return _original_assert_series_equal(
         left, right, check_dtype=check_dtype, check_index_type=check_index_type, **kwargs
     )
@@ -98,6 +100,7 @@ def _patched_assert_frame_equal(left, right, check_dtype=True, **kwargs):
     left = _normalize_datetime_resolution(left)
     right = _normalize_datetime_resolution(right)
     check_dtype = False
+    kwargs.setdefault("check_freq", False)
     return _original_assert_frame_equal(left, right, check_dtype=check_dtype, **kwargs)
 
 
