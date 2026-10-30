@@ -13,6 +13,7 @@ from zoneinfo import ZoneInfo
 
 from pandas_market_calendars.holidays.us import (
     Christmas,
+    ChristmasEveInOrAfter1993,
     FridayAfterIndependenceDayPre2013,
     HurricaneSandyClosings,
     MonTuesThursBeforeIndependenceDay,
@@ -86,6 +87,7 @@ class CFEExchangeCalendar(MarketCalendar):
                         FridayAfterIndependenceDayPre2013,
                         WednesdayBeforeIndependenceDayPost2013,
                         USBlackFridayInOrAfter1993,
+                        ChristmasEveInOrAfter1993,
                     ]
                 ),
             )
@@ -120,6 +122,7 @@ class CBOEEquityOptionsExchangeCalendar(CFEExchangeCalendar):
                         FridayAfterIndependenceDayPre2013,
                         WednesdayBeforeIndependenceDayPost2013,
                         USBlackFridayInOrAfter1993,
+                        ChristmasEveInOrAfter1993,
                     ]
                 ),
             )
