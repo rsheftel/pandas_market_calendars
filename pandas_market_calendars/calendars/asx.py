@@ -77,7 +77,8 @@ class ASXExchangeCalendar(MarketCalendar):
                 time(hour=14, minute=10, tzinfo=self.tz),
                 AbstractHolidayCalendar(
                     rules=[
-                        ChristmasEve,
+                        ChristmasEveBefore2022,
+                        ChristmasEveInOrAfter2022,
                     ]
                 ),
             ),
@@ -85,7 +86,8 @@ class ASXExchangeCalendar(MarketCalendar):
                 time(hour=14, minute=10, tzinfo=self.tz),
                 AbstractHolidayCalendar(
                     rules=[
-                        NewYearsEve,
+                        NewYearsEveBefore2022,
+                        NewYearsEveInOrAfter2022,
                     ]
                 ),
             ),
