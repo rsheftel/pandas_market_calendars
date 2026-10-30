@@ -18,6 +18,15 @@ from pandas_market_calendars.holidays.uk import (
     WeekendBoxingDay,
     WeekendChristmas,
 )
+from pandas_market_calendars.holidays.ca import (
+    FamilyDay,
+    VictoriaDay,
+    CanadaDay,
+    CivicHoliday,
+    LaborDay,
+    Thanksgiving,
+    Christmas,
+)
 from pandas_market_calendars.market_calendar import (
     FRIDAY,
     MONDAY,
@@ -34,56 +43,6 @@ TSXNewYearsDay = Holiday(
     month=1,
     day=1,
     observance=weekend_to_monday,
-)
-# Ontario Family Day
-FamilyDay = Holiday(
-    "Family Day",
-    month=2,
-    day=1,
-    offset=DateOffset(weekday=MO(3)),
-    start_date="2008-01-01",
-)
-# Victoria Day
-# https://www.timeanddate.com/holidays/canada/victoria-day
-VictoriaDay = Holiday(
-    "Victoria Day",
-    month=5,
-    day=24,
-    offset=DateOffset(weekday=MO(-1)),
-)
-# Canada Day
-CanadaDay = Holiday(
-    "Canada Day",
-    month=7,
-    day=1,
-    observance=weekend_to_monday,
-)
-# Civic Holiday
-CivicHoliday = Holiday(
-    "Civic Holiday",
-    month=8,
-    day=1,
-    offset=DateOffset(weekday=MO(1)),
-)
-# Labor Day
-LaborDay = Holiday(
-    "Labor Day",
-    month=9,
-    day=1,
-    offset=DateOffset(weekday=MO(1)),
-)
-# Thanksgiving
-Thanksgiving = Holiday(
-    "Thanksgiving",
-    month=10,
-    day=1,
-    offset=DateOffset(weekday=MO(2)),
-)
-
-Christmas = Holiday(
-    "Christmas",
-    month=12,
-    day=25,
 )
 
 ChristmasEveEarlyClose2010Onwards = Holiday(
