@@ -2,7 +2,7 @@
 
 Date: 2026-10-31 (revision 6)
 
-**Current step: Step 3 — replace deprecated weekday accessors.**
+**Current step: Step 4 — make timezone-aware comparisons explicit.**
 
 ## 0. Investigation (complete)
 
@@ -158,6 +158,9 @@ Intentional warnings, which are not counted above and must be preserved:
   - Change configuration only.
   - Leave any new `UP` lint findings for the follow-up PR.
   - Confirm `ruff check` on files touched by this PR does not newly fail (checked in Step 8).
+  - Finding: `py310` adds 256 repo-wide findings (UP006/UP007/UP035/UP045/UP036, I001 because `zoneinfo`
+    becomes stdlib, B905, RUF100). CI does not run Ruff. These belong to the follow-up PR. Changed files are
+    therefore checked with `--target-version py38` to prove the edits themselves add no findings.
 - [x] Regenerate the lockfile with `uv lock`, then confirm:
   - [x] Python 3.10 still resolves pandas 2.3.3.
   - [x] Python >= 3.11 resolves pandas 3.x.
@@ -173,16 +176,18 @@ Intentional warnings, which are not counted above and must be preserved:
 
 ## 3. Replace deprecated weekday accessors
 
-- [ ] In `china_futures.py:142`, change `hol.weekday` to `hol.day_of_week`.
-- [ ] In `nyse.py:1369` and `nyse.py:1480`, change `.dt.weekday` to `.dt.day_of_week`.
-- [ ] In `test_nse_calendar.py:26`, replace the per-date loop with
+- [x] In `china_futures.py:142`, change `hol.weekday` to `hol.day_of_week`.
+- [x] In `nyse.py:1369` and `nyse.py:1480`, change `.dt.weekday` to `.dt.day_of_week`.
+- [x] In `test_nse_calendar.py:26`, replace the per-date loop with
   `assert (pd.DatetimeIndex(NSEClosedDay).day_of_week < 5).all()`.
-- [ ] In `test_nyse_calendar_early_years.py:2009`, replace the loop with
+- [x] In `test_nyse_calendar_early_years.py:2009`, replace the loop with
   `assert not (valid_days.day_of_week == 5).any()`.
-- [ ] Remove both `filterwarnings` marks and their comment from `tests/test_schedule_input_dates.py`.
-- [ ] Leave Python `datetime.weekday()` calls unchanged; they are not deprecated.
-- [ ] Run the targeted China futures, NYSE, NSE, and schedule-input tests.
-- [ ] Commit: `Use day_of_week instead of deprecated weekday`.
+- [x] Remove both `filterwarnings` marks and their comment from `tests/test_schedule_input_dates.py`.
+  - Also removed the now-unused `pytest` import.
+- [x] Leave Python `datetime.weekday()` calls unchanged; they are not deprecated.
+- [x] Run the targeted China futures, NYSE, NSE, and schedule-input tests.
+  - 260 passed with weekday/dayofweek warnings as errors; only the 11 Step 5 `freq` warnings remained.
+- [x] Commit: `Use day_of_week instead of deprecated weekday`.
 
 This step removes 19,513 of the 19,555 warning occurrences, about 99.8%.
 

@@ -139,7 +139,7 @@ class ChinaFuturesNightSessionCalendar(ChinaFuturesBaseCalendar, ABC):
         """
         start, end = pd.Timestamp(self.night_from), pd.Timestamp("2100-12-31")
         hol = pd.DatetimeIndex(self.holidays().holidays)
-        hol = hol[(hol >= start - pd.Timedelta(days=14)) & (hol <= end) & (hol.weekday < 5)]
+        hol = hol[(hol >= start - pd.Timedelta(days=14)) & (hol <= end) & (hol.day_of_week < 5)]
         after_holiday = (hol + BDay(1)).unique()
         after_holiday = after_holiday[~after_holiday.isin(hol)]
         suspended = pd.date_range(

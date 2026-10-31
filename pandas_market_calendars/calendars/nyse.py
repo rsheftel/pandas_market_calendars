@@ -1366,7 +1366,7 @@ class NYSEExchangeCalendar(MarketCalendar):
         if market_time == "market_close" and not self.is_custom(market_time):
             days = days.dt.tz_convert(self.tz)
             days = days.where(
-                days.dt.weekday != 5,
+                days.dt.day_of_week != 5,
                 days.dt.normalize() + self._tdelta(self._saturday_close),
             )
             days = days.dt.tz_convert("UTC")
@@ -1477,4 +1477,4 @@ class NYSEExchangeCalendar(MarketCalendar):
         # make sure saturdays are not considered early closes if they are >= 12pm
         mc = early.market_close.dt.tz_convert(self.tz)
         after_noon = (mc - mc.dt.normalize()).ge(self._tdelta(self._saturday_close))
-        return early[~(mc.dt.weekday.eq(5) & after_noon)]
+        return early[~(mc.dt.day_of_week.eq(5) & after_noon)]

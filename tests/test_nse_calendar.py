@@ -23,7 +23,7 @@ def test_holidays():
 
     assert len(NSEClosedDay) == 453
     assert len(set(NSEClosedDay)) == 453
-    assert all(holiday.dayofweek < 5 for holiday in NSEClosedDay)
+    assert (pd.DatetimeIndex(NSEClosedDay).day_of_week < 5).all()
 
     trading_days = nse_calendar.valid_days(
         pd.Timestamp("1996-01-01"), pd.Timestamp("2026-12-31")
