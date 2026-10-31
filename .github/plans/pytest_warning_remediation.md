@@ -2,7 +2,7 @@
 
 Date: 2026-10-31 (revision 6)
 
-**Current step: Step 8 — validate.**
+**Current step: Step 9 — draft PR, changelog, and handoff.**
 
 ## 0. Investigation (complete)
 
@@ -258,9 +258,11 @@ This step removes 19,513 of the 19,555 warning occurrences, about 99.8%.
 
 ## 8. Validate
 
-- [ ] Format each changed file with `uv run ruff format <changed files>`.
-- [ ] Check each changed file with `uv run ruff check <changed files>`.
-- [ ] Verify the warning requirement on pandas 3.1:
+- [x] Format each changed file with `uv run ruff format <changed files>`.
+  `tests/test_nse_calendar.py` was already unformatted on `dev`. It was left as is to avoid unrelated churn.
+- [x] Check each changed file with `uv run ruff check <changed files>`.
+  All checks pass with `--target-version py38`, so these edits add no new findings.
+- [x] Verify the warning requirement on pandas 3.1:
 
   ```bash
   uv run --no-sync pytest -q -W always -r w
@@ -272,7 +274,8 @@ This step removes 19,513 of the 19,555 warning occurrences, about 99.8%.
   - All 12 come from `exchange_calendars` through `pandas/core/series.py`, with the `Series.values ... drops timezone`
     message.
   - No warning comes from `pandas_market_calendars/` or `tests/`.
-- [ ] Run the same full suite on Python 3.10 with pandas 2.3.3:
+  - Result: 1,585 passed, 1 skipped, exactly 12 `exchange-calendars` warnings.
+- [x] Run the same full suite on Python 3.10 with pandas 2.3.3:
 
   ```bash
   uv run --python 3.10 --isolated --with-editable . --with pytest pytest -q -r w
@@ -280,7 +283,9 @@ This step removes 19,513 of the 19,555 warning occurrences, about 99.8%.
 
   - All tests must pass.
   - Warnings are reported, but they do not block the PR.
-- [ ] Confirm that existing expected-data tests pass without changing their expected data.
+  - Result: 1,585 passed, 1 skipped, 54 warnings. All 54 are a pandas 2.3 `FutureWarning` about empty-entry concatenation from
+    `market_calendar.py:657`, raised during the CME Globex tests. `origin/dev` produces the same 54 warnings.
+- [x] Confirm that existing expected-data tests pass without changing their expected data.
 - [ ] After pushing, confirm all CI jobs pass:
   - [ ] Python 3.10, which tests pandas 2.3;
   - [ ] Python 3.14, which tests pandas 3.1;
