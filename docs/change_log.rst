@@ -1,6 +1,10 @@
 Change Log
 ==========
 
+5.6.0 (10/30/2026)
+~~~~~~~~~~~~~~~~~~
+- Fixed test assertion helpers for pandas 3.1 index frequency compatibility (PR #512)
+
 5.5.0 (10/04/2026)
 ~~~~~~~~~~~~~~~~~~
 - Added 2026-04-07 as an HKEX compensatory holiday for the Easter Monday / Ching Ming overlap (PR #472)
