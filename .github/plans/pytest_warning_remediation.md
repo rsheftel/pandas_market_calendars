@@ -1,8 +1,8 @@
 # Pytest Warning Remediation Plan
 
-Date: 2026-10-31 (revision 9)
+Date: 2026-10-31 (revision 10)
 
-**Current step: Follow-up — validate CI and hand off PR #516.**
+**Current step: complete — PR #516 is ready for review and squash merge.**
 
 ## 0. Investigation (complete)
 
@@ -329,10 +329,10 @@ This step removes 19,513 of the 19,555 warning occurrences, about 99.8%.
 - [x] Run the complete test suite on pandas 3.1 and Python 3.10/pandas 2.3.3; allow only the previously documented warning sets:
   - pandas 3.1.0: 1,586 passed, 1 skipped, exactly 12 `exchange-calendars` warnings.
   - Python 3.10/pandas 2.3.3: 1,586 passed, 1 skipped, 54 existing pandas `FutureWarning`s.
-- [ ] Confirm Python 3.14 and 3.15 CI coverage remains intact.
+- [x] Confirm Python 3.14 and 3.15 CI coverage remains intact. All 18 test jobs passed across Python 3.10–3.15 on Ubuntu, macOS, and Windows; coverage checks passed.
 - [x] Add a follow-up entry to the existing 5.6.0 change-log section using the new PR number (PR #516).
 - [x] Commit and push the branch; open a draft PR against `dev` and include the Ruff/pandas validation details (PR #516).
-- [ ] Confirm CI passes, mark the PR ready, and hand off for review and squash merge.
+- [x] Confirm CI passes, mark the PR ready, and hand off for review and squash merge. PR #516 is ready; please review and squash merge into `dev`.
 
 ## Acceptance criteria
 
