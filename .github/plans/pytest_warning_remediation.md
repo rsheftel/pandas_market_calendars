@@ -2,7 +2,7 @@
 
 Date: 2026-10-31 (revision 6)
 
-**Current step: Step 5 — implement the frequency policy in the index wrapper.**
+**Current step: Step 6 — pad ragged interruption rows explicitly.**
 
 ## 0. Investigation (complete)
 
@@ -208,19 +208,21 @@ This step removes 19,513 of the 19,555 warning occurrences, about 99.8%.
 
 ## 5. Implement the frequency policy in the index wrapper
 
-- [ ] Default `check_freq` to `False` in `_patched_assert_index_equal`, matching the Series and DataFrame wrappers.
-- [ ] At import, detect support for `check_freq` with `inspect.signature`, not a version string.
+- [x] Default `check_freq` to `False` in `_patched_assert_index_equal`, matching the Series and DataFrame wrappers.
+- [x] At import, detect support for `check_freq` with `inspect.signature`, not a version string.
   - Pass `check_freq` through only when pandas supports it.
-- [ ] On pandas 2.3, handle explicit `check_freq=True` inside the wrapper.
+- [x] On pandas 2.3, handle explicit `check_freq=True` inside the wrapper.
   - Assert `left.freq == right.freq`.
   - Never drop the flag silently.
-- [ ] Add focused tests in new `tests/test_conftest_wrappers.py` that verify:
-  - [ ] equal values with different `freq` pass by default;
-  - [ ] different `freq` fails when `check_freq=True`;
-  - [ ] different values still fail;
-  - [ ] datetime resolution normalization still works.
-- [ ] Update the module docstring.
-- [ ] Commit: `Default index freq checks off in test wrapper`.
+- [x] Add focused tests in new `tests/test_conftest_wrappers.py` that verify:
+  - [x] equal values with different `freq` pass by default;
+  - [x] different `freq` fails when `check_freq=True`;
+  - [x] different values still fail;
+  - [x] datetime resolution normalization still works.
+- [x] Update the module docstring.
+- [x] Verified with `-W error` on pandas 3.1.0 and on Python 3.10 with pandas 2.3.3: 5 passed on each.
+  The 20 `freq` warnings are gone from the affected suites.
+- [x] Commit: `Default index freq checks off in test wrapper`.
 
 ## 6. Pad ragged interruption rows explicitly
 

@@ -3,7 +3,14 @@ Pytest configuration for pandas_market_calendars tests.
 
 This module provides compatibility fixes for pandas 3.0+ where datetime
 resolution defaults changed from nanoseconds to varying resolutions.
+
+The assertion wrappers also default ``check_freq`` to ``False``: pandas 3.1
+deprecates ignoring frequency metadata in ``assert_index_equal``, while these
+tests compare session dates rather than frequency objects. Pass
+``check_freq=True`` where frequency is part of the expected behavior.
 """
+
+import inspect
 
 import pandas as pd
 import pandas.testing as tm
@@ -13,6 +20,9 @@ import pandas.testing as tm
 _original_assert_index_equal = tm.assert_index_equal
 _original_assert_series_equal = tm.assert_series_equal
 _original_assert_frame_equal = tm.assert_frame_equal
+
+# pandas < 3.1 has no check_freq parameter on assert_index_equal and never compares freq
+_INDEX_SUPPORTS_CHECK_FREQ = "check_freq" in inspect.signature(_original_assert_index_equal).parameters
 
 
 def _normalize_datetime_resolution(obj):
@@ -56,15 +66,22 @@ def _normalize_datetime_resolution(obj):
     return obj
 
 
-def _patched_assert_index_equal(left, right, exact="equiv", **kwargs):
+def _patched_assert_index_equal(left, right, exact="equiv", check_freq=False, **kwargs):
     """
-    Wrapper for assert_index_equal that allows datetime resolution differences.
+    Wrapper for assert_index_equal that allows datetime resolution differences and ignores freq by default.
     """
     if isinstance(left, pd.DatetimeIndex) and isinstance(right, pd.DatetimeIndex):
         left = _normalize_datetime_resolution(left)
         right = _normalize_datetime_resolution(right)
         exact = False
-    return _original_assert_index_equal(left, right, exact=exact, **kwargs)
+    if _INDEX_SUPPORTS_CHECK_FREQ:
+        return _original_assert_index_equal(left, right, exact=exact, check_freq=check_freq, **kwargs)
+
+    _original_assert_index_equal(left, right, exact=exact, **kwargs)
+    # Emulate check_freq=True on pandas versions whose assert_index_equal cannot check it
+    if check_freq:
+        left_freq, right_freq = getattr(left, "freq", None), getattr(right, "freq", None)
+        assert left_freq == right_freq, f"Index freq are different: {left_freq} != {right_freq}"
 
 
 def _patched_assert_series_equal(left, right, check_dtype=True, check_index_type="equiv", **kwargs):
