@@ -11,6 +11,7 @@ Change Log
 - Corrected historical TSX session dates (PR #496)
 - Made IEX inherit NYSE holidays and early closes (PR #497)
 - Kept the FX calendar closed over the weekend until Sunday evening (PR #501)
+- Made EUREX close on 24 and 31 December and stopped rolling weekend Christmas holidays (PR #502)
 
 5.5.0 (10/04/2026)
 ~~~~~~~~~~~~~~~~~~
