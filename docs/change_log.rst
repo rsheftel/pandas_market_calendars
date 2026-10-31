@@ -16,6 +16,7 @@ Change Log
 - Added mainland China futures exchange calendars (SHFE, INE, DCE, CZCE, GFEX, CFFEX) (PR #505)
 - Normalized schedule input dates at every datetime resolution, not just nanoseconds (PR #504)
 - Restored Cboe Christmas Eve early closes (PR #513)
+- Closed XTKS on 14 national holidays between 1990 and 1996 (PR #514)
 
 5.5.0 (10/04/2026)
 ~~~~~~~~~~~~~~~~~~
