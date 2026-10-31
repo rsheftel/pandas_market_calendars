@@ -2,7 +2,7 @@
 
 Date: 2026-10-31 (revision 6)
 
-**Current step: Step 7 — update contributor guidance in `AGENTS.md`.**
+**Current step: Step 8 — validate.**
 
 ## 0. Investigation (complete)
 
@@ -245,16 +245,16 @@ This step removes 19,513 of the 19,555 warning occurrences, about 99.8%.
 
 ## 7. Update contributor guidance in `AGENTS.md`
 
-- [ ] At line 45, change `Python >= 3.8` to `Python >= 3.10`, matching `requires-python`.
-- [ ] Keep `Pandas >= 2.3`.
-- [ ] At line 95, replace "Black only (see `[tool.black]` and `[tool.isort]`)" with
+- [x] At line 45, change `Python >= 3.8` to `Python >= 3.10`, matching `requires-python`.
+- [x] Keep `Pandas >= 2.3`.
+- [x] At line 95, replace "Black only (see `[tool.black]` and `[tool.isort]`)" with
   "Ruff (see `[tool.ruff]` in `pyproject.toml`)".
-- [ ] At line 156, replace the Black command with:
+- [x] At line 156, replace the Black command with:
   - `uv run ruff format <files>`;
   - `uv run ruff check <files>`.
-- [ ] At line 165, replace "Black enforces formatting and import sorting" with
+- [x] At line 165, replace "Black enforces formatting and import sorting" with
   "Ruff enforces formatting and import sorting".
-- [ ] Commit: `Align AGENTS.md with Python 3.10 and Ruff`.
+- [x] Commit: `Align AGENTS.md with Python 3.10 and Ruff`.
 
 ## 8. Validate
 
