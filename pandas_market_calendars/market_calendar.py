@@ -561,9 +561,12 @@ class MarketCalendar(metaclass=MarketCalendarMeta):
         """
         Will return a pd.DataFrame only containing interruptions.
         """
-        if not self.interruptions:
+        interruptions = self.interruptions
+        if not interruptions:
             return pd.DataFrame(index=pd.DatetimeIndex([]))
-        intr = pd.DataFrame(self.interruptions)
+        # Rows may hold different numbers of interruptions; pad them so pandas does not have to
+        width = max(map(len, interruptions))
+        intr = pd.DataFrame([tuple(row) + (None,) * (width - len(row)) for row in interruptions])
         intr.index = pd.to_datetime(intr.pop(0))
 
         intr.columns = pd.Index(map(self._col_name, intr.columns))

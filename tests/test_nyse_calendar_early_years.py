@@ -2005,8 +2005,7 @@ def test_1952_no_saturdays():
 
     # Check no saturdays in valid trading days post 1952-09-29
     valid_days = nyse.valid_days(start, end)
-    for d in valid_days:
-        assert d.dayofweek != 5
+    assert not (valid_days.day_of_week == 5).any()
 
     # Check no Saturdays in Holiday post 1952-09-29
     df = pd.DataFrame(nyse.holidays().holidays, columns=["holidays"])

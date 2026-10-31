@@ -1,12 +1,9 @@
 import pandas as pd
-import pytest
 from pandas.testing import assert_frame_equal, assert_index_equal
 
 from pandas_market_calendars import calendar_registry
 
 
-# NYSE's existing weekday check warns on pandas 3.1; it is outside date normalization.
-@pytest.mark.filterwarnings("ignore:Series.dt.weekday is deprecated")
 def test_schedule_from_days_ignores_nanosecond_time() -> None:
     calendar = calendar_registry.get_calendar("NYSE")
     days = pd.DatetimeIndex(["2024-07-03 12:34:56", "2024-07-05 15:45:12"]).as_unit("ns")
@@ -20,7 +17,6 @@ def test_schedule_from_days_ignores_nanosecond_time() -> None:
     assert_index_equal(days, original)
 
 
-@pytest.mark.filterwarnings("ignore:Series.dt.weekday is deprecated")
 def test_schedule_from_days_preserves_resolution_and_timezone_controls() -> None:
     calendar = calendar_registry.get_calendar("NYSE")
     expected = calendar.schedule("2024-07-03", "2024-07-05")

@@ -16,7 +16,7 @@ jobs:
     strategy:
       matrix:
         os: [ ubuntu-latest, windows-latest, macos-latest ]
-        python-version: [ '3.10', '3.11', '3.12', '3.13', '3.14' ]
+        python-version: [ '3.10', '3.11', '3.12', '3.13', '3.14', '3.15' ]
 
     env:
       GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -36,7 +36,7 @@ jobs:
 
       - name: run tests
         run: |
-          coverage run --source=pandas_market_calendars -m pytest tests
+          coverage run --source=pandas_market_calendars -m pytest tests -r w
           coverage lcov -o coverage.lcov
 
       - name: coveralls parallel

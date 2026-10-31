@@ -17,6 +17,9 @@ Change Log
 - Normalized schedule input dates at every datetime resolution, not just nanoseconds (PR #504)
 - Restored Cboe Christmas Eve early closes (PR #513)
 - Closed XTKS on 14 national holidays between 1990 and 1996 (PR #514)
+- Raised the minimum pandas version to 2.3 (PR #515)
+- Added Python 3.15 support (PR #515)
+- Removed pandas 3.1 deprecation warnings from the library and tests (PR #515)
 
 5.5.0 (10/04/2026)
 ~~~~~~~~~~~~~~~~~~
