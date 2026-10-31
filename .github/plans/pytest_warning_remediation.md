@@ -2,7 +2,7 @@
 
 Date: 2026-10-31 (revision 6)
 
-**Current step: Step 2 — update package metadata, tooling, and CI.**
+**Current step: Step 3 — replace deprecated weekday accessors.**
 
 ## 0. Investigation (complete)
 
@@ -152,23 +152,24 @@ Intentional warnings, which are not counted above and must be preserved:
 
 ## 2. Update package metadata, tooling, and CI
 
-- [ ] In `pyproject.toml`, change `"pandas>=1.1"` to `"pandas>=2.3"`.
-- [ ] In `pyproject.toml`, add `'Programming Language :: Python :: 3.15',` after the 3.14 classifier.
-- [ ] In `pyproject.toml`, change `[tool.ruff] target-version` from `"py38"` to `"py310"`.
+- [x] In `pyproject.toml`, change `"pandas>=1.1"` to `"pandas>=2.3"`.
+- [x] In `pyproject.toml`, add `'Programming Language :: Python :: 3.15',` after the 3.14 classifier.
+- [x] In `pyproject.toml`, change `[tool.ruff] target-version` from `"py38"` to `"py310"`.
   - Change configuration only.
   - Leave any new `UP` lint findings for the follow-up PR.
-  - Confirm `ruff check` on files touched by this PR does not newly fail.
-- [ ] Regenerate the lockfile with `uv lock`, then confirm:
-  - [ ] Python 3.10 still resolves pandas 2.3.3.
-  - [ ] Python >= 3.11 resolves pandas 3.x.
-- [ ] Update `.github/workflows/test_runner.yml`:
-  - [ ] Add `'3.15'` to the `python-version` matrix.
-  - [ ] Change the test command to `coverage run --source=pandas_market_calendars -m pytest tests -r w`.
-- [ ] Add `"3.15"` to the `python-version` matrix in `.github/workflows/release.yml`.
+  - Confirm `ruff check` on files touched by this PR does not newly fail (checked in Step 8).
+- [x] Regenerate the lockfile with `uv lock`, then confirm:
+  - [x] Python 3.10 still resolves pandas 2.3.3.
+  - [x] Python >= 3.11 resolves pandas 3.x.
+  - `uv.lock` is gitignored (`.gitignore:111`), so it is regenerated locally but not committed.
+- [x] Update `.github/workflows/test_runner.yml`:
+  - [x] Add `'3.15'` to the `python-version` matrix.
+  - [x] Change the test command to `coverage run --source=pandas_market_calendars -m pytest tests -r w`.
+- [x] Add `"3.15"` to the `python-version` matrix in `.github/workflows/release.yml`.
   - Leave every `matrix.python-version == '3.14'` build/publish condition unchanged.
   - Python 3.15 is tested, but artifacts are still built on Python 3.14.
-- [ ] Keep pre-2.3 compatibility code in this PR; its removal belongs to the follow-up PR.
-- [ ] Commit: `Require pandas 2.3 and add Python 3.15 support`.
+- [x] Keep pre-2.3 compatibility code in this PR; its removal belongs to the follow-up PR.
+- [x] Commit: `Require pandas 2.3 and add Python 3.15 support`.
 
 ## 3. Replace deprecated weekday accessors
 
