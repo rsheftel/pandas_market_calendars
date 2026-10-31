@@ -15,7 +15,6 @@ from zoneinfo import ZoneInfo
 
 from pandas_market_calendars.holidays.uk import (
     BoxingDay,
-    WeekendBoxingDay,
     WeekendChristmas,
 )
 from pandas_market_calendars.market_calendar import (
@@ -86,6 +85,22 @@ Christmas = Holiday(
     day=25,
 )
 
+# TSX traded on December 28 in 1993, unlike the UK calendars.
+WeekendBoxingDayBefore1993 = Holiday(
+    "Weekend Boxing Day",
+    month=12,
+    day=28,
+    days_of_week=(MONDAY, TUESDAY),
+    end_date="1992-12-31",
+)
+WeekendBoxingDayAfter1993 = Holiday(
+    "Weekend Boxing Day",
+    month=12,
+    day=28,
+    days_of_week=(MONDAY, TUESDAY),
+    start_date="1994-01-01",
+)
+
 ChristmasEveEarlyClose2010Onwards = Holiday(
     "Christmas Eve Early Close",
     month=12,
@@ -94,8 +109,11 @@ ChristmasEveEarlyClose2010Onwards = Holiday(
     start_date=pd.Timestamp("2010-01-01"),
 )
 
+ChristmasEve1993 = [
+    pd.Timestamp("1993-12-24", tz="UTC"),
+]
+
 September11Closings2001 = [
-    pd.Timestamp("2001-09-11", tz="UTC"),
     pd.Timestamp("2001-09-12", tz="UTC"),
 ]
 
@@ -121,12 +139,15 @@ class TSXExchangeCalendar(MarketCalendar):
         - Dec. 27th if Christmas is on a weekend
     - Boxing Day
         - Dec. 27th if Christmas is on a Sunday
-        - Dec. 28th if Boxing Day is on a weekend
+        - Dec. 28th if Boxing Day is on a weekend, except in 1993
 
     Early closes:
     - Starting in 2010, if Christmas Eve falls on a weekday, the market
       closes at 1:00 pm that day. If it falls on a weekend, there is no
       early close.
+
+    December 24, 1993 was a full-day closure.
+    September 11, 2001 is a trading session, but its intraday halt is not modeled.
     """
 
     aliases = ["TSX", "TSXV"]
@@ -165,7 +186,8 @@ class TSXExchangeCalendar(MarketCalendar):
                 Christmas,
                 WeekendChristmas,
                 BoxingDay,
-                WeekendBoxingDay,
+                WeekendBoxingDayBefore1993,
+                WeekendBoxingDayAfter1993,
             ]
         )
 
@@ -173,6 +195,7 @@ class TSXExchangeCalendar(MarketCalendar):
     def adhoc_holidays(self) -> List[Any]:
         return list(
             chain(
+                ChristmasEve1993,
                 September11Closings2001,
             )
         )
