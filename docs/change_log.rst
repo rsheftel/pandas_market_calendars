@@ -7,6 +7,7 @@ Change Log
 
 5.6.0 (10/30/2026)
 ~~~~~~~~~~~~~~~~~~
+- Closed CME Globex Grains on Juneteenth and restored CME Agriculture trading on 2018-12-05
 - Fixed test assertion helpers for pandas 3.1 index frequency compatibility (PR #512)
 - Fixed the ASX 2011 Easter Tuesday closure and weekend-eve early closes (PR #511)
 - Treated the 2025-01-09 Carter National Day of Mourning as an early close on CME Agriculture (PR #493)
