@@ -5,6 +5,7 @@ Change Log
 ~~~~~~~~~~~~~~~~~~
 - Fixed test assertion helpers for pandas 3.1 index frequency compatibility (PR #512)
 - Fixed the ASX 2011 Easter Tuesday closure and weekend-eve early closes (PR #511)
+- Treated the 2025-01-09 Carter National Day of Mourning as an early close on CME Agriculture (PR #493)
 
 5.5.0 (10/04/2026)
 ~~~~~~~~~~~~~~~~~~
