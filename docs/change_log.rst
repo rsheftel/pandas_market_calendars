@@ -10,6 +10,7 @@ Change Log
 - Added missing HKEX closures: the 2021-04-06 Easter Monday / Ching Ming overlap and typhoon closures on 2020-10-13, 2021-10-13 and 2024-09-06 (PR #495)
 - Corrected historical TSX session dates (PR #496)
 - Made IEX inherit NYSE holidays and early closes (PR #497)
+- Kept the FX calendar closed over the weekend until Sunday evening (PR #501)
 
 5.5.0 (10/04/2026)
 ~~~~~~~~~~~~~~~~~~
