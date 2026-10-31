@@ -57,6 +57,8 @@ the new interruptions_df property. A full list of changes can be found in PR #21
 
 As of v5.0, this package uses the new zoneinfo standard to timezones and depricates and removes pytz. Minimum python version is now 3.9
 
+As of v5.6.0, the minimum pandas version is 2.3.
+
 Source location
 ~~~~~~~~~~~~~~~
 Hosted on GitHub: https://github.com/rsheftel/pandas_market_calendars
