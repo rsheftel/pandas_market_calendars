@@ -14,6 +14,7 @@ Change Log
 - Made EUREX close on 24 and 31 December and stopped rolling weekend Christmas holidays (PR #502)
 - Treated UK Easter Monday and Boxing Day as early closes rather than full closes on SIFMA JP (PR #503)
 - Added mainland China futures exchange calendars (SHFE, INE, DCE, CZCE, GFEX, CFFEX) (PR #505)
+- Normalized schedule input dates at every datetime resolution, not just nanoseconds (PR #504)
 
 5.5.0 (10/04/2026)
 ~~~~~~~~~~~~~~~~~~
