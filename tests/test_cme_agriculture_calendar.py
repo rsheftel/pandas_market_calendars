@@ -56,3 +56,20 @@ def test_dec_jan():
 
     assert schedule["market_open"].iloc[0] == pd.Timestamp("2020-12-30 01:00:00", tz="UTC")
     assert schedule["market_close"].iloc[6] == pd.Timestamp("2021-01-08 19:20:00", tz="UTC")
+
+
+def test_carter_national_day_of_mourning_early_close():
+    cme = CMEAgricultureExchangeCalendar()
+    # 2025-01-09 should be an active trading day, not an ad-hoc holiday
+    assert pd.Timestamp("2025-01-09", tz="UTC") not in cme.adhoc_holidays
+    assert pd.Timestamp("2025-01-09") not in cme.holidays().holidays
+
+    valid_days = cme.valid_days("2025-01-08", "2025-01-10")
+    assert pd.Timestamp("2025-01-09", tz="UTC") in valid_days
+
+    schedule = cme.schedule("2025-01-08", "2025-01-10", tz="America/Chicago")
+    assert "2025-01-09" in schedule.index
+    session = schedule.loc["2025-01-09"]
+    # Closed early at 12:15 CT instead of regular 13:20 CT
+    assert session.market_close == pd.Timestamp("2025-01-09 12:15:00", tz=cme.tz)
+
