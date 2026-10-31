@@ -2,7 +2,7 @@
 
 Date: 2026-10-31 (revision 6)
 
-**Current step: Step 9 — draft PR, changelog, and handoff.**
+**Current step: complete — awaiting review and squash merge of #515.**
 
 ## 0. Investigation (complete)
 
@@ -286,10 +286,10 @@ This step removes 19,513 of the 19,555 warning occurrences, about 99.8%.
   - Result: 1,585 passed, 1 skipped, 54 warnings. All 54 are a pandas 2.3 `FutureWarning` about empty-entry concatenation from
     `market_calendar.py:657`, raised during the CME Globex tests. `origin/dev` produces the same 54 warnings.
 - [x] Confirm that existing expected-data tests pass without changing their expected data.
-- [ ] After pushing, confirm all CI jobs pass:
-  - [ ] Python 3.10, which tests pandas 2.3;
-  - [ ] Python 3.14, which tests pandas 3.1;
-  - [ ] new Python 3.15 jobs.
+- [x] After pushing, confirm all CI jobs pass (all 18 `run_tests` jobs passed):
+  - [x] Python 3.10, which tests pandas 2.3: pandas 2.3.3, 54 pre-existing warnings;
+  - [x] Python 3.14, which tests pandas 3.1: pandas 3.1.0, 12 warnings;
+  - [x] new Python 3.15 jobs: pandas 3.1.0, 12 warnings.
 
 ## 9. Draft PR, changelog, and handoff
 
@@ -313,10 +313,10 @@ This step removes 19,513 of the 19,555 warning occurrences, about 99.8%.
   - [x] `- Removed pandas 3.1 deprecation warnings from the library and tests (PR #515)`
 - [x] Commit `Update change log for pandas warning cleanup` and push.
 - [x] Mark every completed checklist item in this plan, then commit and push the final plan.
-- [ ] Confirm all CI jobs pass, then mark the PR ready for review with `gh pr ready`.
-- [ ] Hand off to you for review and squash merge into `dev`. My work ends here.
+- [x] Confirm all CI jobs pass, then mark the PR ready for review with `gh pr ready`.
+- [x] Hand off to you for review and squash merge into `dev`. My work ends here.
 - [ ] Address review feedback with new commits on the same branch.
-- [ ] Update this checklist as each step completes, not only at the end.
+- [x] Update this checklist as each step completes, not only at the end.
 
 ## Follow-up (separate PR, after this merges)
 
