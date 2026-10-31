@@ -340,7 +340,6 @@ class SIFMAJPExchangeCalendar(MarketCalendar):
                 JapanEmperorsBirthday,
                 JapanVernalEquinox,
                 UKGoodFriday,
-                UKEasterMonday,
                 JapanShowaDay,
                 JapanConstitutionMemorialDay,
                 JapanGreeneryDay,
@@ -361,10 +360,7 @@ class SIFMAJPExchangeCalendar(MarketCalendar):
                 USVeteransDay,
                 JapanLaborThanksgivingDay,
                 USThanksgivingDay,
-                FridayChristmasEve,
-                UKChristmas,
-                UKBoxingDay,
-                UKWeekendBoxingDay,
+                Christmas,
             ]
         )
 
@@ -379,4 +375,11 @@ class SIFMAJPExchangeCalendar(MarketCalendar):
 
     @property
     def special_closes(self) -> List[Any]:
-        return [(time(15), AbstractHolidayCalendar(rules=[UKMayDay, UKWeekendChristmas]))]
+        return [
+            (
+                time(15),
+                AbstractHolidayCalendar(
+                    rules=[UKEasterMonday, UKMayDay, UKWeekendChristmas, UKBoxingDay, UKWeekendBoxingDay]
+                ),
+            )
+        ]
