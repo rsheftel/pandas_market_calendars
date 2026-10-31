@@ -13,7 +13,8 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 from datetime import time
-from typing import Any, List
+from typing import Any
+from zoneinfo import ZoneInfo
 
 from pandas import Timestamp
 from pandas.tseries.holiday import (
@@ -23,7 +24,6 @@ from pandas.tseries.holiday import (
     GoodFriday,
     Holiday,
 )
-from zoneinfo import ZoneInfo
 
 from pandas_market_calendars.market_calendar import FRIDAY, MarketCalendar
 
@@ -210,9 +210,9 @@ class BMFExchangeCalendar(MarketCalendar):
         )
 
     @property
-    def adhoc_holidays(self) -> List[Any]:
+    def adhoc_holidays(self) -> list[Any]:
         return [Constitucionalista2021, ConscienciaNegra2021]
 
     @property
-    def special_opens(self) -> List[Any]:
+    def special_opens(self) -> list[Any]:
         return [(time(13, 1), AbstractHolidayCalendar(rules=[QuartaCinzas]))]

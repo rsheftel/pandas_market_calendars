@@ -1,8 +1,8 @@
 import datetime as dt
-from typing import Any, List
+from typing import Any
+from zoneinfo import ZoneInfo
 
 from pandas.tseries.holiday import AbstractHolidayCalendar
-from zoneinfo import ZoneInfo
 
 from pandas_market_calendars.holidays.cme import (
     GoodFriday2021,
@@ -99,7 +99,7 @@ class CMEGlobexCryptoExchangeCalendar(CMEGlobexBaseExchangeCalendar):
         )
 
     @property
-    def special_closes(self) -> List[Any]:
+    def special_closes(self) -> list[Any]:
         # Days where the market closes early
         # list[Tuple[time, AbstractHolidayCalendar]]
         return [
@@ -168,6 +168,6 @@ class CMEGlobexCryptoExchangeCalendar(CMEGlobexBaseExchangeCalendar):
         ]
 
     @property
-    def special_closes_adhoc(self) -> List[Any]:
+    def special_closes_adhoc(self) -> list[Any]:
         # July 4th on a Friday
         return [(dt.time(12, tzinfo=ZoneInfo("America/Chicago")), ["2025-07-04"])]

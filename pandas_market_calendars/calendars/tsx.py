@@ -1,6 +1,7 @@
 from datetime import time
 from itertools import chain
-from typing import Any, List
+from typing import Any
+from zoneinfo import ZoneInfo
 
 import pandas as pd
 from pandas.tseries.holiday import (
@@ -11,7 +12,6 @@ from pandas.tseries.holiday import (
     Holiday,
     weekend_to_monday,
 )
-from zoneinfo import ZoneInfo
 
 from pandas_market_calendars.holidays.uk import (
     BoxingDay,
@@ -192,7 +192,7 @@ class TSXExchangeCalendar(MarketCalendar):
         )
 
     @property
-    def adhoc_holidays(self) -> List[Any]:
+    def adhoc_holidays(self) -> list[Any]:
         return list(
             chain(
                 ChristmasEve1993,
@@ -201,7 +201,7 @@ class TSXExchangeCalendar(MarketCalendar):
         )
 
     @property
-    def special_closes(self) -> List[Any]:
+    def special_closes(self) -> list[Any]:
         return [
             (
                 self.regular_early_close,

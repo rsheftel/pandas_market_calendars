@@ -1,7 +1,7 @@
 from datetime import time
+from zoneinfo import ZoneInfo
 
 import pandas as pd
-from zoneinfo import ZoneInfo
 
 import pandas_market_calendars as mcal
 from pandas_market_calendars.calendars.cme import CMEEquityExchangeCalendar, CMETradeDateCalendar

@@ -9,6 +9,7 @@ Muhurat trading dates are not holidays; see calendars/nse.py.
 
 from pandas import Timestamp
 
+
 NSEClosedDay = [
     Timestamp("1996-01-26", tz="UTC"),
     Timestamp("1996-02-21", tz="UTC"),

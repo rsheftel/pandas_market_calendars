@@ -1,7 +1,8 @@
+from zoneinfo import ZoneInfo
+
 import pandas as pd
 import pytest
 from pandas.tseries.offsets import Day, Hour, Minute
-from zoneinfo import ZoneInfo
 
 from pandas_market_calendars.calendars.cme_globex_fx import CMEGlobexFXExchangeCalendar
 

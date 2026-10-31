@@ -15,12 +15,12 @@
 
 from datetime import time
 from itertools import chain
-from typing import Any, List, Literal, Union
+from typing import Any, Literal
+from zoneinfo import ZoneInfo
 
 import pandas as pd
 from pandas.tseries.holiday import AbstractHolidayCalendar
 from pandas.tseries.offsets import CustomBusinessDay
-from zoneinfo import ZoneInfo
 
 from pandas_market_calendars import calendar_utils as u
 from pandas_market_calendars.holidays.nyse import (
@@ -896,7 +896,7 @@ class NYSEExchangeCalendar(MarketCalendar):
         )
 
     @property
-    def adhoc_holidays(self) -> List[Any]:
+    def adhoc_holidays(self) -> list[Any]:
         return list(
             chain(
                 # Recurring Holidays
@@ -995,7 +995,7 @@ class NYSEExchangeCalendar(MarketCalendar):
         )
 
     @property
-    def _regular_1pm_post_close_rules(self) -> List[Any]:
+    def _regular_1pm_post_close_rules(self) -> list[Any]:
         return [
             FridayAfterIndependenceDayNYSEpre2013,
             MonTuesThursBeforeIndependenceDay,
@@ -1005,11 +1005,11 @@ class NYSEExchangeCalendar(MarketCalendar):
         ]
 
     @property
-    def _adhoc_1pm_post_close_dates(self) -> List[Any]:
+    def _adhoc_1pm_post_close_dates(self) -> list[Any]:
         return ChristmasEve1pmEarlyCloseAdhoc + DayAfterChristmas1pmEarlyCloseAdhoc + BacklogRelief1pmEarlyClose1929
 
     @property
-    def special_closes(self) -> List[Any]:
+    def special_closes(self) -> list[Any]:
         return [
             (
                 time(11, tzinfo=ZoneInfo("America/New_York")),
@@ -1125,7 +1125,7 @@ class NYSEExchangeCalendar(MarketCalendar):
         ]
 
     @property
-    def special_post(self) -> List[Any]:
+    def special_post(self) -> list[Any]:
         return [
             (
                 time(17, tzinfo=ZoneInfo("America/New_York")),
@@ -1134,8 +1134,8 @@ class NYSEExchangeCalendar(MarketCalendar):
         ]
 
     @property
-    def special_closes_adhoc(self) -> List[Any]:
-        def _union_many(indexes: List[Any]) -> pd.DatetimeIndex:
+    def special_closes_adhoc(self) -> list[Any]:
+        def _union_many(indexes: list[Any]) -> pd.DatetimeIndex:
             # Merges a list of pd.DatetimeIndex objects, returns merged DatetimeIndex
             union_index = pd.DatetimeIndex([], tz="UTC")
             for index in indexes:
@@ -1176,7 +1176,7 @@ class NYSEExchangeCalendar(MarketCalendar):
         ]
 
     @property
-    def special_post_adhoc(self) -> List[Any]:
+    def special_post_adhoc(self) -> list[Any]:
         return [
             (
                 time(17, tzinfo=ZoneInfo("America/New_York")),
@@ -1185,7 +1185,7 @@ class NYSEExchangeCalendar(MarketCalendar):
         ]
 
     @property
-    def special_opens(self) -> List[Any]:
+    def special_opens(self) -> list[Any]:
         return [
             (
                 time(hour=9, minute=31, tzinfo=ZoneInfo("America/New_York")),
@@ -1298,7 +1298,7 @@ class NYSEExchangeCalendar(MarketCalendar):
         ]
 
     @property
-    def special_opens_adhoc(self) -> List[Any]:
+    def special_opens_adhoc(self) -> list[Any]:
         return [
             (
                 time(9, 31, tzinfo=ZoneInfo("America/New_York")),
@@ -1374,11 +1374,11 @@ class NYSEExchangeCalendar(MarketCalendar):
 
     def date_range_htf(
         self,
-        frequency: Union[str, pd.Timedelta, int, float],
-        start: Union[str, pd.Timestamp, int, float, None] = None,
-        end: Union[str, pd.Timestamp, int, float, None] = None,
-        periods: Union[int, None] = None,
-        closed: Union[Literal["left", "right"], None] = "right",
+        frequency: str | pd.Timedelta | int | float,
+        start: str | pd.Timestamp | int | float | None = None,
+        end: str | pd.Timestamp | int | float | None = None,
+        periods: int | None = None,
+        closed: Literal["left", "right"] | None = "right",
         *,
         day_anchor: u.Day_Anchor = "SUN",
         month_anchor: u.Month_Anchor = "JAN",

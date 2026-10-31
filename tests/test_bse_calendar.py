@@ -1,8 +1,8 @@
 import datetime
+from zoneinfo import ZoneInfo
 
 import pandas as pd
 import pytest
-from zoneinfo import ZoneInfo
 
 from pandas_market_calendars import get_calendar
 from pandas_market_calendars.calendars.bse import BSEClosedDay, BSEExchangeCalendar, NSEClosedDay, NSEExchangeCalendar

@@ -2,9 +2,10 @@
 This tests the NYSE calendar from the exchange_calendars package that is brought in via the mirror
 """
 
+from zoneinfo import ZoneInfo
+
 import pandas as pd
 from pandas.testing import assert_index_equal
-from zoneinfo import ZoneInfo
 
 import pandas_market_calendars as mcal
 

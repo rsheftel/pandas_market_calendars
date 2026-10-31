@@ -1,5 +1,5 @@
 from datetime import time
-from typing import Any, List
+from typing import Any
 
 from pandas.tseries.holiday import AbstractHolidayCalendar
 
@@ -73,14 +73,14 @@ class CMEGlobexFixedIncomeCalendar(CMEGlobexBaseExchangeCalendar):
         )
 
     @property
-    def special_closes_adhoc(self) -> List[Any]:
+    def special_closes_adhoc(self) -> list[Any]:
         return [
             (time(15, 15), ["2010-07-02", "2011-07-01"]),
             (time(12, 15), ["2010-12-31"]),
         ]
 
     @property
-    def special_closes(self) -> List[Any]:
+    def special_closes(self) -> list[Any]:
         # Source https://www.cmegroup.com/tools-information/holiday-calendar.html
         return [
             (

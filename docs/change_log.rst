@@ -20,6 +20,7 @@ Change Log
 - Raised the minimum pandas version to 2.3 (PR #515)
 - Added Python 3.15 support (PR #515)
 - Removed pandas 3.1 deprecation warnings from the library and tests (PR #515)
+- Removed legacy pandas and Python compatibility code and resolved Ruff findings (PR #516)
 
 5.5.0 (10/04/2026)
 ~~~~~~~~~~~~~~~~~~

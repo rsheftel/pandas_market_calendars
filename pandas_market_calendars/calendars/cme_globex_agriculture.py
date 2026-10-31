@@ -14,7 +14,7 @@
 # limitations under the License.
 from abc import abstractmethod
 from datetime import time
-from typing import Any, List
+from typing import Any
 
 from pandas.tseries.holiday import (
     AbstractHolidayCalendar,
@@ -117,7 +117,7 @@ class CMEGlobexLivestockExchangeCalendar(CMEGlobexAgricultureExchangeCalendar):
     #     return USNationalDaysofMourning
 
     @property
-    def special_closes(self) -> List[Any]:
+    def special_closes(self) -> list[Any]:
         return [
             (
                 time(12, 5),
@@ -173,7 +173,7 @@ class CMEGlobexGrainsAndOilseedsExchangeCalendar(CMEGlobexAgricultureExchangeCal
         )
 
     @property
-    def special_closes(self) -> List[Any]:
+    def special_closes(self) -> list[Any]:
         # The day session ends at 12:05 instead of 13:20, checked against traded bars from 2015. Before 2015 both
         # closes were five minutes earlier (12:00 and 13:15); this calendar does not model that.
         return [

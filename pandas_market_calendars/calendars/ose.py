@@ -1,5 +1,6 @@
 from datetime import time
-from typing import Any, List
+from typing import Any
+from zoneinfo import ZoneInfo
 
 from pandas.tseries.holiday import (
     AbstractHolidayCalendar,
@@ -8,7 +9,6 @@ from pandas.tseries.holiday import (
     Holiday,
 )
 from pandas.tseries.offsets import Day, Easter
-from zoneinfo import ZoneInfo
 
 from pandas_market_calendars.market_calendar import MarketCalendar
 
@@ -109,7 +109,7 @@ class OSEExchangeCalendar(MarketCalendar):
         )
 
     @property
-    def special_closes(self) -> List[Any]:
+    def special_closes(self) -> list[Any]:
         return [
             (
                 time(13, 0, tzinfo=self.tz),

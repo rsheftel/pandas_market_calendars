@@ -25,11 +25,11 @@ https://marketsopen.today/data (CC BY 4.0). Night-session history before the cut
 
 from abc import ABC, abstractmethod
 from datetime import time
-from typing import Any, List
+from typing import Any
+from zoneinfo import ZoneInfo
 
 import pandas as pd
 from pandas.tseries.offsets import BDay, CustomBusinessDay
-from zoneinfo import ZoneInfo
 
 from pandas_market_calendars.calendars.sse import SSEExchangeCalendar
 from pandas_market_calendars.holidays.cn import all_holidays
@@ -107,7 +107,7 @@ class ChinaFuturesBaseCalendar(MarketCalendar, ABC):
         return SSEExchangeCalendar.regular_holidays.fget(self)
 
     @property
-    def adhoc_holidays(self) -> List[Any]:
+    def adhoc_holidays(self) -> list[Any]:
         return all_holidays
 
 
@@ -154,12 +154,12 @@ class ChinaFuturesNightSessionCalendar(ChinaFuturesBaseCalendar, ABC):
         return day_only, mondays
 
     @property
-    def special_opens_adhoc(self) -> List[Any]:
+    def special_opens_adhoc(self) -> list[Any]:
         day_only, mondays = self._night_session_dates()
         return [(time(9), day_only), ((time(21), -3), mondays)]
 
     @property
-    def special_night_close_adhoc(self) -> List[Any]:
+    def special_night_close_adhoc(self) -> list[Any]:
         _, mondays = self._night_session_dates()
         return [((self.night_close_time, self.night_close_offset - 2), mondays)]
 

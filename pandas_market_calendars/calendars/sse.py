@@ -1,9 +1,9 @@
 from datetime import time, timedelta
 from functools import partial
-from typing import Any, List
+from typing import Any
+from zoneinfo import ZoneInfo
 
 from pandas.tseries.holiday import AbstractHolidayCalendar, Holiday, next_monday
-from zoneinfo import ZoneInfo
 
 from pandas_market_calendars.holidays.cn import *
 from pandas_market_calendars.market_calendar import MarketCalendar
@@ -251,7 +251,7 @@ class SSEExchangeCalendar(MarketCalendar):
         )
 
     @property
-    def adhoc_holidays(self) -> List[Any]:
+    def adhoc_holidays(self) -> list[Any]:
         return all_holidays
 
 
