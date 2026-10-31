@@ -1,6 +1,10 @@
 Change Log
 ==========
 
+5.6.1 (10/31/2026)
+~~~~~~~~~~~~~~~~~~
+- Placeholder: no changes yet
+
 5.6.0 (10/30/2026)
 ~~~~~~~~~~~~~~~~~~
 - Fixed test assertion helpers for pandas 3.1 index frequency compatibility (PR #512)
