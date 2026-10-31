@@ -293,26 +293,26 @@ This step removes 19,513 of the 19,555 warning occurrences, about 99.8%.
 
 ## 9. Draft PR, changelog, and handoff
 
-- [ ] Push the branch.
-- [ ] Open a **draft** PR against `dev` with `gh pr create --draft --base dev`.
+- [x] Push the branch.
+- [x] Open a **draft** PR against `dev` with `gh pr create --draft --base dev`. Opened as #515.
   - Title: `Remove pandas 3.1 deprecation warnings`. This becomes the squash commit subject.
   - The repository has no PR template.
-- [ ] In the PR description, include:
-  - [ ] Warning counts: 19,555 before and 12 after on pandas 3.1.
-  - [ ] The 12 remaining warnings come from `exchange-calendars` and are intentionally left alone.
-  - [ ] The minimum pandas version is now 2.3.
-  - [ ] Python 3.15 support.
-  - [ ] Python 3.15 in both test matrices.
-  - [ ] The Ruff target is now `py310`.
-  - [ ] `AGENTS.md` was updated.
-  - [ ] A note that the PR should be **squash merged**.
-- [ ] Append these lines to the **existing 5.6.0 section** of `docs/change_log.rst`, using the real PR number and the
+- [x] In the PR description, include:
+  - [x] Warning counts: 19,555 before and 12 after on pandas 3.1.
+  - [x] The 12 remaining warnings come from `exchange-calendars` and are intentionally left alone.
+  - [x] The minimum pandas version is now 2.3.
+  - [x] Python 3.15 support.
+  - [x] Python 3.15 in both test matrices.
+  - [x] The Ruff target is now `py310`.
+  - [x] `AGENTS.md` was updated.
+  - [x] A note that the PR should be **squash merged**.
+- [x] Append these lines to the **existing 5.6.0 section** of `docs/change_log.rst`, using the real PR number and the
   section's style:
-  - [ ] `- Raised the minimum pandas version to 2.3 (PR #<number>)`
-  - [ ] `- Added Python 3.15 support (PR #<number>)`
-  - [ ] `- Removed pandas 3.1 deprecation warnings from the library and tests (PR #<number>)`
-- [ ] Commit `Update change log for pandas warning cleanup` and push.
-- [ ] Mark every completed checklist item in this plan, then commit and push the final plan.
+  - [x] `- Raised the minimum pandas version to 2.3 (PR #515)`
+  - [x] `- Added Python 3.15 support (PR #515)`
+  - [x] `- Removed pandas 3.1 deprecation warnings from the library and tests (PR #515)`
+- [x] Commit `Update change log for pandas warning cleanup` and push.
+- [x] Mark every completed checklist item in this plan, then commit and push the final plan.
 - [ ] Confirm all CI jobs pass, then mark the PR ready for review with `gh pr ready`.
 - [ ] Hand off to you for review and squash merge into `dev`. My work ends here.
 - [ ] Address review feedback with new commits on the same branch.
