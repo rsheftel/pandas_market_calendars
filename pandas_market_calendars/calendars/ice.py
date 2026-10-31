@@ -1,6 +1,7 @@
 from datetime import time
 from itertools import chain
-from typing import Any, List
+from typing import Any
+from zoneinfo import ZoneInfo
 
 from pandas import Timestamp
 from pandas.tseries.holiday import (
@@ -10,7 +11,6 @@ from pandas.tseries.holiday import (
     USPresidentsDay,
     USThanksgivingDay,
 )
-from zoneinfo import ZoneInfo
 
 from pandas_market_calendars.holidays.us import (
     Christmas,
@@ -48,7 +48,7 @@ class ICEExchangeCalendar(MarketCalendar):
         return ZoneInfo("US/Eastern")
 
     @property
-    def special_closes(self) -> List[Any]:
+    def special_closes(self) -> list[Any]:
         return [
             (
                 time(13),
@@ -66,7 +66,7 @@ class ICEExchangeCalendar(MarketCalendar):
         ]
 
     @property
-    def adhoc_holidays(self) -> List[Any]:
+    def adhoc_holidays(self) -> list[Any]:
         return list(
             chain(
                 USNationalDaysofMourning,

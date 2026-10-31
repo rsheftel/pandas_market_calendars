@@ -3,8 +3,7 @@ National Stock Exchange of India (NSE, XNSE).
 """
 
 from datetime import time
-from typing import Any, List
-
+from typing import Any
 from zoneinfo import ZoneInfo
 
 from pandas_market_calendars.holidays.nse import NSEClosedDay
@@ -75,11 +74,11 @@ class NSEExchangeCalendar(MarketCalendar):
         return ZoneInfo("Asia/Calcutta")
 
     @property
-    def adhoc_holidays(self) -> List[Any]:
+    def adhoc_holidays(self) -> list[Any]:
         return NSEClosedDay
 
     @property
-    def special_opens_adhoc(self) -> List[Any]:
+    def special_opens_adhoc(self) -> list[Any]:
         return [
             (time(13, 45), ["2025-10-21"]),
             (time(15, 45), ["2012-11-13"]),
@@ -95,7 +94,7 @@ class NSEExchangeCalendar(MarketCalendar):
         ]
 
     @property
-    def special_closes_adhoc(self) -> List[Any]:
+    def special_closes_adhoc(self) -> list[Any]:
         # Alongside Muhurat sessions, this includes 1996-1999 weekday
         # closes that deviate from the era schedule: ad-hoc trading-hour
         # extensions and early closes on weekly buy-in auction days. No
@@ -245,7 +244,7 @@ class NSEExchangeCalendar(MarketCalendar):
         ]
 
     @property
-    def interruptions(self) -> List[Any]:
+    def interruptions(self) -> list[Any]:
         return [
             ("2021-02-24", time(11, 40), time(15, 45)),
         ]

@@ -1,9 +1,9 @@
 from datetime import time
-from typing import Any, List, Literal, Union
+from typing import Any, Literal
+from zoneinfo import ZoneInfo
 
 from pandas import DatetimeIndex, Timedelta, Timestamp, date_range
 from pandas.tseries.offsets import CustomBusinessDay
-from zoneinfo import ZoneInfo
 
 from pandas_market_calendars.calendar_utils import Day_Anchor, Month_Anchor
 from pandas_market_calendars.market_calendar import FRIDAY, MarketCalendar
@@ -238,7 +238,7 @@ class TASEExchangeCalendar(MarketCalendar):
         return ZoneInfo("Asia/Jerusalem")
 
     @property
-    def adhoc_holidays(self) -> List[Any]:
+    def adhoc_holidays(self) -> list[Any]:
         return TASEClosedDay
 
     @property
@@ -268,7 +268,7 @@ class TASEExchangeCalendar(MarketCalendar):
         return self._holidays_pre_2026
 
     @property
-    def special_closes(self) -> List[Any]:
+    def special_closes(self) -> list[Any]:
         # Friday sessions (from 2026-01-05) end at 13:34, before Shabbat
         return [(time(13, 34), FRIDAY)]
 
@@ -321,11 +321,11 @@ class TASEExchangeCalendar(MarketCalendar):
 
     def date_range_htf(
         self,
-        frequency: Union[str, Timedelta, int, float],
-        start: Union[str, Timestamp, int, float, None] = None,
-        end: Union[str, Timestamp, int, float, None] = None,
-        periods: Union[int, None] = None,
-        closed: Union[Literal["left", "right"], None] = "right",
+        frequency: str | Timedelta | int | float,
+        start: str | Timestamp | int | float | None = None,
+        end: str | Timestamp | int | float | None = None,
+        periods: int | None = None,
+        closed: Literal["left", "right"] | None = "right",
         *,
         day_anchor: Day_Anchor = "SAT",  # Change the default day anchor
         month_anchor: Month_Anchor = "JAN",

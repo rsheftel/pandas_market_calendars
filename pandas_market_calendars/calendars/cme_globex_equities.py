@@ -1,8 +1,8 @@
 from datetime import time
-from typing import Any, List
+from typing import Any
+from zoneinfo import ZoneInfo
 
 from pandas.tseries.holiday import AbstractHolidayCalendar
-from zoneinfo import ZoneInfo
 
 from pandas_market_calendars.holidays.cme import (
     GoodFriday2010,
@@ -10,7 +10,8 @@ from pandas_market_calendars.holidays.cme import (
     GoodFriday2015,
     GoodFriday2021,
     GoodFriday2022,
-    GoodFridayAfter2022,
+    GoodFridayAfter2022JobsReport,
+    GoodFridayAfter2022NoJobsReport,
     GoodFridayBefore2021NotEarlyClose,
     USIndependenceDayAfter2014,
     USIndependenceDayBefore2014,
@@ -65,12 +66,13 @@ class CMEGlobexEquitiesExchangeCalendar(CMEGlobexBaseExchangeCalendar):
                 USNewYearsDay,
                 GoodFridayBefore2021NotEarlyClose,
                 GoodFriday2022,
+                GoodFridayAfter2022NoJobsReport,
                 Christmas,
             ]
         )
 
     @property
-    def special_closes(self) -> List[Any]:
+    def special_closes(self) -> list[Any]:
         # Source https://www.cmegroup.com/tools-information/holiday-calendar.html
         return [
             (
@@ -118,7 +120,7 @@ class CMEGlobexEquitiesExchangeCalendar(CMEGlobexBaseExchangeCalendar):
                         GoodFriday2012,
                         GoodFriday2015,
                         GoodFriday2021,
-                        GoodFridayAfter2022,
+                        GoodFridayAfter2022JobsReport,
                     ]
                 ),
             ),

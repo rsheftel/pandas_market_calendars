@@ -1,7 +1,9 @@
-import pandas as pd
-from pandas.testing import assert_index_equal
 from zoneinfo import ZoneInfo
 
+import pandas as pd
+from pandas.testing import assert_index_equal
+
+import pandas_market_calendars as mcal
 from pandas_market_calendars.calendars.tsx import TSXExchangeCalendar, VictoriaDay
 
 
@@ -43,3 +45,45 @@ def test_christmas_eve_pre_2010():
     cal = TSXExchangeCalendar()
     sched_2009 = cal.schedule("2009-12-20", "2009-12-26")
     assert sched_2009.loc[pd.Timestamp("2009-12-24"), "market_close"] == pd.Timestamp("2009-12-24 21:00 +0")
+
+
+def test_september_11_sessions() -> None:
+    expected = pd.DatetimeIndex(["2001-09-10", "2001-09-11", "2001-09-13"], tz="UTC")
+
+    assert_index_equal(TSXExchangeCalendar().valid_days("2001-09-10", "2001-09-13"), expected)
+    assert_index_equal(mcal.get_calendar("TSXV").valid_days("2001-09-10", "2001-09-13"), expected)
+
+
+def test_christmas_1993_sessions() -> None:
+    expected = pd.DatetimeIndex(["1993-12-22", "1993-12-23", "1993-12-28", "1993-12-29"], tz="UTC")
+
+    assert_index_equal(TSXExchangeCalendar().valid_days("1993-12-22", "1993-12-29"), expected)
+    assert_index_equal(mcal.get_calendar("TSXV").valid_days("1993-12-22", "1993-12-29"), expected)
+
+
+def test_boxing_day_before_1993() -> None:
+    expected = pd.DatetimeIndex(["1992-12-22", "1992-12-23", "1992-12-24", "1992-12-29"], tz="UTC")
+
+    assert_index_equal(TSXExchangeCalendar().valid_days("1992-12-22", "1992-12-29"), expected)
+
+
+def test_christmas_1994_sessions() -> None:
+    expected = pd.DatetimeIndex(["1994-12-22", "1994-12-23", "1994-12-28", "1994-12-29"], tz="UTC")
+
+    assert_index_equal(TSXExchangeCalendar().valid_days("1994-12-22", "1994-12-29"), expected)
+
+
+def test_christmas_saturday_2021_sessions() -> None:
+    expected = pd.DatetimeIndex(["2021-12-22", "2021-12-23", "2021-12-24", "2021-12-29"], tz="UTC")
+
+    assert_index_equal(TSXExchangeCalendar().valid_days("2021-12-22", "2021-12-29"), expected)
+    assert_index_equal(mcal.get_calendar("TSXV").valid_days("2021-12-22", "2021-12-29"), expected)
+
+
+def test_lse_boxing_day_observance_unchanged() -> None:
+    cal = mcal.get_calendar("LSE")
+    expected_1993 = pd.DatetimeIndex(["1993-12-22", "1993-12-23", "1993-12-24", "1993-12-29"], tz="UTC")
+    expected_2021 = pd.DatetimeIndex(["2021-12-22", "2021-12-23", "2021-12-24", "2021-12-29"], tz="UTC")
+
+    assert_index_equal(cal.valid_days("1993-12-22", "1993-12-29"), expected_1993)
+    assert_index_equal(cal.valid_days("2021-12-22", "2021-12-29"), expected_2021)

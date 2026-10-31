@@ -1,12 +1,6 @@
-import sys
 from datetime import time
 from typing import Any
-
-
-if sys.version_info >= (3, 9):
-    from zoneinfo import ZoneInfo
-else:
-    from backports.zoneinfo import ZoneInfo
+from zoneinfo import ZoneInfo
 
 from pandas_market_calendars.market_calendar import MarketCalendar
 
@@ -36,4 +30,7 @@ class ForexExchangeCalendar(MarketCalendar):
 
     @property
     def weekmask(self) -> str:
-        return "Sun Mon Tue Wed Thu Fri"
+        # Monday's session already opens Sunday 17:00 through the -1 open offset.
+        # A Sunday session date would open Saturday 17:00, during the weekend
+        # close that runs from Friday 17:00 until Sunday 17:00.
+        return "Mon Tue Wed Thu Fri"

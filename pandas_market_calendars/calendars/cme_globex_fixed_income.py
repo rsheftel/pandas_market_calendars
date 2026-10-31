@@ -1,5 +1,5 @@
 from datetime import time
-from typing import Any, List
+from typing import Any
 
 from pandas.tseries.holiday import AbstractHolidayCalendar
 
@@ -10,7 +10,8 @@ from pandas_market_calendars.holidays.cme import (
     GoodFriday2015,
     GoodFriday2021,
     GoodFriday2022,
-    GoodFridayAfter2022,
+    GoodFridayAfter2022JobsReport,
+    GoodFridayAfter2022NoJobsReport,
     GoodFridayBefore2021NotEarlyClose,
     USIndependenceDayAfter2014,
     USIndependenceDayBefore2014,
@@ -66,19 +67,20 @@ class CMEGlobexFixedIncomeCalendar(CMEGlobexBaseExchangeCalendar):
                 USNewYearsDay,
                 GoodFridayBefore2021NotEarlyClose,
                 GoodFriday2022,
+                GoodFridayAfter2022NoJobsReport,
                 Christmas,
             ]
         )
 
     @property
-    def special_closes_adhoc(self) -> List[Any]:
+    def special_closes_adhoc(self) -> list[Any]:
         return [
             (time(15, 15), ["2010-07-02", "2011-07-01"]),
             (time(12, 15), ["2010-12-31"]),
         ]
 
     @property
-    def special_closes(self) -> List[Any]:
+    def special_closes(self) -> list[Any]:
         # Source https://www.cmegroup.com/tools-information/holiday-calendar.html
         return [
             (
@@ -130,7 +132,7 @@ class CMEGlobexFixedIncomeCalendar(CMEGlobexBaseExchangeCalendar):
                         GoodFriday2012,
                         GoodFriday2015,
                         GoodFriday2021,
-                        GoodFridayAfter2022,
+                        GoodFridayAfter2022JobsReport,
                     ]
                 ),
             ),

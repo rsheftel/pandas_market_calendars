@@ -1,7 +1,7 @@
 import datetime
+from zoneinfo import ZoneInfo
 
 import pandas as pd
-from zoneinfo import ZoneInfo
 
 from pandas_market_calendars.calendars.hkex import HKEXExchangeCalendar
 
@@ -48,6 +48,29 @@ def test_2026_easter_ching_ming_overlap():
     for date in ["2026-04-03", "2026-04-06", "2026-04-07"]:
         assert pd.Timestamp(date, tz="UTC") not in trading_days
     for date in ["2026-04-01", "2026-04-02", "2026-04-08"]:
+        assert pd.Timestamp(date, tz="UTC") in trading_days
+
+
+def test_2021_easter_ching_ming_overlap():
+    # Ching Ming 2021 falls on Sunday Apr 4; its substitute takes Mon Apr 5,
+    # so Easter Monday is observed on Tue Apr 6 and HKEX is closed.
+    hkex = HKEXExchangeCalendar()
+    trading_days = hkex.valid_days("2021-03-31", "2021-04-09")
+    for date in ["2021-04-02", "2021-04-05", "2021-04-06"]:
+        assert pd.Timestamp(date, tz="UTC") not in trading_days
+    for date in ["2021-03-31", "2021-04-01", "2021-04-07"]:
+        assert pd.Timestamp(date, tz="UTC") in trading_days
+
+
+def test_typhoon_closures():
+    # Whole-day closures under typhoon signal no. 8:
+    # Nangka (2020-10-13), Kompasu (2021-10-13), Yagi (2024-09-06).
+    # The day after Kompasu, 2021-10-14, was the Chung Yeung holiday.
+    hkex = HKEXExchangeCalendar()
+    trading_days = hkex.valid_days("2020-10-01", "2024-09-30")
+    for date in ["2020-10-13", "2021-10-13", "2024-09-06"]:
+        assert pd.Timestamp(date, tz="UTC") not in trading_days
+    for date in ["2020-10-12", "2020-10-14", "2021-10-12", "2021-10-15", "2024-09-05", "2024-09-09"]:
         assert pd.Timestamp(date, tz="UTC") in trading_days
 
 

@@ -15,6 +15,7 @@
 import pickle
 from datetime import time
 from itertools import chain
+from zoneinfo import ZoneInfo
 
 import exchange_calendars as ecal
 import numpy as np
@@ -22,7 +23,6 @@ import pandas as pd
 import pytest
 from pandas.testing import assert_frame_equal, assert_index_equal, assert_series_equal
 from pandas.tseries.holiday import AbstractHolidayCalendar
-from zoneinfo import ZoneInfo
 
 from pandas_market_calendars import get_calendar, get_calendar_names
 from pandas_market_calendars.calendars.mirror import TradingCalendar
@@ -1431,6 +1431,54 @@ def test_interruptions_df():
     assert_frame_equal(cal.interruptions_df, goal)
 
 
+def test_interruptions_df_rows_of_equal_and_single_length():
+    class EqualRowsCalendar(FakeCalendar):
+        @property
+        def interruptions(self):
+            return [
+                ("2011-01-10", time(11), time(11, 1)),
+                ("2010-01-11", (time(11), -1), (time(11, 1), 1)),
+            ]
+
+    class SingleRowCalendar(FakeCalendar):
+        @property
+        def interruptions(self):
+            return [("2010-01-13", time(9, 59), time(10), time(10, 29), time(10, 30))]
+
+    # Equal-length rows: sorted by date, with day offsets applied
+    goal = pd.DataFrame(
+        {
+            "interruption_start_1": pd.DatetimeIndex(["2010-01-10 03:00", "2011-01-10 03:00"], tz="UTC"),
+            "interruption_end_1": pd.DatetimeIndex(["2010-01-12 03:01", "2011-01-10 03:01"], tz="UTC"),
+        },
+        index=pd.DatetimeIndex(["2010-01-11", "2011-01-10"]),
+    )
+    assert_frame_equal(EqualRowsCalendar().interruptions_df, goal)
+
+    # A single row with two interruptions
+    goal = pd.DataFrame(
+        {
+            "interruption_start_1": pd.DatetimeIndex(["2010-01-13 01:59"], tz="UTC"),
+            "interruption_end_1": pd.DatetimeIndex(["2010-01-13 02:00"], tz="UTC"),
+            "interruption_start_2": pd.DatetimeIndex(["2010-01-13 02:29"], tz="UTC"),
+            "interruption_end_2": pd.DatetimeIndex(["2010-01-13 02:30"], tz="UTC"),
+        },
+        index=pd.DatetimeIndex(["2010-01-13"]),
+    )
+    assert_frame_equal(SingleRowCalendar().interruptions_df, goal)
+
+
+def test_convert_preserves_missing_interruptions_as_nat():
+    dates = pd.DatetimeIndex(["2011-01-10", "2011-01-11"])
+    interruptions = pd.Series([time(11), None], index=dates)
+    expected = pd.Series(
+        pd.DatetimeIndex(["2011-01-10 03:00", pd.NaT], tz="UTC"),
+        index=dates,
+    )
+
+    assert_series_equal(FakeCalendar()._convert(interruptions), expected)
+
+
 ############################################
 # TESTS FOR EXCHANGE_CALENDAR INTEGRATION  #
 ############################################
@@ -1501,7 +1549,7 @@ def test_basic_information():
 
 def assert_same(one, two):
     assert one.shape[0] == two.shape[0], f"the shape is different {one.shape[0]} != {two.shape[0]}"
-    assert (one.values == two.values).all()
+    assert (pd.DatetimeIndex(one).tz_convert("UTC") == pd.DatetimeIndex(two).tz_convert("UTC")).all()
 
 
 def test_closes_opens():

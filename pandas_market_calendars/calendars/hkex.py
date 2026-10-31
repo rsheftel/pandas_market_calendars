@@ -1,6 +1,7 @@
 from datetime import time, timedelta
 from functools import partial
-from typing import Any, List
+from typing import Any
+from zoneinfo import ZoneInfo
 
 from pandas import DateOffset, Timestamp
 from pandas.tseries.holiday import (
@@ -11,7 +12,6 @@ from pandas.tseries.holiday import (
     sunday_to_monday,
 )
 from pandas.tseries.offsets import LastWeekOfMonth, WeekOfMonth
-from zoneinfo import ZoneInfo
 
 from pandas_market_calendars.holidays.cn import (
     bsd_mapping,
@@ -351,9 +351,15 @@ HKClosedDay = [
     Timestamp("2016-10-21", tz="UTC"),  # 台风海马1622
     # Timestamp(2017-06-12', tz='UTC'),  # 台风苗柏1702,期货夜盘17:35休市
     Timestamp("2017-08-23", tz="UTC"),  # 台风天鸽1713
+    Timestamp("2020-10-13", tz="UTC"),  # Typhoon closure (Nangka)
+    # 2021: Ching Ming substitute (Apr 5) coincides with Easter Monday,
+    # so Easter Monday is observed on Apr 6
+    Timestamp("2021-04-06", tz="UTC"),
+    Timestamp("2021-10-13", tz="UTC"),  # Typhoon closure (Kompasu)
     Timestamp("2023-07-17", tz="UTC"),  # Typhoon closure
     Timestamp("2023-09-01", tz="UTC"),  # Typhoon closure
     Timestamp("2023-09-08", tz="UTC"),  # Typhoon closure
+    Timestamp("2024-09-06", tz="UTC"),  # Typhoon closure (Yagi)
     # 2026: Ching Ming substitute (Apr 6) coincides with Easter Monday,
     # so Apr 7 is an additional general holiday (same pattern as 2015-04-07)
     Timestamp("2026-04-07", tz="UTC"),
@@ -429,5 +435,5 @@ class HKEXExchangeCalendar(MarketCalendar):
         )
 
     @property
-    def adhoc_holidays(self) -> List[Any]:
+    def adhoc_holidays(self) -> list[Any]:
         return HKClosedDay

@@ -1,11 +1,11 @@
 import functools
 from datetime import time
 from itertools import chain
-from typing import Any, List
+from typing import Any
+from zoneinfo import ZoneInfo
 
 import pandas as pd
 from pandas.tseries.holiday import AbstractHolidayCalendar
-from zoneinfo import ZoneInfo
 
 ########################################################################################################################
 # SIFMA Financial Markets Calendar for US, UK, JP
@@ -166,12 +166,12 @@ class SIFMAUSExchangeCalendar(MarketCalendar):
         )
 
     @property
-    def adhoc_holidays(self) -> List[Any]:
+    def adhoc_holidays(self) -> list[Any]:
         gf_full_holidays, _, _ = self._get_dynamic_gf_rules()
         return gf_full_holidays
 
     @property
-    def special_closes(self) -> List[Any]:
+    def special_closes(self) -> list[Any]:
         return [
             (
                 time(14),
@@ -191,7 +191,7 @@ class SIFMAUSExchangeCalendar(MarketCalendar):
         ]
 
     @property
-    def special_closes_adhoc(self) -> List[Any]:
+    def special_closes_adhoc(self) -> list[Any]:
         _, gf_12pm_early_closes, thurs_before_gf_2pm_early_closes = self._get_dynamic_gf_rules()
         return [
             (
@@ -266,7 +266,7 @@ class SIFMAUKExchangeCalendar(MarketCalendar):
         )
 
     @property
-    def adhoc_holidays(self) -> List[Any]:
+    def adhoc_holidays(self) -> list[Any]:
         return list(
             chain(
                 UKSpringBankAdHoc,
@@ -340,7 +340,6 @@ class SIFMAJPExchangeCalendar(MarketCalendar):
                 JapanEmperorsBirthday,
                 JapanVernalEquinox,
                 UKGoodFriday,
-                UKEasterMonday,
                 JapanShowaDay,
                 JapanConstitutionMemorialDay,
                 JapanGreeneryDay,
@@ -361,15 +360,12 @@ class SIFMAJPExchangeCalendar(MarketCalendar):
                 USVeteransDay,
                 JapanLaborThanksgivingDay,
                 USThanksgivingDay,
-                FridayChristmasEve,
-                UKChristmas,
-                UKBoxingDay,
-                UKWeekendBoxingDay,
+                Christmas,
             ]
         )
 
     @property
-    def adhoc_holidays(self) -> List[Any]:
+    def adhoc_holidays(self) -> list[Any]:
         return list(
             chain(
                 UKSpringBankAdHoc,
@@ -378,5 +374,12 @@ class SIFMAJPExchangeCalendar(MarketCalendar):
         )
 
     @property
-    def special_closes(self) -> List[Any]:
-        return [(time(15), AbstractHolidayCalendar(rules=[UKMayDay, UKWeekendChristmas]))]
+    def special_closes(self) -> list[Any]:
+        return [
+            (
+                time(15),
+                AbstractHolidayCalendar(
+                    rules=[UKEasterMonday, UKMayDay, UKWeekendChristmas, UKBoxingDay, UKWeekendBoxingDay]
+                ),
+            )
+        ]

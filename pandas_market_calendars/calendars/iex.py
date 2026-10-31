@@ -1,26 +1,9 @@
 from datetime import time
-from itertools import chain
-from typing import Any, List, Literal, Union
+from typing import Any, Literal
 
 from pandas import DatetimeIndex, Timedelta, Timestamp
-from pandas.tseries.holiday import AbstractHolidayCalendar
-from zoneinfo import ZoneInfo
 
 from pandas_market_calendars import calendar_utils as u
-from pandas_market_calendars.holidays.nyse import (
-    ChristmasEvesAdhoc,
-    ChristmasNYSE,
-    # Ad-Hoc
-    DayAfterThanksgiving1pmEarlyCloseInOrAfter1993,
-    DaysBeforeIndependenceDay1pmEarlyCloseAdhoc,
-    GoodFriday,
-    USIndependenceDay,
-    USJuneteenthAfter2022,
-    USMartinLutherKingJrAfter1998,
-    USMemorialDay,
-    USPresidentsDay,
-    USThanksgivingDay,
-)
 
 from .nyse import NYSEExchangeCalendar
 
@@ -63,54 +46,7 @@ class IEXExchangeCalendar(NYSEExchangeCalendar):
         return "Mon Tue Wed Thu Fri"
 
     @property
-    def regular_holidays(self) -> Any:
-        return AbstractHolidayCalendar(
-            rules=[
-                USPresidentsDay,
-                GoodFriday,
-                USMemorialDay,
-                USJuneteenthAfter2022,
-                USIndependenceDay,
-                USThanksgivingDay,
-                ChristmasNYSE,
-                USMartinLutherKingJrAfter1998,
-            ]
-        )
-
-    @property
-    def adhoc_holidays(self) -> List[Any]:
-        return list(
-            chain(
-                ChristmasEvesAdhoc,
-            )
-        )
-
-    @property
-    def special_closes(self) -> List[Any]:
-        return [
-            (
-                time(hour=13, tzinfo=ZoneInfo("America/New_York")),
-                AbstractHolidayCalendar(
-                    rules=[
-                        DayAfterThanksgiving1pmEarlyCloseInOrAfter1993,
-                    ]
-                ),
-            )
-        ]
-
-    """Override NYSE calendar special cases"""
-
-    @property
-    def special_closes_adhoc(self) -> List[Any]:
-        return [
-            (
-                time(13, tzinfo=ZoneInfo("America/New_York")),
-                DaysBeforeIndependenceDay1pmEarlyCloseAdhoc,
-            )
-        ]
-
-    @property
-    def special_opens(self) -> List[Any]:
+    def special_opens(self) -> list[Any]:
         return []
 
     def valid_days(self, start_date: Any, end_date: Any, tz: Any = "UTC") -> DatetimeIndex:
@@ -125,11 +61,11 @@ class IEXExchangeCalendar(NYSEExchangeCalendar):
 
     def date_range_htf(
         self,
-        frequency: Union[str, Timedelta, int, float],
-        start: Union[str, Timestamp, int, float, None] = None,
-        end: Union[str, Timestamp, int, float, None] = None,
-        periods: Union[int, None] = None,
-        closed: Union[Literal["left", "right"], None] = "right",
+        frequency: str | Timedelta | int | float,
+        start: str | Timestamp | int | float | None = None,
+        end: str | Timestamp | int | float | None = None,
+        periods: int | None = None,
+        closed: Literal["left", "right"] | None = "right",
         *,
         day_anchor: u.Day_Anchor = "SUN",
         month_anchor: u.Month_Anchor = "JAN",

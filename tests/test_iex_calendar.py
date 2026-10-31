@@ -1,10 +1,11 @@
 from datetime import time
+from zoneinfo import ZoneInfo
 
 import numpy as np
 import pandas as pd
-from zoneinfo import ZoneInfo
 
 from pandas_market_calendars.calendars.iex import IEXExchangeCalendar
+from pandas_market_calendars.calendars.nyse import NYSEExchangeCalendar
 from pandas_market_calendars.class_registry import ProtectedDict
 
 
@@ -43,3 +44,18 @@ def test_trading_days_before_operation():
 
     trading_days = iex.date_range_htf("1D", "2000-01-01", "2010-02-23")
     assert len(trading_days) == 0
+
+
+def test_holidays_and_early_closes():
+    # https://www.iex.io/resources/trading/trading-hours-holidays
+    valid_days = iex.valid_days(start_date="2025-01-01", end_date="2026-12-31")
+    for holiday in ["2025-01-01", "2025-01-09", "2025-09-01", "2026-01-01", "2026-09-07"]:
+        assert pd.Timestamp(holiday, tz="UTC") not in valid_days
+
+    schedule = iex.schedule(start_date="2026-12-24", end_date="2026-12-24")
+    assert schedule.loc["2026-12-24", "market_close"] == pd.Timestamp("2026-12-24 13:00", tz="America/New_York")
+
+
+def test_schedule_matches_nyse():
+    start, end = "2013-08-26", "2026-12-31"
+    pd.testing.assert_frame_equal(iex.schedule(start, end), NYSEExchangeCalendar().schedule(start, end))

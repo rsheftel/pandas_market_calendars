@@ -1,6 +1,27 @@
 Change Log
 ==========
 
+5.6.0 (10/30/2026)
+~~~~~~~~~~~~~~~~~~
+- Fixed test assertion helpers for pandas 3.1 index frequency compatibility (PR #512)
+- Fixed the ASX 2011 Easter Tuesday closure and weekend-eve early closes (PR #511)
+- Treated the 2025-01-09 Carter National Day of Mourning as an early close on CME Agriculture (PR #493)
+- Corrected CME Globex holiday closes across product calendars based on traded bars (PR #494)
+- Added missing HKEX closures: the 2021-04-06 Easter Monday / Ching Ming overlap and typhoon closures on 2020-10-13, 2021-10-13 and 2024-09-06 (PR #495)
+- Corrected historical TSX session dates (PR #496)
+- Made IEX inherit NYSE holidays and early closes (PR #497)
+- Kept the FX calendar closed over the weekend until Sunday evening (PR #501)
+- Made EUREX close on 24 and 31 December and stopped rolling weekend Christmas holidays (PR #502)
+- Treated UK Easter Monday and Boxing Day as early closes rather than full closes on SIFMA JP (PR #503)
+- Added mainland China futures exchange calendars (SHFE, INE, DCE, CZCE, GFEX, CFFEX) (PR #505)
+- Normalized schedule input dates at every datetime resolution, not just nanoseconds (PR #504)
+- Restored Cboe Christmas Eve early closes (PR #513)
+- Closed XTKS on 14 national holidays between 1990 and 1996 (PR #514)
+- Raised the minimum pandas version to 2.3 (PR #515)
+- Added Python 3.15 support (PR #515)
+- Removed pandas 3.1 deprecation warnings from the library and tests (PR #515)
+- Removed legacy pandas and Python compatibility code and resolved Ruff findings (PR #516)
+
 5.5.0 (10/04/2026)
 ~~~~~~~~~~~~~~~~~~
 - Added 2026-04-07 as an HKEX compensatory holiday for the Easter Monday / Ching Ming overlap (PR #472)

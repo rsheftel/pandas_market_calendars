@@ -61,23 +61,44 @@ BoxingDay = Holiday(
 
 UniqueCloses = []
 
+# Easter Tuesday / Public Holiday, as ANZAC Day fell on Easter Monday
+UniqueCloses.append(Timestamp("2011-04-26", tz="UTC"))
+
 # National Day of Mourning for Her Majesty the Queen
 UniqueCloses.append(Timestamp("2022-09-22", tz="UTC"))
 
 
 # Early closes
+# Before 2022, a weekend Christmas Eve or New Year's Eve moved the early close to the previous Friday.
+# From 2022, there is no early close when it falls on a weekend: ASX traded a full day on
+# Friday 23 and 30 December 2022 and Friday 22 and 29 December 2023.
+
 # Christmas Eve
-ChristmasEve = Holiday(
+ChristmasEveBefore2022 = Holiday(
     "Christmas Eve",
     month=12,
     day=24,
+    end_date=Timestamp("2021-12-31"),
     observance=previous_friday,
+)
+ChristmasEveInOrAfter2022 = Holiday(
+    "Christmas Eve",
+    month=12,
+    day=24,
+    start_date=Timestamp("2022-01-01"),
 )
 
 # New Year's Eve
-NewYearsEve = Holiday(
+NewYearsEveBefore2022 = Holiday(
     "New Year's Eve",
     month=12,
     day=31,
+    end_date=Timestamp("2021-12-31"),
     observance=previous_friday,
+)
+NewYearsEveInOrAfter2022 = Holiday(
+    "New Year's Eve",
+    month=12,
+    day=31,
+    start_date=Timestamp("2022-01-01"),
 )

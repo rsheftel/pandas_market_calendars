@@ -1,18 +1,22 @@
 import datetime as dt
-from typing import Any, List
+from typing import Any
+from zoneinfo import ZoneInfo
 
 from pandas.tseries.holiday import AbstractHolidayCalendar
-from zoneinfo import ZoneInfo
 
 from pandas_market_calendars.holidays.cme import (
     GoodFriday2021,
     GoodFriday2022,
-    GoodFridayAfter2022,
+    GoodFridayAfter2022JobsReport,
+    GoodFridayAfter2022NoJobsReport,
     GoodFridayBefore2021,
-    USIndependenceDayBefore2022PreviousDay,
+    USIndependenceDayPreviousDayThrough2021,
 )
 from pandas_market_calendars.holidays.cme_globex import (
     ChristmasCME,
+    ChristmasEveFrom2024,
+    ChristmasEveThrough2023,
+    FridayAfterThanksgivingFrom2024,
     USIndependenceDayFrom2022,
     USIndependenceDayPre2022,
     USJuneteenthFrom2022,
@@ -26,11 +30,10 @@ from pandas_market_calendars.holidays.cme_globex import (
     USPresidentsDayPre2022,
     USThanksgivingDayFrom2022,
     USThanksgivingDayPre2022,
-    USThanksgivingFridayFrom2021,
+    USThanksgivingFriday2021Through2023,
     USThanksgivingFridayPre2021,
 )
 from pandas_market_calendars.holidays.us import (
-    ChristmasEveInOrAfter1993,
     USNewYearsDay,
 )
 
@@ -89,13 +92,14 @@ class CMEGlobexCryptoExchangeCalendar(CMEGlobexBaseExchangeCalendar):
             rules=[
                 GoodFridayBefore2021,
                 GoodFriday2022,
+                GoodFridayAfter2022NoJobsReport,
                 ChristmasCME,
                 USNewYearsDay,
             ]
         )
 
     @property
-    def special_closes(self) -> List[Any]:
+    def special_closes(self) -> list[Any]:
         # Days where the market closes early
         # list[Tuple[time, AbstractHolidayCalendar]]
         return [
@@ -111,7 +115,7 @@ class CMEGlobexCryptoExchangeCalendar(CMEGlobexBaseExchangeCalendar):
                 dt.time(10, 15, tzinfo=ZoneInfo("America/Chicago")),
                 AbstractHolidayCalendar(
                     rules=[
-                        GoodFridayAfter2022,
+                        GoodFridayAfter2022JobsReport,
                     ]
                 ),
             ),
@@ -132,15 +136,19 @@ class CMEGlobexCryptoExchangeCalendar(CMEGlobexBaseExchangeCalendar):
                 dt.time(12, 15, tzinfo=ZoneInfo("America/Chicago")),
                 AbstractHolidayCalendar(
                     rules=[
-                        ChristmasEveInOrAfter1993,
-                        USIndependenceDayBefore2022PreviousDay,
+                        ChristmasEveThrough2023,
+                        USIndependenceDayPreviousDayThrough2021,
                         USThanksgivingFridayPre2021,
                     ]
                 ),
             ),
             (
                 dt.time(12, 45, tzinfo=ZoneInfo("America/Chicago")),
-                AbstractHolidayCalendar(rules=[USThanksgivingFridayFrom2021]),
+                AbstractHolidayCalendar(rules=[USThanksgivingFriday2021Through2023, ChristmasEveFrom2024]),
+            ),
+            (
+                dt.time(13, 45, tzinfo=ZoneInfo("America/Chicago")),
+                AbstractHolidayCalendar(rules=[FridayAfterThanksgivingFrom2024]),
             ),
             # TODO: this market already closes at 1600 normally, do we need these holidays?
             (
@@ -158,3 +166,8 @@ class CMEGlobexCryptoExchangeCalendar(CMEGlobexBaseExchangeCalendar):
                 ),
             ),
         ]
+
+    @property
+    def special_closes_adhoc(self) -> list[Any]:
+        # July 4th on a Friday
+        return [(dt.time(12, tzinfo=ZoneInfo("America/Chicago")), ["2025-07-04"])]

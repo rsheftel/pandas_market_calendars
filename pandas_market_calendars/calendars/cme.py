@@ -14,7 +14,8 @@
 # limitations under the License.
 from datetime import time
 from itertools import chain
-from typing import Any, List
+from typing import Any
+from zoneinfo import ZoneInfo
 
 from pandas import Timestamp
 from pandas.tseries.holiday import (
@@ -24,7 +25,6 @@ from pandas.tseries.holiday import (
     USPresidentsDay,
     USThanksgivingDay,
 )
-from zoneinfo import ZoneInfo
 
 from pandas_market_calendars.calendars.cme_market_times import GRAINS_AND_OILSEEDS_MARKET_TIMES
 from pandas_market_calendars.holidays.cme import (
@@ -33,7 +33,8 @@ from pandas_market_calendars.holidays.cme import (
     GoodFriday2015,
     GoodFriday2021,
     GoodFriday2022,
-    GoodFridayAfter2022,
+    GoodFridayAfter2022JobsReport,
+    GoodFridayAfter2022NoJobsReport,
     GoodFridayBefore2021NotEarlyClose,
     USIndependenceDayBefore2022PreviousDay,
 )
@@ -103,12 +104,12 @@ class CMETradeDateCalendar(MarketCalendar):
         )
 
     @property
-    def adhoc_holidays(self) -> List[Any]:
+    def adhoc_holidays(self) -> list[Any]:
         # FIXME: This is unverified currently.
         return USNationalDaysofMourning
 
     @property
-    def special_closes(self) -> List[Any]:
+    def special_closes(self) -> list[Any]:
         return []
 
 
@@ -164,16 +165,17 @@ class CMEEquityExchangeCalendar(MarketCalendar):
                 USNewYearsDay,
                 GoodFridayBefore2021NotEarlyClose,
                 GoodFriday2022,
+                GoodFridayAfter2022NoJobsReport,
                 Christmas,
             ]
         )
 
     @property
-    def adhoc_holidays(self) -> List[Any]:
+    def adhoc_holidays(self) -> list[Any]:
         return USNationalDaysofMourning
 
     @property
-    def special_closes(self) -> List[Any]:
+    def special_closes(self) -> list[Any]:
         return [
             (
                 time(8, 15),
@@ -183,7 +185,7 @@ class CMEEquityExchangeCalendar(MarketCalendar):
                         GoodFriday2012,
                         GoodFriday2015,
                         GoodFriday2021,
-                        GoodFridayAfter2022,
+                        GoodFridayAfter2022JobsReport,
                     ]
                 ),
             ),
@@ -263,11 +265,11 @@ class CMEAgricultureExchangeCalendar(MarketCalendar):
         )
 
     @property
-    def adhoc_holidays(self) -> List[Any]:
-        return USNationalDaysofMourning
+    def adhoc_holidays(self) -> list[Any]:
+        return [d for d in USNationalDaysofMourning if d != Timestamp("2025-01-09", tz="UTC")]
 
     @property
-    def special_closes(self) -> List[Any]:
+    def special_closes(self) -> list[Any]:
         return [
             (
                 time(12),
@@ -278,6 +280,15 @@ class CMEAgricultureExchangeCalendar(MarketCalendar):
                         ChristmasEveInOrAfter1993,
                     ]
                 ),
+            )
+        ]
+
+    @property
+    def special_closes_adhoc(self) -> list[Any]:
+        return [
+            (
+                time(12, 15),
+                ["2025-01-09"],
             )
         ]
 
@@ -463,11 +474,11 @@ class CMEBondExchangeCalendar(MarketCalendar):
         )
 
     @property
-    def adhoc_holidays(self) -> List[Any]:
+    def adhoc_holidays(self) -> list[Any]:
         return list(chain(USNationalDaysofMourning, BondsGoodFridayClosed))
 
     @property
-    def special_closes(self) -> List[Any]:
+    def special_closes(self) -> list[Any]:
         return [
             (
                 time(12),
@@ -495,5 +506,5 @@ class CMEBondExchangeCalendar(MarketCalendar):
         ]
 
     @property
-    def special_closes_adhoc(self) -> List[Any]:
+    def special_closes_adhoc(self) -> list[Any]:
         return [(time(10, tzinfo=self.tz), BondsGoodFridayOpen)]

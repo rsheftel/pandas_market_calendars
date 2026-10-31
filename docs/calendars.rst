@@ -28,17 +28,32 @@ Exchange  IEX    IEXExchangeCalendar     Yes        carterjfulcher
 
 Futures Calendars
 #################
-========== ================= =================================== ============ ============
- Exchange        Name             Class                          Unit Tests    Creator
-========== ================= =================================== ============ ============
-CME        CME_Equity         CMEEquityExchangeCalendar           Yes         rsheftel
-CME        CME_Bond           CMEBondExchangeCalendar             Yes         rsheftel
-CME        CME_Agriculture    CMEAgriculturalExchangeCalendar     Yes         lionelyoung
-CME        CME Globex Crypto  CMEGlobexCryptoExchangeCalendar     Yes         Coinbase Asset Management
-CME        CMEGlobex_Grains   CMEGlobexGrainsExchangeCalendar     Yes         rundef
-EUREX      EUREX_Bond         EUREXFixedIncomeCalendar            Yes         rundef
-EUREX      EUREX_PrePost      EUREXPrePostExchangeCalendar       Yes         rsheftel
-========== ================= =================================== ============ ============
+=========  ====================  ================================  ===========  ==========================
+Exchange   Name                  Class                             Unit Tests   Creator
+=========  ====================  ================================  ===========  ==========================
+CME        CME_Equity            CMEEquityExchangeCalendar         Yes          rsheftel
+CME        CME_Bond              CMEBondExchangeCalendar           Yes          rsheftel
+CME        CME_Agriculture       CMEAgriculturalExchangeCalendar   Yes          lionelyoung
+CME        CME Globex Crypto     CMEGlobexCryptoExchangeCalendar   Yes          Coinbase Asset Management
+CME        CMEGlobex_Grains      CMEGlobexGrainsExchangeCalendar   Yes          rundef
+EUREX      EUREX_Bond            EUREXFixedIncomeCalendar          Yes          rundef
+EUREX      EUREX_PrePost         EUREXPrePostExchangeCalendar      Yes          rsheftel
+SHFE       SHFE                  SHFEExchangeCalendar              Yes          yangodds
+SHFE       SHFE_BaseMetals       SHFEBaseMetalsCalendar            Yes          yangodds
+SHFE       SHFE_PreciousMetals   SHFEPreciousMetalsCalendar        Yes          yangodds
+SHFE       SHFE_Industrials      SHFEIndustrialsCalendar           Yes          yangodds
+INE        INE                   INEExchangeCalendar               Yes          yangodds
+INE        INE_Crude             INECrudeCalendar                  Yes          yangodds
+INE        INE_Copper            INECopperCalendar                 Yes          yangodds
+INE        INE_Industrials       INEIndustrialsCalendar            Yes          yangodds
+DCE        DCE                   DCEExchangeCalendar               Yes          yangodds
+DCE        DCE_Night             DCENightCalendar                  Yes          yangodds
+CZCE       CZCE                  CZCEExchangeCalendar              Yes          yangodds
+CZCE       CZCE_Night            CZCENightCalendar                 Yes          yangodds
+GFEX       GFEX                  GFEXExchangeCalendar              Yes          yangodds
+CFFEX      CFFEX                 CFFEXExchangeCalendar             Yes          yangodds
+CFFEX      CFFEX_Bond            CFFEXBondExchangeCalendar         Yes          yangodds
+=========  ====================  ================================  ===========  ==========================
 
 Forex/OTC Market Calendars
 ##########################

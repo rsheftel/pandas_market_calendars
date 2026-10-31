@@ -2,16 +2,15 @@
 # kewlfft
 #
 from datetime import time
-from typing import Any, List
+from typing import Any
+from zoneinfo import ZoneInfo
 
 from pandas.tseries.holiday import (
     AbstractHolidayCalendar,
     EasterMonday,
     GoodFriday,
     Holiday,
-    previous_friday,
 )
-from zoneinfo import ZoneInfo
 
 from pandas_market_calendars.market_calendar import (
     FRIDAY,
@@ -28,7 +27,7 @@ EUREXNewYearsEve = Holiday(
     "New Year's Eve",
     month=12,
     day=31,
-    observance=previous_friday,
+    days_of_week=(MONDAY, TUESDAY, WEDNESDAY, THURSDAY, FRIDAY),
 )
 # New Year's Day
 EUREXNewYearsDay = Holiday(
@@ -49,7 +48,7 @@ ChristmasEve = Holiday(
     "Christmas Eve",
     month=12,
     day=24,
-    observance=previous_friday,
+    days_of_week=(MONDAY, TUESDAY, WEDNESDAY, THURSDAY, FRIDAY),
 )
 # Christmas
 Christmas = Holiday(
@@ -58,27 +57,11 @@ Christmas = Holiday(
     day=25,
     days_of_week=(MONDAY, TUESDAY, WEDNESDAY, THURSDAY, FRIDAY),
 )
-# If christmas day is Saturday Monday 27th is a holiday
-# If christmas day is sunday the Tuesday 27th is a holiday
-WeekendChristmas = Holiday(
-    "Weekend Christmas",
-    month=12,
-    day=27,
-    days_of_week=(MONDAY, TUESDAY),
-)
 # Boxing day
 BoxingDay = Holiday(
     "Boxing Day",
     month=12,
     day=26,
-)
-# If boxing day is saturday then Monday 28th is a holiday
-# If boxing day is sunday then Tuesday 28th is a holiday
-WeekendBoxingDay = Holiday(
-    "Weekend Boxing Day",
-    month=12,
-    day=28,
-    days_of_week=(MONDAY, TUESDAY),
 )
 
 
@@ -110,26 +93,12 @@ class EUREXExchangeCalendar(MarketCalendar):
                 GoodFriday,
                 EasterMonday,
                 MayBank,
+                ChristmasEve,
                 Christmas,
-                WeekendChristmas,
                 BoxingDay,
-                WeekendBoxingDay,
+                EUREXNewYearsEve,
             ]
         )
-
-    @property
-    def special_closes(self) -> List[Any]:
-        return [
-            (
-                time(12, 30),
-                AbstractHolidayCalendar(
-                    rules=[
-                        ChristmasEve,
-                        EUREXNewYearsEve,
-                    ]
-                ),
-            )
-        ]
 
 
 class EUREXPrePostExchangeCalendar(EUREXExchangeCalendar):
@@ -157,32 +126,3 @@ class EUREXPrePostExchangeCalendar(EUREXExchangeCalendar):
     @property
     def tz(self) -> Any:
         return ZoneInfo("UTC")
-
-    @property
-    def _extended_early_close_rules(self) -> List[Any]:
-        return [
-            ChristmasEve,
-            EUREXNewYearsEve,
-        ]
-
-    @property
-    def special_closes(self) -> List[Any]:
-        return [
-            (
-                time(11, 30),
-                AbstractHolidayCalendar(
-                    rules=self._extended_early_close_rules
-                ),
-            )
-        ]
-
-    @property
-    def special_post(self) -> List[Any]:
-        return [
-            (
-                time(11, 30),
-                AbstractHolidayCalendar(
-                    rules=self._extended_early_close_rules
-                ),
-            )
-        ]

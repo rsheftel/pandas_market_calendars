@@ -42,7 +42,7 @@ idiomatic solutions, seek clarification when needed, and accept user preferences
 
 ## Target Versions
 
-- Python >= 3.8
+- Python >= 3.10
 - Pandas >= 2.3
 
 ## Planning Rules
@@ -92,7 +92,7 @@ idiomatic solutions, seek clarification when needed, and accept user preferences
 - Tooling
     - Package manager/runner: uv (Astral). Local workflows should prefer `uv` for env creation and running.
     - Python target: pyproject sets the target python with `requires-python =`, use the version in that file
-    - Linting/format: Black only (see `[tool.black]` and `[tool.isort]` in `pyproject.toml`).
+    - Linting/format: Ruff (see `[tool.ruff]` in `pyproject.toml`).
 
 - Environment setup (local)
     - Minimal install (runtime deps):
@@ -153,7 +153,7 @@ Violating this rule makes the suggestion completely unusable.
 - [ ] Always do a git pull when starting a new chat on a project that has a git repo.
 - [ ] Add focused tests next to code, with assets under `tests/data` pattern
 - [ ] Run `uv run --no-sync pytest -m "not slow"` locally; consider `-n auto`.
-- [ ] Run `uv run python -m black` on any python files you have edited.
+- [ ] Run `uv run ruff format <files>` and `uv run ruff check <files>` on any python files you have edited.
 - [ ] Document assumptions (columns/dtypes, units, timezones).
 
 ---
@@ -162,7 +162,7 @@ Violating this rule makes the suggestion completely unusable.
 
 ### General Principles
 
-- Follow PEP 8 with max line length 120 (Black enforces formatting and import sorting when enabled)
+- Follow PEP 8 with max line length 120 (Ruff enforces formatting and import sorting)
 - Always prioritize readability and clarity
 - Write concise, efficient, and idiomatic code
 - Avoid duplicate code

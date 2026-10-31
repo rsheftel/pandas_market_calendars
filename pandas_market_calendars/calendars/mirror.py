@@ -4,7 +4,7 @@ Imported calendars from the exchange_calendars project
 GitHub: https://github.com/gerrymanoim/exchange_calendars
 """
 
-from typing import Any, List, Optional
+from typing import Any
 
 import exchange_calendars
 import pandas as pd
@@ -15,6 +15,28 @@ from pandas_market_calendars.market_calendar import HolidayCalendar, MarketCalen
 
 DAYMASKS = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"]
 MIRROR_HOLIDAY_START_DATES = {"XNYS": "1885-01-01"}
+
+# exchange_calendars starts XTKS in 1997, so its equinox lists and special days start there too. These weekday
+# national holidays before 1997 come from the Cabinet Office list:
+# https://www8.cao.go.jp/chosei/shukujitsu/syukujitsu.csv
+MIRROR_ADHOC_HOLIDAYS = {
+    "XTKS": [
+        pd.Timestamp("1990-03-21"),  # Vernal Equinox Day
+        pd.Timestamp("1990-09-24"),  # substitute holiday, Autumnal Equinox Day fell on a Sunday
+        pd.Timestamp("1990-11-12"),  # Enthronement ceremony of Emperor Akihito
+        pd.Timestamp("1991-03-21"),  # Vernal Equinox Day
+        pd.Timestamp("1991-09-23"),  # Autumnal Equinox Day
+        pd.Timestamp("1992-03-20"),  # Vernal Equinox Day
+        pd.Timestamp("1992-09-23"),  # Autumnal Equinox Day
+        pd.Timestamp("1993-06-09"),  # Wedding of Crown Prince Naruhito
+        pd.Timestamp("1993-09-23"),  # Autumnal Equinox Day
+        pd.Timestamp("1994-03-21"),  # Vernal Equinox Day
+        pd.Timestamp("1994-09-23"),  # Autumnal Equinox Day
+        pd.Timestamp("1995-03-21"),  # Vernal Equinox Day
+        pd.Timestamp("1996-03-20"),  # Vernal Equinox Day
+        pd.Timestamp("1996-09-23"),  # Autumnal Equinox Day
+    ],
+}
 
 
 # XTAE (Tel Aviv Stock Exchange) changed from Sun-Thu to Mon-Fri on Jan 5, 2026
@@ -62,7 +84,7 @@ class TradingCalendar(MarketCalendar):
         self.__init__(*args, **kwargs)
         return self
 
-    def __init__(self, open_time: Optional[Any] = None, close_time: Optional[Any] = None) -> None:
+    def __init__(self, open_time: Any | None = None, close_time: Any | None = None) -> None:
         super().__init__(open_time, close_time)
 
     @property
@@ -94,23 +116,27 @@ class TradingCalendar(MarketCalendar):
         return HolidayCalendar(rules=regular_holidays.rules, start_date=start_date)
 
     @property
-    def adhoc_holidays(self) -> List[Any]:
-        return self._ec.adhoc_holidays
+    def adhoc_holidays(self) -> list[Any]:
+        adhoc_holidays = self._ec.adhoc_holidays
+        extra = MIRROR_ADHOC_HOLIDAYS.get(self.name)
+        if extra is None:
+            return adhoc_holidays
+        return list(adhoc_holidays) + extra
 
     @property
-    def special_opens(self) -> List[Any]:
+    def special_opens(self) -> list[Any]:
         return self._ec.special_opens
 
     @property
-    def special_opens_adhoc(self) -> List[Any]:
+    def special_opens_adhoc(self) -> list[Any]:
         return self._ec.special_opens_adhoc
 
     @property
-    def special_closes(self) -> List[Any]:
+    def special_closes(self) -> list[Any]:
         return self._ec.special_closes
 
     @property
-    def special_closes_adhoc(self) -> List[Any]:
+    def special_closes_adhoc(self) -> list[Any]:
         return self._ec.special_closes_adhoc
 
     @property
