@@ -1,8 +1,8 @@
 # Pytest Warning Remediation Plan
 
-Date: 2026-10-31 (revision 6)
+Date: 2026-10-31 (revision 7)
 
-**Current step: complete — awaiting review and squash merge of #515.**
+**Current step: Follow-up — remove legacy pandas workaround and resolve Ruff findings.**
 
 ## 0. Investigation (complete)
 
@@ -320,14 +320,22 @@ This step removes 19,513 of the 19,555 warning occurrences, about 99.8%.
 
 ## Follow-up (separate PR, after this merges)
 
-- [ ] Remove pre-2.3 pandas compatibility code, such as the `Python 3.8, pandas 2.0.3` workaround in
-  `market_calendar.py`.
-- [ ] Apply Ruff `UP` fixes now enabled by `py310`.
-- [ ] Create the branch from `dev`.
+- [x] Confirm PR #515 merged into `dev` and create `fix/pandas-deprecation-warnings-follow-up` from updated `origin/dev`.
+- [x] Capture the Ruff baseline with `uv run --no-sync ruff check --target-version py310 --statistics .`: 256 findings (218 auto-fixable).
+- [ ] Remove the pandas <2.3 workaround in `MarketCalendar._convert`; verify missing interruption values remain `NaT`.
+- [ ] Resolve all Ruff findings now exposed by the `py310` target, including `UP`, import sorting, `B905`, `RUF100`, and `UP036`.
+- [ ] Add or update focused tests for any behavior changes required by Ruff fixes.
+- [ ] Run Ruff checks and formatting on changed Python files.
+- [ ] Run the complete test suite on pandas 3.1 and Python 3.10/pandas 2.3.3; allow only the previously documented warning sets.
+- [ ] Confirm Python 3.14 and 3.15 CI coverage remains intact.
+- [ ] Add a follow-up entry to the existing 5.6.0 change-log section using the new PR number.
+- [ ] Commit and push the branch; open a draft PR against `dev` and include the Ruff/pandas validation details.
+- [ ] Confirm CI passes, mark the PR ready, and hand off for review and squash merge.
 
 ## Acceptance criteria
 
 - With pandas 3.1, the full suite passes with **only** the 12 `exchange-calendars` warnings.
+- Ruff reports no findings using the repository's configured Python 3.10 target.
 - No warnings come from `pandas_market_calendars/` or `tests/`.
 - With pandas 2.3 on Python 3.10, the full suite passes; warnings are allowed.
 - CI passes on Python 3.10–3.15 across all operating systems in both workflow matrices.
