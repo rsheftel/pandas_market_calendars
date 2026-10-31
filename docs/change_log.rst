@@ -13,6 +13,7 @@ Change Log
 - Kept the FX calendar closed over the weekend until Sunday evening (PR #501)
 - Made EUREX close on 24 and 31 December and stopped rolling weekend Christmas holidays (PR #502)
 - Treated UK Easter Monday and Boxing Day as early closes rather than full closes on SIFMA JP (PR #503)
+- Added mainland China futures exchange calendars (SHFE, INE, DCE, CZCE, GFEX, CFFEX) (PR #505)
 
 5.5.0 (10/04/2026)
 ~~~~~~~~~~~~~~~~~~
