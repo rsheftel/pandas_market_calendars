@@ -13,7 +13,8 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 from abc import ABC, abstractmethod
-from typing import Any, List
+from typing import Any
+from zoneinfo import ZoneInfo
 
 from pandas.tseries.holiday import (
     AbstractHolidayCalendar,
@@ -22,7 +23,6 @@ from pandas.tseries.holiday import (
     USPresidentsDay,
     USThanksgivingDay,
 )
-from zoneinfo import ZoneInfo
 
 from pandas_market_calendars.holidays.us import (
     Christmas,
@@ -97,7 +97,7 @@ class CMEGlobexBaseExchangeCalendar(MarketCalendar, ABC):
     #     return USNationalDaysofMourning
 
     @property
-    def special_closes(self) -> List[Any]:
+    def special_closes(self) -> list[Any]:
         return [
             (
                 self.special_close_time,

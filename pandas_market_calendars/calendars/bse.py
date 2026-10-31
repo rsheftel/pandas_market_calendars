@@ -1,4 +1,4 @@
-from typing import Any, List
+from typing import Any
 
 
 """
@@ -6,9 +6,9 @@ Bombay Stock Exchnage
 """
 
 from datetime import time
+from zoneinfo import ZoneInfo
 
 from pandas import Timestamp
-from zoneinfo import ZoneInfo
 
 from pandas_market_calendars.market_calendar import MarketCalendar
 
@@ -458,10 +458,10 @@ class BSEExchangeCalendar(MarketCalendar):
         return ZoneInfo("Asia/Calcutta")
 
     @property
-    def adhoc_holidays(self) -> List[Any]:
+    def adhoc_holidays(self) -> list[Any]:
         return BSEClosedDay
 
 
 # Re-exported for backward compatibility; NSE lives in calendars/nse.py.
-from pandas_market_calendars.calendars.nse import NSEExchangeCalendar  # noqa: E402, F401
-from pandas_market_calendars.holidays.nse import NSEClosedDay  # noqa: E402, F401
+from pandas_market_calendars.calendars.nse import NSEExchangeCalendar  # noqa: F401
+from pandas_market_calendars.holidays.nse import NSEClosedDay  # noqa: F401

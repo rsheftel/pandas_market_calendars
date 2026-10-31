@@ -13,12 +13,12 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 from datetime import time
-from typing import Any, List
+from typing import Any
+from zoneinfo import ZoneInfo
 
 from pandas.tseries.holiday import (
     AbstractHolidayCalendar,
 )  # , GoodFriday, USLaborDay, USPresidentsDay, USThanksgivingDay
-from zoneinfo import ZoneInfo
 
 from pandas_market_calendars.holidays.cme_globex import (
     ChristmasCME,
@@ -187,7 +187,7 @@ class CMEGlobexEnergyAndMetalsExchangeCalendar(CMEGlobexBaseExchangeCalendar):
     #     return USNationalDaysofMourning
 
     @property
-    def special_closes(self) -> List[Any]:
+    def special_closes(self) -> list[Any]:
         # From 2022 a holiday Monday to Thursday halts at 13:30 and reopens at 17:00 for the next trade date. The
         # holidays that fell on a Friday in 2025 and 2026 closed at 12:00 with no evening session
         # (special_closes_adhoc).
@@ -237,7 +237,7 @@ class CMEGlobexEnergyAndMetalsExchangeCalendar(CMEGlobexBaseExchangeCalendar):
         ]
 
     @property
-    def special_closes_adhoc(self) -> List[Any]:
+    def special_closes_adhoc(self) -> list[Any]:
         return [
             (
                 time(12),

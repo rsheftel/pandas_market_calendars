@@ -1,8 +1,8 @@
 from datetime import time
-from typing import Any, List
+from typing import Any
+from zoneinfo import ZoneInfo
 
 from pandas.tseries.holiday import AbstractHolidayCalendar
-from zoneinfo import ZoneInfo
 
 from pandas_market_calendars.holidays.cme import (
     GoodFriday2010,
@@ -72,7 +72,7 @@ class CMEGlobexEquitiesExchangeCalendar(CMEGlobexBaseExchangeCalendar):
         )
 
     @property
-    def special_closes(self) -> List[Any]:
+    def special_closes(self) -> list[Any]:
         # Source https://www.cmegroup.com/tools-information/holiday-calendar.html
         return [
             (

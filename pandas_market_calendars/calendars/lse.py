@@ -13,10 +13,10 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 from datetime import time
-from typing import Any, List
+from typing import Any
+from zoneinfo import ZoneInfo
 
 from pandas.tseries.holiday import AbstractHolidayCalendar, EasterMonday, GoodFriday
-from zoneinfo import ZoneInfo
 
 from pandas_market_calendars.holidays.uk import (
     BoxingDay,
@@ -100,11 +100,11 @@ class LSEExchangeCalendar(MarketCalendar):
         )
 
     @property
-    def adhoc_holidays(self) -> List[Any]:
+    def adhoc_holidays(self) -> list[Any]:
         return UniqueCloses
 
     @property
-    def special_closes(self) -> List[Any]:
+    def special_closes(self) -> list[Any]:
         return [
             (
                 time(12, 30),

@@ -1,9 +1,9 @@
 from datetime import time
 from itertools import chain
-from typing import Any, List
+from typing import Any
+from zoneinfo import ZoneInfo
 
 from pandas.tseries.holiday import AbstractHolidayCalendar
-from zoneinfo import ZoneInfo
 
 from pandas_market_calendars.holidays.jp import *
 from pandas_market_calendars.holidays.us import USNewYearsDay
@@ -51,7 +51,7 @@ class JPXExchangeCalendar(MarketCalendar):
         return ZoneInfo("Asia/Tokyo")
 
     @property
-    def adhoc_holidays(self) -> List[Any]:
+    def adhoc_holidays(self) -> list[Any]:
         return list(
             chain(
                 AscensionDays,

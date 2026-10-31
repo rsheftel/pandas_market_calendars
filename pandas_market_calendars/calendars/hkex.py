@@ -1,6 +1,7 @@
 from datetime import time, timedelta
 from functools import partial
-from typing import Any, List
+from typing import Any
+from zoneinfo import ZoneInfo
 
 from pandas import DateOffset, Timestamp
 from pandas.tseries.holiday import (
@@ -11,7 +12,6 @@ from pandas.tseries.holiday import (
     sunday_to_monday,
 )
 from pandas.tseries.offsets import LastWeekOfMonth, WeekOfMonth
-from zoneinfo import ZoneInfo
 
 from pandas_market_calendars.holidays.cn import (
     bsd_mapping,
@@ -435,5 +435,5 @@ class HKEXExchangeCalendar(MarketCalendar):
         )
 
     @property
-    def adhoc_holidays(self) -> List[Any]:
+    def adhoc_holidays(self) -> list[Any]:
         return HKClosedDay

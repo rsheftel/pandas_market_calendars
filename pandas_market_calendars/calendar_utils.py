@@ -4,9 +4,10 @@ Utilities to use with market_calendars
 
 import itertools
 import warnings
+from collections.abc import Iterable
 from math import ceil, floor
 from re import finditer, split
-from typing import TYPE_CHECKING, Any, Dict, Iterable, List, Literal, Optional, Set, Tuple, Type, Union, cast
+from typing import TYPE_CHECKING, Any, Literal, cast
 
 import numpy as np
 import pandas as pd
@@ -26,14 +27,14 @@ DEFAULT_LABEL_MAP = {
     "closed": "closed",
 }
 
-DateRangeInput = Union[str, pd.Timestamp, int, float]
-SessionPair = Tuple[str, str]
+DateRangeInput = str | pd.Timestamp | int | float
+SessionPair = tuple[str, str]
 
 
 def mark_session(
     schedule: pd.DataFrame,
     timestamps: pd.DatetimeIndex,
-    label_map: Dict[str, Any] | None = None,
+    label_map: dict[str, Any] | None = None,
     *,
     closed: Literal["left", "right"] = "right",
 ) -> pd.Series:
@@ -146,7 +147,7 @@ def mark_session(
     )
 
 
-def merge_schedules(schedules: List[pd.DataFrame], how: Literal["outer", "inner"] = "outer") -> pd.DataFrame:
+def merge_schedules(schedules: list[pd.DataFrame], how: Literal["outer", "inner"] = "outer") -> pd.DataFrame:
     """
     Given a list of schedules will return a merged schedule. The merge method (how) will either return the superset
     of any datetime when any schedule is open (outer) or only the datetime where all markets are open (inner)
@@ -180,16 +181,16 @@ def merge_schedules(schedules: List[pd.DataFrame], how: Literal["outer", "inner"
     return result
 
 
-def is_single_observance(holiday: "Holiday") -> Union[pd.Timestamp, None]:
+def is_single_observance(holiday: "Holiday") -> pd.Timestamp | None:
     "Returns the Date of the Holiday if it is only observed once, None otherwise."
     return holiday.start_date if holiday.start_date == holiday.end_date else None
 
 
-def all_single_observance_rules(calendar: "AbstractHolidayCalendar") -> Optional[List[pd.Timestamp]]:
+def all_single_observance_rules(calendar: "AbstractHolidayCalendar") -> list[pd.Timestamp] | None:
     "Returns a list of timestamps if the Calendar's Rules are all single observance holidays, None Otherwise"
     observances = [is_single_observance(rule) for rule in calendar.rules]
     if all(observances):
-        return cast(List[pd.Timestamp], observances)
+        return cast(list[pd.Timestamp], observances)
     return None
 
 
@@ -281,7 +282,7 @@ class InsufficientScheduleWarning(DateRangeWarning):
 
 def filter_date_range_warnings(
     action: Literal["error", "ignore", "always", "default", "once"],
-    source: Union[Iterable[Type[DateRangeWarning]], Type[DateRangeWarning]] = DateRangeWarning,
+    source: Iterable[type[DateRangeWarning]] | type[DateRangeWarning] = DateRangeWarning,
 ) -> None:
     """
     Adjust the behavior of the date_range() warnings to the desired action.
@@ -308,7 +309,7 @@ def filter_date_range_warnings(
 
 def parse_missing_session_warning(
     err: MissingSessionWarning,
-) -> Tuple[Set[str], Set[str]]:
+) -> tuple[set[str], set[str]]:
     """
     Parses a Missing Session Warning's Error Message.
     :returns Tuple[set[str], set[str]]:
@@ -321,7 +322,7 @@ def parse_missing_session_warning(
 
 def parse_insufficient_schedule_warning(
     err: InsufficientScheduleWarning,
-) -> Tuple[bool, pd.Timestamp, pd.Timestamp]:
+) -> tuple[bool, pd.Timestamp, pd.Timestamp]:
     """
     Parses the information from an Insufficient Schedule Warning.
     :returns Tuple[bool, pd.Timestamp, pd.Timestamp]:
@@ -350,14 +351,14 @@ def parse_insufficient_schedule_warning(
 
 def date_range(
     schedule: pd.DataFrame,
-    frequency: Union[str, pd.Timedelta, int, float],
-    closed: Union[Literal["left", "right", "both"], None] = "right",
-    force_close: Union[bool, None] = True,
-    session: Union[SESSIONS, Iterable[SESSIONS], None] = None,
+    frequency: str | pd.Timedelta | int | float,
+    closed: Literal["left", "right", "both"] | None = "right",
+    force_close: bool | None = True,
+    session: SESSIONS | Iterable[SESSIONS] | None = None,
     merge_adjacent: bool = True,
-    start: Union[str, pd.Timestamp, int, float, None] = None,
-    end: Union[str, pd.Timestamp, int, float, None] = None,
-    periods: Union[int, None] = None,
+    start: str | pd.Timestamp | int | float | None = None,
+    end: str | pd.Timestamp | int | float | None = None,
+    periods: int | None = None,
 ) -> pd.DatetimeIndex:
     """
     Interpolates a Market's Schedule at the desired frequency and returns the result as a DatetimeIndex.
@@ -499,8 +500,8 @@ def date_range(
 
 
 def _make_session_list(
-    columns: set[str], sessions: Union[str, Iterable[str]], merge_adjacent: bool
-) -> Tuple[List[SessionPair], bool]:
+    columns: set[str], sessions: str | Iterable[str], merge_adjacent: bool
+) -> tuple[list[SessionPair], bool]:
     "Create a list of (Session Start, Session End) Tuples"
     session_times = []
     missing_cols = set()
@@ -563,14 +564,14 @@ def _make_session_list(
         session_times = [t for t in session_times if t not in drop_set]
 
     # Zip the flat list into a list of pairs
-    session_pairs = list(zip(*(iter(session_times),) * 2))
+    session_pairs = list(zip(*(iter(session_times),) * 2, strict=True))
 
     return session_pairs, "closed_masked" in sessions
 
 
 def _standardize_times(
     schedule: pd.DataFrame, start: pd.Timestamp | None, end: pd.Timestamp | None, periods: int | None, tz: Any
-) -> Tuple[Optional[pd.Timestamp], Optional[pd.Timestamp], Optional[int]]:
+) -> tuple[pd.Timestamp | None, pd.Timestamp | None, int | None]:
     "Standardize start and end into a timestamp of the relevant timezone"
     if all((start, end, periods)):
         periods = None  # Ignore Periods if all 3 params are given.
@@ -618,7 +619,7 @@ def _standardize_times(
     return start, end, periods
 
 
-def _reconfigure_schedule(schedule: pd.DataFrame, session_list: List[SessionPair], mask_close: bool) -> pd.DataFrame:
+def _reconfigure_schedule(schedule: pd.DataFrame, session_list: list[SessionPair], mask_close: bool) -> pd.DataFrame:
     "Reconfigure a schedule into a sorted dataframe of [start, end] times for each session"
 
     sessions = []
@@ -868,20 +869,20 @@ Month_Anchor = Literal["JAN", "FEB", "MAR", "APR", "MAY", "JUN", "JUL", "AUG", "
 # but, pd.Timestamp([A Sunday]).to_period('W-SUN').start_time == [The Monday Prior???]
 days_rolled = list(Day_Anchor.__args__)
 days_rolled.insert(0, days_rolled.pop())
-weekly_roll_map = dict(zip(Day_Anchor.__args__, days_rolled))
+weekly_roll_map = dict(zip(Day_Anchor.__args__, days_rolled, strict=True))
 
 months_rolled = list(Month_Anchor.__args__)
 months_rolled.insert(0, months_rolled.pop())
-yearly_roll_map = dict(zip(Month_Anchor.__args__, months_rolled))
+yearly_roll_map = dict(zip(Month_Anchor.__args__, months_rolled, strict=True))
 
 
 def date_range_htf(
     cal: "CustomBusinessDay",
-    frequency: Union[str, pd.Timedelta, int, float],
-    start: Union[str, pd.Timestamp, int, float, None] = None,
-    end: Union[str, pd.Timestamp, int, float, None] = None,
-    periods: Union[int, None] = None,
-    closed: Union[Literal["left", "right"], None] = "right",
+    frequency: str | pd.Timedelta | int | float,
+    start: str | pd.Timestamp | int | float | None = None,
+    end: str | pd.Timestamp | int | float | None = None,
+    periods: int | None = None,
+    closed: Literal["left", "right"] | None = "right",
     *,
     day_anchor: Day_Anchor = "SUN",
     month_anchor: Month_Anchor = "JAN",
@@ -974,7 +975,7 @@ def date_range_htf(
 
 def _error_check_htf_range(
     start: DateRangeInput | None, end: DateRangeInput | None, periods: int | None
-) -> Tuple[Union[pd.Timestamp, None], Union[pd.Timestamp, None], Union[int, None]]:
+) -> tuple[pd.Timestamp | None, pd.Timestamp | None, int | None]:
     "Standardize and Error Check Start, End, and period params"
     if periods is not None:
         if not isinstance(periods, int):
@@ -1003,7 +1004,7 @@ def _error_check_htf_range(
     return start, end, periods
 
 
-def _standardize_htf_freq(frequency: Union[str, pd.Timedelta, int, float]) -> Tuple[int, PeriodCode]:
+def _standardize_htf_freq(frequency: str | pd.Timedelta | int | float) -> tuple[int, PeriodCode]:
     "Standardize the frequency multiplier and Code, throwing errors as needed."
     if isinstance(frequency, str):
         if len(frequency) == 0:
@@ -1033,7 +1034,7 @@ def _standardize_htf_freq(frequency: Union[str, pd.Timedelta, int, float]) -> Tu
     return frequency.days, "D"
 
 
-def _days_per_week(weekmask: Union[Iterable, str]) -> int:
+def _days_per_week(weekmask: Iterable | str) -> int:
     "Used to get a more accurate estimate of the number of days per week"
     # Return any 'Array Like' Representation
     if not isinstance(weekmask, str):
@@ -1102,12 +1103,12 @@ def _cal_day_range(cb_day: "CustomBusinessDay", start: Any, end: Any, periods: A
 
 def _cal_WMQY_range(
     cb_day: "CustomBusinessDay",
-    start: Union[pd.Timestamp, None],
-    end: Union[pd.Timestamp, None],
-    periods: Union[int, None],
+    start: pd.Timestamp | None,
+    end: pd.Timestamp | None,
+    periods: int | None,
     freq: str,
     grouping_period: str,
-    closed: Union[Literal["left", "right"], None] = "right",
+    closed: Literal["left", "right"] | None = "right",
 ) -> pd.DatetimeIndex:
     """
     Return A DateRangeIndex of the Weekdays that mark either the start or end of each

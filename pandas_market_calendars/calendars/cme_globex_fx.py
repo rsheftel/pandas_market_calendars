@@ -1,5 +1,5 @@
 from datetime import time
-from typing import Any, List
+from typing import Any
 
 from pandas.tseries.holiday import AbstractHolidayCalendar
 
@@ -72,7 +72,7 @@ class CMEGlobexFXExchangeCalendar(CMEGlobexBaseExchangeCalendar):
         )
 
     @property
-    def special_closes(self) -> List[Any]:
+    def special_closes(self) -> list[Any]:
         """
         Accurate 2020-2022 inclusive
         TODO - enhance/verify prior to 2020
@@ -117,6 +117,6 @@ class CMEGlobexFXExchangeCalendar(CMEGlobexBaseExchangeCalendar):
         ]
 
     @property
-    def special_closes_adhoc(self) -> List[Any]:
+    def special_closes_adhoc(self) -> list[Any]:
         # July 4th on a Friday, or observed on one
         return [(_1200, ["2025-07-04", "2026-07-03"])]

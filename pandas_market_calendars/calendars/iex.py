@@ -1,5 +1,5 @@
 from datetime import time
-from typing import Any, List, Literal, Union
+from typing import Any, Literal
 
 from pandas import DatetimeIndex, Timedelta, Timestamp
 
@@ -46,7 +46,7 @@ class IEXExchangeCalendar(NYSEExchangeCalendar):
         return "Mon Tue Wed Thu Fri"
 
     @property
-    def special_opens(self) -> List[Any]:
+    def special_opens(self) -> list[Any]:
         return []
 
     def valid_days(self, start_date: Any, end_date: Any, tz: Any = "UTC") -> DatetimeIndex:
@@ -61,11 +61,11 @@ class IEXExchangeCalendar(NYSEExchangeCalendar):
 
     def date_range_htf(
         self,
-        frequency: Union[str, Timedelta, int, float],
-        start: Union[str, Timestamp, int, float, None] = None,
-        end: Union[str, Timestamp, int, float, None] = None,
-        periods: Union[int, None] = None,
-        closed: Union[Literal["left", "right"], None] = "right",
+        frequency: str | Timedelta | int | float,
+        start: str | Timestamp | int | float | None = None,
+        end: str | Timestamp | int | float | None = None,
+        periods: int | None = None,
+        closed: Literal["left", "right"] | None = "right",
         *,
         day_anchor: u.Day_Anchor = "SUN",
         month_anchor: u.Month_Anchor = "JAN",

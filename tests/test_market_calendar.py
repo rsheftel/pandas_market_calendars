@@ -15,6 +15,7 @@
 import pickle
 from datetime import time
 from itertools import chain
+from zoneinfo import ZoneInfo
 
 import exchange_calendars as ecal
 import numpy as np
@@ -22,7 +23,6 @@ import pandas as pd
 import pytest
 from pandas.testing import assert_frame_equal, assert_index_equal, assert_series_equal
 from pandas.tseries.holiday import AbstractHolidayCalendar
-from zoneinfo import ZoneInfo
 
 from pandas_market_calendars import get_calendar, get_calendar_names
 from pandas_market_calendars.calendars.mirror import TradingCalendar
@@ -1466,6 +1466,17 @@ def test_interruptions_df_rows_of_equal_and_single_length():
         index=pd.DatetimeIndex(["2010-01-13"]),
     )
     assert_frame_equal(SingleRowCalendar().interruptions_df, goal)
+
+
+def test_convert_preserves_missing_interruptions_as_nat():
+    dates = pd.DatetimeIndex(["2011-01-10", "2011-01-11"])
+    interruptions = pd.Series([time(11), None], index=dates)
+    expected = pd.Series(
+        pd.DatetimeIndex(["2011-01-10 03:00", pd.NaT], tz="UTC"),
+        index=dates,
+    )
+
+    assert_series_equal(FakeCalendar()._convert(interruptions), expected)
 
 
 ############################################

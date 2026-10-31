@@ -1,12 +1,6 @@
-import sys
 from datetime import time
 from typing import Any
-
-
-if sys.version_info >= (3, 9):
-    from zoneinfo import ZoneInfo
-else:
-    from backports.zoneinfo import ZoneInfo
+from zoneinfo import ZoneInfo
 
 from pandas_market_calendars.market_calendar import MarketCalendar
 

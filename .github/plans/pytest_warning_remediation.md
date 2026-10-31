@@ -1,8 +1,8 @@
 # Pytest Warning Remediation Plan
 
-Date: 2026-10-31 (revision 7)
+Date: 2026-10-31 (revision 8)
 
-**Current step: Follow-up — remove legacy pandas workaround and resolve Ruff findings.**
+**Current step: Follow-up — open PR and validate CI.**
 
 ## 0. Investigation (complete)
 
@@ -322,11 +322,13 @@ This step removes 19,513 of the 19,555 warning occurrences, about 99.8%.
 
 - [x] Confirm PR #515 merged into `dev` and create `fix/pandas-deprecation-warnings-follow-up` from updated `origin/dev`.
 - [x] Capture the Ruff baseline with `uv run --no-sync ruff check --target-version py310 --statistics .`: 256 findings (218 auto-fixable).
-- [ ] Remove the pandas <2.3 workaround in `MarketCalendar._convert`; verify missing interruption values remain `NaT`.
-- [ ] Resolve all Ruff findings now exposed by the `py310` target, including `UP`, import sorting, `B905`, `RUF100`, and `UP036`.
-- [ ] Add or update focused tests for any behavior changes required by Ruff fixes.
-- [ ] Run Ruff checks and formatting on changed Python files.
-- [ ] Run the complete test suite on pandas 3.1 and Python 3.10/pandas 2.3.3; allow only the previously documented warning sets.
+- [x] Remove the pandas <2.3 workaround in `MarketCalendar._convert`; verify missing interruption values remain `NaT`.
+- [x] Resolve all Ruff findings now exposed by the `py310` target, including `UP`, import sorting, `B905`, `RUF100`, and `UP036`.
+- [x] Add a focused regression test for missing interruptions, and preserve behavior with `zip(strict=True)` where input lengths must match.
+- [x] Run Ruff lint and check formatting on changed Python files. `ruff check --target-version py310 .` passes; all changed files pass `ruff format --check` except two tests (`test_cme_agriculture_calendar.py`, `test_nse_calendar.py`) that also fail the formatter check on `origin/dev`. Left their pre-existing formatting unchanged.
+- [x] Run the complete test suite on pandas 3.1 and Python 3.10/pandas 2.3.3; allow only the previously documented warning sets:
+  - pandas 3.1.0: 1,586 passed, 1 skipped, exactly 12 `exchange-calendars` warnings.
+  - Python 3.10/pandas 2.3.3: 1,586 passed, 1 skipped, 54 existing pandas `FutureWarning`s.
 - [ ] Confirm Python 3.14 and 3.15 CI coverage remains intact.
 - [ ] Add a follow-up entry to the existing 5.6.0 change-log section using the new PR number.
 - [ ] Commit and push the branch; open a draft PR against `dev` and include the Ruff/pandas validation details.

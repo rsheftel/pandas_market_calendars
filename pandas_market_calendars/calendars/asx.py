@@ -1,8 +1,8 @@
 from datetime import time
-from typing import Any, List
+from typing import Any
+from zoneinfo import ZoneInfo
 
 from pandas.tseries.holiday import AbstractHolidayCalendar, EasterMonday, GoodFriday
-from zoneinfo import ZoneInfo
 
 from pandas_market_calendars.holidays.oz import *
 from pandas_market_calendars.market_calendar import HolidayCalendar, MarketCalendar
@@ -67,11 +67,11 @@ class ASXExchangeCalendar(MarketCalendar):
         )
 
     @property
-    def adhoc_holidays(self) -> List[Any]:
+    def adhoc_holidays(self) -> list[Any]:
         return UniqueCloses
 
     @property
-    def special_closes(self) -> List[Any]:
+    def special_closes(self) -> list[Any]:
         return [
             (
                 time(hour=14, minute=10, tzinfo=self.tz),

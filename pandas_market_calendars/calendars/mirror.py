@@ -4,7 +4,7 @@ Imported calendars from the exchange_calendars project
 GitHub: https://github.com/gerrymanoim/exchange_calendars
 """
 
-from typing import Any, List, Optional
+from typing import Any
 
 import exchange_calendars
 import pandas as pd
@@ -84,7 +84,7 @@ class TradingCalendar(MarketCalendar):
         self.__init__(*args, **kwargs)
         return self
 
-    def __init__(self, open_time: Optional[Any] = None, close_time: Optional[Any] = None) -> None:
+    def __init__(self, open_time: Any | None = None, close_time: Any | None = None) -> None:
         super().__init__(open_time, close_time)
 
     @property
@@ -116,7 +116,7 @@ class TradingCalendar(MarketCalendar):
         return HolidayCalendar(rules=regular_holidays.rules, start_date=start_date)
 
     @property
-    def adhoc_holidays(self) -> List[Any]:
+    def adhoc_holidays(self) -> list[Any]:
         adhoc_holidays = self._ec.adhoc_holidays
         extra = MIRROR_ADHOC_HOLIDAYS.get(self.name)
         if extra is None:
@@ -124,19 +124,19 @@ class TradingCalendar(MarketCalendar):
         return list(adhoc_holidays) + extra
 
     @property
-    def special_opens(self) -> List[Any]:
+    def special_opens(self) -> list[Any]:
         return self._ec.special_opens
 
     @property
-    def special_opens_adhoc(self) -> List[Any]:
+    def special_opens_adhoc(self) -> list[Any]:
         return self._ec.special_opens_adhoc
 
     @property
-    def special_closes(self) -> List[Any]:
+    def special_closes(self) -> list[Any]:
         return self._ec.special_closes
 
     @property
-    def special_closes_adhoc(self) -> List[Any]:
+    def special_closes_adhoc(self) -> list[Any]:
         return self._ec.special_closes_adhoc
 
     @property

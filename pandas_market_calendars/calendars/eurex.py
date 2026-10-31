@@ -3,6 +3,7 @@
 #
 from datetime import time
 from typing import Any
+from zoneinfo import ZoneInfo
 
 from pandas.tseries.holiday import (
     AbstractHolidayCalendar,
@@ -10,7 +11,6 @@ from pandas.tseries.holiday import (
     GoodFriday,
     Holiday,
 )
-from zoneinfo import ZoneInfo
 
 from pandas_market_calendars.market_calendar import (
     FRIDAY,
