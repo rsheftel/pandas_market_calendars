@@ -4,6 +4,7 @@ Change Log
 5.6.0 (10/30/2026)
 ~~~~~~~~~~~~~~~~~~
 - Fixed test assertion helpers for pandas 3.1 index frequency compatibility (PR #512)
+- Fixed the ASX 2011 Easter Tuesday closure and weekend-eve early closes (PR #511)
 
 5.5.0 (10/04/2026)
 ~~~~~~~~~~~~~~~~~~
