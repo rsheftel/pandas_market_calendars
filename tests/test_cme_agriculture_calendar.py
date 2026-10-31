@@ -74,3 +74,16 @@ def test_carter_national_day_of_mourning_early_close():
     # Closed early at 12:15 CT instead of regular 13:20 CT
     assert session.market_close == pd.Timestamp("2025-01-09 12:15:00", tz=cme.tz)
 
+
+def test_bush_national_day_of_mourning_is_a_full_session():
+    cme = CMEAgricultureExchangeCalendar()
+    bush_mourning_day = pd.Timestamp("2018-12-05", tz="UTC")
+
+    assert bush_mourning_day not in cme.adhoc_holidays
+    assert bush_mourning_day not in cme.holidays().holidays
+
+    valid_days = cme.valid_days("2018-12-04", "2018-12-06")
+    assert bush_mourning_day in valid_days
+
+    schedule = cme.schedule("2018-12-05", "2018-12-05", tz="America/Chicago")
+    assert schedule.loc["2018-12-05", "market_close"] == pd.Timestamp("2018-12-05 13:20", tz=cme.tz)
