@@ -2,7 +2,7 @@
 
 Date: 2026-10-31 (revision 6)
 
-**Current step: Step 6 — pad ragged interruption rows explicitly.**
+**Current step: Step 7 — update contributor guidance in `AGENTS.md`.**
 
 ## 0. Investigation (complete)
 
@@ -226,19 +226,22 @@ This step removes 19,513 of the 19,555 warning occurrences, about 99.8%.
 
 ## 6. Pad ragged interruption rows explicitly
 
-- [ ] In `MarketCalendar.interruptions_df`:
-  - [ ] Read `self.interruptions` once.
-  - [ ] Pad each row with `None` to the longest row length before building the DataFrame.
-- [ ] Preserve:
-  - [ ] column naming;
-  - [ ] `NaT` for missing slots;
-  - [ ] day offsets;
-  - [ ] UTC conversion;
-  - [ ] sort order.
-- [ ] Continue accepting variable-length rows, as documented; callers do not need to pad.
-- [ ] Reuse `test_interruptions_df` and `test_schedule_w_interruptions`.
-- [ ] Add missing coverage for equal-length rows and single-row input.
-- [ ] Commit: `Pad interruption rows before building DataFrame`.
+- [x] In `MarketCalendar.interruptions_df`:
+  - [x] Read `self.interruptions` once.
+  - [x] Pad each row with `None` to the longest row length before building the DataFrame.
+- [x] Preserve:
+  - [x] column naming;
+  - [x] `NaT` for missing slots;
+  - [x] day offsets;
+  - [x] UTC conversion;
+  - [x] sort order.
+- [x] Continue accepting variable-length rows, as documented; callers do not need to pad.
+- [x] Reuse `test_interruptions_df` and `test_schedule_w_interruptions`.
+- [x] Add missing coverage for equal-length rows and single-row input.
+  - Added `test_interruptions_df_rows_of_equal_and_single_length`.
+- [x] Verified `interruptions_df` output is identical, including dtypes, before and after for NSE, XNSE,
+  `FakeCalendar`, and `FakeBreakCalendar`.
+- [x] Commit: `Pad interruption rows before building DataFrame`.
 
 ## 7. Update contributor guidance in `AGENTS.md`
 
