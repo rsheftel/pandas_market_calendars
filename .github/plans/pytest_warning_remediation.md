@@ -2,7 +2,7 @@
 
 Date: 2026-10-31 (revision 6)
 
-**Current step: Step 4 — make timezone-aware comparisons explicit.**
+**Current step: Step 5 — implement the frequency policy in the index wrapper.**
 
 ## 0. Investigation (complete)
 
@@ -193,14 +193,18 @@ This step removes 19,513 of the 19,555 warning occurrences, about 99.8%.
 
 ## 4. Make timezone-aware comparisons explicit
 
-- [ ] Rewrite `assert_same` in `tests/test_market_calendar.py` to compare UTC instants without `.values`.
+- [x] Rewrite `assert_same` in `tests/test_market_calendar.py` to compare UTC instants without `.values`.
   - Convert both inputs to UTC and the same datetime unit.
   - Compare the converted values with `.to_numpy()`.
   - Handle `Series` and `DatetimeIndex` inputs separately.
-- [ ] Keep the existing length check and comparison strictness.
-- [ ] Leave unrelated `.values` uses on timedelta and integer data unchanged; they do not warn.
-- [ ] Run `test_closes_opens`.
-- [ ] Commit: `Compare timezone-aware datetimes explicitly in tests`.
+- [x] Keep the existing length check and comparison strictness.
+- [x] Leave unrelated `.values` uses on timedelta and integer data unchanged; they do not warn.
+- [x] Run `test_closes_opens`.
+  - Implemented as `pd.DatetimeIndex(x).tz_convert("UTC")` equality, which accepts both input types.
+  - Verified that equal instants in different timezones, units, and containers pass.
+  - Verified that a shifted instant and `NaT` still fail.
+  - Only the 4 expected collection-time `exchange-calendars` warnings remain.
+- [x] Commit: `Compare timezone-aware datetimes explicitly in tests`.
 
 ## 5. Implement the frequency policy in the index wrapper
 

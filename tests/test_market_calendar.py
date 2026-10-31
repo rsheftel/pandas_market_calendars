@@ -1501,7 +1501,7 @@ def test_basic_information():
 
 def assert_same(one, two):
     assert one.shape[0] == two.shape[0], f"the shape is different {one.shape[0]} != {two.shape[0]}"
-    assert (one.values == two.values).all()
+    assert (pd.DatetimeIndex(one).tz_convert("UTC") == pd.DatetimeIndex(two).tz_convert("UTC")).all()
 
 
 def test_closes_opens():
