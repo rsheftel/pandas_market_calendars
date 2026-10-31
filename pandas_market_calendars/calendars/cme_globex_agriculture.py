@@ -25,6 +25,10 @@ from pandas.tseries.holiday import (
 )
 
 from pandas_market_calendars.calendars.cme_market_times import GRAINS_AND_OILSEEDS_MARKET_TIMES
+from pandas_market_calendars.holidays.cme_globex import (
+    ChristmasEveFrom2015,
+    FridayAfterThanksgivingFrom2015,
+)
 from pandas_market_calendars.holidays.us import (
     Christmas,
     ChristmasEveBefore1993,
@@ -167,3 +171,19 @@ class CMEGlobexGrainsAndOilseedsExchangeCalendar(CMEGlobexAgricultureExchangeCal
                 Christmas,
             ]
         )
+
+    @property
+    def special_closes(self) -> List[Any]:
+        # The day session ends at 12:05 instead of 13:20, checked against traded bars from 2015. Before 2015 both
+        # closes were five minutes earlier (12:00 and 13:15); this calendar does not model that.
+        return [
+            (
+                time(12, 5),
+                AbstractHolidayCalendar(
+                    rules=[
+                        FridayAfterThanksgivingFrom2015,
+                        ChristmasEveFrom2015,
+                    ]
+                ),
+            )
+        ]
