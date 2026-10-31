@@ -15,6 +15,7 @@ Change Log
 - Treated UK Easter Monday and Boxing Day as early closes rather than full closes on SIFMA JP (PR #503)
 - Added mainland China futures exchange calendars (SHFE, INE, DCE, CZCE, GFEX, CFFEX) (PR #505)
 - Normalized schedule input dates at every datetime resolution, not just nanoseconds (PR #504)
+- Restored Cboe Christmas Eve early closes (PR #513)
 
 5.5.0 (10/04/2026)
 ~~~~~~~~~~~~~~~~~~
