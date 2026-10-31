@@ -1,8 +1,8 @@
 # Pytest Warning Remediation Plan
 
-Date: 2026-10-31 (revision 8)
+Date: 2026-10-31 (revision 9)
 
-**Current step: Follow-up — open PR and validate CI.**
+**Current step: Follow-up — validate CI and hand off PR #516.**
 
 ## 0. Investigation (complete)
 
@@ -330,8 +330,8 @@ This step removes 19,513 of the 19,555 warning occurrences, about 99.8%.
   - pandas 3.1.0: 1,586 passed, 1 skipped, exactly 12 `exchange-calendars` warnings.
   - Python 3.10/pandas 2.3.3: 1,586 passed, 1 skipped, 54 existing pandas `FutureWarning`s.
 - [ ] Confirm Python 3.14 and 3.15 CI coverage remains intact.
-- [ ] Add a follow-up entry to the existing 5.6.0 change-log section using the new PR number.
-- [ ] Commit and push the branch; open a draft PR against `dev` and include the Ruff/pandas validation details.
+- [x] Add a follow-up entry to the existing 5.6.0 change-log section using the new PR number (PR #516).
+- [x] Commit and push the branch; open a draft PR against `dev` and include the Ruff/pandas validation details (PR #516).
 - [ ] Confirm CI passes, mark the PR ready, and hand off for review and squash merge.
 
 ## Acceptance criteria
