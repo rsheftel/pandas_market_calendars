@@ -98,3 +98,12 @@ def test_new_years_eve_weekend():
     # 2018-12-31 is a Monday, so New Year's Eve is observed as usual
     good_dates = six.valid_days("2018-12-01", "2018-12-31", tz="Europe/Zurich")
     assert pd.Timestamp("2018-12-31", tz="Europe/Zurich") not in good_dates
+
+    # additional years (from PR #488)
+    # https://www.six-group.com/exchanges/download/participants/regulation/trading_guides/trading_calendar_2022.pdf
+    good_dates = six.valid_days("2016-12-01", "2024-12-31", tz="Europe/Zurich")
+    for date in ["2016-12-30", "2017-12-29", "2022-12-30", "2023-12-29"]:
+        assert pd.Timestamp(date, tz="Europe/Zurich") in good_dates
+    # new year's eve on a weekday is still a holiday
+    for date in ["2018-12-31", "2019-12-31", "2020-12-31", "2021-12-31", "2024-12-31"]:
+        assert pd.Timestamp(date, tz="Europe/Zurich") not in good_dates
