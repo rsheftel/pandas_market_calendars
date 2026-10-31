@@ -8,6 +8,7 @@ Change Log
 - Treated the 2025-01-09 Carter National Day of Mourning as an early close on CME Agriculture (PR #493)
 - Corrected CME Globex holiday closes across product calendars based on traded bars (PR #494)
 - Added missing HKEX closures: the 2021-04-06 Easter Monday / Ching Ming overlap and typhoon closures on 2020-10-13, 2021-10-13 and 2024-09-06 (PR #495)
+- Corrected historical TSX session dates (PR #496)
 
 5.5.0 (10/04/2026)
 ~~~~~~~~~~~~~~~~~~
