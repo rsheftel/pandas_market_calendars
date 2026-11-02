@@ -114,6 +114,15 @@ All shell commands, file paths, and code snippets **MUST**:
 
 Violating this rule makes the suggestion completely unusable.
 
+## Cursor Cloud specific instructions
+
+- This repository is a library. There is no dev server, database, or other process to start. Market calendars ship as package code, so imports and tests need no secrets and no network access.
+- The environment install script installs `uv` and symlinks `uv` and `uvx` into `/usr/local/bin`. Non-interactive login shells skip `~/.bashrc`, so that symlink is what makes `uv` available.
+- `uv.lock` is gitignored. `uv sync --all-extras --group dev` resolves from `pyproject.toml` into `.venv` using the image Python (3.12 on the default image).
+- A working install can be checked with `uv run --no-sync python -c "import pandas_market_calendars as mcal; print(mcal.get_calendar('NYSE').schedule('2012-07-01', '2012-07-10'))"`. Independence Day 2012-07-04 is absent, and 2012-07-03 closes at 17:00 UTC.
+- `uv run --no-sync ruff check .` is the lint check. `ruff format --check` can fail on formatting drift that is already in the repository; that is not an environment failure.
+- `uv run --no-sync ty check pandas_market_calendars` is the type check. It currently reports existing diagnostics in the package; that is a typing baseline, not an environment failure.
+
 ## Running Tests
 
 - Canonical commands
