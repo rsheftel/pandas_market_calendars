@@ -871,6 +871,9 @@ class MarketCalendar(metaclass=MarketCalendarMeta):
         elif market_times == "all":
             market_times = self._market_times
 
+        if not days.size:  # If no days return an empty DataFrame, as schedule() does
+            return pd.DataFrame(columns=market_times, index=pd.DatetimeIndex([], freq="C"))
+
         _adj_others = force_special_times is True
         _adj_col = force_special_times is not None
         _open_adj = _close_adj = []
