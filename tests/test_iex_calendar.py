@@ -59,3 +59,14 @@ def test_holidays_and_early_closes():
 def test_schedule_matches_nyse():
     start, end = "2013-08-26", "2026-12-31"
     pd.testing.assert_frame_equal(iex.schedule(start, end), NYSEExchangeCalendar().schedule(start, end))
+
+
+def test_valid_days_tz_aware_start():
+    expected = iex.valid_days("2020-01-02", "2020-01-08")
+    for tz in ("UTC", "America/New_York"):
+        start = pd.Timestamp("2020-01-02", tz=tz)
+        pd.testing.assert_index_equal(iex.valid_days(start, "2020-01-08"), expected)
+
+    # still limited to the exchange's opening date
+    trading_days = iex.valid_days(pd.Timestamp("2010-01-01", tz="UTC"), "2013-08-30")
+    assert trading_days[0] == pd.Timestamp("2013-08-26", tz="UTC")
