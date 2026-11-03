@@ -6,6 +6,7 @@ Change Log
 - Closed CME Globex Grains on Juneteenth and restored CME Agriculture trading on 2018-12-05 (PR #518)
 - Added Cursor Cloud agent setup notes to AGENTS.md (PR #519)
 - Made schedule_from_days return an empty schedule when given no days, matching schedule() (PR #520)
+- Made IEX valid_days accept tz-aware start dates (PR #521)
 
 5.6.0 (10/30/2026)
 ~~~~~~~~~~~~~~~~~~
