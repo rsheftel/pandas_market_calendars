@@ -7,6 +7,7 @@ Change Log
 - Added Cursor Cloud agent setup notes to AGENTS.md (PR #519)
 - Made schedule_from_days return an empty schedule when given no days, matching schedule() (PR #520)
 - Made IEX valid_days accept tz-aware start dates (PR #521)
+- Fixed binary weekmasks so only open days are counted when estimating business-day ranges (PR #523)
 
 5.6.0 (10/30/2026)
 ~~~~~~~~~~~~~~~~~~
