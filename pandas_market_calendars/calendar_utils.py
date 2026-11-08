@@ -1049,7 +1049,7 @@ def _days_per_week(weekmask: Iterable | str) -> int:
         return len(day_abbrs)
 
     # Weekmask Something like '0111110'
-    return len([day for day in weekmask if bool(day)])
+    return weekmask.count("1")
 
 
 def _cal_day_range(cb_day: "CustomBusinessDay", start: Any, end: Any, periods: Any, mult: Any) -> pd.DatetimeIndex:
