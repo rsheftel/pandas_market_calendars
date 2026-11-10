@@ -1081,7 +1081,8 @@ def _cal_day_range(cb_day: "CustomBusinessDay", start: Any, end: Any, periods: A
         est_open_days = ((num_days // 7) * _days_per_week(cb_day.weekmask)) + num_days % pd.Timedelta("1W")
 
         # Should always produce a small overestimate since Holidays aren't accounted for.
-        est_open_days = ceil(est_open_days / pd.Timedelta("1D"))
+        # Include the initial session: start and end are both inclusive.
+        est_open_days = ceil(est_open_days / pd.Timedelta("1D")) + 1
         _range = pd.RangeIndex(0, est_open_days * mult, mult)
 
         dt_index = pd.DatetimeIndex(start + _range * cb_day, dtype="datetime64[ns]")
