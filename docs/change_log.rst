@@ -8,6 +8,7 @@ Change Log
 - Made schedule_from_days return an empty schedule when given no days, matching schedule() (PR #520)
 - Made IEX valid_days accept tz-aware start dates (PR #521)
 - Fixed binary weekmasks so only open days are counted when estimating business-day ranges (PR #523)
+- Fixed BSE 2020 holidays: closed on 2020-05-25 (Id-ul-Fitr) and open on 2020-07-31 (PR #524)
 
 5.6.0 (10/30/2026)
 ~~~~~~~~~~~~~~~~~~
