@@ -25,6 +25,22 @@ def test_x():
     assert all(d in good_dates for d in {"2023-01-03", "2023-01-05", "2023-12-26", "2023-12-27", "2023-12-28"})
 
 
+def test_juneteenth_closures():
+    closed_dates = [
+        "2022-06-20",
+        "2023-06-19",
+        "2024-06-19",
+        "2025-06-19",
+        "2026-06-19",
+        "2027-06-18",
+    ]
+    valid_days = cal.valid_days("2022-06-20", "2027-06-21")
+
+    assert all(pd.Timestamp(date, tz="UTC") not in valid_days for date in closed_dates)
+    assert pd.Timestamp("2023-06-20", tz="UTC") in valid_days
+    assert pd.Timestamp("2027-06-21", tz="UTC") in valid_days
+
+
 # The end of the last one-minute TRADES bar of ZC, ZS and ZW: NinjaTrader history for 2015-2022 and
 # Interactive Brokers history for 2025.
 def test_friday_after_thanksgiving_and_christmas_eve_close_at_1205():

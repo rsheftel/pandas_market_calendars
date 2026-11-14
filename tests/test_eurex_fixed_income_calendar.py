@@ -12,6 +12,24 @@ def test_time_zone():
     assert EUREXFixedIncomeCalendar().name == "EUREX_Bond"
 
 
+def test_open_time_moves_earlier_on_2018_12_10():
+    """
+    Eurex extended trading hours for the fixed income futures into the Asian
+    time zone starting Monday, 10 December 2018 (Eurex circular 063/18).
+    Before that the market opened at 08:00 CET, from then on at 01:10 CET.
+    """
+    schedule = EUREXFixedIncomeCalendar().schedule("2018-12-06", "2018-12-11", tz="Europe/Berlin")
+    opens = schedule["market_open"]
+    closes = schedule["market_close"]
+
+    for day in ["2018-12-06", "2018-12-07"]:
+        assert opens[day] == pd.Timestamp(f"{day} 08:00", tz="Europe/Berlin")
+    for day in ["2018-12-10", "2018-12-11"]:
+        assert opens[day] == pd.Timestamp(f"{day} 01:10", tz="Europe/Berlin")
+    for day in ["2018-12-06", "2018-12-07", "2018-12-10", "2018-12-11"]:
+        assert closes[day] == pd.Timestamp(f"{day} 22:00", tz="Europe/Berlin")
+
+
 def _test_year_holiday(year, bad_dates):
     eurex = EUREXFixedIncomeCalendar()
     good_dates = eurex.valid_days(f"{year}-01-01", f"{year}-12-31")
