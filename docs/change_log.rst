@@ -1,6 +1,10 @@
 Change Log
 ==========
 
+5.6.2 (11/13/2026)
+~~~~~~~~~~~~~~~~~~
+- Placeholder for upcoming changes
+
 5.6.1 (11/13/2026)
 ~~~~~~~~~~~~~~~~~~
 - Closed CME Globex Grains on Juneteenth and restored CME Agriculture trading on 2018-12-05 (PR #518)
