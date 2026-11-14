@@ -9,6 +9,7 @@ Change Log
 - Made IEX valid_days accept tz-aware start dates (PR #521)
 - Fixed binary weekmasks so only open days are counted when estimating business-day ranges (PR #523)
 - Fixed BSE 2020 holidays: closed on 2020-05-25 (Id-ul-Fitr) and open on 2020-07-31 (PR #524)
+- Fixed EUREX_Bond open times that were swapped around 2018-12-10 (PR #526)
 
 5.6.0 (10/30/2026)
 ~~~~~~~~~~~~~~~~~~
