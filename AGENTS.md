@@ -224,7 +224,7 @@ from pandas_market_calendars import calendar_utils
 
 result = calendar_utils.merge_schedules(...)
 
-# ✅ Classes/Exceptions  
+# ✅ Classes/Exceptions
 from pandas_market_calendars.market_calendar import MarketCalendar
 
 cal = MarketCalendar()

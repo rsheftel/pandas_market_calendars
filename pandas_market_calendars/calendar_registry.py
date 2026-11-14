@@ -8,9 +8,7 @@ from .calendars.bmf import BMFExchangeCalendar
 from .calendars.bse import BSEExchangeCalendar
 from .calendars.nse import NSEExchangeCalendar
 from .calendars.cboe import CFEExchangeCalendar
-from .calendars.cme import (
-    CMEEquityExchangeCalendar, CMEBondExchangeCalendar, CMETradeDateCalendar
-)
+from .calendars.cme import CMEEquityExchangeCalendar, CMEBondExchangeCalendar, CMETradeDateCalendar
 from .calendars.cme_globex_base import CMEGlobexBaseExchangeCalendar
 from .calendars.china_futures import (
     CFFEXBondExchangeCalendar,
