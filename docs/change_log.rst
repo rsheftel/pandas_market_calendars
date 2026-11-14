@@ -3,7 +3,7 @@ Change Log
 
 5.6.2 (11/13/2026)
 ~~~~~~~~~~~~~~~~~~
-- Placeholder for upcoming changes
+- Added HKEX half-day closes at 12:00 on the eves of Christmas, New Year and Lunar New Year
 
 5.6.1 (11/13/2026)
 ~~~~~~~~~~~~~~~~~~
