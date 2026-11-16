@@ -26,9 +26,7 @@ def test_holidays():
     assert len(set(NSEClosedDay)) == 453
     assert (pd.DatetimeIndex(NSEClosedDay).day_of_week < 5).all()
 
-    trading_days = nse_calendar.valid_days(
-        pd.Timestamp("1996-01-01"), pd.Timestamp("2026-12-31")
-    )
+    trading_days = nse_calendar.valid_days(pd.Timestamp("1996-01-01"), pd.Timestamp("2026-12-31"))
     for session_label in NSEClosedDay:
         assert session_label not in trading_days
 
@@ -47,20 +45,12 @@ def test_regular_hours_2010_transitions():
     schedule = nse_calendar.schedule("2009-12-31", "2010-10-18")
 
     # Last 9:55 AM IST open.
-    assert schedule.loc["2009-12-31", "market_open"] == pd.Timestamp(
-        "2009-12-31 04:25", tz="UTC"
-    )
+    assert schedule.loc["2009-12-31", "market_open"] == pd.Timestamp("2009-12-31 04:25", tz="UTC")
     # 9:00 AM IST open, first and last day.
-    assert schedule.loc["2010-01-04", "market_open"] == pd.Timestamp(
-        "2010-01-04 03:30", tz="UTC"
-    )
-    assert schedule.loc["2010-10-15", "market_open"] == pd.Timestamp(
-        "2010-10-15 03:30", tz="UTC"
-    )
+    assert schedule.loc["2010-01-04", "market_open"] == pd.Timestamp("2010-01-04 03:30", tz="UTC")
+    assert schedule.loc["2010-10-15", "market_open"] == pd.Timestamp("2010-10-15 03:30", tz="UTC")
     # 9:15 AM IST open, first day.
-    assert schedule.loc["2010-10-18", "market_open"] == pd.Timestamp(
-        "2010-10-18 03:45", tz="UTC"
-    )
+    assert schedule.loc["2010-10-18", "market_open"] == pd.Timestamp("2010-10-18 03:45", tz="UTC")
 
     for market_close in schedule["market_close"]:
         assert market_close.time() == pd.Timestamp("10:00").time()
@@ -72,43 +62,25 @@ def test_regular_hours_1990s_eras():
     schedule = nse_calendar.schedule("1997-08-06", "1997-08-14")
 
     # 9:30 AM - 3:00 PM IST era.
-    assert schedule.loc["1997-08-06", "market_open"] == pd.Timestamp(
-        "1997-08-06 04:00", tz="UTC"
-    )
-    assert schedule.loc["1997-08-06", "market_close"] == pd.Timestamp(
-        "1997-08-06 09:30", tz="UTC"
-    )
+    assert schedule.loc["1997-08-06", "market_open"] == pd.Timestamp("1997-08-06 04:00", tz="UTC")
+    assert schedule.loc["1997-08-06", "market_close"] == pd.Timestamp("1997-08-06 09:30", tz="UTC")
     # One-week 9:00 AM - 2:30 PM IST era.
-    assert schedule.loc["1997-08-07", "market_open"] == pd.Timestamp(
-        "1997-08-07 03:30", tz="UTC"
-    )
-    assert schedule.loc["1997-08-07", "market_close"] == pd.Timestamp(
-        "1997-08-07 09:00", tz="UTC"
-    )
-    assert schedule.loc["1997-08-14", "market_open"] == pd.Timestamp(
-        "1997-08-14 04:00", tz="UTC"
-    )
+    assert schedule.loc["1997-08-07", "market_open"] == pd.Timestamp("1997-08-07 03:30", tz="UTC")
+    assert schedule.loc["1997-08-07", "market_close"] == pd.Timestamp("1997-08-07 09:00", tz="UTC")
+    assert schedule.loc["1997-08-14", "market_open"] == pd.Timestamp("1997-08-14 04:00", tz="UTC")
 
     # 9:55 AM - 3:45 PM IST era.
     schedule = nse_calendar.schedule("1999-01-04", "1999-01-04")
-    assert schedule.loc["1999-01-04", "market_open"] == pd.Timestamp(
-        "1999-01-04 04:25", tz="UTC"
-    )
-    assert schedule.loc["1999-01-04", "market_close"] == pd.Timestamp(
-        "1999-01-04 10:15", tz="UTC"
-    )
+    assert schedule.loc["1999-01-04", "market_open"] == pd.Timestamp("1999-01-04 04:25", tz="UTC")
+    assert schedule.loc["1999-01-04", "market_close"] == pd.Timestamp("1999-01-04 10:15", tz="UTC")
 
 
 def _assert_ist_windows(expected_windows):
     nse_calendar = NSEExchangeCalendar()
     for date, (open_ist, close_ist) in expected_windows.items():
         schedule = nse_calendar.schedule(date, date)
-        assert schedule.loc[date, "market_open"] == pd.Timestamp(
-            f"{date} {open_ist}", tz="Asia/Calcutta"
-        )
-        assert schedule.loc[date, "market_close"] == pd.Timestamp(
-            f"{date} {close_ist}", tz="Asia/Calcutta"
-        )
+        assert schedule.loc[date, "market_open"] == pd.Timestamp(f"{date} {open_ist}", tz="Asia/Calcutta")
+        assert schedule.loc[date, "market_close"] == pd.Timestamp(f"{date} {close_ist}", tz="Asia/Calcutta")
 
 
 def test_regular_hours_every_era():
@@ -172,12 +144,8 @@ def test_muhurat_sessions_2014_2025():
 def test_special_session_dates_consistent():
     nse_calendar = NSEExchangeCalendar()
 
-    open_dates = {
-        date for _, dates in nse_calendar.special_opens_adhoc for date in dates
-    }
-    close_dates = {
-        date for _, dates in nse_calendar.special_closes_adhoc for date in dates
-    }
+    open_dates = {date for _, dates in nse_calendar.special_opens_adhoc for date in dates}
+    close_dates = {date for _, dates in nse_calendar.special_closes_adhoc for date in dates}
 
     # Close-only dates keep the regular open: the 2021-02-24 outage day and
     # the 1996-1999 observed extended/early closes.
@@ -202,18 +170,10 @@ def test_2021_outage_interruption():
 
     schedule = nse_calendar.schedule("2021-02-24", "2021-02-24", interruptions=True)
 
-    assert schedule.loc["2021-02-24", "market_open"] == pd.Timestamp(
-        "2021-02-24 03:45", tz="UTC"
-    )
-    assert schedule.loc["2021-02-24", "interruption_start_1"] == pd.Timestamp(
-        "2021-02-24 06:10", tz="UTC"
-    )
-    assert schedule.loc["2021-02-24", "interruption_end_1"] == pd.Timestamp(
-        "2021-02-24 10:15", tz="UTC"
-    )
-    assert schedule.loc["2021-02-24", "market_close"] == pd.Timestamp(
-        "2021-02-24 11:30", tz="UTC"
-    )
+    assert schedule.loc["2021-02-24", "market_open"] == pd.Timestamp("2021-02-24 03:45", tz="UTC")
+    assert schedule.loc["2021-02-24", "interruption_start_1"] == pd.Timestamp("2021-02-24 06:10", tz="UTC")
+    assert schedule.loc["2021-02-24", "interruption_end_1"] == pd.Timestamp("2021-02-24 10:15", tz="UTC")
+    assert schedule.loc["2021-02-24", "market_close"] == pd.Timestamp("2021-02-24 11:30", tz="UTC")
 
 
 def test_backward_compatible_imports():

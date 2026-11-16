@@ -225,6 +225,34 @@ Christmas = Holiday(
     start_date=Timestamp("1954-01-01"),
 )
 
+# Half days: no afternoon session on the eves of Christmas, New Year and
+# Lunar New Year when they fall on a weekday (morning session ends at 12:00
+# since 2011-03-07).
+ChristmasEve = Holiday(
+    name="Christmas Eve",
+    month=12,
+    day=24,
+    days_of_week=(0, 1, 2, 3, 4),
+    start_date=Timestamp("2011-03-07"),
+)
+
+NewYearsEve = Holiday(
+    name="New Year's Eve",
+    month=12,
+    day=31,
+    days_of_week=(0, 1, 2, 3, 4),
+    start_date=Timestamp("2011-03-07"),
+)
+
+LunarNewYearsEve = Holiday(
+    name="Lunar New Year's Eve",
+    month=1,
+    day=21,
+    observance=partial(process_date, mapping=sf_mapping, delta=-1),
+    days_of_week=(0, 1, 2, 3, 4),
+    start_date=Timestamp("2013-01-01"),
+)
+
 BoxingDay = Holiday(
     name="Boxing day",  # 圣诞节后第一个平日
     month=12,
@@ -437,3 +465,7 @@ class HKEXExchangeCalendar(MarketCalendar):
     @property
     def adhoc_holidays(self) -> list[Any]:
         return HKClosedDay
+
+    @property
+    def special_closes(self) -> list[Any]:
+        return [(time(12), AbstractHolidayCalendar(rules=[ChristmasEve, NewYearsEve, LunarNewYearsEve]))]

@@ -71,8 +71,12 @@ class EUREXFixedIncomeCalendar(MarketCalendar):
 
     aliases = ["EUREX_Bond"]
 
+    # Eurex moved the open of the Bund, Bobl, Schatz and Buxl futures forward
+    # from 08:00 to the Asian time zone on Monday, 10 December 2018 (circular 063/18):
+    # https://www.eurex.com/ex-en/find/circulars/No.-063-18-Extension-of-trading-hours-for-selected-benchmark-futures-and-MSCI-futures-219526
+    # https://www.eurex.com/ex-en/support/initiatives/archive/trading-hour-extension
     regular_market_times = {
-        "market_open": ((None, time(1, 10)), ("2018-12-10", time(8, 0))),
+        "market_open": ((None, time(8, 0)), ("2018-12-10", time(1, 10))),
         "market_close": ((None, time(22)),),
     }
 

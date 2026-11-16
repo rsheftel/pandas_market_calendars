@@ -90,3 +90,16 @@ def test_hkex_closes_at_lunch():
         schedule=schedule,
         timestamp=datetime.datetime(2015, 1, 14, 12, 10, tzinfo=ZoneInfo("Asia/Shanghai")),
     )
+
+
+def test_half_days_close_at_noon():
+    hkex = HKEXExchangeCalendar()
+    schedule = hkex.schedule("2026-02-13", "2026-12-31", tz="Asia/Hong_Kong")
+    closes = schedule["market_close"].dt.strftime("%H:%M")
+
+    # eves of Lunar New Year, Christmas and New Year
+    for date in ["2026-02-16", "2026-12-24", "2026-12-31"]:
+        assert closes[date] == "12:00"
+    # regular days around them
+    for date in ["2026-02-13", "2026-12-23", "2026-12-30"]:
+        assert closes[date] == "16:00"
