@@ -4,7 +4,7 @@ Change Log
 5.6.2 (11/13/2026)
 ~~~~~~~~~~~~~~~~~~
 - Added HKEX half-day closes at 12:00 on the eves of Christmas, New Year and Lunar New Year (PR #528)
-- Added NASDAQ_23_5 and NYSE_Arca calendars with the 23/5 overnight session from trading date 2026-12-07; the NASDAQ alias is unchanged (issue #530)
+- Added NASDAQ_23_5 and NYSE_Arca calendars with the 23/5 overnight session from trading date 2026-12-07; the NASDAQ alias is unchanged (PR #531)
 
 5.6.1 (11/13/2026)
 ~~~~~~~~~~~~~~~~~~
