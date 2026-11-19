@@ -29,7 +29,12 @@ appropriate for `pandas_market_calendars`'s API. For minor features (ones where 
 
 ### Pull requests
 
-Please format all code using black.
+Please format and lint all code using ruff (configured in `pyproject.toml`):
+
+```
+ruff format <files>
+ruff check <files>
+```
 
 If you create an editable install with the dev extras you can get a pre-commit hook set-up.
 
