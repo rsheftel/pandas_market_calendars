@@ -438,11 +438,14 @@ CALENDAR_SOURCES: dict[str, tuple[Source, ...]] = {
             notes="NASDAQ follows NYSE holiday schedule",
         ),
         Source(
-            name="SR-NASDAQ-2025-109: 23/5 trading rule filing",
-            url="https://listingcenter.nasdaq.com/assets/rulebook/nasdaq/filings/SR-NASDAQ-2025-109.pdf",
+            name="SR-NASDAQ-2025-109: SEC order approving 23/5 trading (91 FR 20222)",
+            url="https://www.federalregister.gov/documents/2026/04/15/2026-07259/self-regulatory-organizations-the-nasdaq-stock-market-llc-notice-of-filing-of-amendment-nos-2-and-3",
             last_verified="2026-11-19",
-            covers="overnight session hours",
-            notes="Overnight session 21:00-04:00 ET, Sunday to Thursday nights, from 2026-12-06",
+            covers="overnight session hours, holidays, early closes",
+            notes=(
+                "Night Session 21:00-04:00 ET, Sunday to Thursday nights, when the next calendar day is a "
+                "business day; reopens at 21:00 on a holiday or early-close day; industry launch 2026-12-06"
+            ),
         ),
     ),
     "NYSE_Arca": (

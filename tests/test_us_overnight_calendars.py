@@ -143,6 +143,23 @@ def test_schedule_christmas_and_new_year():
     assert times(sched, ["overnight"], day=1) == ["Sun 01-03 21:00"]
 
 
+def test_schedule_half_day_before_a_midweek_holiday():
+    cal = NASDAQExchangeCalendar()
+
+    # Monday 2029-12-24 closes early and Tuesday is Christmas; Wednesday's session opens on Christmas evening
+    sched = full_schedule(cal, "2029-12-24", "2029-12-26")
+
+    assert list(sched.index) == [pd.Timestamp("2029-12-24"), pd.Timestamp("2029-12-26")]
+    assert times(sched, day=0) == [
+        "Sun 12-23 21:00",
+        "Mon 12-24 04:00",
+        "Mon 12-24 09:30",
+        "Mon 12-24 13:00",
+        "Mon 12-24 17:00",
+    ]
+    assert times(sched, ["overnight", "pre"], day=1) == ["Tue 12-25 21:00", "Wed 12-26 04:00"]
+
+
 def test_schedule_opens_on_the_evening_of_a_holiday():
     cal = NASDAQExchangeCalendar()
 
@@ -217,6 +234,7 @@ def test_open_at_time_overnight():
 def test_change_time_moves_the_start_date():
     cal = NASDAQExchangeCalendar()
 
+    # the industry fallback launch is Sunday 2027-01-24, so trading date 2027-01-25 is the first with a session
     cal.change_time("overnight", ((None, time(4)), ("2027-01-25", time(21), -1)))
     sched = full_schedule(cal, "2026-12-07", "2027-01-25")
 
@@ -234,5 +252,5 @@ def test_sources():
     nasdaq_sources = mcal.get_calendar("NASDAQ_23_5").sources
     arca_sources = mcal.get_calendar("ARCA").sources
 
-    assert any("SR-NASDAQ-2025-109" in source.url for source in nasdaq_sources)
-    assert any("SR-NYSEArca-2026-53" in source.url for source in arca_sources)
+    assert any("SR-NASDAQ-2025-109" in source.name for source in nasdaq_sources)
+    assert any("SR-NYSEArca-2026-53" in source.name for source in arca_sources)

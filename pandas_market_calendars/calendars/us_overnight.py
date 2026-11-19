@@ -9,6 +9,10 @@ session is therefore a market time with a -1 day offset, the same approach the C
 Holidays and early closes follow NYSE, so both calendars subclass NYSEExchangeCalendar. Because the overnight
 session always opens on the evening before a valid trading day, holidays need no special handling: Monday opens
 on Sunday evening, the day after a holiday opens on the holiday's evening, and a holiday has no session at all.
+Early closes need none either: both exchanges reopen at 21:00 on the evening of an early-close day.
+
+The bar generator ``calendar_utils.date_range`` has no session type for the overnight period, so its ``session``
+argument does not yet return overnight bars.
 
 The "NASDAQ" alias still points at NYSEExchangeCalendar, so existing schedules are unchanged. The calendars here
 are registered under new names only.
@@ -48,7 +52,7 @@ class NASDAQExchangeCalendar(NYSEExchangeCalendar):
     default schedule() columns (market_open, market_close) are the same as NYSE; use start="overnight" to
     include the overnight session.
 
-    To move the start date, for example if the launch is delayed:
+    To move the start date, for example to the industry fallback launch of Sunday 2027-01-24:
     cal.change_time("overnight", ((None, time(4)), ("2027-01-25", time(21), -1)))
 
     The "NASDAQ" alias still returns NYSEExchangeCalendar; this calendar is registered as "NASDAQ_23_5".
@@ -80,7 +84,7 @@ class NYSEArcaExchangeCalendar(NYSEExchangeCalendar):
     and Late; they map onto overnight, pre, market_open..market_close and post. Use start="overnight" in
     schedule() to include the overnight session.
 
-    To move the start date, for example if the launch is delayed:
+    To move the start date, for example to the industry fallback launch of Sunday 2027-01-24:
     cal.change_time("overnight", ((None, time(4)), ("2027-01-25", time(21), -1)))
 
     References:
