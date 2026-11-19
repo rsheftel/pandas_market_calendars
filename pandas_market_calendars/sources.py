@@ -453,8 +453,11 @@ CALENDAR_SOURCES: dict[str, tuple[Source, ...]] = {
             name="SR-NYSEArca-2026-53: overnight session rule filing",
             url="https://www.nyse.com/publicdocs/nyse/markets/nyse-arca/rule-filings/filings/2026/SR-NYSEArca-2026-53.pdf",
             last_verified="2026-11-19",
-            covers="overnight session hours",
-            notes="Overnight session 21:00-04:00 ET, Sunday to Thursday nights, from 2026-12-06",
+            covers="overnight session hours, holidays",
+            notes=(
+                "Overnight session 21:00 ET Sunday to Thursday until the 04:00 Early session; after a holiday "
+                "the next overnight session opens at 21:00 on the holiday's evening; projected launch 2026-12-06"
+            ),
         ),
         Source(
             name="NYSE Holidays and Trading Hours",

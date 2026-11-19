@@ -11,8 +11,8 @@ anyone's existing workflow. So `"NASDAQ"` stays an alias of `NYSEExchangeCalenda
 calendars are registered under new names only.
 
 ## Sources
-- SR-NASDAQ-2025-109 (Nasdaq 23/5 rule filing):
-  https://listingcenter.nasdaq.com/assets/rulebook/nasdaq/filings/SR-NASDAQ-2025-109.pdf
+- SR-NASDAQ-2025-109, SEC order approving Nasdaq's 23/5 trading (91 FR 20222):
+  https://www.federalregister.gov/documents/2026/04/15/2026-07259/self-regulatory-organizations-the-nasdaq-stock-market-llc-notice-of-filing-of-amendment-nos-2-and-3
 - SR-NYSEArca-2026-53 (NYSE Arca overnight session rule filing):
   https://www.nyse.com/publicdocs/nyse/markets/nyse-arca/rule-filings/filings/2026/SR-NYSEArca-2026-53.pdf
 
@@ -29,7 +29,7 @@ calendars are registered under new names only.
 4. [x] Import both classes in `calendar_registry.py`.
 5. [x] Add `sources.py` entries keyed by each class's `name`.
 6. [x] Add rows to `docs/calendars.rst` and a line to `docs/change_log.rst`.
-7. [ ] Run ruff on the changed files and the full test suite; no new warnings.
+7. [x] Run ruff on the changed files and the full test suite; no new warnings.
 
 ## Design
 - `overnight` is one new market time, counted as an open in `open_close_map`. Its value is
@@ -38,7 +38,16 @@ calendars are registered under new names only.
 - `market_open` stays at 09:30, so the default `schedule()` columns match NYSE exactly.
 - Holidays need no special code: a trading date D always opens at 21:00 on D-1, so Monday opens on
   Sunday evening, the day after a holiday opens on the holiday's evening, and a holiday has no row.
-- Half-day overnight hours are not confirmed yet; exceptions can be added later through
+- Both filings say the session after a holiday opens at 21:00 on the holiday's evening. Nasdaq's
+  order also says trading resumes at 21:00 on an early-close day; Arca's filing opens the session at
+  21:00 Sunday to Thursday with no early-close exception. An early close moves only that day's close,
+  so no special handling is needed. Exceptions can still be added later through
   `special_overnight` / `special_overnight_adhoc`.
+
+## Known limitations (documented in the module, left for follow-ups)
+- `calendar_utils.date_range` and `mark_session` have no overnight session type, so on these
+  schedules they report 21:00-04:00 as `closed`. Fixing that changes the core session code.
+- With `force_special_times=True`, a special late open moves `overnight` up to the late open, as it
+  already does for `pre`. `force_special_times=False` keeps it.
 
 No change to `NYSEExchangeCalendar`, no change to existing tests, no new dependency.

@@ -9,10 +9,26 @@ session is therefore a market time with a -1 day offset, the same approach the C
 Holidays and early closes follow NYSE, so both calendars subclass NYSEExchangeCalendar. Because the overnight
 session always opens on the evening before a valid trading day, holidays need no special handling: Monday opens
 on Sunday evening, the day after a holiday opens on the holiday's evening, and a holiday has no session at all.
-Early closes need none either: both exchanges reopen at 21:00 on the evening of an early-close day.
+Both filings state that holiday rule. Early closes need no handling either: an early close moves only that day's
+close, and the next trading date's overnight session still opens at 21:00. Nasdaq's rule says so explicitly;
+Arca's opens the session at 21:00 Sunday to Thursday with no early-close exception.
 
-The bar generator ``calendar_utils.date_range`` has no session type for the overnight period, so its ``session``
-argument does not yet return overnight bars.
+Using the schedule:
+
+- Request the overnight column with ``schedule(..., start="overnight", end="post")``. The default columns
+  (market_open, market_close) are the same as NYSE.
+- Rows are keyed by trading date, so the session that opens on Sunday evening is in Monday's row. A live check
+  such as ``open_at_time`` or ``is_open_now`` needs a schedule that runs from today through the next trading day.
+- Keep ``post`` as the last column. ``overnight`` and ``pre`` are both opening times, so a schedule that ends at
+  ``pre`` reads as open through the 20:00-21:00 pause.
+
+Known limitations:
+
+- ``calendar_utils.date_range`` and ``mark_session`` have no session type for the overnight period. On these
+  schedules they report 21:00-04:00 as ``closed``. ``open_at_time`` reports it correctly.
+- On a day with a special late open, ``force_special_times=True`` (the default) moves every earlier column up to
+  the late open, ``overnight`` included, as it already does for ``pre``. Pass ``force_special_times=False`` to keep
+  the overnight time. NYSE has no special opens after the overnight start date.
 
 The "NASDAQ" alias still points at NYSEExchangeCalendar, so existing schedules are unchanged. The calendars here
 are registered under new names only.

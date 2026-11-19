@@ -13,14 +13,14 @@ from pandas_market_calendars.calendars.us_overnight import (
 
 
 NY = ZoneInfo("America/New_York")
-ALL_TIMES = ["overnight", "pre", "market_open", "market_close", "post"]
+ALL_TIMES = ("overnight", "pre", "market_open", "market_close", "post")
 
 
 def ny(ts: str) -> pd.Timestamp:
     return pd.Timestamp(ts, tz=NY)
 
 
-def times(schedule: pd.DataFrame, columns: list[str] = ALL_TIMES, day: int = 0) -> list[str]:
+def times(schedule: pd.DataFrame, columns: tuple[str, ...] | list[str] = ALL_TIMES, day: int = 0) -> list[str]:
     row = schedule.iloc[day]
     return [row[c].tz_convert(NY).strftime("%a %m-%d %H:%M") for c in columns]
 
@@ -50,8 +50,8 @@ def test_registry_names_and_aliases():
 
 
 def test_market_times_order():
-    assert NASDAQExchangeCalendar().market_times == ALL_TIMES
-    assert NYSEArcaExchangeCalendar().market_times == ALL_TIMES
+    assert NASDAQExchangeCalendar().market_times == list(ALL_TIMES)
+    assert NYSEArcaExchangeCalendar().market_times == list(ALL_TIMES)
     assert NASDAQExchangeCalendar().open_close_map["overnight"] is True
     assert OVERNIGHT_FROM == "2026-12-07"
 
@@ -161,13 +161,12 @@ def test_schedule_half_day_before_a_midweek_holiday():
 
 
 def test_schedule_opens_on_the_evening_of_a_holiday():
-    cal = NASDAQExchangeCalendar()
+    for cal in [NASDAQExchangeCalendar(), NYSEArcaExchangeCalendar()]:
+        # Martin Luther King Jr. Day is Monday 2027-01-18; Tuesday's session opens that evening
+        sched = full_schedule(cal, "2027-01-15", "2027-01-19")
 
-    # Martin Luther King Jr. Day is Monday 2027-01-18; Tuesday's session opens that evening
-    sched = full_schedule(cal, "2027-01-15", "2027-01-19")
-
-    assert pd.Timestamp("2027-01-18") not in sched.index
-    assert times(sched, ["overnight"], day=1) == ["Mon 01-18 21:00"]
+        assert pd.Timestamp("2027-01-18") not in sched.index
+        assert times(sched, ["overnight"], day=1) == ["Mon 01-18 21:00"]
 
 
 def test_schedule_daylight_saving_changeovers():
@@ -254,3 +253,37 @@ def test_sources():
 
     assert any("SR-NASDAQ-2025-109" in source.name for source in nasdaq_sources)
     assert any("SR-NYSEArca-2026-53" in source.name for source in arca_sources)
+
+
+def test_open_at_time_needs_the_next_trading_date_row():
+    cal = NASDAQExchangeCalendar()
+
+    # Sunday evening belongs to Monday's row: a schedule for Sunday alone is empty
+    assert full_schedule(cal, "2026-12-06", "2026-12-06").empty
+
+    # a schedule from today through the next trading day covers it
+    sched = full_schedule(cal, "2026-12-06", "2026-12-07")
+    assert cal.open_at_time(sched, ny("2026-12-06 22:00")) is True
+
+    # Monday 22:00 belongs to Tuesday's row
+    sched = full_schedule(cal, "2026-12-07", "2026-12-08")
+    assert cal.open_at_time(sched, ny("2026-12-07 22:00")) is True
+    assert cal.open_at_time(sched, ny("2026-12-07 20:30")) is False
+
+
+def test_schedule_late_open_keeps_overnight_without_forced_special_times():
+    cal = NASDAQExchangeCalendar()
+    # move the start back so an existing NYSE late open (2001-09-17, 09:33) falls inside the session's range
+    cal.change_time("overnight", ((None, time(4)), ("2001-01-01", time(21), -1)))
+
+    forced = full_schedule(cal, "2001-09-17", "2001-09-17")
+    kept = cal.schedule("2001-09-17", "2001-09-17", start="overnight", end="post", force_special_times=False)
+
+    # the default clamps every column before the late open, overnight and pre alike
+    assert times(forced, ["overnight", "pre", "market_open"]) == [
+        "Mon 09-17 09:33",
+        "Mon 09-17 09:33",
+        "Mon 09-17 09:33",
+    ]
+    # force_special_times=False keeps the overnight time
+    assert times(kept, ["overnight", "market_open"]) == ["Sun 09-16 21:00", "Mon 09-17 09:33"]
