@@ -429,6 +429,44 @@ CALENDAR_SOURCES: dict[str, tuple[Source, ...]] = {
             notes="NASDAQ follows NYSE holiday schedule",
         ),
     ),
+    "NASDAQ_23_5": (
+        Source(
+            name="NASDAQ Stock Market Hours",
+            url="https://www.nasdaq.com/stock-market-trading-hours-for-nasdaq",
+            last_verified="2026-11-19",
+            covers="trading hours, holidays",
+            notes="NASDAQ follows NYSE holiday schedule",
+        ),
+        Source(
+            name="SR-NASDAQ-2025-109: SEC order approving 23/5 trading (91 FR 20222)",
+            url="https://www.federalregister.gov/documents/2026/04/15/2026-07259/self-regulatory-organizations-the-nasdaq-stock-market-llc-notice-of-filing-of-amendment-nos-2-and-3",
+            last_verified="2026-11-19",
+            covers="overnight session hours, holidays, early closes",
+            notes=(
+                "Night Session 21:00-04:00 ET, Sunday to Thursday nights, when the next calendar day is a "
+                "business day; reopens at 21:00 on a holiday or early-close day; industry launch 2026-12-06"
+            ),
+        ),
+    ),
+    "NYSE_Arca": (
+        Source(
+            name="SR-NYSEArca-2026-53: overnight session rule filing",
+            url="https://www.nyse.com/publicdocs/nyse/markets/nyse-arca/rule-filings/filings/2026/SR-NYSEArca-2026-53.pdf",
+            last_verified="2026-11-19",
+            covers="overnight session hours, holidays",
+            notes=(
+                "Overnight session 21:00 ET Sunday to Thursday until the 04:00 Early session; after a holiday "
+                "the next overnight session opens at 21:00 on the holiday's evening; projected launch 2026-12-06"
+            ),
+        ),
+        Source(
+            name="NYSE Holidays and Trading Hours",
+            url="https://www.nyse.com/markets/hours-calendars",
+            last_verified="2026-11-19",
+            covers="holidays, early closes",
+            notes="NYSE Arca follows the NYSE holiday schedule",
+        ),
+    ),
     "BATS": (
         Source(
             name="CBOE BZX Exchange (formerly BATS)",
