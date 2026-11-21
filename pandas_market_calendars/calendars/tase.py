@@ -154,6 +154,7 @@ TASEClosedDay = [
     Timestamp("2026-09-21", tz="Asia/Jerusalem"),
     Timestamp("2026-09-25", tz="Asia/Jerusalem"),
     Timestamp("2026-10-02", tz="Asia/Jerusalem"),
+    Timestamp("2026-10-27", tz="Asia/Jerusalem"),
     # 2027
     Timestamp("2027-03-23", tz="Asia/Jerusalem"),
     Timestamp("2027-04-21", tz="Asia/Jerusalem"),
