@@ -17,15 +17,37 @@ ALL_TIMES = ("overnight", "pre", "market_open", "market_close", "post")
 
 
 def ny(ts: str) -> pd.Timestamp:
+    """
+    Build a New York timestamp.
+
+    :param ts: Date and time without a timezone.
+    :return: The timestamp in America/New_York.
+    """
     return pd.Timestamp(ts, tz=NY)
 
 
 def times(schedule: pd.DataFrame, columns: tuple[str, ...] | list[str] = ALL_TIMES, day: int = 0) -> list[str]:
+    """
+    Format one schedule row's times in New York time, so tests can compare readable strings.
+
+    :param schedule: A schedule from MarketCalendar.schedule.
+    :param columns: The market time columns to format, in order.
+    :param day: Position of the row in the schedule.
+    :return: Each time as "Day MM-DD HH:MM".
+    """
     row = schedule.iloc[day]
-    return [row[c].tz_convert(NY).strftime("%a %m-%d %H:%M") for c in columns]
+    return [row[column].tz_convert(NY).strftime("%a %m-%d %H:%M") for column in columns]
 
 
 def full_schedule(cal: NYSEExchangeCalendar, start: str, end: str) -> pd.DataFrame:
+    """
+    Build a schedule with every column from overnight to post.
+
+    :param cal: The calendar to schedule.
+    :param start: First date of the schedule.
+    :param end: Last date of the schedule.
+    :return: The schedule with overnight, pre, market_open, market_close and post columns.
+    """
     return cal.schedule(start, end, start="overnight", end="post")
 
 

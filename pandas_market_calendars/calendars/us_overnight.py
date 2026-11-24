@@ -37,7 +37,7 @@ are registered under new names only.
 from datetime import time
 from typing import Any
 
-from .nyse import NYSEExchangeCalendar
+from pandas_market_calendars.calendars.nyse import NYSEExchangeCalendar
 
 
 #: First trading date with an overnight session. Its session opens at 21:00 ET on the previous calendar day
