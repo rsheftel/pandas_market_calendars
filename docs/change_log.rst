@@ -5,6 +5,7 @@ Change Log
 ~~~~~~~~~~~~~~~~~~
 - Added HKEX half-day closes at 12:00 on the eves of Christmas, New Year and Lunar New Year (PR #528)
 - Closed TASE on 2026-10-27 (Knesset election day) (PR #532)
+- Fixed date_range_htf dropping the aligned end date for multi-day strides (PR #529)
 
 5.6.1 (11/13/2026)
 ~~~~~~~~~~~~~~~~~~
