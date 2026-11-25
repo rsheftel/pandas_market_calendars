@@ -58,6 +58,7 @@ from .calendars.six import SIXExchangeCalendar
 from .calendars.sse import SSEExchangeCalendar
 from .calendars.tase import TASEExchangeCalendar
 from .calendars.tsx import TSXExchangeCalendar
+from .calendars.us_overnight import NASDAQExchangeCalendar, NYSEArcaExchangeCalendar
 from .calendars.mirror import *
 
 
