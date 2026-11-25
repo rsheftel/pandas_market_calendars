@@ -561,6 +561,12 @@ def test_jp_2022():
     _test_has_early_closes(sifma_jp, early_closes, start, end)
 
 
+def test_jp_substitute_holidays():
+    schedule = sifma_jp.schedule("2026-01-01", "2026-12-31")
+    assert pd.Timestamp("2026-05-06") not in schedule.index  # Constitution Day (observed)
+    assert pd.Timestamp("2026-09-22") not in schedule.index  # Silver Week bridge holiday
+
+
 def test_jp_uk_holiday_early_closes():
     # Easter Monday is an early close in Japan, not a full close
     schedule = sifma_jp.schedule("2023-01-01", "2026-12-31", tz="Asia/Tokyo")

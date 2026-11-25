@@ -279,12 +279,14 @@ class SIFMAUKExchangeCalendar(MarketCalendar):
 # Japan
 ############################################################
 from pandas_market_calendars.holidays.jp import (
+    AutumnalCitizenDates,
     JapanAutumnalEquinox,
     JapanChildrensDay,
     JapanComingOfAgeDay,
     JapanConstitutionMemorialDay,
     JapanCultureDay,
     JapanEmperorsBirthday,
+    JapanGoldenWeekBonusDay,
     JapanGreeneryDay,
     JapanHealthAndSportsDay2000To2019,
     JapanLaborThanksgivingDay,
@@ -344,6 +346,7 @@ class SIFMAJPExchangeCalendar(MarketCalendar):
                 JapanConstitutionMemorialDay,
                 JapanGreeneryDay,
                 JapanChildrensDay,
+                JapanGoldenWeekBonusDay,
                 USMemorialDay,
                 USJuneteenthAfter2022,
                 USIndependenceDay,
@@ -370,6 +373,7 @@ class SIFMAJPExchangeCalendar(MarketCalendar):
             chain(
                 UKSpringBankAdHoc,
                 UKPlatinumJubilee2022,
+                AutumnalCitizenDates,
             )
         )
 
