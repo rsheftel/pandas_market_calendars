@@ -1896,3 +1896,14 @@ def test_date_range_htf_years():
 
 
 # endregion
+
+
+def test_date_range_htf_daily_stride_includes_aligned_end():
+    calendar = pd.offsets.CustomBusinessDay()
+    for stride, end in [(2, "2026-11-16"), (3, "2026-11-23"), (7, "2026-12-21")]:
+        expected = pd.date_range("2026-11-02", end, freq=stride * calendar)
+        actual = date_range_htf(calendar, f"{stride}D", "2026-11-02", end)
+        pd.testing.assert_index_equal(actual, expected.as_unit("ns"))
+
+    actual = date_range_htf(calendar, "2D", "2026-11-02", "2026-11-02")
+    pd.testing.assert_index_equal(actual, pd.DatetimeIndex(["2026-11-02"]).as_unit("ns"))
