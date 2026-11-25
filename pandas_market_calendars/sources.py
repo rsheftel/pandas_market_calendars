@@ -443,8 +443,19 @@ CALENDAR_SOURCES: dict[str, tuple[Source, ...]] = {
             last_verified="2026-11-19",
             covers="overnight session hours, holidays, early closes",
             notes=(
-                "Night Session 21:00-04:00 ET, Sunday to Thursday nights, when the next calendar day is a "
-                "business day; reopens at 21:00 on a holiday or early-close day; industry launch 2026-12-06"
+                "Night Session originally approved as 21:00-04:00 ET, Sunday to Thursday nights, when the "
+                "next calendar day is a business day; reopens at 21:00 on a holiday or early-close day; "
+                "industry launch 2026-12-06"
+            ),
+        ),
+        Source(
+            name="Equity Trader Alert #2026-72: Nasdaq Global Trading Hours Schedule",
+            url="https://www.nasdaqtrader.com/TraderNews.aspx?id=ETA2026-72",
+            last_verified="2026-11-25",
+            covers="overnight session close time",
+            notes=(
+                "Night Session ends at 03:55 ET, with a five-minute pause until the 04:00 day session; "
+                "all open orders are cancelled at 03:55. The alert notes that this time may be revised."
             ),
         ),
     ),

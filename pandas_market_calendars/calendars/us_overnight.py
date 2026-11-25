@@ -1,10 +1,15 @@
 """
 US equity exchanges with a 23/5 overnight session: Nasdaq and NYSE Arca.
 
-From Sunday 2026-12-06 both exchanges add an overnight session from 21:00 to 04:00 ET, Sunday to Thursday
+From Sunday 2026-12-06 both exchanges add an overnight session starting at 21:00 ET, Sunday to Thursday
 nights, followed by the existing 04:00-20:00 day session. Trades in the overnight session count toward the
 next trading date, so trading date D starts at 21:00 on the previous calendar day (D-1). The overnight
 session is therefore a market time with a -1 day offset, the same approach the China futures night sessions use.
+
+NYSE Arca's Overnight session runs into the 04:00 Early session (SR-NYSEArca-2026-53). Nasdaq's Night Session
+ends at 03:55 ET, with a five-minute pause until pre-market at 04:00 (Equity Trader Alert #2026-72, 20 November
+2026). The SEC approval order for SR-NASDAQ-2025-109 had described the Night Session as ending at 04:00; the
+later operational alert is what Nasdaq is running, and it notes that 03:55 may be revised.
 
 Holidays and early closes follow NYSE, so both calendars subclass NYSEExchangeCalendar. Because the overnight
 session always opens on the evening before a valid trading day, holidays need no special handling: Monday opens
@@ -25,7 +30,7 @@ Using the schedule:
 Known limitations:
 
 - ``calendar_utils.date_range`` and ``mark_session`` have no session type for the overnight period. On these
-  schedules they report 21:00-04:00 as ``closed``. ``open_at_time`` reports it correctly.
+  schedules they report the night session as ``closed``. ``open_at_time`` reports it correctly.
 - On a day with a special late open, ``force_special_times=True`` (the default) moves every earlier column up to
   the late open, ``overnight`` included, as it already does for ``pre``. Pass ``force_special_times=False`` to keep
   the overnight time. NYSE has no special opens after the overnight start date.
@@ -44,19 +49,30 @@ from pandas_market_calendars.calendars.nyse import NYSEExchangeCalendar
 #: (Sunday 2026-12-06). Change this one value if the industry launch date moves.
 OVERNIGHT_FROM = "2026-12-07"
 
+#: Nasdaq night-session close, from Equity Trader Alert #2026-72 (20 November 2026). The alert notes this
+#: time may be revised. NYSE Arca has no corresponding close; its overnight session runs into pre at 04:00.
+NASDAQ_OVERNIGHT_CLOSE = time(3, 55)
 
-def overnight_market_times(base: Any) -> dict:
+
+def overnight_market_times(base: Any, close: time | None = None) -> dict:
     """
     Add the 23/5 overnight session to a set of US equity market times.
 
     Before OVERNIGHT_FROM the overnight time equals pre (04:00), so the session has zero length and historical
-    schedules are unchanged. From OVERNIGHT_FROM it opens at 21:00 on the previous calendar day and runs into
-    pre at 04:00.
+    schedules are unchanged. From OVERNIGHT_FROM it opens at 21:00 on the previous calendar day.
+
+    If ``close`` is given (Nasdaq: 03:55), an ``overnight_close`` time is also added. Before OVERNIGHT_FROM it
+    equals pre (04:00); from then on it is ``close`` on the trading date, leaving a pause until pre at 04:00.
+    If ``close`` is omitted (NYSE Arca), the overnight session runs straight into pre.
 
     :param base: regular_market_times of the calendar being extended.
-    :return: regular_market_times with an "overnight" entry added.
+    :param close: local time at which the overnight session ends, or None to run into pre.
+    :return: regular_market_times with an "overnight" entry, and "overnight_close" when ``close`` is given.
     """
-    return {"overnight": ((None, time(4)), (OVERNIGHT_FROM, time(21), -1)), **base}
+    times = {"overnight": ((None, time(4)), (OVERNIGHT_FROM, time(21), -1))}
+    if close is not None:
+        times["overnight_close"] = ((None, time(4)), (OVERNIGHT_FROM, close))
+    return {**times, **base}
 
 
 class NASDAQExchangeCalendar(NYSEExchangeCalendar):
@@ -64,23 +80,30 @@ class NASDAQExchangeCalendar(NYSEExchangeCalendar):
     Exchange calendar for the Nasdaq Stock Market with the 23/5 overnight session.
 
     Holidays and early closes follow NYSE. From 2026-12-07 the trading day starts with an overnight session at
-    21:00 ET on the previous evening (Sunday to Thursday nights), followed by the 04:00-20:00 day session. The
-    default schedule() columns (market_open, market_close) are the same as NYSE; use start="overnight" to
-    include the overnight session.
+    21:00 ET on the previous evening (Sunday to Thursday nights). The Night Session ends at 03:55 ET, with a
+    five-minute pause until the 04:00-20:00 day session (Equity Trader Alert #2026-72, 20 November 2026; the
+    alert notes that 03:55 may be revised). The default schedule() columns (market_open, market_close) are the
+    same as NYSE; use start="overnight" to include the overnight session.
 
-    To move the start date, for example to the industry fallback launch of Sunday 2027-01-24:
+    To move the start date, for example to the industry fallback launch of Sunday 2027-01-24, change both
+    overnight times:
+
     cal.change_time("overnight", ((None, time(4)), ("2027-01-25", time(21), -1)))
+    cal.change_time("overnight_close", ((None, time(4)), ("2027-01-25", time(3, 55))))
 
     The "NASDAQ" alias still returns NYSEExchangeCalendar; this calendar is registered as "NASDAQ_23_5".
 
     References:
     - SR-NASDAQ-2025-109 (23/5 rule filing)
+    - Equity Trader Alert #2026-72 (20 November 2026): Night Session ends at 03:55 ET
     """
 
     aliases = ["NASDAQ_23_5"]
-    regular_market_times = overnight_market_times(NYSEExchangeCalendar.regular_market_times)
-    # The overnight session is an opening time; it runs straight into pre at 04:00, so it needs no closing time.
-    open_close_map = {**NYSEExchangeCalendar.open_close_map, "overnight": True}
+    regular_market_times = overnight_market_times(
+        NYSEExchangeCalendar.regular_market_times, close=NASDAQ_OVERNIGHT_CLOSE
+    )
+    # overnight is an opening time; overnight_close ends the Night Session at 03:55, then pre reopens at 04:00.
+    open_close_map = {**NYSEExchangeCalendar.open_close_map, "overnight": True, "overnight_close": False}
 
     @property
     def name(self) -> str:
@@ -97,8 +120,8 @@ class NYSEArcaExchangeCalendar(NYSEExchangeCalendar):
 
     Holidays and early closes follow NYSE. From 2026-12-07 the trading day starts with an overnight session at
     21:00 ET on the previous evening (Sunday to Thursday nights). Arca calls its sessions Overnight, Early, Core
-    and Late; they map onto overnight, pre, market_open..market_close and post. Use start="overnight" in
-    schedule() to include the overnight session.
+    and Late; they map onto overnight, pre, market_open..market_close and post. The Overnight session runs into
+    the 04:00 Early session, with no pause. Use start="overnight" in schedule() to include the overnight session.
 
     To move the start date, for example to the industry fallback launch of Sunday 2027-01-24:
     cal.change_time("overnight", ((None, time(4)), ("2027-01-25", time(21), -1)))

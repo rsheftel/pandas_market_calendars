@@ -13,6 +13,8 @@ calendars are registered under new names only.
 ## Sources
 - SR-NASDAQ-2025-109, SEC order approving Nasdaq's 23/5 trading (91 FR 20222):
   https://www.federalregister.gov/documents/2026/04/15/2026-07259/self-regulatory-organizations-the-nasdaq-stock-market-llc-notice-of-filing-of-amendment-nos-2-and-3
+- Equity Trader Alert #2026-72 (20 November 2026): Nasdaq Night Session ends at 03:55 ET
+  https://www.nasdaqtrader.com/TraderNews.aspx?id=ETA2026-72
 - SR-NYSEArca-2026-53 (NYSE Arca overnight session rule filing):
   https://www.nyse.com/publicdocs/nyse/markets/nyse-arca/rule-filings/filings/2026/SR-NYSEArca-2026-53.pdf
 
@@ -30,11 +32,17 @@ calendars are registered under new names only.
 5. [x] Add `sources.py` entries keyed by each class's `name`.
 6. [x] Add rows to `docs/calendars.rst` and a line to `docs/change_log.rst`.
 7. [x] Run ruff on the changed files and the full test suite; no new warnings.
+8. [x] End Nasdaq's Night Session at 03:55 ET per Equity Trader Alert #2026-72, leaving Arca at 21:00-04:00.
 
 ## Design
 - `overnight` is one new market time, counted as an open in `open_close_map`. Its value is
   `((None, time(4)), ("2026-12-07", time(21), -1))`: before trading date 2026-12-07 it equals `pre`
   (zero-length session, so history is unchanged); from then on it is 21:00 on the previous calendar day.
+- Nasdaq also has `overnight_close` at 03:55 from the same start date (Equity Trader Alert #2026-72),
+  counted as a close, leaving a five-minute pause until `pre` at 04:00. Before the start date it
+  equals `pre`. NYSE Arca has no `overnight_close`; its overnight session runs into `pre` at 04:00.
+  This follows the China futures `night_close` pattern. Do not use `break_start`/`break_end`, which
+  the core bar helpers treat as a mid-RTH lunch break.
 - `market_open` stays at 09:30, so the default `schedule()` columns match NYSE exactly.
 - Holidays need no special code: a trading date D always opens at 21:00 on D-1, so Monday opens on
   Sunday evening, the day after a holiday opens on the holiday's evening, and a holiday has no row.
@@ -46,7 +54,7 @@ calendars are registered under new names only.
 
 ## Known limitations (documented in the module, left for follow-ups)
 - `calendar_utils.date_range` and `mark_session` have no overnight session type, so on these
-  schedules they report 21:00-04:00 as `closed`. Fixing that changes the core session code.
+  schedules they report the night session as `closed`. Fixing that changes the core session code.
 - With `force_special_times=True`, a special late open moves `overnight` up to the late open, as it
   already does for `pre`. `force_special_times=False` keeps it.
 
