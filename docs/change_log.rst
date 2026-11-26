@@ -3,7 +3,7 @@ Change Log
 
 5.7.1 (11/26/2026)
 ~~~~~~~~~~~~~~~~~~
-- *TBD*
+- Treated the UK Summer Bank Holiday as a 15:00 JST early close rather than a full close on SIFMA JP (PR #537)
 
 5.7.0 (11/25/2026)
 ~~~~~~~~~~~~~~~~~~
