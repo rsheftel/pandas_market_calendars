@@ -22,8 +22,8 @@ def test_aliases():
 def test_holidays():
     nse_calendar = NSEExchangeCalendar()
 
-    assert len(NSEClosedDay) == 453
-    assert len(set(NSEClosedDay)) == 453
+    assert len(NSEClosedDay) == 420
+    assert len(set(NSEClosedDay)) == 420
     assert (pd.DatetimeIndex(NSEClosedDay).day_of_week < 5).all()
 
     trading_days = nse_calendar.valid_days(pd.Timestamp("1996-01-01"), pd.Timestamp("2026-12-31"))
@@ -37,6 +37,49 @@ def test_holidays():
     # Weekday Muhurat dates are sessions, not holidays.
     assert pd.Timestamp("2024-11-01", tz="UTC") in trading_days
     assert pd.Timestamp("2022-10-24", tz="UTC") in trading_days
+
+
+def test_sessions_with_nse_bhavcopy():
+    # Each day has an NSE bhavcopy whose PREVCLOSE matches the previous session's close, e.g.
+    # https://nsearchives.nseindia.com/content/historical/EQUITIES/1996/APR/cm08APR1996bhav.csv.zip
+    sessions = [
+        "1996-04-08",
+        "1996-04-09",
+        "1996-04-10",
+        "1996-06-11",
+        "1996-06-25",
+        "1996-06-26",
+        "1996-11-08",
+        "1997-01-21",
+        "1997-04-09",
+        "1997-07-24",
+        "1997-09-01",
+        "1997-09-16",
+        "1997-09-17",
+        "1997-09-19",
+        "1997-10-14",
+        "1997-10-30",
+        "1998-07-09",
+        "1998-07-14",
+        "1998-09-09",
+        "2001-03-08",
+        "2001-03-21",
+        "2001-06-20",
+        "2001-08-23",
+        "2001-09-10",
+        "2001-11-29",
+        "2002-01-18",
+        "2002-01-28",
+        "2002-08-16",
+        "2003-04-10",
+        "2003-10-16",
+        "2004-10-12",
+        "2004-10-15",
+        "2005-07-27",
+    ]
+    valid_days = NSEExchangeCalendar().valid_days("1996-01-01", "2005-12-31")
+    for day in sessions:
+        assert pd.Timestamp(day, tz="UTC") in valid_days
 
 
 def test_regular_hours_2010_transitions():
