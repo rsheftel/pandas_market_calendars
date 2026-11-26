@@ -5,6 +5,7 @@ Change Log
 ~~~~~~~~~~~~~~~~~~
 - Added Taiwan Futures Exchange calendars: TAIFEX (aliases XTAF, TAIFEX_TX), whose trading day starts with the after-hours session at 15:00 on the previous trading day, and the regular-session TAIFEX_Day (PR #536)
 - Treated the UK Summer Bank Holiday as a 15:00 JST early close rather than a full close on SIFMA JP (PR #537)
+- Opened NSE on 33 days between 1996 and 2005 that were wrongly listed as closed (PR #539)
 
 5.7.0 (11/25/2026)
 ~~~~~~~~~~~~~~~~~~
