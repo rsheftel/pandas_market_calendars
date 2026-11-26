@@ -570,6 +570,84 @@ CALENDAR_SOURCES: dict[str, tuple[Source, ...]] = {
         ),
     ),
     # endregion
+    # region ---- Taiwan Futures Exchange ----
+    "TAIFEX": (
+        Source(
+            name="TAIFEX TAIEX Futures (TX) Contract Specifications",
+            url="https://www.taifex.com.tw/enl/eng2/tX",
+            last_verified="2026-11-26",
+            covers="trading hours, trading days",
+            notes="MTX, TMF, TXO and the TE and TF sector index futures have the same sessions",
+        ),
+        Source(
+            name="TAIFEX After-Hours Trading",
+            url="https://www.taifex.com.tw/enl/eng4/aHIntroduction",
+            last_verified="2026-11-26",
+            covers="after-hours session hours, attribution of after-hours trades to the next trading day",
+        ),
+        Source(
+            name="TAIFEX Trading-Hour History (Chinese)",
+            url="https://www.taifex.com.tw/cht/4/historyOfTrading",
+            last_verified="2026-11-26",
+            covers="historical trading hours",
+            notes=(
+                "09:00-12:15 Monday to Saturday from 1998, 08:45-13:45 Monday to Friday from 2001-01-02, "
+                "after-hours session from 2017-05-15; the English page's 1:15 p.m. close for 2001 looks like a typo"
+            ),
+        ),
+        Source(
+            name="TAIFEX 2027 Trading Calendar",
+            url="https://www.taifex.com.tw/file/taifex/eng/eng4/2027Calendar_en.pdf",
+            last_verified="2026-11-26",
+            covers="holidays",
+            notes="Same closures as TWSE; the 2026 calendar is at .../eng4/2026Calendar_en.pdf",
+        ),
+        Source(
+            name="TAIFEX Announcements",
+            url="https://www.taifex.com.tw/cht/11/hisNews",
+            last_verified="2026-11-26",
+            covers="typhoon closures, holiday arrangements",
+            notes="Notice numbers for each ad hoc closure are in holidays/taifex.py",
+        ),
+        Source(
+            name="TAIFEX Daily Market Data",
+            url="https://www.taifex.com.tw/cht/3/dlFutDailyMarketView",
+            last_verified="2026-11-26",
+            covers="trading days, after-hours sessions",
+            notes=(
+                "TX regular and after-hours sessions for every trading day from 1998-07-21 to 2026-11-26; "
+                "the calendar matches them from 2002, apart from Saturday sessions"
+            ),
+        ),
+        Source(
+            name="TWSE Holiday Schedule",
+            url="https://www.twse.com.tw/en/trading/holiday.html",
+            last_verified="2026-11-26",
+            covers="holidays",
+            notes="TAIFEX index products trade on TWSE trading days; holiday rules come from the XTAI calendar",
+        ),
+    ),
+    "TAIFEX_Day": (
+        Source(
+            name="TAIFEX TAIEX Futures (TX) Contract Specifications",
+            url="https://www.taifex.com.tw/enl/eng2/tX",
+            last_verified="2026-11-26",
+            covers="trading hours, trading days",
+        ),
+        Source(
+            name="TAIFEX Trading-Hour History (Chinese)",
+            url="https://www.taifex.com.tw/cht/4/historyOfTrading",
+            last_verified="2026-11-26",
+            covers="historical trading hours",
+        ),
+        Source(
+            name="TAIFEX 2027 Trading Calendar",
+            url="https://www.taifex.com.tw/file/taifex/eng/eng4/2027Calendar_en.pdf",
+            last_verified="2026-11-26",
+            covers="holidays",
+        ),
+    ),
+    # endregion
     # region ---- Tel Aviv Stock Exchange ----
     "TASE": (
         Source(

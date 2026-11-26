@@ -55,6 +55,8 @@ CZCE       CZCE_Night            CZCENightCalendar                 Yes          
 GFEX       GFEX                  GFEXExchangeCalendar              Yes          yangodds
 CFFEX      CFFEX                 CFFEXExchangeCalendar             Yes          yangodds
 CFFEX      CFFEX_Bond            CFFEXBondExchangeCalendar         Yes          yangodds
+TAIFEX     TAIFEX                TAIFEXExchangeCalendar            Yes          jjohnnystwsss
+TAIFEX     TAIFEX_Day            TAIFEXDayCalendar                 Yes          jjohnnystwsss
 =========  ====================  ================================  ===========  ==========================
 
 Forex/OTC Market Calendars
