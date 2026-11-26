@@ -142,3 +142,11 @@ def test_tase_2027_high_holidays():
     )
 
     assert_index_equal(actual, expected)
+
+
+def test_tase_2026_election_day():
+    actual = mcal.get_calendar("TASE").schedule("2026-10-26", "2026-10-28").index
+
+    expected = pd.DatetimeIndex([pd.Timestamp("2026-10-26"), pd.Timestamp("2026-10-28")])
+
+    assert_index_equal(actual, expected)

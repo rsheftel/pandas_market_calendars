@@ -1,6 +1,14 @@
 Change Log
 ==========
 
+5.7.0 (11/25/2026)
+~~~~~~~~~~~~~~~~~~
+- Added HKEX half-day closes at 12:00 on the eves of Christmas, New Year and Lunar New Year (PR #528)
+- Closed TASE on 2026-10-27 (Knesset election day) (PR #532)
+- Fixed date_range_htf dropping the aligned end date for multi-day strides (PR #529)
+- Added NASDAQ_23_5 and NYSE_Arca calendars with the 23/5 overnight session starting 2026-12-07; Nasdaq's night session ends at 03:55 ET, NYSE Arca runs to 04:00 (PR #531)
+- Closed SIFMA JP on Japanese substitute and bridge holidays, including 2026-05-06 (Constitution Day observed) and 2026-09-22 (Silver Week bridge holiday) (PR #533)
+
 5.6.1 (11/13/2026)
 ~~~~~~~~~~~~~~~~~~
 - Closed CME Globex Grains on Juneteenth and restored CME Agriculture trading on 2018-12-05 (PR #518)
