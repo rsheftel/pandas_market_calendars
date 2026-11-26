@@ -539,7 +539,6 @@ def test_jp_2022():
         pd.Timestamp("2022-07-04", tz="UTC"),  # US Independence Day
         pd.Timestamp("2022-07-18", tz="UTC"),  # Japan Marine Day
         pd.Timestamp("2022-08-11", tz="UTC"),  # Japan Mountain Day
-        pd.Timestamp("2022-08-29", tz="UTC"),  # UK Summer Bank Holiday
         pd.Timestamp("2022-09-05", tz="UTC"),  # US Labor Day
         pd.Timestamp("2022-09-19", tz="UTC"),  # Japan Respect-for-the-Aged Day
         pd.Timestamp("2022-09-23", tz="UTC"),  # Japan Autumnal Equinox
@@ -556,6 +555,7 @@ def test_jp_2022():
     early_closes = [
         pd.Timestamp("2022-04-18 3:00PM", tz="Asia/Tokyo"),  # UK Easter Monday
         pd.Timestamp("2022-05-02 3:00PM", tz="Asia/Tokyo"),  # UK May Day
+        pd.Timestamp("2022-08-29 3:00PM", tz="Asia/Tokyo"),  # UK Summer Bank Holiday
         pd.Timestamp("2022-12-27 3:00PM", tz="Asia/Tokyo"),  # UK Christmas Day
     ]
     _test_has_early_closes(sifma_jp, early_closes, start, end)
