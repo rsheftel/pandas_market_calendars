@@ -352,7 +352,6 @@ class SIFMAJPExchangeCalendar(MarketCalendar):
                 USIndependenceDay,
                 JapanMarineDay,
                 JapanMountainDay,
-                UKSummerBank,
                 USLaborDay,
                 JapanRespectForTheAgedDay,
                 JapanAutumnalEquinox,
@@ -383,7 +382,7 @@ class SIFMAJPExchangeCalendar(MarketCalendar):
             (
                 time(15),
                 AbstractHolidayCalendar(
-                    rules=[UKEasterMonday, UKMayDay, UKWeekendChristmas, UKBoxingDay, UKWeekendBoxingDay]
+                    rules=[UKEasterMonday, UKMayDay, UKSummerBank, UKWeekendChristmas, UKBoxingDay, UKWeekendBoxingDay]
                 ),
             )
         ]
